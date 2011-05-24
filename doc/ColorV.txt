@@ -24,6 +24,8 @@ INTRO                                               *colorv-intro*
     *ColorV* or *ColorV.vim* is a Color Viewer and Color Picker of Vim.
 
     It looks like most morden GUI color pickers.
+    <Leader>cv or <leader>cm to open it
+
     You can quickly view/edit the color under cursor or in clipboard.
 
     Also, you can simply use mouse/keyboard to choose your desired color.
@@ -36,10 +38,12 @@ picker with it.
     It also provide some functions like |ColorV#rgb2hsv()| for directly using.
 
     That's it.
+
     Have a look at it. http://flic.kr/p/9LuPxG
     or http://i55.tinypic.com/330ryhl.jpg
 
-    If useful for you, please rate it https://github.com/rykka/colorv
+    If useful for you, please rate it
+    http://www.vim.org/scripts/script.php?script_id=3597
 
     If you have any advice ,patches or bug reports.
     Submit it at github: https://github.com/rykka/colorv
@@ -49,6 +53,7 @@ picker with it.
 INSTALL                                             *colorv-install*
 
     Using vim.org:
+    http://www.vim.org/scripts/script.php?script_id=3597
     Download the latest version of tar.gz file, extract it.
     And put plugin files into your VIMFILE folder.
     ("~/.vim" for linux. "$HOME/vimfiles" for windows)
