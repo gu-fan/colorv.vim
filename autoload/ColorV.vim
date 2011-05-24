@@ -569,7 +569,7 @@ function! s:init_text(...) "{{{
     elseif exists("g:ColorV_show_tips") && g:ColorV_show_tips==2
     	let l:show_Qo=1
         let l:show_tips=0
-    elseif  
+    else  
     	let l:show_Qo=0
         let l:show_tips=0
     endif
@@ -582,7 +582,7 @@ function! s:init_text(...) "{{{
         if l:show_tips 
             let line[6]=s:line("Set Color:2-Click/2-Space",24)
             let line[7]=s:line("Toggle:TAB      Edit:Enter",24)
-            let line[8]=s:line("Yank:<C-C>/yy   Paste:<C-V>/p",24)
+            let line[8]=s:line("Yank:yy/yr...   Paste:<C-V>/p",24)
             let line[9]=s:line("Help:F1/H       Quit:qq/Esc",24)
             if l:show_Qo==1
                 let line[0]=s:line_sub(line[0],".",54)
@@ -1257,6 +1257,7 @@ function! s:map_define() "{{{
     nmap <silent><buffer> <leader>ck :call ColorV#set_in_pos()<cr>
     nmap <silent><buffer> <2-leftmouse> :call ColorV#set_in_pos()<cr>
     nmap <silent><buffer> <3-leftmouse> :call ColorV#set_in_pos()<cr>
+
     nmap <silent><buffer> <tab> :call ColorV#toggle_arrow()<cr>
     nmap <silent><buffer> <c-n> :call ColorV#toggle_arrow()<cr>
     nmap <silent><buffer> J :call ColorV#toggle_arrow()<cr>
@@ -1289,7 +1290,7 @@ function! s:map_define() "{{{
     nmap <silent><buffer> <F1> :h ColorV<cr>
 
     "Copy color 
-    map <silent><buffer> <c-c> :call ColorV#copy("","+")<cr>
+    "map <silent><buffer> <c-c> :call ColorV#copy("","+")<cr>
     map <silent><buffer> C :call ColorV#copy("","+")<cr>
     map <silent><buffer> cc :call ColorV#copy("","+")<cr>
     map <silent><buffer> cx :call ColorV#copy("0x","+")<cr>
