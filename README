@@ -1,4 +1,5 @@
- **ColorV** or **ColorV.vim** is a Color Viewer and Color Picker of Vim.
+ INTRO:
+    ColorV or ColorV.vim is a Color Viewer and Color Picker of Vim.
 
     It looks like most morden GUI color pickers.
     You can quickly view/edit the color under cursor or in clipboard.
@@ -24,3 +25,36 @@ picker with it.
     Submit it at github: https://github.com/rykka/colorv
 
     And you can contact me at <Rykka.Krin@gmail.com>
+
+INSTALL:
+    
+    Using vim.org:
+    http://www.vim.org/scripts/script.php?script_id=3597
+    Download the latest version of tar.gz file, extract it.
+    And put plugin files into your VIMFILE folder.
+    ("~/.vim" for linux. "$HOME/vimfiles" for windows)
+>
+    VIMFILE/autoload/colorV.vim
+    VIMFILE/plugin/colorV.vim
+    VIMFILE/doc/colorV.txt
+<
+    Then use help tag to generate tags.
+>
+    :helptags VIMFILE/doc
+<
+    Using git:
+    cd to your vimfile path, then use git clone.
+>
+    git clone git://github.com/rykka/ColorV.git
+<
+
+    Using Vundle:
+    First, install the script Vundle.vim
+    then put this line in your vimrc
+>
+    Bundle 'rykka/colorv'
+<
+    and use this to install it.
+>
+    :BundleInstall
+<
