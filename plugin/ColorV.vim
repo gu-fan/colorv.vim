@@ -2,9 +2,9 @@
 "  Script: ColorV 
 "    File: plugin/ColorV.vim
 " Summary: A color manager with color toolkits
-"  Author: Rykka
+"  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 1.0.8.0 
+" Version: 1.1.8.0 
 " Last Update: 2011-05-24
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
@@ -18,7 +18,7 @@ if v:version < 700
 endif
 
 let g:ColorV={}
-let g:ColorV.ver="1.0.8.0"
+let g:ColorV.ver="1.1.8.0"
 let g:ColorV.name="[ColorV]"
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={}

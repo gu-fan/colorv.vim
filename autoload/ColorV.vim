@@ -2,9 +2,9 @@
 "  Script: ColorV 
 "    File: autoload/ColorV.vim
 " Summary: A color manager with color toolkits
-"  Author: Rykka
+"  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 1.0.8.0 
+" Version: 1.1.8.0 
 " Last Update: 2011-05-24
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
  "{{{

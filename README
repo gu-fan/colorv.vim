@@ -1,0 +1,24 @@
+ **ColorV** or **ColorV.vim** is a Color Viewer and Color Picker of Vim.
+
+    It looks like most morden GUI color pickers.
+    You can quickly view/edit the color under cursor or in clipboard.
+
+    Also, you can simply use mouse/keyboard to choose your desired color.
+    
+    And there are several commands and keymappings to interact with it.
+
+    Moreover, if you have '+python' and pygtk2.0. You can use a gtk color
+picker with it.
+
+    It also provide some functions like |ColorV#rgb2hsv()| for directly using.
+
+    That's it.
+    Have a look at it. http://flic.kr/p/9LuPxG
+    or http://i55.tinypic.com/330ryhl.jpg
+
+    If useful for you, please rate it https://github.com/rykka/colorv
+
+    If you have any advice ,patches or bug reports.
+    Submit it at github: https://github.com/rykka/colorv
+
+    And you can contact me at <Rykka.Krin@gmail.com>

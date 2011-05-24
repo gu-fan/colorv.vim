@@ -1,7 +1,7 @@
 *ColorV.txt*               ColorV        Color Viewer for Vim
 
-Version: 1.1.0                          Author: Rykka Krn
-                                        <Rykka10@gmail.com>
+Version: 1.1.8                          Author: Rykka Krn
+                                        <Rykka.Krin@gmail.com>
 
 CONTENTS                               *colorv-contents*
 
@@ -44,7 +44,7 @@ picker with it.
     If you have any advice ,patches or bug reports.
     Submit it at github: https://github.com/rykka/colorv
 
-    And you can contact me at <Rykka10@gmail.com>
+    And you can contact me at <Rykka.Krin@gmail.com>
 ==============================================================================
 INSTALL                                             *colorv-install*
 
@@ -64,7 +64,7 @@ INSTALL                                             *colorv-install*
     Using git:
     cd to your vimfile path, then use git clone.
 >
-    git clone https://github.com/rykka/colorv
+    git clone git://github.com/rykka/ColorV.git
 <
 
     Using Vundle:
@@ -503,7 +503,7 @@ LICENSE                                             *colorv-license*
 ==============================================================================
 HISTORY                                             *colorv-history*
 
-" 1.10
+" 1.1.8
 " DONE: 110524  code review
 " DONE: 110524  some eggs
 " DONE: 110524  hex2nam() nam2hex() approx2()
