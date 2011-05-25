@@ -516,7 +516,9 @@ LICENSE                                             *colorv-license*
 ==============================================================================
 HISTORY                                             *colorv-history*
 
-" 1.1.8
+" 1.2.0
+" DONE: 110526  change intro
+"FIXED: 110526  del <esc> to quit. add <c-w>q <c-w><c-q> to quit.
 " DONE: 110524  code review
 " DONE: 110524  some eggs
 " DONE: 110524  hex2nam() nam2hex() approx2()
