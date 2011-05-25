@@ -4,7 +4,7 @@
 " Summary: A color manager with color toolkits
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 1.1.8.0 
+" Version: 1.2.0.0 
 " Last Update: 2011-05-24
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
  "{{{
@@ -421,13 +421,13 @@ function! s:draw_valLine(l,...) "{{{
 
     endwhile
 endfunction "}}}
-function! ColorV#clear_all()
+function! ColorV#clear_all() "{{{
     call s:clear_blockmatch()
     call s:clear_hsvmatch()
     call s:clear_miscmatch()
     call s:clear_palmatch()
     call clearmatches()
-endfunction
+endfunction "}}}
 function! s:clear_palmatch() "{{{
     if !exists("s:pallet_dict")|let s:pallet_dict={}|endif
     for [key,var] in items(s:pallet_dict)
@@ -525,7 +525,7 @@ endfunction "}}}
 "DRAW_TEXT:{{{1
 function! s:init_text(...) "{{{
     setl ma
-     let cur=s:clear_text()
+    let cur=s:clear_text()
     let hex=exists("a:1") ? printf("%06x",'0x'.a:1) : 
                 \exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
     let [r,g,b]=ColorV#hex2rgb(hex)
@@ -607,7 +607,9 @@ function! s:init_text(...) "{{{
 
     let [h1,h2,h3]=[s:his_color0,s:his_color1,s:his_color2]
     for [x,y,z,t] in s:clrf
-        if [h1,h2,h3] == [x,y,z]
+        "if [h1,h2,h3] == [x,y,z]
+        " slower?
+        if s:approx2(h1,x) && s:approx2(h2,y) && s:approx2(h3,z)
             let t=tr(t,s:t,s:e)
             let a=tr(s:a,s:t,s:e)
             if s:mode=="mini"
@@ -798,7 +800,7 @@ function! s:clear_text() "{{{
         return
     endif
     let cur=getpos('.')
-    normal! ggVG"_x
+    silent! normal! ggVG"_x
     return cur
 endfunction "}}}
 "return text in blank line
@@ -1084,8 +1086,9 @@ function! ColorV#edit_at_arrow(...) "{{{
 
     if exists("l:error_input") && l:error_input==1
     	call s:warning("Error input. Don't change color")
-    	let hex=g:ColorV.HEX
-    	let s:skip_his_block=1
+            "let hex=g:ColorV.HEX
+            "let s:skip_his_block=1
+        return
     endif
     call s:set_buf_hex(hex)
 
@@ -1287,7 +1290,6 @@ function! s:map_define() "{{{
     "nmap <silent><buffer> <esc> :call ColorV#exit()<cr>
     nmap <silent><buffer> <c-w>q :call ColorV#exit()<cr>
     nmap <silent><buffer> <c-w><c-q> :call ColorV#exit()<cr>
-
     nmap <silent><buffer> ? :call ColorV#switching_tips()<cr>
     nmap <silent><buffer> H :h ColorV<cr>
     nmap <silent><buffer> <F1> :h ColorV<cr>
