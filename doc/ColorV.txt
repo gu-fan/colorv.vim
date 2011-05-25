@@ -120,16 +120,18 @@ which the color is at you demand.
                                                     *colorv-copy*
     Copy a color from ColorV with current color:
 
-    using y/Y and related mappings to copy color into register"
-    using <c-c>/cc and related mappings to copy color into register+
-    The |colorv-formatted-text| formats could be HEX, RGB, RGBP and more...
+    using y/Y and related mappings to copy formated text into register"
+    using cc/C and related mappings to copy formated text into register+
+    See |colorv-mapping-copy| for detail mapping.
+
+    The formats could be HEX, RGB, RGBP and more...
+    See |colorv-formatted-text| for detail info.
 >
     #:#ffffff
     HEX:ffffff
     RGB:rgb(255,255,255)
     RGBP:rgb(100%,100%,100%)
 <
-    See it clearly in |colorv-mapping-copy|.
 
                                                     *colorv-paste*
     Paste a |colorv-formatted-text| to ColorV and set showing this color:
@@ -257,7 +259,6 @@ MAPPINGS                                            *colorv-mappings*
     yap         Copy RGBAP format 'rgba(100%,100%,100%.100%)' into register"
     yn          Copy NAM format 'white' into register"
 
-    <Ctrl-c>    Copy HEX format 'ffffff' into register+
     C           Copy HEX format 'ffffff' into register+
     cc          Copy HEX format 'ffffff' into register+
     c#          Copy # format '#ffffff' into register+
