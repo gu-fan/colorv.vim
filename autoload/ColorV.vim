@@ -1284,7 +1284,7 @@ function! s:map_define() "{{{
 
     " WONTFIX:quick quit without wait for next key after q
     nmap <silent><buffer> q :call ColorV#exit()<cr>
-    nmap <silent><buffer> <esc> :call ColorV#exit()<cr>
+    "nmap <silent><buffer> <esc> :call ColorV#exit()<cr>
     nmap <silent><buffer> <c-w>q :call ColorV#exit()<cr>
     nmap <silent><buffer> <c-w><c-q> :call ColorV#exit()<cr>
 
