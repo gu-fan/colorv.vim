@@ -1,6 +1,6 @@
 *ColorV.txt*               ColorV        Color Viewer for Vim
 
-Version: 1.1.8                          Author: Rykka Krn
+Version: 1.2.0                          Author: Rykka Krn
                                         <Rykka.Krin@gmail.com>
 
 CONTENTS                               *colorv-contents*
@@ -28,12 +28,16 @@ INTRO                                               *colorv-intro*
         <leader>cv
 
     Open a ColorV window by word under cursor.
-        #ff9744 or rgb(33,44,155) or OrangeRed
+NEW!    Color name (W3C Standard) Supported,like OrangeRed lime cadetblue
+        #ff9744 or rgb(33,44,155) or orangered
         put cursor on above words 
         <leader>cw
-        
+
     Change the word under cursor with chosing color after quit the ColorV window.
         <leader>cg
+
+    Copy the color in the ColorV window
+        yy
 
     If you have '+python' compiled and pygtk2.0.
     You could use a GTK eyedropper to get colors on screen.
@@ -290,9 +294,31 @@ which was used with cut/copy between other applications.
     RGBP    rgb(100%,100%,100%)
     RGBA    rgba(255,255,255,255)
     RGBAP   rgba(100%,100%,100%,100%)
+    NAME    black/white (see |colorv-colorname|)
 
     You can also define your own color formats with |colorv-var-colors|.
 
+                                                    *colorv-colorname*
+    The colorname are the the name of the colors, like 'red', 'green', 
+    'blue', 'OrangeRed', 'cornsilk'
+
+    If not the exact hex of colors, then add '~' and '~~' to the end,
+    the approximation rate to exact colors can be adjusted by
+    |g:ColorV_name_approx|
+
+    The Color names are defined with W3C standard.
+    Which you can get the table from
+    http://en.wikipedia.org/wiki/X11_color_names
+    
+    Note There are several difference between X11 and W3C
+    Gray    (X11)	#BEBEBE
+    Gray    (W3C) 	#7F7F7F
+    Green   (X11) 	#00FF00
+    Green   (W3C) 	#007F00
+    Maroon  (X11) 	#B03060
+    Maroon  (W3C) 	#7F0000
+    Purple  (X11) 	#A020F0
+    Purple  (W3C) 	#7F007F
                                                     *colorv-mapping-paste*
     <Ctrl-v>    paste |colorv-formatted-text| in register+ to set showing color.
     p/P         paste |colorv-formatted-text| in register" to set showing color.
@@ -304,6 +330,9 @@ which was used with cut/copy between other applications.
     a/i             Start editing the parameter chosen by arrow.
     <Enter>         Start editing the parameter chosen by arrow.
     <Kenter>        Start editing the parameter chosen by arrow.
+    
+    na/ne           Choose color by entering a colorname.(W3C standard)   
+                    See |colorv-colorname| for details.
 
                                                     *colorv-mapping-set*
     <C-K>/<C-J>     Set current showing colors under cursor.
@@ -367,6 +396,10 @@ OPTIONS                                             *colorv-options*
     g:ColorV_word_mini      Show window in mini mode that opened by
                             current word, if set to 1.
                             |:ColorVword| |:ColorVchange| |:ColorVchangeAll|
+
+                                                *g:ColorV_name_approx*
+                                                (default=5)
+    g:ColorV_name_approx    Approximation rate to the exactly color name.
 ------------------------------------------------------------------------------
 VARIABLES                                           *colorv-variables*
 
@@ -516,7 +549,10 @@ LICENSE                                             *colorv-license*
 ==============================================================================
 HISTORY                                             *colorv-history*
 
-" 1.2.0
+" 1.2.0 Color Name
+" DONE: 110526  Add Color name support (W3C standard).
+" DONE: 110526  input color name in ColorV to choose color.
+"FIXED: 110526  The paste error with colorname
 " DONE: 110526  change intro
 "FIXED: 110526  del <esc> to quit. add <c-w>q <c-w><c-q> to quit.
 "FIXED: 110524  silent clear_text

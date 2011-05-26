@@ -53,6 +53,9 @@ let s:fmt.HEX='\x\@<!\x\{6}\x\@!'
 "#fff only
 let s:fmt.HEX3='#\zs\x\{3}\x\@!'
 let s:t='fghDPijmrYFGtudBevwxklyzEIZOJLMnHsaKbcopqNACQRSTUVWX'
+let s:clrnX11=[['Gray','BEBEBE'],['Green','00FF00'],['Maroon','B03060']
+            \,['Purple','A020F0']]
+"W3C Standard
 let s:clrn=[
 \['AliceBlue'           ,'f0f8ff'] ,['AntiqueWhite'        ,'faebd7']
 \,['Aqua'                ,'00ffff'] ,['Aquamarine'          ,'7fffd4']
@@ -125,7 +128,9 @@ let s:clrn=[
 \,['White'               ,'ffffff'] ,['WhiteSmoke'          ,'f5f5f5']
 \,['Yellow'              ,'ffff00'] ,['YellowGreen'         ,'9acd32']
 \]
-let s:ap_rate=5
+let s:aprx_rate=5
+let s:aprx_name=exists("g:ColorV_name_approx") ? g:ColorV_name_approx :
+            \ s:aprx_rate
 let s:clrf=[['ff0000','00ff00','0000ff','Uryyb Jbeyq']
             \,['000000','c00000','009a00','Nstunavfgna~']
             \,['370095','FCE015','D81B3E','Naqbeen~']
@@ -1022,7 +1027,7 @@ function! ColorV#toggle_arrow(...) "{{{
     setl noma
 endfunction "}}}
 function! ColorV#edit_at_arrow(...) "{{{
-    setl ma
+    "setl ma
     let postition=exists("a:1")? a:1 : b:arrowck_pos
     call ColorV#toggle_arrow(postition)
     let ColorV=g:ColorV
@@ -1085,7 +1090,7 @@ function! ColorV#edit_at_arrow(...) "{{{
     endif "}}}
 
     if exists("l:error_input") && l:error_input==1
-    	call s:warning("Error input. Don't change color")
+    	call s:warning("Error input. Nothing changed.")
             "let hex=g:ColorV.HEX
             "let s:skip_his_block=1
         return
@@ -1093,8 +1098,18 @@ function! ColorV#edit_at_arrow(...) "{{{
     call s:set_buf_hex(hex)
 
     "call s:set_bufandpos_hex(hex)
-    setl noma
+    "setl noma
 endfunction "}}}
+
+function! ColorV#edit_colorname()
+    let text = input("Please input a color name (W3C:Blue/Lime/Red):")
+    let hex=s:nam2hex(text)
+    if !empty(hex)
+        call s:set_buf_hex(hex)
+    else
+    	call s:warning("Not a correct colorname. Nothing changed.")
+    endif
+endfunction
 
 function! ColorV#switching_tips() "{{{
     if exists("s:toggle_tips") && s:toggle_tips==1
@@ -1184,6 +1199,7 @@ function! ColorV#Win(...) "{{{
         execute  "botright" 'new' 
         silent! file [ColorV]
     endif
+
     setl ft=ColorV
     setl nocursorline nocursorcolumn
     setl tw=0
@@ -1210,12 +1226,12 @@ function! ColorV#Win(...) "{{{
             "let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
             "let s:skip_his_block=1
         elseif !empty(s:nam2hex(a:2))
-            let hex=s:nam2hex(a:2)[1]
+            let hex=s:nam2hex(a:2)
         else
             let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
             let s:skip_his_block=1
-            call s:echo("Could not find any color in the text 
-                        \,use default [".hex."]") 
+            call s:caution("Could not find any color in the text 
+                          \,use default [".hex."]") 
         endif
     else 
         let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
@@ -1279,11 +1295,14 @@ function! s:map_define() "{{{
     nmap <silent><buffer> s :call ColorV#toggle_arrow(5)<cr>
     nmap <silent><buffer> v :call ColorV#toggle_arrow(6)<cr>
 
-
+    "edit
     nmap <silent><buffer> a :call ColorV#edit_at_arrow()<cr>
     nmap <silent><buffer> i :call ColorV#edit_at_arrow()<cr>
     nmap <silent><buffer> <Enter> :call ColorV#edit_at_arrow()<cr>
     nmap <silent><buffer> <kEnter> :call ColorV#edit_at_arrow()<cr>
+    "edit name
+    nmap <silent><buffer> na :call ColorV#edit_colorname()<cr>
+    nmap <silent><buffer> ne :call ColorV#edit_colorname()<cr>
 
     " WONTFIX:quick quit without wait for next key after q
     nmap <silent><buffer> q :call ColorV#exit()<cr>
@@ -1305,7 +1324,7 @@ function! s:map_define() "{{{
     map <silent><buffer> cp :call ColorV#copy("RGBP","+")<cr>
     map <silent><buffer> caa :call ColorV#copy("RGBA","+")<cr>
     map <silent><buffer> cap :call ColorV#copy("RGBAP","+")<cr>
-    map <silent><buffer> cn :call ColorV#copy("NAM","+")<cr>
+    map <silent><buffer> cn :call ColorV#copy("NAME","+")<cr>
 
     map <silent><buffer> Y :call ColorV#copy()<cr>
     map <silent><buffer> yy :call ColorV#copy()<cr>
@@ -1316,13 +1335,14 @@ function! s:map_define() "{{{
     map <silent><buffer> yp :call ColorV#copy("RGBP")<cr>
     map <silent><buffer> yaa :call ColorV#copy("RGBA")<cr>
     map <silent><buffer> yap :call ColorV#copy("RGBAP")<cr>
-    map <silent><buffer> yn :call ColorV#copy("NAM")<cr>
+    map <silent><buffer> yn :call ColorV#copy("NAME")<cr>
     
     "paste color
     map <silent><buffer> <c-v> :call ColorV#paste("+")<cr>
     map <silent><buffer> p :call ColorV#paste()<cr>
     map <silent><buffer> P :call ColorV#paste()<cr>
     map <silent><buffer> <middlemouse> :call ColorV#paste("+")<cr>
+
 endfunction "}}}
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1419,7 +1439,7 @@ function! s:hex2txt(hex,fmt) "{{{
         let text="#".g:ColorV.HEX
     elseif a:fmt=="0x"
         let text="0x".g:ColorV.HEX
-    elseif a:fmt=="NAM"
+    elseif a:fmt=="NAME"
         let text=s:hex2nam(hex)
     else
         let text=g:ColorV.HEX
@@ -1444,8 +1464,8 @@ function! ColorV#paste(...) "{{{
     let hex_list=s:txt2hex(l:cliptext)
     if len(hex_list)>0
         let hex=hex_list[0][0]
-    elseif !empty(s:nam2hex(pat))
-        let hex=s:nam2hex(pat)[1]
+    elseif !empty(s:nam2hex(l:cliptext))
+        let hex=s:nam2hex(l:cliptext)
     else
     	call s:warning("Could not find color in the text") 
     	return
@@ -1477,7 +1497,7 @@ function! ColorV#open_word(...) "{{{
         let hex=s:fmt_hex(hex_list[0][0])
         "let g:ColorV.word_list=hex_list[0]
     elseif !empty(s:nam2hex(pat))
-        let hex=s:nam2hex(pat)[1]
+        let hex=s:nam2hex(pat)
     else
         call s:warning("Could not find a color under cursor.")
         return -1
@@ -1486,14 +1506,15 @@ function! ColorV#open_word(...) "{{{
     if exists("a:1") && a:1=="mini" || g:ColorV_word_mini==1
         call ColorV#Win("mini",hex)
     else
-        call ColorV#Win(hex)
+        call ColorV#Win(s:mode,hex)
     endif
 endfunction "}}}
+"retrun clr
 function! s:nam2hex(nam) "{{{
     for [nam,clr] in s:clrn
         if a:nam ==? nam   
             "return string(clr)
-            return [nam,clr]
+            return clr
             break
         endif
     endfor
@@ -1502,13 +1523,18 @@ function! s:nam2hex(nam) "{{{
 endfunction "}}}
 function! s:hex2nam(hex) "{{{
     for [nam,clr] in s:clrn
-        if s:approx2(a:hex,clr)
+        if a:hex ==? clr
             return nam
         endif
     endfor
     for [nam,clr] in s:clrn
-        if s:approx2(a:hex,clr,10)
+        if s:approx2(a:hex,clr,s:aprx_name)
             return nam.'~'
+        endif
+    endfor
+    for [nam,clr] in s:clrn
+        if s:approx2(a:hex,clr,2*s:aprx_name)
+            return nam.'~~'
         endif
     endfor
     return ""
@@ -1516,7 +1542,7 @@ endfunction "}}}
 function! s:approx2(hex1,hex2,...) "{{{
     let [h1,s1,v1] = ColorV#rgb2hsv(ColorV#hex2rgb(a:hex1))
     let [h2,s2,v2] = ColorV#rgb2hsv(ColorV#hex2rgb(a:hex2))
-    let r=exists("a:1") ? a:1 : s:ap_rate
+    let r=exists("a:1") ? a:1 : s:aprx_rate
     if h2+r>=h1 && h1>=h2-r && s2+r>=s1 && s1>=s2-r
                 \&& v2+r>=v1 && v1>=v2-r
     	return 1
@@ -1538,11 +1564,11 @@ function! ColorV#change(...) "{{{
         let hex=s:fmt_hex(hex_list[0][0])
         let g:ColorV.word_list=hex_list[0]
     elseif !empty(s:nam2hex(pat))
-        let hex=s:nam2hex(pat)[1]
-        let str=s:nam2hex(pat)[0]
+        let hex=s:nam2hex(pat)
+        let str=s:hex2nam(hex)
         let pat_idx=match(pat,str)
         let pat_len=len(str)
-        let g:ColorV.word_list=[hex,pat_idx,pat_len,"NAM"]
+        let g:ColorV.word_list=[hex,pat_idx,pat_len,"NAME"]
     else 
         call s:warning("Could not find a color under cursor.")
         return
@@ -1551,7 +1577,7 @@ function! ColorV#change(...) "{{{
     if exists("a:1") && a:1=="mini" || g:ColorV_word_mini==1
         call ColorV#Win("mini",hex)
     else
-        call ColorV#Win(hex)
+        call ColorV#Win(s:mode,hex)
     endif
     let g:ColorV.change_word=1
     if exists("a:2") && a:2=="all"
@@ -1642,42 +1668,26 @@ function! ColorV#exit() "{{{
     call s:changing()
 endfunction "}}}
 
-function! ColorV#Dropper()
+"python pyGTK needed 
+function! ColorV#Dropper() "{{{
 python << EOF
 import pygtk,gtk,vim
 pygtk.require('2.0')
 
-color_sel = gtk.ColorSelectionDialog("[ColorV] colorpicker")
+color_dlg = gtk.ColorSelectionDialog("[ColorV] colorpicker")
 color_set = gtk.gdk.color_parse("#"+vim.eval("g:ColorV.HEX"))
-color_sel.colorsel.set_current_color(color_set)
+color_dlg.colorsel.set_current_color(color_set)
 
-
-if color_sel.run() == gtk.RESPONSE_OK:
-    color = color_sel.colorsel.get_current_color()
-    #Convert to 8bit channels
-    red = color.red * 255 / 65535
-    green = color.green * 255 / 65535
-    blue = color.blue * 255 / 65535
-    #Convert to hexa strings
-    red = str(hex(red))[2:]
-    green = str(hex(green))[2:]
-    blue = str(hex(blue))[2:]
-    #Format
-    if len(red) == 1:
-        red = "0%s" % red
-    if len(green) == 1:
-        green = "0%s" % green
-    if len(blue) == 1:
-        blue = "0%s" % blue
-    #Merge
-    color = "%s%s%s" % (red, green, blue)
+if color_dlg.run() == gtk.RESPONSE_OK:
+    color_get = color_dlg.colorsel.get_current_color()
+    red,green,blue = [color_get.red/257,color_get.green/257,color_get.blue/257]
+    color = "%02x%02x%02x" % (red, green, blue)
     vim.command("ColorV "+color)
 
-#Close dialog
-color_sel.destroy()
+color_dlg.destroy()
 
 EOF
-endfunction
+endfunction "}}}
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let &cpo = s:save_cpo
