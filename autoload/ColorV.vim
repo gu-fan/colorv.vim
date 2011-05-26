@@ -4,7 +4,7 @@
 " Summary: A color manager with color toolkits
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 1.2.0.0 
+" Version: 1.2.0.1 
 " Last Update: 2011-05-24
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
  "{{{
@@ -882,7 +882,6 @@ function! s:set_bufandpos_rgb(rgb) "{{{
     call cursor(l,c)
     setl noma
 endfunction "}}}
-
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "EDIT: "{{{1
@@ -1137,34 +1136,6 @@ endfun "}}}
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "INIT: "{{{1
-function! ColorV#init_normal(hex) "{{{
-    let hex= printf("%06x",'0x'.a:hex) 
-
-    call s:update_global(hex)
-
-    call s:draw_hueLine(1)
-
-    call s:draw_pallet_hex(hex)
-
-    call s:draw_history_block(hex)
-
-    call s:draw_misc()
-
-    call s:init_text(hex)
-
-endfunction "}}}
-function! ColorV#init_mini(hex) "{{{
-    let hex= s:fmt_hex(a:hex)
-    call s:update_global(hex)
-    call s:draw_hueLine(1)
-    call s:draw_satLine(2)
-    call s:draw_valLine(3)
-    call s:draw_history_block(hex)
-    call s:draw_misc()
-    call s:init_text(hex)
-endfunction
-"}}}
-" window buffer and autoload
 function! ColorV#Win(...) "{{{
     "window check
     if bufexists(g:ColorV.name)
@@ -1254,7 +1225,34 @@ function! ColorV#Win(...) "{{{
     endif
 
 endfunction "}}}
-"
+function! ColorV#init_normal(hex) "{{{
+    let hex= printf("%06x",'0x'.a:hex) 
+
+    call s:update_global(hex)
+
+    call s:draw_hueLine(1)
+
+    call s:draw_pallet_hex(hex)
+
+    call s:draw_history_block(hex)
+
+    call s:draw_misc()
+
+    call s:init_text(hex)
+
+endfunction "}}}
+function! ColorV#init_mini(hex) "{{{
+    let hex= s:fmt_hex(a:hex)
+    call s:update_global(hex)
+    call s:draw_hueLine(1)
+    call s:draw_satLine(2)
+    call s:draw_valLine(3)
+    call s:draw_history_block(hex)
+    call s:draw_misc()
+    call s:init_text(hex)
+endfunction
+"}}}
+
 function! s:init_hide() "{{{
     "hi cursor guibg=#000 guifg=#000 
     "hi visual guibg=NONE guibg=NONE
@@ -1512,16 +1510,13 @@ function! ColorV#open_word(...) "{{{
         call ColorV#Win(s:mode,hex)
     endif
 endfunction "}}}
-"retrun clr
 function! s:nam2hex(nam) "{{{
     for [nam,clr] in s:clrn
         if a:nam ==? nam   
-            "return string(clr)
             return clr
             break
         endif
     endfor
-    "echo clr nam a:nam
     return 0
 endfunction "}}}
 function! s:hex2nam(hex) "{{{
