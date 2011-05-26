@@ -586,7 +586,7 @@ function! s:init_text(...) "{{{
     endif
     if s:mode=="normal"
         if l:show_tips 
-            let line[6]=s:line("Set Color:2-Click/2-Space",24)
+            let line[6]=s:line("Choose:2-Click/2-Space",24)
             let line[7]=s:line("Toggle:TAB      Edit:Enter",24)
             let line[8]=s:line("Yank:yy/yr...   Paste:<C-V>/p",24)
             let line[9]=s:line("Help:F1/H       Quit:q/Q/<C-W>q",24)
@@ -985,6 +985,8 @@ function! ColorV#set_in_pos(...) "{{{
 
     if exists("g:ColorV_set_register") && g:ColorV_set_register==1
     	call ColorV#copy()
+    elseif exists("g:ColorV_set_register") && g:ColorV_set_register==2
+    	call ColorV#copy("","+")
     endif
 
     setl noma
@@ -1121,7 +1123,7 @@ function! ColorV#switching_tips() "{{{
     endif
 endfunction "}}}
 
-function! ColorV#change_hue(step) "{{{
+function! ColorV#change_word_hue(step) "{{{
     setl ma
     if !exists("g:ColorV.HSV.H")|let g:ColorV.HSV.H=0|endif
     let g:ColorV.HSV.H= (g:ColorV.HSV.H+a:step)<0 ?  
@@ -1450,6 +1452,118 @@ endfunction "}}}
 function! s:fmt_hex(hex) "{{{
     return strpart(printf("%06x",'0x'.a:hex),0,6) 
 endfunction "}}}
+function! s:nam2hex(nam) "{{{
+    for [nam,clr] in s:clrn
+        if a:nam ==? nam   
+            return clr
+            break
+        endif
+    endfor
+    return 0
+endfunction "}}}
+function! s:hex2nam(hex) "{{{
+    for [nam,clr] in s:clrn
+        if a:hex ==? clr
+            return nam
+        endif
+    endfor
+    for [nam,clr] in s:clrn
+        if s:approx2(a:hex,clr,s:aprx_name)
+            return nam.'~'
+        endif
+    endfor
+    for [nam,clr] in s:clrn
+        if s:approx2(a:hex,clr,2*s:aprx_name)
+            return nam.'~~'
+        endif
+    endfor
+    return ""
+endfunction "}}}
+function! s:approx2(hex1,hex2,...) "{{{
+    let [h1,s1,v1] = ColorV#rgb2hsv(ColorV#hex2rgb(a:hex1))
+    let [h2,s2,v2] = ColorV#rgb2hsv(ColorV#hex2rgb(a:hex2))
+    let r=exists("a:1") ? a:1 : s:aprx_rate
+    if h2+r>=h1 && h1>=h2-r && s2+r>=s1 && s1>=s2-r
+                \&& v2+r>=v1 && v1>=v2-r
+    	return 1
+    else
+    	return 0
+    endif
+
+endfunction "}}}
+function! s:changing() "{{{
+    if exists("g:ColorV.change_word") && g:ColorV.change_word ==1
+    	let cur_pos=getpos('.')
+        let cur_bufwinnr=bufwinnr('%')
+        " go to the word_buf
+        exe g:ColorV.word_bufwinnr."wincmd w"
+        call setpos('.',g:ColorV.word_pos)
+
+        if g:ColorV.word_bufnr==bufnr('%') && g:ColorV.word_pos==getpos('.')
+                    \ && g:ColorV.word_bufname==bufname('%')
+
+            let pat = expand('<cWORD>')
+            silent normal! "mmB"
+            let pat_idx=col('.')
+            "let pat_idx =  
+            "Not the origin word
+            if pat!= g:ColorV.word_pat
+                call s:warning("Not the same with the word to change.")
+                return -1
+            endif
+
+            if exists("g:ColorV.word_list[0]")
+                let hex=g:ColorV.HEX
+                let fmt=g:ColorV.word_list[3]
+                let str=s:hex2txt(hex,fmt)
+            else
+                call s:warning("Could not find a color under cursor.")
+                let g:ColorV.change_word=0
+                let g:ColorV.change_all=0
+            	return 
+            endif
+            let idx=g:ColorV.word_list[1]
+            let len=g:ColorV.word_list[2]
+            let new_pat=substitute(pat,'\%'.(idx+1).'c.\{'.len.'}',str,'')
+            if exists("g:ColorV.HEX")
+                if exists("g:ColorV.change_all") && g:ColorV.change_all ==1
+                    exec '%s/'.pat.'/'.new_pat.'/gc'
+                else
+                    exec '.s/\%>'.(pat_idx-1).'c'.pat.'/'.new_pat.'/'
+                endif
+            endif
+        endif
+        let g:ColorV.change_word=0
+        let g:ColorV.change_all=0
+        "back to origin pos
+        "WORKAROUND: not correct back position
+        "exe cur_bufwinnr."wincmd w"
+        "call setpos('.',cur_pos)
+    else
+        let g:ColorV.change_word=0
+        let g:ColorV.change_all=0
+    	return 0
+    endif
+endfunction
+"}}}
+function! s:caution(msg) "{{{
+    echohl Modemsg
+    exe "echom \"[ColorV]:".escape(a:msg,'"')."\""
+    echohl Normal
+endfunction "}}}
+function! s:warning(msg) "{{{
+    echohl Warningmsg
+    exe "echom \"[ColorV]:".escape(a:msg,'"')."\""
+    echohl Normal
+endfunction "}}}
+function! s:echo(msg) "{{{
+    if g:ColorV_silent_set==0
+        exe "echom \"[ColorV]:".a:msg."\""
+    else
+    	echom ""
+    endif
+endfunction "}}}
+
 function! ColorV#paste(...) "{{{
     if  exists("a:1") && a:1=="\""
         let l:cliptext = @"
@@ -1510,46 +1624,7 @@ function! ColorV#open_word(...) "{{{
         call ColorV#Win(s:mode,hex)
     endif
 endfunction "}}}
-function! s:nam2hex(nam) "{{{
-    for [nam,clr] in s:clrn
-        if a:nam ==? nam   
-            return clr
-            break
-        endif
-    endfor
-    return 0
-endfunction "}}}
-function! s:hex2nam(hex) "{{{
-    for [nam,clr] in s:clrn
-        if a:hex ==? clr
-            return nam
-        endif
-    endfor
-    for [nam,clr] in s:clrn
-        if s:approx2(a:hex,clr,s:aprx_name)
-            return nam.'~'
-        endif
-    endfor
-    for [nam,clr] in s:clrn
-        if s:approx2(a:hex,clr,2*s:aprx_name)
-            return nam.'~~'
-        endif
-    endfor
-    return ""
-endfunction "}}}
-function! s:approx2(hex1,hex2,...) "{{{
-    let [h1,s1,v1] = ColorV#rgb2hsv(ColorV#hex2rgb(a:hex1))
-    let [h2,s2,v2] = ColorV#rgb2hsv(ColorV#hex2rgb(a:hex2))
-    let r=exists("a:1") ? a:1 : s:aprx_rate
-    if h2+r>=h1 && h1>=h2-r && s2+r>=s1 && s1>=s2-r
-                \&& v2+r>=v1 && v1>=v2-r
-    	return 1
-    else
-    	return 0
-    endif
-
-endfunction "}}}
-function! ColorV#change(...) "{{{
+function! ColorV#change_word(...) "{{{
     let g:ColorV.word_bufnr=bufnr('%')
     let g:ColorV.word_bufname=bufname('%')
     let g:ColorV.word_bufwinnr=bufwinnr('%')
@@ -1564,9 +1639,9 @@ function! ColorV#change(...) "{{{
     elseif !empty(s:nam2hex(pat))
         let hex=s:nam2hex(pat)
         let str=s:hex2nam(hex)
-        let pat_idx=match(pat,str)
-        let pat_len=len(str)
-        let g:ColorV.word_list=[hex,pat_idx,pat_len,"NAME"]
+        let str_idx=match(pat,str)
+        let str_len=len(str)
+        let g:ColorV.word_list=[hex,str_idx,str_len,"NAME"]
     else 
         call s:warning("Could not find a color under cursor.")
         return
@@ -1585,78 +1660,6 @@ function! ColorV#change(...) "{{{
     	call s:caution("Will Change [".pat."] after ColorV closed.")
     endif
 endfunction "}}}
-function! s:changing() "{{{
-    if exists("g:ColorV.change_word") && g:ColorV.change_word ==1
-    	let cur_pos=getpos('.')
-        let cur_bufwinnr=bufwinnr('%')
-        " go to the word_buf
-        exe g:ColorV.word_bufwinnr."wincmd w"
-        call setpos('.',g:ColorV.word_pos)
-
-        if g:ColorV.word_bufnr==bufnr('%') && g:ColorV.word_pos==getpos('.')
-                    \ && g:ColorV.word_bufname==bufname('%')
-
-            let pat = expand('<cWORD>')
-            
-            "Not the origin word
-            if pat!= g:ColorV.word_pat
-                call s:warning("Not the same with the word to change.")
-                return -1
-            endif
-
-            if exists("g:ColorV.word_list[0]")
-                let hex=g:ColorV.HEX
-                let fmt=g:ColorV.word_list[3]
-                let str=s:hex2txt(hex,fmt)
-            else
-                call s:warning("Could not find a color under cursor.")
-                let g:ColorV.change_word=0
-                let g:ColorV.change_all=0
-            	return 
-            endif
-            let idx=g:ColorV.word_list[1]
-            let len=g:ColorV.word_list[2]
-            let new_pat=substitute(pat,'\%'.(idx+1).'c.\{'.len.'}',str,'')
-            if exists("g:ColorV.HEX")
-                if exists("g:ColorV.change_all") && g:ColorV.change_all ==1
-                    exec '%s/'.pat.'/'.new_pat.'/gc'
-                else
-                    exec '.s/'.pat.'/'.new_pat.'/gc'
-                endif
-            endif
-        endif
-        let g:ColorV.change_word=0
-        let g:ColorV.change_all=0
-        "back to origin pos
-        "WORKAROUND: not correct back position
-        "exe cur_bufwinnr."wincmd w"
-        "call setpos('.',cur_pos)
-    else
-        let g:ColorV.change_word=0
-        let g:ColorV.change_all=0
-    	return 0
-    endif
-endfunction
-"}}}
-"
-function! s:caution(msg) "{{{
-    echohl Modemsg
-    exe "echom \"[ColorV]:".escape(a:msg,'"')."\""
-    echohl Normal
-endfunction "}}}
-function! s:warning(msg) "{{{
-    echohl Warningmsg
-    exe "echom \"[ColorV]:".escape(a:msg,'"')."\""
-    echohl Normal
-endfunction "}}}
-function! s:echo(msg) "{{{
-    if g:ColorV_silent_set==0
-        exe "echom \"[ColorV]:".a:msg."\""
-    else
-    	echom ""
-    endif
-endfunction "}}}
-
 function! ColorV#exit() "{{{
     if expand('%') !=g:ColorV.name
         call s:echo("Not the [ColorV] buffer")
@@ -1665,7 +1668,7 @@ function! ColorV#exit() "{{{
     bw
     call s:changing()
 endfunction "}}}
-
+"GUI
 "python pyGTK needed 
 function! ColorV#Dropper() "{{{
 python << EOF
