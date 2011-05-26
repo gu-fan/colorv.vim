@@ -588,7 +588,7 @@ function! s:init_text(...) "{{{
             let line[6]=s:line("Set Color:2-Click/2-Space",24)
             let line[7]=s:line("Toggle:TAB      Edit:Enter",24)
             let line[8]=s:line("Yank:yy/yr...   Paste:<C-V>/p",24)
-            let line[9]=s:line("Help:F1/H       Quit:qq/<C-W>q",24)
+            let line[9]=s:line("Help:F1/H       Quit:q/Q/<C-W>q",24)
             if l:show_Qo==1
                 let line[0]=s:line_sub(line[0],".",54)
             endif
@@ -1306,6 +1306,7 @@ function! s:map_define() "{{{
 
     " WONTFIX:quick quit without wait for next key after q
     nmap <silent><buffer> q :call ColorV#exit()<cr>
+    nmap <silent><buffer> Q :call ColorV#exit()<cr>
     "nmap <silent><buffer> <esc> :call ColorV#exit()<cr>
     nmap <silent><buffer> <c-w>q :call ColorV#exit()<cr>
     nmap <silent><buffer> <c-w><c-q> :call ColorV#exit()<cr>
