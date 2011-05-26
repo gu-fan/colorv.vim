@@ -1,30 +1,37 @@
- INTRO:
-    ColorV or ColorV.vim is a Color Viewer and Color Picker of Vim.
-
-    It looks like most morden GUI color pickers.
-    You can quickly view/edit the color under cursor or in clipboard.
-
-    Also, you can simply use mouse/keyboard to choose your desired color.
+INTRO:
     
-    And there are several commands and keymappings to interact with it.
+    *ColorV* or *ColorV.vim* is a Color Viewer and Color Picker of Vim.
 
-    Moreover, if you have '+python' and pygtk2.0. You can use a gtk color
-picker with it.
+    Open a ColorV window.
+        <leader>cv
 
-    It also provide some functions like |ColorV#rgb2hsv()| for directly using.
+    Open a ColorV window by word under cursor.
+NEW!    Color name (W3C Standard) Supported,like OrangeRed lime cadetblue
+        #ff9744 or rgb(33,44,155) or orangered
+        put cursor on above words 
+        <leader>cw
 
-    That's it.
+    Change the word under cursor with chosing color after quit the ColorV window.
+        <leader>cg
+
+    Copy the color in the ColorV window
+        yy
+
+    If you have '+python' compiled and pygtk2.0.
+    You could use a GTK eyedropper to get colors on screen.
+        <leader>cd
+
+    There are many configs and commands and variable to define. 
+    See detail in help docs.
+
     Have a look at it. http://flic.kr/p/9LuPxG
     or http://i55.tinypic.com/330ryhl.jpg
 
-    If useful for you, please rate it 
+    If useful for you, please rate it
     http://www.vim.org/scripts/script.php?script_id=3597
 
-
     If you have any advice ,patches or bug reports.
-    Submit it at github: https://github.com/rykka/colorv
-
-    And you can contact me at <Rykka.Krin@gmail.com>
+    Submit it at github: https://github.com/rykka/colorv>
 
 INSTALL:
     
@@ -33,11 +40,7 @@ INSTALL:
     Download the latest version of tar.gz file, extract it.
     And put plugin files into your VIMFILE folder.
     ("~/.vim" for linux. "$HOME/vimfiles" for windows)
->
-    VIMFILE/autoload/colorV.vim
-    VIMFILE/plugin/colorV.vim
-    VIMFILE/doc/colorV.txt
-<
+
     Then use help tag to generate tags.
 >
     :helptags VIMFILE/doc
@@ -58,3 +61,4 @@ INSTALL:
 >
     :BundleInstall
 <
+ 
