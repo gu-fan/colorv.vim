@@ -21,7 +21,6 @@ CONTENTS                               *colorv-contents*
 ==============================================================================
 INTRO                                               *colorv-intro*
 
-
     *ColorV* or *ColorV.vim* is a Color Viewer and Color Picker of Vim.
 
     Open a ColorV window.
@@ -64,11 +63,7 @@ INSTALL                                             *colorv-install*
     Download the latest version of tar.gz file, extract it.
     And put plugin files into your VIMFILE folder.
     ("~/.vim" for linux. "$HOME/vimfiles" for windows)
->
-    VIMFILE/autoload/colorV.vim
-    VIMFILE/plugin/colorV.vim
-    VIMFILE/doc/colorV.txt
-<
+
     Then use help tag to generate tags.
 >
     :helptags VIMFILE/doc
@@ -555,6 +550,7 @@ HISTORY                                             *colorv-history*
 "FIXED: 110526  The paste error with colorname
 " DONE: 110526  change intro
 "FIXED: 110526  del <esc> to quit. add <c-w>q <c-w><c-q> to quit.
+" 1.1.8
 "FIXED: 110524  silent clear_text
 " DONE: 110524  code review
 " DONE: 110524  some eggs
