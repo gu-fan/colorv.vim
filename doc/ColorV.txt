@@ -170,7 +170,7 @@ INTERFACE                                           *colorv-interface*
     there are a pallet , a Hue line , a HEX/RGB/HSV edit area , and a history
 color block.
     You can use mouse to click ,or use motion keys to move around,
-and use <2-space>/<c-k> to set colors.
+and use <2-space>/<c-k> to choose colors.
 
                                                     *colorv-interface-color*
     The current color is the color displaying with it's HEX/RGB/HSV values.
@@ -237,6 +237,8 @@ MAPPINGS                                            *colorv-mappings*
     <leader>cg      Open ColorV window with cursor word and change it later.
                     Redefine it with :ColorVchange<CR>
                     Use |g:ColorV_word_mini| to open with mini window.
+                    Note If you change a color name , but what your chosing 
+                    color don't match any color name. the name will be ''.
 
     <leader>ca      Open ColorV normal with cursor word and change all later.
                     Redefine it with :ColorVchangeALL<CR>
@@ -330,9 +332,9 @@ which was used with cut/copy between other applications.
                     See |colorv-colorname| for details.
 
                                                     *colorv-mapping-set*
-    <C-K>/<C-J>     Set current showing colors under cursor.
-    <2-Space>       Set current showing colors under cursor.
-    <2-Leftmouse>   Set current showing colors under cursor.
+    <C-K>/<C-J>     Choose current showing colors under cursor.
+    <2-Space>       Choose current showing colors under cursor.
+    <2-Leftmouse>   Choose current showing colors under cursor.
 
                                                     *colorv-mapping-help*
     ?           Toggle tips showing.
@@ -349,12 +351,12 @@ OPTIONS                                             *colorv-options*
 
                                                 *g:ColorV_silent_set*
                                                 (default=0)
-    g:ColorV_silent_set      Echo or Not with current color while set colors,
-                             Silent if set to 1.
+    g:ColorV_silent_set      Echo or Not with current color while choose
+                             colors, Silent if set to 1.
 
                                                 *g:ColorV_set_register*
                                                 (default=0)
-    g:ColorV_set_register    Each time you set a color. the color is
+    g:ColorV_set_register    Each time you choose a color. the color is
                              copied to your register.
                              copy to register" if set to 1
                              copy to register+ if set to 2
@@ -548,12 +550,14 @@ LICENSE                                             *colorv-license*
 ==============================================================================
 HISTORY                                             *colorv-history*
 
-" 1.2.0 Color Name
+" 1.2.1 Color Name
+" DONE: 110526  g:ColorV_name_approx g:ColorV.NAME
+" DONE: 110526  precisely change current word without confirm
 " DONE: 110526  Add Color name support (W3C standard).
 " DONE: 110526  input color name in ColorV to choose color.
 "FIXED: 110526  The paste error with colorname
 " DONE: 110526  change intro
-"FIXED: 110526  del <esc> to quit. add <c-w>q <c-w><c-q> to quit.
+"FIXED: 110526  rm <esc> to quit. add <c-w>q <c-w><c-q> to quit.
 " 1.1.8
 "FIXED: 110524  silent clear_text
 " DONE: 110524  code review
