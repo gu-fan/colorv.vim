@@ -87,7 +87,7 @@ INSTALL                                             *colorv-install*
 ==============================================================================
 USAGE                                               *colorv-usage*
 
-                                                    *colorv-window*
+                                                    *colorv-usage-window*
     Open the ColorV normal window (|colorv-normal|) by typing:
 
     <Leader>cv
@@ -104,7 +104,7 @@ will directly open the ColorV window with the color.
     There is a lighter version of the ColorV window (|colorv-mini|).
     and you can use <leader>cm or |:ColorVmini| to open it.
 
-                                                   *colorv-pallet*
+                                                   *colorv-usage-pallet*
     Choose a color from the pallet:
 
     Using h/j/k/l and other motion mappings to goto position on
@@ -113,13 +113,13 @@ which the color is at you demand.
 
     You can also use mouse. Doubleclick the color you demand.
 
-                                                    *colorv-edit*
+                                                    *colorv-usage-edit*
     Edit a color with Hex/RGB/HSV:
 
     using <tab> to toggle the arrow position of the edit area .You can use mouse to choose it either.
     using <Enter>/<kEnter> to edit the value. Notice the input tips.
 
-                                                    *colorv-copy*
+                                                    *colorv-usage-copy*
     Copy a color from ColorV with current color:
 
     using y/Y and related mappings to copy formated text into register"
@@ -135,14 +135,14 @@ which the color is at you demand.
     RGBP:rgb(100%,100%,100%)
 <
 
-                                                    *colorv-paste*
+                                                    *colorv-usage-paste*
     Paste a |colorv-formatted-text| to ColorV and set showing this color:
 
     Using p to paste text in register" to the window and set the color.
     Using <c-v> to paste text in register+ to the window and set the color.
     The color text could be HEX , RGB ,RGB% and RGBA.
 
-                                                    *colorv-word*
+                                                    *colorv-usage-word*
     Open ColorV with word under cursor and do some actions:
     the word could be in |colorv-formatted-text| .
 
@@ -157,7 +157,7 @@ close the ColorV window .
     Using <leader>ca or with command |:ColorVchangeAll|
 
 
-                                                    *colorv-eyedropper*
+                                                    *colorv-usage-eyedropper*
     Open ColorV with eyedropper. Requires +python and pygtk2
     Using <leader>cd or command: |:ColorVdropper|
 
@@ -177,11 +177,11 @@ and use <2-space>/<c-k> to set colors.
 
     The history pallet is showing the current color and last two colors.
 
-                                                    *colorv-star-mark*
+                                                    *colorv-interface-starmark*
     There is also a star (*) mark at the position in the pallet that matches
 current color. You can use |g:ColorV_show_star| to set it show or not.
 
-                                                    *colorv-mini*
+                                                    *colorv-interface-mini*
     The ColorV mini window looks like the normal window in most places.
     Except, no main pallet.
     Instead, a Saturation line and a Value line.
@@ -394,7 +394,8 @@ OPTIONS                                             *colorv-options*
 
                                                 *g:ColorV_name_approx*
                                                 (default=5)
-    g:ColorV_name_approx    Approximation rate to the exactly color name.
+    g:ColorV_name_approx    Approximation rate to the exact color of color
+                            name.
 ------------------------------------------------------------------------------
 VARIABLES                                           *colorv-variables*
 
@@ -417,6 +418,9 @@ VARIABLES                                           *colorv-variables*
                     'g:ColorV.HSV.H' (0~360)
                     'g:ColorV.HSV.S' (0~100)
                     'g:ColorV.HSV.V' (0~100)
+
+    g:ColorV.NAME   The colorname of current color.
+                    if no exact color fitted then empty.
 
     You can use them both with mappings ,Snipmate.vim or Necomplcache.vim
 ------------------------------------------------------------------------------

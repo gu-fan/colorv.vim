@@ -511,11 +511,12 @@ function! s:draw_misc() "{{{
     endif
 endfunction "}}}
 
-function! s:update_g_hsv(hex) "{{{
-    let hex= printf("%06x",'0x'.a:hex) 
+function! s:update_global(hex) "{{{
+    let hex= strpart(printf("%06x",'0x'.a:hex),0,6) 
     let g:ColorV.HEX=hex
     let [r,g,b]= ColorV#hex2rgb(hex)
     let [h,s,v]= ColorV#rgb2hsv([r,g,b])
+    let g:ColorV.NAME=s:hex2nam(hex)
     let g:ColorV.HSV.H=h
     let g:ColorV.HSV.S=s
     let g:ColorV.HSV.V=v
@@ -838,7 +839,7 @@ function! s:set_buf_hex(hex) "{{{
     let hex= printf("%06x",'0x'.a:hex) 
 
 
-    call s:update_g_hsv(hex)
+    call s:update_global(hex)
 
     call s:draw_hueLine(1)
     
@@ -896,7 +897,7 @@ function! ColorV#set_in_pos(...) "{{{
     if s:mode=="normal" && l > s:poff_y && l<= s:pal_H+s:poff_y && c<= s:pal_W
         let idx=(l-s:poff_y-1)*s:pal_W+c-s:poff_x-1
         let hex=b:pal_list[idx]
-        call s:update_g_hsv(hex)
+        call s:update_global(hex)
         call s:draw_history_block(hex)
         "call s:update_text(hex)
         call s:init_text(hex)
@@ -930,7 +931,7 @@ function! ColorV#set_in_pos(...) "{{{
             let hex=s:his_color2
             call s:echo("HEX(history 2): ".hex)
         endif
-        call s:update_g_hsv(hex)
+        call s:update_global(hex)
         call s:draw_history_block(hex)
         "call s:update_text(hex)
         call s:init_text(hex)
@@ -1101,7 +1102,7 @@ function! ColorV#edit_at_arrow(...) "{{{
     "setl noma
 endfunction "}}}
 
-function! ColorV#edit_colorname()
+function! ColorV#edit_colorname() "{{{
     let text = input("Please input a color name (W3C:Blue/Lime/Red):")
     let hex=s:nam2hex(text)
     if !empty(hex)
@@ -1109,7 +1110,7 @@ function! ColorV#edit_colorname()
     else
     	call s:warning("Not a correct colorname. Nothing changed.")
     endif
-endfunction
+endfunction "}}}
 
 function! ColorV#switching_tips() "{{{
     if exists("s:toggle_tips") && s:toggle_tips==1
@@ -1139,7 +1140,7 @@ endfun "}}}
 function! ColorV#init_normal(hex) "{{{
     let hex= printf("%06x",'0x'.a:hex) 
 
-    call s:update_g_hsv(hex)
+    call s:update_global(hex)
 
     call s:draw_hueLine(1)
 
@@ -1154,7 +1155,7 @@ function! ColorV#init_normal(hex) "{{{
 endfunction "}}}
 function! ColorV#init_mini(hex) "{{{
     let hex= s:fmt_hex(a:hex)
-    call s:update_g_hsv(hex)
+    call s:update_global(hex)
     call s:draw_hueLine(1)
     call s:draw_satLine(2)
     call s:draw_valLine(3)
@@ -1441,7 +1442,7 @@ function! s:hex2txt(hex,fmt) "{{{
     elseif a:fmt=="0x"
         let text="0x".g:ColorV.HEX
     elseif a:fmt=="NAME"
-        let text=s:hex2nam(hex)
+        let text=g:ColorV.NAME
     else
         let text=g:ColorV.HEX
     endif
@@ -1467,6 +1468,7 @@ function! ColorV#paste(...) "{{{
         let hex=hex_list[0][0]
     elseif !empty(s:nam2hex(l:cliptext))
         let hex=s:nam2hex(l:cliptext)
+        "let nam=s:hex2nam
     else
     	call s:warning("Could not find color in the text") 
     	return
@@ -1676,14 +1678,13 @@ import pygtk,gtk,vim
 pygtk.require('2.0')
 
 color_dlg = gtk.ColorSelectionDialog("[ColorV] colorpicker")
-color_set = gtk.gdk.color_parse("#"+vim.eval("g:ColorV.HEX"))
-color_dlg.colorsel.set_current_color(color_set)
+c_set = gtk.gdk.color_parse("#"+vim.eval("g:ColorV.HEX"))
+color_dlg.colorsel.set_current_color(c_set)
 
 if color_dlg.run() == gtk.RESPONSE_OK:
-    color_get = color_dlg.colorsel.get_current_color()
-    red,green,blue = [color_get.red/257,color_get.green/257,color_get.blue/257]
-    color = "%02x%02x%02x" % (red, green, blue)
-    vim.command("ColorV "+color)
+    c_get = color_dlg.colorsel.get_current_color()
+    c_hex = "%02x%02x%02x" % (c_get.red/257,c_get.green/257,c_get.blue/257)
+    vim.command("ColorV "+c_hex)
 
 color_dlg.destroy()
 
