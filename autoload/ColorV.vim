@@ -588,7 +588,7 @@ function! s:init_text(...) "{{{
             let line[6]=s:line("Set Color:2-Click/2-Space",24)
             let line[7]=s:line("Toggle:TAB      Edit:Enter",24)
             let line[8]=s:line("Yank:yy/yr...   Paste:<C-V>/p",24)
-            let line[9]=s:line("Help:F1/H       Quit:qq/Esc",24)
+            let line[9]=s:line("Help:F1/H       Quit:qq/<C-W>q",24)
             if l:show_Qo==1
                 let line[0]=s:line_sub(line[0],".",54)
             endif
@@ -600,7 +600,7 @@ function! s:init_text(...) "{{{
         if l:show_tips
             let line[0]=s:line_sub(line[0],"Edit:Enter",59)
             let line[1]=s:line_sub(line[1],"Help:F1/H",59)
-            let line[2]=s:line_sub(line[2],"Quit:q/Esc",59)
+            let line[2]=s:line_sub(line[2],"Quit:q/<C-W>q",59)
             if l:show_Qo
                 let line[0]=s:line_sub(line[0],".",54)
             endif
