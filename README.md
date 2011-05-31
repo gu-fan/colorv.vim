@@ -57,14 +57,22 @@ And put plugin files into your VIMFILE folder.
 
 Then use help tag to generate tags.
 
-    :helptags VIMFILE/doc
+    :helptags ~/.vim/doc
 
 * Using git:
 
-cd to your vimfile path, then use git clone.
+cd to your vimfile path, like '~/.vim', then use git clone.
 
     git clone git://github.com/rykka/ColorV.git
 
+then add &runtimepath to your vimrc 
+
+    set rtp+=~/.vim/ColorV/
+
+run helptags
+
+    :helptags ~/.vim/doc
+    
 
 * Using Vundle:
 
