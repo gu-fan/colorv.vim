@@ -15,7 +15,7 @@ Open a ColorV window by word under cursor.
 
 put cursor on above words 
     
-    <leader>cw
+`<leader>cw`
 
 Change the word under cursor with chosing color after quit the ColorV window.
 
