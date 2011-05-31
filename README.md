@@ -24,7 +24,7 @@ Copy the color in the ColorV window
 
     **yy**
 
-If '+python' compiled and pygtk2.0 include
+If '+python' compiled and pygtk2.0 included.
 You could use GTK eyedropper to pick colors in screen.
 
     **<leader>cd**
@@ -35,7 +35,8 @@ See detail in help docs.
 Have a closer look at it. 
 http://flic.kr/p/9LuPxG
 or 
-http://i55.tinypic.com/330ryhl.jpg
+![ColorV](http://i55.tinypic.com/330ryhl.jpg)
+
 
 If useful, please rate it
 http://www.vim.org/scripts/script.php?script_id=3597
@@ -47,10 +48,10 @@ https://github.com/rykka/colorv
 INSTALL:
     
 * Using vim.org:
-http://www.vim.org/scripts/script.php?script_id=3597
-Download the latest version of tar.gz file, extract it.
-And put plugin files into your VIMFILE folder.
-("~/.vim" for linux. "$HOME/vimfiles" for windows)
+> http://www.vim.org/scripts/script.php?script_id=3597
+> Download the latest version of tar.gz file, extract it.
+> And put plugin files into your VIMFILE folder.
+> ("~/.vim" for linux. "$HOME/vimfiles" for windows)
 
 Then use help tag to generate tags.
 
