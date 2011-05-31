@@ -4,31 +4,28 @@
 " Summary: A color manager with color toolkits
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 1.2.0.1 
-" Last Update: 2011-05-24
+" Version: 1.2.5.2 
+" Last Update: 2011-05-31
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
- "{{{
 let s:save_cpo = &cpo
 set cpo&vim
-if !has("gui_running")
+
+if !has("gui_running") || v:version < 700 || exists("g:colorV_loaded")
     " "GUI MODE ONLY"
     finish
 endif
-if v:version < 700
-    finish
-endif 
 
-if exists("g:colorV_loaded")
-  finish
-endif
 let g:colorV_loaded = 1
-"}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "SVAR: {{{
+"s:mode ()
+" TODO: add s:mode max mid min
 let s:mode= exists("s:mode") ? s:mode : "normal"
 let [s:pal_W,s:pal_H]=[20,10]
 let [s:poff_x,s:poff_y]=[0,1]
 
+let s:norm_height=s:pal_H+1
+let s:mini_height=3
 let s:hue_width=30
 let s:sat_width=30
 let s:val_width=30
@@ -42,8 +39,6 @@ let s:mini_pos=[["Hex:",1,42,11],
     \["R:",1,24,5],["G:",2,24,5],["B:",3,24,5],
     \["H:",1,32,5],["S:",2,32,5],["V:",3,32,5]
     \]
-let s:norm_height=11
-let s:mini_height=3
 let s:fmt={}
 let s:fmt.RGB='rgb(\s*\d\{1,3},\s*\d\{1,3},\s*\d\{1,3})'
 let s:fmt.RGBA='rgba(\s*\d\{1,3},\s*\d\{1,3},\s*\d\{1,3}\,\s*\d\{1,3}%\=)'
@@ -53,106 +48,107 @@ let s:fmt.HEX='\x\@<!\x\{6}\x\@!'
 "#fff only
 let s:fmt.HEX3='#\zs\x\{3}\x\@!'
 let s:t='fghDPijmrYFGtudBevwxklyzEIZOJLMnHsaKbcopqNACQRSTUVWX'
-let s:clrnX11=[['Gray','BEBEBE'],['Green','00FF00'],['Maroon','B03060']
-            \,['Purple','A020F0']]
+"X11 Standard
+let s:clrnX11=[['Gray', 'BEBEBE'], ['Green', '00FF00']
+            \, ['Maroon', 'B03060'], ['Purple', 'A020F0']]
 "W3C Standard
 let s:clrn=[
-\['AliceBlue'           ,'f0f8ff'] ,['AntiqueWhite'        ,'faebd7']
-\,['Aqua'                ,'00ffff'] ,['Aquamarine'          ,'7fffd4']
-\,['Azure'               ,'f0ffff'] ,['Beige'               ,'f5f5dc']
-\,['Bisque'              ,'ffe4c4'] ,['Black'               ,'000000']
-\,['BlanchedAlmond'      ,'ffebcd'] ,['Blue'                ,'0000ff']
-\,['BlueViolet'          ,'8a2be2'] ,['Brown'               ,'a52a2a']
-\,['BurlyWood'           ,'deb887'] ,['CadetBlue'           ,'5f9ea0']
-\,['Chartreuse'          ,'7fff00'] ,['Chocolate'           ,'d2691e']
-\,['Coral'               ,'ff7f50'] ,['CornflowerBlue'      ,'6495ed']
-\,['Cornsilk'            ,'fff8dc'] ,['Crimson'             ,'dc143c']
-\,['Cyan'                ,'00ffff'] ,['DarkBlue'            ,'00008b']
-\,['DarkCyan'            ,'008b8b'] ,['DarkGoldenRod'       ,'b8860b']
-\,['DarkGray'            ,'a9a9a9'] ,['DarkGreen'           ,'006400']
-\,['DarkKhaki'           ,'bdb76b'] ,['DarkMagenta'         ,'8b008b']
-\,['DarkOliveGreen'      ,'556b2f'] ,['Darkorange'          ,'ff8c00']
-\,['DarkOrchid'          ,'9932cc'] ,['DarkRed'             ,'8b0000']
-\,['DarkSalmon'          ,'e9967a'] ,['DarkSeaGreen'        ,'8fbc8f']
-\,['DarkSlateBlue'       ,'483d8b'] ,['DarkSlateGray'       ,'2f4f4f']
-\,['DarkTurquoise'       ,'00ced1'] ,['DarkViolet'          ,'9400d3']
-\,['DeepPink'            ,'ff1493'] ,['DeepSkyBlue'         ,'00bfff']
-\,['DimGray'             ,'696969'] ,['DodgerBlue'          ,'1e90ff']
-\,['FireBrick'           ,'b22222'] ,['FloralWhite'         ,'fffaf0']
-\,['ForestGreen'         ,'228b22'] ,['Fuchsia'             ,'ff00ff']
-\,['Gainsboro'           ,'dcdcdc'] ,['GhostWhite'          ,'f8f8ff']
-\,['Gold'                ,'ffd700'] ,['GoldenRod'           ,'daa520']
-\,['Gray'                ,'808080'] ,['Green'               ,'008000']
-\,['GreenYellow'         ,'adff2f'] ,['HoneyDew'            ,'f0fff0']
-\,['HotPink'             ,'ff69b4'] ,['IndianRed'           ,'cd5c5c']
-\,['Indigo'              ,'4b0082'] ,['Ivory'               ,'fffff0']
-\,['Khaki'               ,'f0e68c'] ,['Lavender'            ,'e6e6fa']
-\,['LavenderBlush'       ,'fff0f5'] ,['LawnGreen'           ,'7cfc00']
-\,['LemonChiffon'        ,'fffacd'] ,['LightBlue'           ,'add8e6']
-\,['LightCoral'          ,'f08080'] ,['LightCyan'           ,'e0ffff']
-\,['LightGoldenRodYellow','fafad2'] ,['LightGrey'           ,'d3d3d3']
-\,['LightGreen'          ,'90ee90'] ,['LightPink'           ,'ffb6c1']
-\,['LightSalmon'         ,'ffa07a'] ,['LightSeaGreen'       ,'20b2aa']
-\,['LightSkyBlue'        ,'87cefa'] ,['LightSlateGray'      ,'778899']
-\,['LightSteelBlue'      ,'b0c4de'] ,['LightYellow'         ,'ffffe0']
-\,['Lime'                ,'00ff00'] ,['LimeGreen'           ,'32cd32']
-\,['Linen'               ,'faf0e6'] ,['Magenta'             ,'ff00ff']
-\,['Maroon'              ,'800000'] ,['MediumAquaMarine'    ,'66cdaa']
-\,['MediumBlue'          ,'0000cd'] ,['MediumOrchid'        ,'ba55d3']
-\,['MediumPurple'        ,'9370d8'] ,['MediumSeaGreen'      ,'3cb371']
-\,['MediumSlateBlue'     ,'7b68ee'] ,['MediumSpringGreen'   ,'00fa9a']
-\,['MediumTurquoise'     ,'48d1cc'] ,['MediumVioletRed'     ,'c71585']
-\,['MidnightBlue'        ,'191970'] ,['MintCream'           ,'f5fffa']
-\,['MistyRose'           ,'ffe4e1'] ,['Moccasin'            ,'ffe4b5']
-\,['NavajoWhite'         ,'ffdead'] ,['Navy'                ,'000080']
-\,['OldLace'             ,'fdf5e6'] ,['Olive'               ,'808000']
-\,['OliveDrab'           ,'6b8e23'] ,['Orange'              ,'ffa500']
-\,['OrangeRed'           ,'ff4500'] ,['Orchid'              ,'da70d6']
-\,['PaleGoldenRod'       ,'eee8aa'] ,['PaleGreen'           ,'98fb98']
-\,['PaleTurquoise'       ,'afeeee'] ,['PaleVioletRed'       ,'d87093']
-\,['PapayaWhip'          ,'ffefd5'] ,['PeachPuff'           ,'ffdab9']
-\,['Peru'                ,'cd853f'] ,['Pink'                ,'ffc0cb']
-\,['Plum'                ,'dda0dd'] ,['PowderBlue'          ,'b0e0e6']
-\,['Purple'              ,'800080'] ,['Red'                 ,'ff0000']
-\,['RosyBrown'           ,'bc8f8f'] ,['RoyalBlue'           ,'4169e1']
-\,['SaddleBrown'         ,'8b4513'] ,['Salmon'              ,'fa8072']
-\,['SandyBrown'          ,'f4a460'] ,['SeaGreen'            ,'2e8b57']
-\,['SeaShell'            ,'fff5ee'] ,['Sienna'              ,'a0522d']
-\,['Silver'              ,'c0c0c0'] ,['SkyBlue'             ,'87ceeb']
-\,['SlateBlue'           ,'6a5acd'] ,['SlateGray'           ,'708090']
-\,['Snow'                ,'fffafa'] ,['SpringGreen'         ,'00ff7f']
-\,['SteelBlue'           ,'4682b4'] ,['Tan'                 ,'d2b48c']
-\,['Teal'                ,'008080'] ,['Thistle'             ,'d8bfd8']
-\,['Tomato'              ,'ff6347'] ,['Turquoise'           ,'40e0d0']
-\,['Violet'              ,'ee82ee'] ,['Wheat'               ,'f5deb3']
-\,['White'               ,'ffffff'] ,['WhiteSmoke'          ,'f5f5f5']
-\,['Yellow'              ,'ffff00'] ,['YellowGreen'         ,'9acd32']
+\  ['AliceBlue'           , 'f0f8ff'], ['AntiqueWhite'        , 'faebd7']
+\, ['Aqua'                , '00ffff'], ['Aquamarine'          , '7fffd4']
+\, ['Azure'               , 'f0ffff'], ['Beige'               , 'f5f5dc']
+\, ['Bisque'              , 'ffe4c4'], ['Black'               , '000000']
+\, ['BlanchedAlmond'      , 'ffebcd'], ['Blue'                , '0000ff']
+\, ['BlueViolet'          , '8a2be2'], ['Brown'               , 'a52a2a']
+\, ['BurlyWood'           , 'deb887'], ['CadetBlue'           , '5f9ea0']
+\, ['Chartreuse'          , '7fff00'], ['Chocolate'           , 'd2691e']
+\, ['Coral'               , 'ff7f50'], ['CornflowerBlue'      , '6495ed']
+\, ['Cornsilk'            , 'fff8dc'], ['Crimson'             , 'dc143c']
+\, ['Cyan'                , '00ffff'], ['DarkBlue'            , '00008b']
+\, ['DarkCyan'            , '008b8b'], ['DarkGoldenRod'       , 'b8860b']
+\, ['DarkGray'            , 'a9a9a9'], ['DarkGreen'           , '006400']
+\, ['DarkKhaki'           , 'bdb76b'], ['DarkMagenta'         , '8b008b']
+\, ['DarkOliveGreen'      , '556b2f'], ['Darkorange'          , 'ff8c00']
+\, ['DarkOrchid'          , '9932cc'], ['DarkRed'             , '8b0000']
+\, ['DarkSalmon'          , 'e9967a'], ['DarkSeaGreen'        , '8fbc8f']
+\, ['DarkSlateBlue'       , '483d8b'], ['DarkSlateGray'       , '2f4f4f']
+\, ['DarkTurquoise'       , '00ced1'], ['DarkViolet'          , '9400d3']
+\, ['DeepPink'            , 'ff1493'], ['DeepSkyBlue'         , '00bfff']
+\, ['DimGray'             , '696969'], ['DodgerBlue'          , '1e90ff']
+\, ['FireBrick'           , 'b22222'], ['FloralWhite'         , 'fffaf0']
+\, ['ForestGreen'         , '228b22'], ['Fuchsia'             , 'ff00ff']
+\, ['Gainsboro'           , 'dcdcdc'], ['GhostWhite'          , 'f8f8ff']
+\, ['Gold'                , 'ffd700'], ['GoldenRod'           , 'daa520']
+\, ['Gray'                , '808080'], ['Green'               , '008000']
+\, ['GreenYellow'         , 'adff2f'], ['HoneyDew'            , 'f0fff0']
+\, ['HotPink'             , 'ff69b4'], ['IndianRed'           , 'cd5c5c']
+\, ['Indigo'              , '4b0082'], ['Ivory'               , 'fffff0']
+\, ['Khaki'               , 'f0e68c'], ['Lavender'            , 'e6e6fa']
+\, ['LavenderBlush'       , 'fff0f5'], ['LawnGreen'           , '7cfc00']
+\, ['LemonChiffon'        , 'fffacd'], ['LightBlue'           , 'add8e6']
+\, ['LightCoral'          , 'f08080'], ['LightCyan'           , 'e0ffff']
+\, ['LightGoldenRodYellow', 'fafad2'], ['LightGrey'           , 'd3d3d3']
+\, ['LightGreen'          , '90ee90'], ['LightPink'           , 'ffb6c1']
+\, ['LightSalmon'         , 'ffa07a'], ['LightSeaGreen'       , '20b2aa']
+\, ['LightSkyBlue'        , '87cefa'], ['LightSlateGray'      , '778899']
+\, ['LightSteelBlue'      , 'b0c4de'], ['LightYellow'         , 'ffffe0']
+\, ['Lime'                , '00ff00'], ['LimeGreen'           , '32cd32']
+\, ['Linen'               , 'faf0e6'], ['Magenta'             , 'ff00ff']
+\, ['Maroon'              , '800000'], ['MediumAquaMarine'    , '66cdaa']
+\, ['MediumBlue'          , '0000cd'], ['MediumOrchid'        , 'ba55d3']
+\, ['MediumPurple'        , '9370d8'], ['MediumSeaGreen'      , '3cb371']
+\, ['MediumSlateBlue'     , '7b68ee'], ['MediumSpringGreen'   , '00fa9a']
+\, ['MediumTurquoise'     , '48d1cc'], ['MediumVioletRed'     , 'c71585']
+\, ['MidnightBlue'        , '191970'], ['MintCream'           , 'f5fffa']
+\, ['MistyRose'           , 'ffe4e1'], ['Moccasin'            , 'ffe4b5']
+\, ['NavajoWhite'         , 'ffdead'], ['Navy'                , '000080']
+\, ['OldLace'             , 'fdf5e6'], ['Olive'               , '808000']
+\, ['OliveDrab'           , '6b8e23'], ['Orange'              , 'ffa500']
+\, ['OrangeRed'           , 'ff4500'], ['Orchid'              , 'da70d6']
+\, ['PaleGoldenRod'       , 'eee8aa'], ['PaleGreen'           , '98fb98']
+\, ['PaleTurquoise'       , 'afeeee'], ['PaleVioletRed'       , 'd87093']
+\, ['PapayaWhip'          , 'ffefd5'], ['PeachPuff'           , 'ffdab9']
+\, ['Peru'                , 'cd853f'], ['Pink'                , 'ffc0cb']
+\, ['Plum'                , 'dda0dd'], ['PowderBlue'          , 'b0e0e6']
+\, ['Purple'              , '800080'], ['Red'                 , 'ff0000']
+\, ['RosyBrown'           , 'bc8f8f'], ['RoyalBlue'           , '4169e1']
+\, ['SaddleBrown'         , '8b4513'], ['Salmon'              , 'fa8072']
+\, ['SandyBrown'          , 'f4a460'], ['SeaGreen'            , '2e8b57']
+\, ['SeaShell'            , 'fff5ee'], ['Sienna'              , 'a0522d']
+\, ['Silver'              , 'c0c0c0'], ['SkyBlue'             , '87ceeb']
+\, ['SlateBlue'           , '6a5acd'], ['SlateGray'           , '708090']
+\, ['Snow'                , 'fffafa'], ['SpringGreen'         , '00ff7f']
+\, ['SteelBlue'           , '4682b4'], ['Tan'                 , 'd2b48c']
+\, ['Teal'                , '008080'], ['Thistle'             , 'd8bfd8']
+\, ['Tomato'              , 'ff6347'], ['Turquoise'           , '40e0d0']
+\, ['Violet'              , 'ee82ee'], ['Wheat'               , 'f5deb3']
+\, ['White'               , 'ffffff'], ['WhiteSmoke'          , 'f5f5f5']
+\, ['Yellow'              , 'ffff00'], ['YellowGreen'         , '9acd32']
 \]
 let s:aprx_rate=5
 let s:aprx_name=exists("g:ColorV_name_approx") ? g:ColorV_name_approx :
             \ s:aprx_rate
-let s:clrf=[['ff0000','00ff00','0000ff','Uryyb Jbeyq']
-            \,['000000','c00000','009a00','Nstunavfgna~']
-            \,['370095','FCE015','D81B3E','Naqbeen~']
-            \,['00257E','FFC725','00257E','Oneonqbf~']
-            \,['000000','FFDA0C','F3172F','Orytvhz']
-            \,['007A5E','CE1125','FCD115','Pnzrebba~']
-            \,['FF0000','ffffff','FF0000','Pnanqn~']
-            \,['002468','FFCE00','D21033','Punq']
-            \,['F87F00','FFFFFF','009F60','Pbgr q`Vibver']
-            \,['0C1B8B','FFFFFF','EF2A2C','Senapr']
-            \,['87C8E4','FFFFFF','87C8E4','Thngrznyn~']
-            \,['CE1125','00935F','FCD115','Thvarn']
-            \,['009D5F','FFFFFF','F77E00','Verynaq']
-            \,['008E46','FFFFFF','D3232C','Vgnyl']
-            \,['13B439','FCD115','CE1125','Znyv']
-            \,['016549','FFFFFF','CD132A','Zrkvpb~']
-            \,['0000B2','F7D900','0000B2','Zbyqbin~']
-            \,['008851','FFFFFF','008851','Avtrevn']
-            \,['188100','FFFFFF','188100','Abesbyx Vfynaq']
-            \,['CC0000','FFFFFF','CC0000','Creh']
-            \,['002A7E','FCD115','CE1125','Ebznavn']
-            \,['009246','F8F808','DD171D','Frartny~']
+let s:clrf=[   ['ff0000', '00ff00', '0000ff', 'Uryyb Jbeyq']
+            \, ['000000', 'c00000', '009a00', 'Nstunavfgna~']
+            \, ['370095', 'FCE015', 'D81B3E', 'Naqbeen~']
+            \, ['00257E', 'FFC725', '00257E', 'Oneonqbf~']
+            \, ['000000', 'FFDA0C', 'F3172F', 'Orytvhz']
+            \, ['007A5E', 'CE1125', 'FCD115', 'Pnzrebba~']
+            \, ['FF0000', 'ffffff', 'FF0000', 'Pnanqn~']
+            \, ['002468', 'FFCE00', 'D21033', 'Punq']
+            \, ['F87F00', 'FFFFFF', '009F60', 'Pbgr q`Vibver']
+            \, ['0C1B8B', 'FFFFFF', 'EF2A2C', 'Senapr']
+            \, ['87C8E4', 'FFFFFF', '87C8E4', 'Thngrznyn~']
+            \, ['CE1125', '00935F', 'FCD115', 'Thvarn']
+            \, ['009D5F', 'FFFFFF', 'F77E00', 'Verynaq']
+            \, ['008E46', 'FFFFFF', 'D3232C', 'Vgnyl']
+            \, ['13B439', 'FCD115', 'CE1125', 'Znyv']
+            \, ['016549', 'FFFFFF', 'CD132A', 'Zrkvpb~']
+            \, ['0000B2', 'F7D900', '0000B2', 'Zbyqbin~']
+            \, ['008851', 'FFFFFF', '008851', 'Avtrevn']
+            \, ['188100', 'FFFFFF', '188100', 'Abesbyx Vfynaq']
+            \, ['CC0000', 'FFFFFF', 'CC0000', 'Creh']
+            \, ['002A7E', 'FCD115', 'CE1125', 'Ebznavn']
+            \, ['009246', 'F8F808', 'DD171D', 'Frartny~']
             \]
 let s:a='Elxxn'
 let s:e='stuQCvwzeLSTghqOrijkxylmRVMBWYZaUfnXopbcdANPDEFGHIJK'
@@ -298,17 +294,15 @@ function! s:draw_pallet_hex(hex) "{{{
 endfunction "}}}
 "Input: rectangle[x,y,w,h] hex_list[ffffff,ffffff]
 function! s:draw_multi_block(rectangle,hex_list) "{{{
+" TODO: draw multiple multi block
     let [x,y,w,h]=a:rectangle                  
     let block_clr_list=a:hex_list
-    "let colr="ff0000"                                
-    
     call s:clear_blockmatch()
 
+
     for idx in range(len(block_clr_list))
-        "let hi_grp="color".colr
         let coxlor=block_clr_list[idx]
         let hi_grp="color".block_clr_list[idx]
-        "echo idx
         exec "hi ".hi_grp." guifg=#".coxlor." guibg=#".coxlor
         let Block_ptn="\\%>".(x+w*idx-1)."c\\%<".(x+w*(idx+1)).
                     \"c\\%>".(y-1)."l\\%<".(y+h)."l"
@@ -316,7 +310,6 @@ function! s:draw_multi_block(rectangle,hex_list) "{{{
         let s:block_dict[hi_grp]=matchadd(hi_grp,Block_ptn)
     endfor
 endfunction "}}}
-
 function! s:draw_history_block(hex) "{{{
     setl ma
     let hex= strpart(printf("%06x",'0x'.a:hex),0,6) 
@@ -367,8 +360,6 @@ function! s:draw_hueLine(l,...) "{{{
     endwhile
 endfunction "}}}
 function! s:draw_satLine(l,...) "{{{
-    " FIXED: 110520  error color toggling while set with pos
-    " Because have not set the  g:ColorV.HSV.H while call set_buf
     let h=g:ColorV.HSV.H
     let s=100
     let v=100
@@ -425,13 +416,6 @@ function! s:draw_valLine(l,...) "{{{
         let x+=1
 
     endwhile
-endfunction "}}}
-function! ColorV#clear_all() "{{{
-    call s:clear_blockmatch()
-    call s:clear_hsvmatch()
-    call s:clear_miscmatch()
-    call s:clear_palmatch()
-    call clearmatches()
 endfunction "}}}
 function! s:clear_palmatch() "{{{
     if !exists("s:pallet_dict")|let s:pallet_dict={}|endif
@@ -490,7 +474,8 @@ function! s:clear_hsvmatch() "{{{
 endfunction "}}}
 
 function! s:draw_misc() "{{{
-    hi arrowCheck guibg=#770000 guifg=#aaaaaa gui=Bold
+    call s:clear_miscmatch()
+    hi arrowCheck guibg=#b30000 guifg=#aaaaaa gui=Bold
     if s:mode=="normal"
         let arrow_ptn='\(\%<6l\%>2l>.\{6}\|\%2l>.\{12}
                     \\|\%1l\%>53c[\.?x]\)'
@@ -498,8 +483,8 @@ function! s:draw_misc() "{{{
         let arrow_ptn='\(\%<6l\%<39c>.\{6}\|\%1l\%>39c>.\{12}
                     \\|\%1l\%>53c[\.?x]\)'
     endif
-    if !exists("b:misc_color")|let b:misc_color={}|endif
-    let b:misc_color["arrowCheck"]=matchadd("arrowCheck",arrow_ptn)
+    if !exists("s:misc_dict")|let s:misc_dict={}|endif
+    let s:misc_dict["arrowCheck"]=matchadd("arrowCheck",arrow_ptn)
     
     if g:ColorV_show_star==1
         let fg= g:ColorV.HSV.V<50 ?  "cccccc" : "222222"
@@ -507,7 +492,7 @@ function! s:draw_misc() "{{{
         exe "hi starPos guibg=#".bg." guifg=#".fg." gui=Bold"
         let star_ptn='\%<'.(s:pal_H+1+s:poff_y).'l\%<'.
                     \(s:pal_W+1+s:poff_x).'c\*'
-        let b:misc_color["starPos"]=matchadd("starPos",star_ptn,20)
+        let s:misc_dict["starPos"]=matchadd("starPos",star_ptn,20)
     endif
 endfunction "}}}
 
@@ -586,10 +571,10 @@ function! s:init_text(...) "{{{
     endif
     if s:mode=="normal"
         if l:show_tips 
-            let line[6]=s:line("Choose:2-Click/2-Space",24)
-            let line[7]=s:line("Toggle:TAB      Edit:Enter",24)
-            let line[8]=s:line("Yank:yy/yr...   Paste:<C-V>/p",24)
-            let line[9]=s:line("Help:F1/H       Quit:q/Q/<C-W>q",24)
+            let line[6]=s:line_sub(line[6],"Choose:2-Click/2-Space",24)
+            let line[7]=s:line_sub(line[7],"Toggle:TAB     Edit:Enter",24)
+            let line[8]=s:line_sub(line[8],"Yank:yy/yr...  Paste:^V/p",24)
+            let line[9]=s:line_sub(line[9],"Help:F1/H      Quit:q/Q/^Wq",24)
             if l:show_Qo==1
                 let line[0]=s:line_sub(line[0],".",54)
             endif
@@ -601,7 +586,7 @@ function! s:init_text(...) "{{{
         if l:show_tips
             let line[0]=s:line_sub(line[0],"Edit:Enter",59)
             let line[1]=s:line_sub(line[1],"Help:F1/H",59)
-            let line[2]=s:line_sub(line[2],"Quit:q/<C-W>q",59)
+            let line[2]=s:line_sub(line[2],"Quit:q/^Wq",59)
             if l:show_Qo
                 let line[0]=s:line_sub(line[0],".",54)
             endif
@@ -620,10 +605,10 @@ function! s:init_text(...) "{{{
             let a=tr(s:a,s:t,s:e)
             if s:mode=="mini"
                 let line[1]=s:line_sub(line[1],t,40)
-                let line[2]=s:line_sub(line[2],a,47)
+                let line[2]=s:line_sub(line[2],a,50)
             else
                 let line[2]=s:line_sub(line[2],t,40)
-                let line[4]=s:line_sub(line[4],a,47)
+                let line[4]=s:line_sub(line[4],a,50)
             endif
             break
         endif
@@ -657,62 +642,6 @@ function! s:init_text(...) "{{{
     setl noma
 endfunction "}}}
 
-function! s:text_tips() "{{{
-    if s:mode=="normal"
-    	let height=s:norm_height
-    elseif s:mode=="mini"
-        let height=s:mini_height
-    endif
-    let line=[]
-    for i in range(height)
-            call add(line,getline(i+1))
-    endfor
-    
-    if exists("g:ColorV_show_tips") && g:ColorV_show_tips==1
-    	let l:show_Qo=0
-        let l:show_tips=1
-    elseif exists("g:ColorV_show_tips") && g:ColorV_show_tips==2
-    	let l:show_Qo=1
-        let l:show_tips=0
-    elseif  
-    	let l:show_Qo=0
-        let l:show_tips=0
-    endif
-    if exists("s:toggle_tips") && s:toggle_tips==0
-        let l:show_tips=0
-    elseif exists("s:toggle_tips") && s:toggle_tips==1
-        let l:show_tips=1
-    endif
-    if s:mode=="normal"
-    if l:show_tips 
-        let line[6]=s:line("Set Color:2-Click/2-Space",24)
-        let line[7]=s:line("Toggle:TAB      Edit:Enter",24)
-        let line[8]=s:line("Yank:<C-C>/yy   Paste:<C-V>/p",24)
-        let line[9]=s:line("Help:F1/H       Quit:qq/Esc",24)
-        if l:show_Qo==1
-            let line[0]=s:line_sub(line[0],".",54)
-        endif
-    endif
-    if l:show_Qo && !l:show_tips
-        let line[0]=s:line_sub(line[0],"?",54)
-    endif
-    elseif s:mode=="mini"
-    if l:show_tips
-        let line[0]=s:line_sub(line[0],"Edit:Enter",59)
-        let line[1]=s:line_sub(line[1],"Help:F1/H",59)
-        let line[2]=s:line_sub(line[2],"Quit:q/Esc",59)
-    if l:show_Qo
-        let line[0]=s:line_sub(line[0],".",54)
-    endif
-    endif
-    if l:show_Qo && !l:show_tips
-        let line[0]=s:line_sub(line[0],"?",54)
-    endif
-endif
-    for i in range(height)
-    	call setline(i+1,line[i])
-    endfor
-endfunction "}}}
 function! s:get_star_pos() "{{{
     let HSV=g:ColorV.HSV
     let [h,s,v]=[HSV.H,HSV.S,HSV.V]
@@ -918,7 +847,7 @@ function! ColorV#set_in_pos(...) "{{{
         call s:set_buf_hex(hex)
 
     "history_block section "{{{
-    elseif l<=(s:block_rect[3]+4-1) && l>=s:block_rect[1] &&
+    elseif l<=(s:block_rect[3]+s:block_rect[1]-1) && l>=s:block_rect[1] &&
                 \c>=s:block_rect[0] && c<=(40+s:block_rect[2]*3-1)  
         if c<=(40+s:block_rect[2]*1-1)
             let hex=s:his_color0
@@ -1080,7 +1009,7 @@ function! ColorV#edit_at_arrow(...) "{{{
             echom "Error input." 
         endif
     elseif postition==6
-        let v=input("Value:(0~100)") 
+        let v=input("Value:(0~100):") 
         if v =~ '^\d\{,3}$' && v<=100 && v>=0
             let hex = ColorV#rgb2hex(ColorV#hsv2rgb([h,s,v]))
         else 
@@ -1140,11 +1069,9 @@ endfun "}}}
 "INIT: "{{{1
 function! ColorV#Win(...) "{{{
     "window check
-    if bufexists(g:ColorV.name)
-    	"FIXED: 110522 bufnr() not buf number if with [""]
+    if bufexists(g:ColorV.name) "{{{
     	let nr=bufnr('\[ColorV\]')
     	let winnr=bufwinnr(nr)
-        " FIXED: 110522  weird open in current buffer sometimes 
         if winnr>0 && bufname(nr)==g:ColorV.name
             if bufwinnr('%') ==winnr
                 if expand('%') !=g:ColorV.name
@@ -1172,9 +1099,9 @@ function! ColorV#Win(...) "{{{
         call s:echo("Open a new [ColorV]")
         execute  "botright" 'new' 
         silent! file [ColorV]
-    endif
+    endif "}}}
 
-    setl ft=ColorV
+    setl ft=ColorV "{{{
     setl nocursorline nocursorcolumn
     setl tw=0
     setl buftype=nofile
@@ -1189,9 +1116,9 @@ function! ColorV#Win(...) "{{{
     setl foldcolumn=0
     setl sidescrolloff=0
     call s:init_hide()
-    call s:map_define()
-
-    if exists("a:2")
+    call s:map_define() "}}}
+    
+    if exists("a:2") "{{{
     	"skip history if no new hex 
         let hex_list=s:txt2hex(a:2)
         if exists("hex_list[0][0]")
@@ -1210,40 +1137,35 @@ function! ColorV#Win(...) "{{{
     else 
         let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
         let s:skip_his_block=1
-    endif
+    endif "}}}
 
-    if exists("a:1") && a:1== "mini"
+    if exists("a:1") && a:1== "mini" "{{{
     	let s:mode="mini"
         if winnr('$') != 1
             execute 'resize' s:mini_height
+            redraw
         endif
-    	call ColorV#init_mini(hex)
+    	call s:init_mini(hex)
     else
     	let s:mode="normal"
         if winnr('$') != 1
             execute 'resize' s:norm_height
+            redraw
         endif
-        call ColorV#init_normal(hex)
-    endif
+        call s:init_normal(hex)
+    endif "}}}
 
 endfunction "}}}
-function! ColorV#init_normal(hex) "{{{
-    let hex= printf("%06x",'0x'.a:hex) 
-
+function! s:init_normal(hex) "{{{
+    let hex= s:fmt_hex(a:hex)
     call s:update_global(hex)
-
     call s:draw_hueLine(1)
-
     call s:draw_pallet_hex(hex)
-
     call s:draw_history_block(hex)
-
     call s:draw_misc()
-
     call s:init_text(hex)
-
 endfunction "}}}
-function! ColorV#init_mini(hex) "{{{
+function! s:init_mini(hex) "{{{
     let hex= s:fmt_hex(a:hex)
     call s:update_global(hex)
     call s:draw_hueLine(1)
@@ -1500,12 +1422,12 @@ function! s:changing() "{{{
         call setpos('.',g:ColorV.word_pos)
 
         if g:ColorV.word_bufnr==bufnr('%') && g:ColorV.word_pos==getpos('.')
-                    \ && g:ColorV.word_bufname==bufname('%')
+             \ && g:ColorV.word_bufname==bufname('%')
 
             let pat = expand('<cWORD>')
-            silent normal! "mmB"
+            silent normal! B
             let pat_idx=col('.')
-            "let pat_idx =  
+
             "Not the origin word
             if pat!= g:ColorV.word_pat
                 call s:warning("Not the same with the word to change.")
@@ -1522,15 +1444,15 @@ function! s:changing() "{{{
                 let g:ColorV.change_all=0
             	return 
             endif
+
             let idx=g:ColorV.word_list[1]
             let len=g:ColorV.word_list[2]
             let new_pat=substitute(pat,'\%'.(idx+1).'c.\{'.len.'}',str,'')
-            if exists("g:ColorV.HEX")
-                if exists("g:ColorV.change_all") && g:ColorV.change_all ==1
-                    exec '%s/'.pat.'/'.new_pat.'/gc'
-                else
-                    exec '.s/\%>'.(pat_idx-1).'c'.pat.'/'.new_pat.'/'
-                endif
+
+            if exists("g:ColorV.change_all") && g:ColorV.change_all ==1
+                exec '%s/'.pat.'/'.new_pat.'/gc'
+            else
+                exec '.s/\%>'.(pat_idx-1).'c'.pat.'/'.new_pat.'/'
             endif
         endif
         let g:ColorV.change_word=0
@@ -1605,20 +1527,21 @@ function! ColorV#copy(...) "{{{
         let @" = l:cliptext
     endif
 endfunction "}}}
-function! ColorV#open_word(...) "{{{
+function! ColorV#open_word() "{{{
     let pat = expand('<cWORD>')
+    let word=expand('<cword>')
     let hex_list=s:txt2hex(pat)
     if exists("hex_list[0][0]")
         let hex=s:fmt_hex(hex_list[0][0])
         "let g:ColorV.word_list=hex_list[0]
-    elseif !empty(s:nam2hex(pat))
-        let hex=s:nam2hex(pat)
+    elseif !empty(s:nam2hex(word))
+        let hex=s:nam2hex(word)
     else
         call s:warning("Could not find a color under cursor.")
         return -1
     endif
     
-    if exists("a:1") && a:1=="mini" || g:ColorV_word_mini==1
+    if g:ColorV_word_mini==1
         call ColorV#Win("mini",hex)
     else
         call ColorV#Win(s:mode,hex)
@@ -1629,16 +1552,17 @@ function! ColorV#change_word(...) "{{{
     let g:ColorV.word_bufname=bufname('%')
     let g:ColorV.word_bufwinnr=bufwinnr('%')
     let g:ColorV.word_pos=getpos('.')
-
     let pat = expand('<cWORD>')
+    let word=expand('<cword>')
     let g:ColorV.word_pat=pat
     let hex_list=s:txt2hex(pat)
     if exists("hex_list[0][0]")
         let hex=s:fmt_hex(hex_list[0][0])
         let g:ColorV.word_list=hex_list[0]
-    elseif !empty(s:nam2hex(pat))
-        let hex=s:nam2hex(pat)
-        let str=s:hex2nam(hex)
+    elseif !empty(s:nam2hex(word))
+        let hex=s:nam2hex(word)
+        " let str=s:hex2nam(hex)
+        let str=word
         let str_idx=match(pat,str)
         let str_len=len(str)
         let g:ColorV.word_list=[hex,str_idx,str_len,"NAME"]
@@ -1647,17 +1571,18 @@ function! ColorV#change_word(...) "{{{
         return
     endif
 
-    if exists("a:1") && a:1=="mini" || g:ColorV_word_mini==1
-        call ColorV#Win("mini",hex)
-    else
-        call ColorV#Win(s:mode,hex)
-    endif
     let g:ColorV.change_word=1
-    if exists("a:2") && a:2=="all"
+    if exists("a:1") && a:1=="all"
     	let g:ColorV.change_all=1
         call s:caution("Will Substitute ALL [".pat."] after ColorV closed.")
     else
     	call s:caution("Will Change [".pat."] after ColorV closed.")
+    endif
+
+    if g:ColorV_word_mini==1
+        call ColorV#Win("mini",hex)
+    else
+        call ColorV#Win(s:mode,hex)
     endif
 endfunction "}}}
 function! ColorV#exit() "{{{
@@ -1665,8 +1590,15 @@ function! ColorV#exit() "{{{
         call s:echo("Not the [ColorV] buffer")
         return
     endif
-    bw
+    bw \[ColorV\]
     call s:changing()
+endfunction "}}}
+function! ColorV#clear_all() "{{{
+    call s:clear_blockmatch()
+    call s:clear_hsvmatch()
+    call s:clear_miscmatch()
+    call s:clear_palmatch()
+    call clearmatches()
 endfunction "}}}
 "GUI
 "python pyGTK needed 

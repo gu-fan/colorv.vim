@@ -3,9 +3,7 @@
 "    File: plugin/ColorV.vim
 " Summary: A color manager with color toolkits
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
-"    Home: 
-" Version: 1.2.0.1 
-" Last Update: 2011-05-24
+" Last Update: 2011-05-31
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -18,7 +16,7 @@ if v:version < 700
 endif
 
 let g:ColorV={}
-let g:ColorV.ver="1.2.0.1"
+let g:ColorV.ver="1.2.5.2"
 let g:ColorV.name="[ColorV]"
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={}
@@ -54,8 +52,8 @@ command! -nargs=*  ColorV call ColorV#Win("",<q-args>)
 command! -nargs=*  ColorVnorm call ColorV#Win("",<q-args>)
 command! -nargs=*  ColorVmini call ColorV#Win("mini",<q-args>)
 command! -nargs=0  ColorVword call ColorV#open_word()
-command! -nargs=0  ColorVchange call ColorV#change()
-command! -nargs=0  ColorVchangeAll call ColorV#change("","all")
+command! -nargs=0  ColorVchange call ColorV#change_word()
+command! -nargs=0  ColorVchangeAll call ColorV#change_word("all")
 command! -nargs=0  ColorVclear call ColorV#clear_all()
 
 if has('python')

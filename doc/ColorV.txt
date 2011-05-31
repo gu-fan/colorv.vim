@@ -1,7 +1,6 @@
 *ColorV.txt*               ColorV        Color Viewer for Vim
 
-Version: 1.2.0                          Author: Rykka Krn
-                                        <Rykka.Krin@gmail.com>
+ver:1.2.5                               <Rykka.Krin@gmail.com>
 
 CONTENTS                               *colorv-contents*
 
@@ -550,6 +549,11 @@ LICENSE                                             *colorv-license*
 ==============================================================================
 HISTORY                                             *colorv-history*
 
+" 1.2.5
+"FIXED: 110531  rmv a:1 of change_word()
+" DONE: 110531  edit colorname using <cword>
+"FIXED: 110531  arrow hl error while switch from norm 2 mini
+
 " 1.2.1 Color Name
 " DONE: 110526  g:ColorV_name_approx g:ColorV.NAME
 " DONE: 110526  precisely change current word without confirm
@@ -558,6 +562,7 @@ HISTORY                                             *colorv-history*
 "FIXED: 110526  The paste error with colorname
 " DONE: 110526  change intro
 "FIXED: 110526  rm <esc> to quit. add <c-w>q <c-w><c-q> to quit.
+
 " 1.1.8
 "FIXED: 110524  silent clear_text
 " DONE: 110524  code review
@@ -570,6 +575,7 @@ HISTORY                                             *colorv-history*
 " DONE: 110523  autoload/
 "FIXED: 110523  change the word 'rgb(...)' use <cWORD>
 " DONE: 110523  open/cursor word add with rgb()
+"FIXED: 110522 bufnr() get wrong buf number if with [""]
 "FIXED: 110522  clear carefully
 " DONE: 110522  txt2hex() hex2txt()
 " DONE: 110522  all in one interface of read text / output text
@@ -583,6 +589,7 @@ HISTORY                                             *colorv-history*
 " DONE: 110521  After a long term of hard development,
                 The |ColorV| 1.0 beta finally comes out!
 
+"FIXED: 110520  error color toggling while set with pos in draw_SatLine
 "FIXED: 110520  there could be error with pat=3
 "FIXED: 110520  use block_rect to define range
 "FIXED: 110520  precise position needed
