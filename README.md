@@ -1,4 +1,4 @@
-INTRO:
+#INTRO:#
     
 **NEW!(1.2.0)**  Color name (W3C Standard) Support.
 
@@ -45,12 +45,13 @@ If have any advice, patches or bug reports.
 Submit at github 
 https://github.com/rykka/colorv
 
-INSTALL:
+#INSTALL:#
     
 * Using vim.org: http://www.vim.org/scripts/script.php?script_id=3597
 
 Download the latest version of tar.gz file, extract it.
 And put plugin files into your VIMFILE folder.
+
 ("~/.vim" for linux. "$HOME/vimfiles" for windows)
 
 Then use help tag to generate tags.
@@ -58,13 +59,15 @@ Then use help tag to generate tags.
     :helptags VIMFILE/doc
 
 * Using git:
+
 cd to your vimfile path, then use git clone.
 
     git clone git://github.com/rykka/ColorV.git
 
 
 * Using Vundle:
-First, install the script Vundle.vim
+
+First, install the script [Vundle.vim](https://github.com/gmarik/vundle)
 then put this line in your vimrc
 
     Bundle 'rykka/colorv'
