@@ -35,7 +35,7 @@ See detail in help docs.
 Have a closer look at it. 
 http://flic.kr/p/9LuPxG
 or 
-![ColorV](http://i55.tinypic.com/330ryhl.jpg)
+http://i55.tinypic.com/330ryhl.jpg
 
 
 If useful, please rate it
@@ -47,11 +47,11 @@ https://github.com/rykka/colorv
 
 INSTALL:
     
-> * Using vim.org:
-> http://www.vim.org/scripts/script.php?script_id=3597
-> Download the latest version of tar.gz file, extract it.
-> And put plugin files into your VIMFILE folder.
-> ("~/.vim" for linux. "$HOME/vimfiles" for windows)
+* Using vim.org: http://www.vim.org/scripts/script.php?script_id=3597
+
+Download the latest version of tar.gz file, extract it.
+And put plugin files into your VIMFILE folder.
+("~/.vim" for linux. "$HOME/vimfiles" for windows)
 
 Then use help tag to generate tags.
 
