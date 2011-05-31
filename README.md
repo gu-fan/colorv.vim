@@ -6,7 +6,7 @@ INTRO:
 
 Open a ColorV window.
 
-    **<leader>cv**
+    <leader>cv
 
 Open a ColorV window by word under cursor.
 
@@ -14,20 +14,20 @@ Open a ColorV window by word under cursor.
 
 put cursor on above words 
     
-    **<leader>cw**
+    <leader>cw
 
 Change the word under cursor with chosing color after quit the ColorV window.
 
-    **<leader>cg**
+    <leader>cg
 
 Copy the color in the ColorV window
 
-    **yy**
+    yy
 
 If '+python' compiled and pygtk2.0 included.
 You could use GTK eyedropper to pick colors in screen.
 
-    **<leader>cd**
+    <leader>cd
 
 There are several configs and commands to define ColorV. 
 See detail in help docs.
@@ -47,7 +47,7 @@ https://github.com/rykka/colorv
 
 INSTALL:
     
-* Using vim.org:
+> * Using vim.org:
 > http://www.vim.org/scripts/script.php?script_id=3597
 > Download the latest version of tar.gz file, extract it.
 > And put plugin files into your VIMFILE folder.
