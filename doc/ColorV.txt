@@ -1,6 +1,6 @@
 *ColorV.txt*               ColorV        Color Viewer for Vim
 
-ver:1.2.5                               <Rykka.Krin@gmail.com>
+ver:1.3.0                               <Rykka.Krin@gmail.com>
 
 CONTENTS                               *colorv-contents*
 
@@ -539,7 +539,6 @@ TODO                                                *colorv-todo*
     The priority of TODO items, If you have any advice or patch, feel free to submit it at github.
 
     - +6 history window
-    - +5 colorname
     - +4 color text list generator
     - +2 term/cterm support
 ==============================================================================
@@ -568,21 +567,24 @@ LICENSE                                             *colorv-license*
 ==============================================================================
 HISTORY                                             *colorv-history*
 
-" 1.2.5
+" 1.3.0
+" DONE: 110601  add seq_echo with switching_tips
+" DONE: 110601  update docs and README.md
 "FIXED: 110531  rmv a:1 of change_word()
+"FIXED: 110531  error range while set color with history block 
 " DONE: 110531  edit colorname using <cword>
 "FIXED: 110531  arrow hl error while switch from norm 2 mini
 
-" 1.2.1 Color Name
+" 1.2.0 Color Name
 " DONE: 110526  g:ColorV_name_approx g:ColorV.NAME
 " DONE: 110526  precisely change current word without confirm
 " DONE: 110526  Add Color name support (W3C standard).
 " DONE: 110526  input color name in ColorV to choose color.
 "FIXED: 110526  The paste error with colorname
 " DONE: 110526  change intro
-"FIXED: 110526  rm <esc> to quit. add <c-w>q <c-w><c-q> to quit.
+"FIXED: 110526  rmv <esc> to quit. add <c-w>q <c-w><c-q> to quit.
 
-" 1.1.8
+" 1.1.0
 "FIXED: 110524  silent clear_text
 " DONE: 110524  code review
 " DONE: 110524  some eggs
@@ -594,7 +596,7 @@ HISTORY                                             *colorv-history*
 " DONE: 110523  autoload/
 "FIXED: 110523  change the word 'rgb(...)' use <cWORD>
 " DONE: 110523  open/cursor word add with rgb()
-"FIXED: 110522 bufnr() get wrong buf number if with [""]
+"FIXED: 110522  bufnr() get wrong buf number if with [""]
 "FIXED: 110522  clear carefully
 " DONE: 110522  txt2hex() hex2txt()
 " DONE: 110522  all in one interface of read text / output text
@@ -622,7 +624,7 @@ HISTORY                                             *colorv-history*
 " DONE: 110520  when init jump to buffer opened before
 " DONE: 110520  seperate with the init and edit function
 " DONE: 110520  read rgb/rgba/rgb%/rgb%a text
-" DONE: 110520  p : paste clipboard hex to update color
+" DONE: 110520  paste clipboard hex to update color
 " DONE: 110520  go back to origin cursor position
 " DONE: 110520  g:ColorV_silent_set
 " DONE: 110520  g:ColorV_show_star
@@ -635,7 +637,7 @@ HISTORY                                             *colorv-history*
 " DONE: 110520  Add with mini mode
 " DONE: 110520  toggle tips with ?/h
 " DONE: 110520  var integration in g:ColorV.dict
-"0.9.0
+"0.8.0
 "FIXED: 110519  toggle window to last window
 "FIXED: 110519  error msg while not in the precise position
 "FIXED: 110519  using the all_pos length to control
@@ -653,8 +655,9 @@ HISTORY                                             *colorv-history*
 " DONE: 110519  copy text to clipboard
 " DONE: 110519  change  current color word with color
 " DONE: 110519  auto history list
+"0.5.0
 "FIXED: 110511  the V/S => col /line . use list to store
-" DONE: 110511   use list to store hueline
+" DONE: 110511  use list to store hueline
 "FIXED: 110510  show #FF0000 =>c-1 to set max S at 100
 "FIXED: 110510  s:draw_pallet(h,l,c,...) the value /saturation => column /line
 " DONE: 110510  use <cr> to edit

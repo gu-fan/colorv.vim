@@ -4,8 +4,8 @@
 " Summary: A color manager with color toolkits
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 1.2.5.2 
-" Last Update: 2011-05-31
+" Version: 1.3.0 
+" Last Update: 2011-06-01
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -39,6 +39,12 @@ let s:mini_pos=[["Hex:",1,42,11],
     \["R:",1,24,5],["G:",2,24,5],["B:",3,24,5],
     \["H:",1,32,5],["S:",2,32,5],["V:",3,32,5]
     \]
+let s:tips_list=[
+            \'Choose:2-Click/2-Space',
+            \'Toggle:TAB     Edit:Enter',
+            \"Yank:yy/yr...  Paste:^V/p",
+            \"Help:F1/H      Quit:q/Q/^Wq",
+            \]
 let s:fmt={}
 let s:fmt.RGB='rgb(\s*\d\{1,3},\s*\d\{1,3},\s*\d\{1,3})'
 let s:fmt.RGBA='rgba(\s*\d\{1,3},\s*\d\{1,3},\s*\d\{1,3}\,\s*\d\{1,3}%\=)'
@@ -475,7 +481,7 @@ endfunction "}}}
 
 function! s:draw_misc() "{{{
     call s:clear_miscmatch()
-    hi arrowCheck guibg=#b30000 guifg=#aaaaaa gui=Bold
+    hi arrowCheck guibg=#b30000 guifg=#cccccc gui=Bold
     if s:mode=="normal"
         let arrow_ptn='\(\%<6l\%>2l>.\{6}\|\%2l>.\{12}
                     \\|\%1l\%>53c[\.?x]\)'
@@ -1043,15 +1049,30 @@ function! ColorV#edit_colorname() "{{{
 endfunction "}}}
 
 function! ColorV#switching_tips() "{{{
+    let txt_list=s:tips_list
     if exists("s:toggle_tips") && s:toggle_tips==1
     	let s:toggle_tips=0
     	call s:init_text()
+    	call s:seq_echo(txt_list)
     elseif !exists("s:toggle_tips") || s:toggle_tips==0
     	let s:toggle_tips=1
     	call s:init_text()
+    	call s:seq_echo(txt_list)
     endif
 endfunction "}}}
 
+function! s:seq_echo(txt_list)
+    let txt_list=a:txt_list
+    let s:seq_num= exists("s:seq_num") ? s:seq_num : 0
+    let idx=0
+    for txt in txt_list
+    	if fmod(s:seq_num,len(txt_list)) == idx
+            echo txt
+        endif
+        let idx+=1
+    endfor
+    let s:seq_num+=1
+endfunction
 function! ColorV#change_word_hue(step) "{{{
     setl ma
     if !exists("g:ColorV.HSV.H")|let g:ColorV.HSV.H=0|endif
