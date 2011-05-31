@@ -5,24 +5,29 @@ INTRO:
 **ColorV** or **ColorV.vim** is a Color Viewer and Color Picker of Vim.
 
 Open a ColorV window.
-**<leader>cv**
+
+    **<leader>cv**
 
 Open a ColorV window by word under cursor.
 
     #ff9744 rgb(33,44,155) orangered  'cadetblue'
 
 put cursor on above words 
-**<leader>cw**
+    
+    **<leader>cw**
 
 Change the word under cursor with chosing color after quit the ColorV window.
-**<leader>cg**
+
+    **<leader>cg**
 
 Copy the color in the ColorV window
-**yy**
+
+    **yy**
 
 If '+python' compiled and pygtk2.0 include
 You could use GTK eyedropper to pick colors in screen.
-**<leader>cd**
+
+    **<leader>cd**
 
 There are several configs and commands to define ColorV. 
 See detail in help docs.
