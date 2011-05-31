@@ -18,6 +18,8 @@ CONTENTS                               *colorv-contents*
 12. License                             |colorv-license|
 13. History                             |colorv-history|
 ==============================================================================
+NEW!(1.2.0)  Color name (W3C Standard) Support.
+------------------------------------------------------------------------------
 INTRO                                               *colorv-intro*
 
     *ColorV* or *ColorV.vim* is a Color Viewer and Color Picker of Vim.
@@ -26,9 +28,8 @@ INTRO                                               *colorv-intro*
         <leader>cv
 
     Open a ColorV window by word under cursor.
-NEW!    Color name (W3C Standard) Supported,like OrangeRed lime cadetblue
-        #ff9744 or rgb(33,44,155) or orangered
-        put cursor on above words 
+        #ff9744 rgb(33,44,155) orangered 'cadetblue'
+    Put cursor on above words 
         <leader>cw
 
     Change the word under cursor with chosing color after quit the ColorV window.
@@ -37,21 +38,24 @@ NEW!    Color name (W3C Standard) Supported,like OrangeRed lime cadetblue
     Copy the color in the ColorV window
         yy
 
-    If you have '+python' compiled and pygtk2.0.
-    You could use a GTK eyedropper to get colors on screen.
+    Use GTK eyedropper to pick colors in screen.
+    If '+python' compiled and pygtk2.0 included.
         <leader>cd
 
-    There are many configs and commands and variable to define. 
+    There are several configs and commands to define ColorV. 
     See detail in help docs.
 
-    Have a look at it. http://flic.kr/p/9LuPxG
-    or http://i55.tinypic.com/330ryhl.jpg
+    Have a closer look at it. 
+    http://flic.kr/p/9LuPxG
+    or 
+    http://i55.tinypic.com/330ryhl.jpg
 
-    If useful for you, please rate it
+    If useful, please rate it
     http://www.vim.org/scripts/script.php?script_id=3597
 
-    If you have any advice ,patches or bug reports.
-    Submit it at github: https://github.com/rykka/colorv
+    If have any advice, patches or bug reports.
+    Submit it at github.
+    https://github.com/rykka/colorv
 
     And you can contact me at <Rykka.Krin@gmail.com>
 ==============================================================================
@@ -59,22 +63,31 @@ INSTALL                                             *colorv-install*
 
     Using vim.org:
     http://www.vim.org/scripts/script.php?script_id=3597
-    Download the latest version of tar.gz file, extract it.
-    And put plugin files into your VIMFILE folder.
+    Download the latest version of tar.gz file, 
+    extract it into your VIMFILE folder.
     ("~/.vim" for linux. "$HOME/vimfiles" for windows)
 
     Then use help tag to generate tags.
 >
-    :helptags VIMFILE/doc
+    :helptags ~/.vim/doc
 <
     Using git:
-    cd to your vimfile path, then use git clone.
+    git clone
 >
-    git clone git://github.com/rykka/ColorV.git
+    git clone git://github.com/rykka/ColorV.git ~/.vim/bundle/ColorV
 <
+    then add &runtimepath to your vimrc
+    (NOT necessary if pathogen.vim installed) 
+>
+    set rtp+=~/.vim/bundle/ColorV/
+<
+    run helptags
+>
+    :helptags ~/.vim/bundle/ColorV/doc
+<   
 
     Using Vundle:
-    First, install the script Vundle.vim
+    First, install the script [Vundle.vim](https://github.com/gmarik/vundle)
     then put this line in your vimrc
 >
     Bundle 'rykka/colorv'
@@ -430,19 +443,25 @@ EXAMPLE                                             *colorv-example*
     Put these line in your vimrc file:
 >
 
-    "<leader>ca may confilct with NerdCommentor's mapping
-    nmap <leader>cga <Plug>ColorVchangeAll
-    nmap <leader>cgw <Plug>ColorVchange
+    "<leader>ca may confilct with NerdCommentor.vim and Calendar.vim
+    nmap <leader>cga :ColorVchangeAll<CR>
+    nmap <leader>cgw :ColorVchange<CR>
+    
+    "dynamci hue
+    "let g:ColorV_dynamic_hueline=1
+    "let g:ColorV_dynamic_hueline_step=9
 
-    let g:ColorV_dynamic_hueline=1
-    let g:ColorV_dynamic_hueline_step=6
-
-    "keep it simple and silent
+    "Keep It Simple and Silent
     let g:ColorV_show_tips=0
     let g:ColorV_show_quit=0
     let g:ColorV_show_star=1
     let g:ColorV_word_mini=1
     let g:ColorV_silent_set=1
+    
+    "set and copy to "+
+    "let g:ColorV_set_register=2
+    "colorname approximate ratio
+    "let g:ColorV_name_approx=10
 
 <
 ------------------------------------------------------------------------------
