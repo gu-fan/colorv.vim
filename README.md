@@ -25,8 +25,8 @@ Copy the color in the ColorV window
 
 `yy`
 
+Use GTK eyedropper to pick colors in screen.
 If '+python' compiled and pygtk2.0 included.
-You could use GTK eyedropper to pick colors in screen.
 
 `<leader>cd`
 
