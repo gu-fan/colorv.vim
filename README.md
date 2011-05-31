@@ -1,6 +1,7 @@
+**NEW!(1.2.0)**  Color name (W3C Standard) Support.
+
 #INTRO:#
     
-**NEW!(1.2.0)**  Color name (W3C Standard) Support.
 
 **ColorV** or **ColorV.vim** is a Color Viewer and Color Picker of Vim.
 
