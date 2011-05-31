@@ -7,7 +7,7 @@
 
 Open a ColorV window.
 
-    <leader>cv
+`<leader>cv`
 
 Open a ColorV window by word under cursor.
 
@@ -19,16 +19,16 @@ put cursor on above words
 
 Change the word under cursor with chosing color after quit the ColorV window.
 
-    <leader>cg
+`<leader>cg`
 
 Copy the color in the ColorV window
 
-    yy
+`yy`
 
 If '+python' compiled and pygtk2.0 included.
 You could use GTK eyedropper to pick colors in screen.
 
-    <leader>cd
+`<leader>cd`
 
 There are several configs and commands to define ColorV. 
 See detail in help docs.
