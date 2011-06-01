@@ -315,11 +315,11 @@ which was used with cut/copy between other applications.
     the approximation rate to exact colors can be adjusted by
     |g:ColorV_name_approx|
 
-    The Color names are defined with W3C standard.
-    Which you can get the table from
-    http://en.wikipedia.org/wiki/X11_color_names
-    
-    Note There are several difference between X11 and W3C
+    Note 
+    The X11 standard is used by vim gui colors and X Window system.
+    The W3C standard is mostly used in HTML/CSS and browsers.
+
+    There are several clash between X11 and W3C
     Gray    (X11)	#BEBEBE
     Gray    (W3C) 	#7F7F7F
     Green   (X11) 	#00FF00
@@ -328,6 +328,14 @@ which was used with cut/copy between other applications.
     Maroon  (W3C) 	#7F0000
     Purple  (X11) 	#A020F0
     Purple  (W3C) 	#7F007F
+    You can get the name table from
+    http://en.wikipedia.org/wiki/X11_color_names
+
+    By default, when use |:ColorVword| and |:ColorVchange| in a vim filetype
+    files, the ColorV will automatically use X11 color names. 
+    And the name showing in ColorV window is always W3C color name.
+    You can entering a X11 name by 'nx' and W3C name by 'ne'.
+
                                                     *colorv-mapping-paste*
     <Ctrl-v>    paste |colorv-formatted-text| in register+ to set showing color.
     p/P         paste |colorv-formatted-text| in register" to set showing color.
@@ -336,11 +344,13 @@ which was used with cut/copy between other applications.
     <Tab>/<C-N>/J   Toggle arrow foreward to choose color parameters.
     <S-Tab>/<C-P>/K Toggle arrow backward to choose color parameters.
     x/r/g/b/u/s/v   Toggle arrow to the color parameters.
+                    (hex/red/green/blue/hue/sat/val)
     a/i             Start editing the parameter chosen by arrow.
     <Enter>         Start editing the parameter chosen by arrow.
     <Kenter>        Start editing the parameter chosen by arrow.
     
     na/ne           Choose color by entering a colorname.(W3C standard)   
+    nx              Choose color by entering a colorname.(X11 standard)   
                     See |colorv-colorname| for details.
 
                                                     *colorv-mapping-set*
@@ -568,6 +578,9 @@ LICENSE                                             *colorv-license*
 HISTORY                                             *colorv-history*
 
 " 1.3.0
+" DONE: 110601  X11 standard colorname support and used with &ft==vim
+"FIXED: 110601  error star mark color while using history_block
+" DONE: 110601  easy set color with hue/sat/val line
 " DONE: 110601  add seq_echo with switching_tips
 " DONE: 110601  update docs and README.md
 "FIXED: 110531  rmv a:1 of change_word()
