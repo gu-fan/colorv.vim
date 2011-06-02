@@ -1304,6 +1304,10 @@ function! s:map_define() "{{{
     
     "show all text
     noremap <silent><buffer> <c-a> ggVG
+
+    "easy moving
+    noremap j gj
+    noremap k gk
 endfunction "}}}
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

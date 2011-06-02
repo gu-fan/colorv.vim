@@ -583,6 +583,8 @@ LICENSE                                             *colorv-license*
 ==============================================================================
 HISTORY                                             *colorv-history*
 " 1.4.0
+" TODO: use '+' and '-' to add/subtract parameter. 
+" DONE: 110602  colorname interface description. ctrl-a to show texts.
 "FIXED: 110602  rmv quit mark. fix silent_set to 0 at default.
 " DONE: 110602  change tip text. add g:ColorV_echo_tips (0/1/2)
 " DONE: 110602  change arrow_ptn color to reverse.
