@@ -16,7 +16,7 @@ if v:version < 700
 endif
 
 let g:ColorV={}
-let g:ColorV.ver="1.3.0.0"
+let g:ColorV.ver="1.4.0.0"
 let g:ColorV.name="[ColorV]"
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={}
@@ -48,9 +48,14 @@ endif
 if !exists('g:ColorV_word_mini')
     let g:ColorV_word_mini=1
 endif
+if !exists('g:ColorV_echo_tips')
+    let g:ColorV_echo_tips=0
+endif
+
+
 command! -nargs=*  ColorV call ColorV#Win("",<q-args>)
 command! -nargs=*  ColorVnorm call ColorV#Win("",<q-args>)
-command! -nargs=*  ColorVmini call ColorV#Win("mini",<q-args>)
+command! -nargs=*  ColorVmini call ColorV#Win("min",<q-args>)
 command! -nargs=0  ColorVword call ColorV#open_word()
 command! -nargs=0  ColorVchange call ColorV#change_word()
 command! -nargs=0  ColorVchangeAll call ColorV#change_word("all")

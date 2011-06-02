@@ -19,7 +19,7 @@ let g:colorV_loaded = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "SVAR: {{{
 "s:mode ()
-" TODO: add s:mode max mid min
+" DONE: 110602  add s:mode max mid min
 let s:mode= exists("s:mode") ? s:mode : "max"
 let [s:pal_W,s:pal_H]=[20,10]
 let [s:poff_x,s:poff_y]=[0,1]
@@ -39,10 +39,15 @@ let s:mini_pos=[["Hex:",1,42,11],
     \["H:",1,32,5],["S:",2,32,5],["V:",3,32,5]
     \]
 let s:tips_list=[
-            \'Choose:2-Click/2-Space',
-            \'Toggle:TAB     Edit:Enter',
-            \"Yank:yy/yr...  Paste:^V/p",
-            \"Help:F1/H      Quit:q/Q/^Wq",
+            \'Choose Color :2-Click/2-Space/Ctrl-K/Ctrl-J',
+            \'Toggle:<TAB>/<C-N>/J     Backward:<S-TAB>/<C-P>/K',
+            \'Goto Parameter:x/r/gg/b/u/s/v ',
+            \'Edit Parameter:x:Enter/a/i',
+            \'Colorname(W3C): na/ne       (X11):nx ',
+            \'Yank(reg"):yy/yr/ys/yn/... (reg+):cc/cr/cs/cn/... ',
+            \'Paste:Ctrl-V/p',
+            \'Help:F1/H      ',
+            \'Quit:q/Q/Ctrl-W_q',
             \]
 let s:fmt={}
 let s:fmt.RGB='rgb(\s*\d\{1,3},\s*\d\{1,3},\s*\d\{1,3})'
@@ -53,7 +58,6 @@ let s:fmt.HEX='\x\@<!\x\{6}\x\@!'
 "#fff only
 let s:fmt.HEX3='#\zs\x\{3}\x\@!'
 let s:t='fghDPijmrYFGtudBevwxklyzEIZOJLMnHsaKbcopqNACQRSTUVWX'
-" DONE: 110601  use X11 in *.vim
 "X11 Standard
 let s:clrnX11=[['Gray', 'BEBEBE'], ['Green', '00FF00']
             \, ['Maroon', 'B03060'], ['Purple', 'A020F0']]
@@ -256,31 +260,36 @@ endfunction "}}}
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "HELP: "{{{
-function! s:roll(min,max)
-    let s:seed=exists("s:seed") ? s: seed : str2nr(strftime("%S"))*17+3
+function! s:roll(min,max) "{{{
+    let init= str2nr(strftime("%S%m"))*9+
+             \str2nr(strftime("%Y"))*3+
+             \str2nr(strftime("%M%S"))*5+
+             \str2nr(strftime("%H%d"))*1+19
+    let s:seed=exists("s:seed") ? s:seed : init
     let s:seed=fmod((20907*s:seed+17343),104530)
     return fmod(s:seed,a:max-a:min+1)+a:min
-endfunction
+endfunction "}}}
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "DRAW: "{{{1
 "Input: h,l,c,[loffset,coffset]
 function! s:draw_pallet(h,l,c,...) "{{{
     call s:clear_palmatch()
-    let [h,height,width,hstep,wstep]=[a:h,a:l,a:c,100.0/(a:l-1),100.0/(a:c-1)]
+    let [h,height,width,hstep,wstep]=[a:h,a:l,a:c,100.0/(a:l),100.0/(a:c)]
     let h_off=exists("a:1") ? a:1 : 1
-    let w_off=exists("a:2") ? a:2 : 1
+    let w_off=exists("a:2") ? a:2 : 0
     if height>100 || width>100 || height<0 || width<0
     	echoe "error palette input"
     	return -1
     endif
     let h=fmod(h,360.0)
     
-    let b:pal_list=[]
+    let b:pal_clr_list=[]
 
     let line=1
     while line<=height
         let v=100-(line-1)*hstep
+        let v= v==0 ? 1 : v 
         let col =1
         while col<=width
             let s=100-(col-1)*wstep
@@ -289,8 +298,7 @@ function! s:draw_pallet(h,l,c,...) "{{{
             let group="colorV".hex
             exec "hi ".group." guifg=#".hex." guibg=#".hex
             let pos="\\%".(line+h_off)."l\\%".(col+w_off)."c"
-            
-            call add(b:pal_list,hex)
+            call add(b:pal_clr_list,hex)
             
             " add hl match to pallet_dict
             if !exists("s:pallet_dict")|let s:pallet_dict={}|endif
@@ -645,7 +653,8 @@ function! s:draw_text(...) "{{{
         let line[0]=s:line_sub(line[0],nam,40)
         endif
     endif
-    "star mark pos
+
+    "draw star mark at pos
     for i in range(height)
     	let line[i]=substitute(line[i],'\*',' ','g')
     endfor
@@ -656,12 +665,14 @@ function! s:draw_text(...) "{{{
         let bg= g:ColorV.HEX
         exe "hi starPos guibg=#".bg." guifg=#".fg." gui=Bold"
     endif
+
     for i in range(height)
     	call setline(i+1,line[i])
     endfor
+
     if !exists("b:arrowck_pos")|let b:arrowck_pos=0|endif
-    call ColorV#toggle_arrow(b:arrowck_pos)
-     call setpos('.',cur)
+    call <SID>toggle_arrow(b:arrowck_pos)
+    call setpos('.',cur)
     setl noma
 endfunction "}}}
 
@@ -670,8 +681,8 @@ function! s:get_star_pos() "{{{
     let [h,s,v]=[HSV.H,HSV.S,HSV.V]
     
     if s:mode=="max" || s:mode=="mid"
-        let h_step=100.0/(s:pal_H-1)
-        let w_step=100.0/(s:pal_W-1)
+        let h_step=100.0/(s:pal_H)
+        let w_step=100.0/(s:pal_W)
         let l=float2nr(round((100.0-v)/h_step))+1+s:poff_y
         let c=float2nr(round((100.0-s)/w_step))+1+s:poff_x
         if l>=s:pal_H+s:poff_y
@@ -722,7 +733,7 @@ endfunction "}}}
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "BUFF: "{{{1
-function! s:set_buf_hex(hex) "{{{
+function! s:draw_buf_hex(hex) "{{{
 
     if expand('%') != g:ColorV.name
         call s:warning("Not [ColorV] buffer")
@@ -744,12 +755,10 @@ function! s:set_buf_hex(hex) "{{{
     call s:draw_text(hex)
     setl noma
 endfunction "}}}
-
-function! s:set_bufandpos_hex(hex) "{{{
-    call s:set_bufandpos_rgb(ColorV#hex2rgb(a:hex))
+function! s:draw_bufandpos_hex(hex) "{{{
+    call s:draw_bufandpos_rgb(ColorV#hex2rgb(a:hex))
 endfunction "}}}
-
-function! s:set_bufandpos_rgb(rgb) "{{{
+function! s:draw_bufandpos_rgb(rgb) "{{{
     setl ma
     let [h,s,v]=ColorV#rgb2hsv(a:rgb)
     let [h,s,v]=[h+0.0,s+0.0,v+0.0]
@@ -766,14 +775,14 @@ function! s:set_bufandpos_rgb(rgb) "{{{
     	let c= s:pal_W+s:poff_x
     endif
 
-    call s:set_buf_hex(hex)
+    call s:draw_buf_hex(hex)
     call cursor(l,c)
     setl noma
 endfunction "}}}
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "EDIT: "{{{1
-function! ColorV#set_in_pos(...) "{{{
+function! s:set_in_pos(...) "{{{
     setl ma
 
     let l=exists("a:1") ? a:1 : line('.')
@@ -787,32 +796,31 @@ function! ColorV#set_in_pos(...) "{{{
     "pallet
     if s:mode=="max" || s:mode=="mid" && l > s:poff_y && l<= s:pal_H+s:poff_y && c<= s:pal_W
         let idx=(l-s:poff_y-1)*s:pal_W+c-s:poff_x-1
-        let hex=b:pal_list[idx]
+        let hex=b:pal_clr_list[idx]
         call s:update_global(hex)
         call s:draw_history_block(hex)
         "call s:update_text(hex)
         call s:draw_text(hex)
-    " WORKAROUND: 110519  error while between s:pal_w and hue_width
-    " delete hue_width to avoid this
-    elseif l==1 && ( c<=s:pal_W  )
+
+    elseif l==1 &&  c<=s:pal_W 
         let [h1,s1,v1]=ColorV#rgb2hsv(ColorV#hex2rgb(s:hueline_list[(c-1)]))
         call s:echo("Hue(Line): ".h1)
         let hex=ColorV#rgb2hex(ColorV#hsv2rgb([h1,s,v]))
-        call s:set_buf_hex(hex)
+        call s:draw_buf_hex(hex)
     elseif s:mode=="min" && l==2 && ( c<=s:pal_W  )
         " let hex=s:satline_list[(c-1)]
         let [h1,s1,v1]=ColorV#rgb2hsv(ColorV#hex2rgb(s:satline_list[(c-1)]))
         call s:echo("SAT(Saturation Line): ".s1)
 
         let hex=ColorV#rgb2hex(ColorV#hsv2rgb([h,s1,v]))
-        call s:set_buf_hex(hex)
+        call s:draw_buf_hex(hex)
     elseif s:mode=="min" && l==3 && ( c<=s:pal_W  )
         " let hex=s:valline_list[(c-1)]
         let [h1,s1,v1]=ColorV#rgb2hsv(ColorV#hex2rgb(s:valline_list[(c-1)]))
         call s:echo("VAL(Value Line): ".v1)
 
         let hex=ColorV#rgb2hex(ColorV#hsv2rgb([h,s,v1]))
-        call s:set_buf_hex(hex)
+        call s:draw_buf_hex(hex)
 
     "history_block section "{{{
     elseif l<=(s:block_rect[3]+s:block_rect[1]-1) && l>=s:block_rect[1] &&
@@ -828,7 +836,7 @@ function! ColorV#set_in_pos(...) "{{{
             call s:echo("HEX(history 2): ".hex)
         endif
         " if s:mode=="min"
-        call s:set_buf_hex(hex)
+        call s:draw_buf_hex(hex)
         " else
         "     call s:update_global(hex)
         "     call s:draw_history_block(hex)
@@ -843,7 +851,7 @@ function! ColorV#set_in_pos(...) "{{{
         let l:in_pos=0
         for [name,y,x,width] in s:norm_pos
             if l==y && c>=x && c<(x+width)
-                call ColorV#toggle_arrow(idx)
+                call <SID>toggle_arrow(idx)
                 let l:in_pos=1
                 break
             endif
@@ -859,7 +867,7 @@ function! ColorV#set_in_pos(...) "{{{
         let l:in_pos=0
         for [name,y,x,width] in s:mini_pos
             if l==y && c>=x && c<(x+width)
-                call ColorV#toggle_arrow(idx)
+                call <SID>toggle_arrow(idx)
                 let l:in_pos=1
                 break
             endif
@@ -872,11 +880,11 @@ function! ColorV#set_in_pos(...) "{{{
         endif
     "}}}
     elseif l==1 && c==54 &&  strpart(getline(1),53)=~'[?\.]'
-        call ColorV#switching_tips()
+        call s:echo_tips()
         setl noma
         return -1
     elseif l==1 && c==55  && strpart(getline(1),54)=~'x'
-        call ColorV#exit()
+        call s:exit()
         return -1
     else 
     	call s:warning("Not Proper Position.")
@@ -885,14 +893,14 @@ function! ColorV#set_in_pos(...) "{{{
     endif
 
     if exists("g:ColorV_set_register") && g:ColorV_set_register==1
-    	call ColorV#copy()
+    	call <SID>copy()
     elseif exists("g:ColorV_set_register") && g:ColorV_set_register==2
-    	call ColorV#copy("","+")
+    	call <SID>copy("","+")
     endif
 
     setl noma
 endfunction "}}}
-function! ColorV#toggle_arrow(...) "{{{
+function! s:toggle_arrow(...) "{{{
     setl ma
     if !exists("b:arrowck_pos")|let b:arrowck_pos=0|endif
     if s:mode=="max" || s:mode=="mid"
@@ -929,10 +937,10 @@ function! ColorV#toggle_arrow(...) "{{{
     redraw
     setl noma
 endfunction "}}}
-function! ColorV#edit_at_arrow(...) "{{{
+function! s:edit_at_arrow(...) "{{{
     "setl ma
     let postition=exists("a:1")? a:1 : b:arrowck_pos
-    call ColorV#toggle_arrow(postition)
+    call <SID>toggle_arrow(postition)
     let clr=g:ColorV
     let hex=clr.HEX
     let [r,g,b]=[clr.RGB.R,clr.RGB.G,clr.RGB.B]
@@ -998,13 +1006,13 @@ function! ColorV#edit_at_arrow(...) "{{{
             "let s:skip_his_block=1
         return
     endif
-    call s:set_buf_hex(hex)
+    call s:draw_buf_hex(hex)
 
-    "call s:set_bufandpos_hex(hex)
+    "call s:draw_bufandpos_hex(hex)
     "setl noma
 endfunction "}}}
 
-function! ColorV#edit_colorname(...) "{{{
+function! s:edit_colorname(...) "{{{
     if exists("a:1") && a:1=="X11"
         let text = input("Input color name(X11:Blue/Green/Red):")
         let hex=s:nam2hex(text,a:1)
@@ -1014,24 +1022,50 @@ function! ColorV#edit_colorname(...) "{{{
     endif
 
     if !empty(hex)
-        call s:set_buf_hex(hex)
+        call s:draw_buf_hex(hex)
     else
     	call s:warning("Not a correct colorname. Nothing changed.")
     endif
 endfunction "}}}
 
-function! ColorV#switching_tips() "{{{
+function! s:echo_tips() "{{{
     let txt_list=s:tips_list
-    if exists("s:toggle_tips") && s:toggle_tips==1
-    	let s:toggle_tips=0
-    	" call s:draw_text()
-    	call s:seq_echo(txt_list)
-    elseif !exists("s:toggle_tips") || s:toggle_tips==0
-    	let s:toggle_tips=1
-    	" call s:draw_text()
-    	call s:seq_echo(txt_list)
+    " if exists("s:toggle_tips") && s:toggle_tips==1
+    " 	let s:toggle_tips=0
+    " 	" call s:draw_text()
+    " 	call s:seq_echo(txt_list)
+    " elseif !exists("s:toggle_tips") || s:toggle_tips==0
+    " 	let s:toggle_tips=1
+    " 	" call s:draw_text()
+    " 	call s:seq_echo(txt_list)
+    " endif
+    if exists("g:ColorV_echo_tips") && g:ColorV_echo_tips ==1
+        call s:seq_echo(txt_list)
+    elseif exists("g:ColorV_echo_tips") && g:ColorV_echo_tips ==2
+        call s:rnd_echo(txt_list)
+    else
+        call s:all_echo(txt_list)
     endif
 endfunction "}}}
+function! s:all_echo(txt_list)
+    let txt_list=a:txt_list
+    call s:caution("[Tips of Keyboard Shortcuts]")
+    for txt in txt_list
+        echo txt
+    endfor
+endfunction
+function! s:rnd_echo(txt_list)
+    let txt_list=a:txt_list
+    let idx=0
+    let rnd=s:roll(0,len(txt_list)-1)
+    for txt in txt_list
+    	if  rnd == idx
+            echo "[Tip] ".txt
+            break
+        endif
+        let idx+=1
+    endfor
+endfunction
 
 function! s:seq_echo(txt_list) "{{{
     let txt_list=a:txt_list
@@ -1039,13 +1073,14 @@ function! s:seq_echo(txt_list) "{{{
     let idx=0
     for txt in txt_list
     	if fmod(s:seq_num,len(txt_list)) == idx
-            echo txt
+            echo "[Tip] ".txt
+            break
         endif
         let idx+=1
     endfor
     let s:seq_num+=1
 endfunction "}}}
-function! ColorV#change_word_hue(step) "{{{
+function! s:change_word_hue(step) "{{{
     setl ma
     if !exists("g:ColorV.HSV.H")|let g:ColorV.HSV.H=0|endif
     let g:ColorV.HSV.H= (g:ColorV.HSV.H+a:step)<0 ?  
@@ -1116,16 +1151,18 @@ function! ColorV#Win(...) "{{{
         let hex_list=s:txt2hex(a:2)
         if exists("hex_list[0][0]")
             let hex=s:fmt_hex(hex_list[0][0])
+            " let fmt=hex_list[0][3]
+            call s:caution("Use formatted [".hex."]") 
         "elseif !len("a:2")
             "let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
             "let s:skip_his_block=1
         elseif !empty(s:nam2hex(a:2))
             let hex=s:nam2hex(a:2)
+            call s:caution("Use color name [".hex."]") 
         else
             let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
             let s:skip_his_block=1
-            call s:caution("Could not find any color in the text 
-                          \,use default [".hex."]") 
+            call s:caution("Use default [".hex."]") 
         endif
     else 
         let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
@@ -1142,7 +1179,7 @@ function! ColorV#Win(...) "{{{
             execute 'resize' s:min_h
             redraw
         endif
-    	call s:set_buf_hex(hex)
+    	call s:draw_buf_hex(hex)
     elseif  exists("a:1") && a:1== "max"
     	let s:mode="max" 
     	let s:pal_H=s:max_h-1
@@ -1150,7 +1187,7 @@ function! ColorV#Win(...) "{{{
             execute 'resize' s:max_h
             redraw
         endif
-        call s:set_buf_hex(hex)
+        call s:draw_buf_hex(hex)
     else
     	let s:mode="mid" 
     	let s:pal_H=s:mid_h-1
@@ -1158,32 +1195,11 @@ function! ColorV#Win(...) "{{{
             execute 'resize' s:mid_h
             redraw
         endif
-        call s:set_buf_hex(hex)
+        call s:draw_buf_hex(hex)
     	
     endif "}}}
 
 endfunction "}}}
-" function! s:init_max(hex) "{{{
-"     let hex= s:fmt_hex(a:hex)
-"     call s:update_global(hex)
-"     call s:draw_hueLine(1)
-"     call s:draw_pallet_hex(hex)
-"     call s:draw_history_block(hex)
-"     call s:init_misc()
-"     call s:draw_text(hex)
-" endfunction "}}}
-" 
-" function! s:init_min(hex) "{{{
-"     let hex= s:fmt_hex(a:hex)
-"     call s:update_global(hex)
-"     call s:draw_hueLine(1)
-"     call s:draw_satLine(2)
-"     call s:draw_valLine(3)
-"     call s:draw_history_block(hex)
-"     call s:init_misc()
-"     call s:draw_text(hex)
-" endfunction
-" "}}}
 
 function! s:init_hide() "{{{
     "hi cursor guibg=#000 guifg=#000 
@@ -1201,83 +1217,83 @@ function! s:init_hide() "{{{
 endfun
 "}}}
 function! s:map_define() "{{{
-    nmap <silent><buffer> <c-k> :call ColorV#set_in_pos()<cr>
-    nmap <silent><buffer> <space> :call ColorV#set_in_pos()<cr>
-    nmap <silent><buffer> <space><space> :call ColorV#set_in_pos()<cr>
-    nmap <silent><buffer> <leader>ck :call ColorV#set_in_pos()<cr>
-    nmap <silent><buffer> <2-leftmouse> :call ColorV#set_in_pos()<cr>
-    nmap <silent><buffer> <3-leftmouse> :call ColorV#set_in_pos()<cr>
+    nmap <silent><buffer> <c-k> :call <SID>set_in_pos()<cr>
+    nmap <silent><buffer> <space> :call <SID>set_in_pos()<cr>
+    nmap <silent><buffer> <space><space> :call <SID>set_in_pos()<cr>
+    nmap <silent><buffer> <leader>ck :call <SID>set_in_pos()<cr>
+    nmap <silent><buffer> <2-leftmouse> :call <SID>set_in_pos()<cr>
+    nmap <silent><buffer> <3-leftmouse> :call <SID>set_in_pos()<cr>
 
-    nmap <silent><buffer> <tab> :call ColorV#toggle_arrow()<cr>
-    nmap <silent><buffer> <c-n> :call ColorV#toggle_arrow()<cr>
-    nmap <silent><buffer> J :call ColorV#toggle_arrow()<cr>
-    nmap <silent><buffer> K :call ColorV#toggle_arrow(-2)<cr>
-    nmap <silent><buffer> <c-p> :call ColorV#toggle_arrow(-2)<cr>
-    nmap <silent><buffer> <s-tab> :call ColorV#toggle_arrow(-2)<cr>
+    nmap <silent><buffer> <tab> :call <SID>toggle_arrow()<cr>
+    nmap <silent><buffer> <c-n> :call <SID>toggle_arrow()<cr>
+    nmap <silent><buffer> J :call <SID>toggle_arrow()<cr>
+    nmap <silent><buffer> K :call <SID>toggle_arrow(-2)<cr>
+    nmap <silent><buffer> <c-p> :call <SID>toggle_arrow(-2)<cr>
+    nmap <silent><buffer> <s-tab> :call <SID>toggle_arrow(-2)<cr>
     
     "xrgbhsv
-    nmap <silent><buffer> x :call ColorV#toggle_arrow(0)<cr>
-    nmap <silent><buffer> r :call ColorV#toggle_arrow(1)<cr>
-    nmap <silent><buffer> g :call ColorV#toggle_arrow(2)<cr>
-    nmap <silent><buffer> gg :call ColorV#toggle_arrow(2)<cr>
-    nmap <silent><buffer> b :call ColorV#toggle_arrow(3)<cr>
+    nmap <silent><buffer> x :call <SID>toggle_arrow(0)<cr>
+    nmap <silent><buffer> r :call <SID>toggle_arrow(1)<cr>
+    nmap <silent><buffer> g :call <SID>toggle_arrow(2)<cr>
+    nmap <silent><buffer> gg :call <SID>toggle_arrow(2)<cr>
+    nmap <silent><buffer> b :call <SID>toggle_arrow(3)<cr>
 
-    nmap <silent><buffer> u :call ColorV#toggle_arrow(4)<cr>
-    nmap <silent><buffer> s :call ColorV#toggle_arrow(5)<cr>
-    nmap <silent><buffer> v :call ColorV#toggle_arrow(6)<cr>
+    nmap <silent><buffer> u :call <SID>toggle_arrow(4)<cr>
+    nmap <silent><buffer> s :call <SID>toggle_arrow(5)<cr>
+    nmap <silent><buffer> v :call <SID>toggle_arrow(6)<cr>
 
     "edit
-    nmap <silent><buffer> a :call ColorV#edit_at_arrow()<cr>
-    nmap <silent><buffer> i :call ColorV#edit_at_arrow()<cr>
-    nmap <silent><buffer> <Enter> :call ColorV#edit_at_arrow()<cr>
-    nmap <silent><buffer> <kEnter> :call ColorV#edit_at_arrow()<cr>
+    nmap <silent><buffer> a :call <SID>edit_at_arrow()<cr>
+    nmap <silent><buffer> i :call <SID>edit_at_arrow()<cr>
+    nmap <silent><buffer> <Enter> :call <SID>edit_at_arrow()<cr>
+    nmap <silent><buffer> <kEnter> :call <SID>edit_at_arrow()<cr>
 
     "edit name
-    nmap <silent><buffer> na :call ColorV#edit_colorname()<cr>
-    nmap <silent><buffer> ne :call ColorV#edit_colorname()<cr>
-    nmap <silent><buffer> nx :call ColorV#edit_colorname("X11")<cr>
+    nmap <silent><buffer> na :call <SID>edit_colorname()<cr>
+    nmap <silent><buffer> ne :call <SID>edit_colorname()<cr>
+    nmap <silent><buffer> nx :call <SID>edit_colorname("X11")<cr>
 
     " WONTFIX:quick quit without wait for next key after q
-    nmap <silent><buffer> q :call ColorV#exit()<cr>
-    nmap <silent><buffer> Q :call ColorV#exit()<cr>
-    "nmap <silent><buffer> <esc> :call ColorV#exit()<cr>
-    nmap <silent><buffer> <c-w>q :call ColorV#exit()<cr>
-    nmap <silent><buffer> <c-w><c-q> :call ColorV#exit()<cr>
-    nmap <silent><buffer> ? :call ColorV#switching_tips()<cr>
+    nmap <silent><buffer> q :call <SID>exit()<cr>
+    nmap <silent><buffer> Q :call <SID>exit()<cr>
+    "nmap <silent><buffer> <esc> :call <SID>exit()<cr>
+    nmap <silent><buffer> <c-w>q :call <SID>exit()<cr>
+    nmap <silent><buffer> <c-w><c-q> :call <SID>exit()<cr>
+    nmap <silent><buffer> ? :call <SID>echo_tips()<cr>
     nmap <silent><buffer> H :h ColorV<cr>
     nmap <silent><buffer> <F1> :h ColorV<cr>
 
     "Copy color 
-    "map <silent><buffer> <c-c> :call ColorV#copy("","+")<cr>
-    map <silent><buffer> C :call ColorV#copy("","+")<cr>
-    map <silent><buffer> cc :call ColorV#copy("","+")<cr>
-    map <silent><buffer> cx :call ColorV#copy("0x","+")<cr>
-    map <silent><buffer> cs :call ColorV#copy("#","+")<cr>
-    map <silent><buffer> c# :call ColorV#copy("#","+")<cr>
-    map <silent><buffer> cr :call ColorV#copy("RGB","+")<cr>
-    map <silent><buffer> cp :call ColorV#copy("RGBP","+")<cr>
-    map <silent><buffer> caa :call ColorV#copy("RGBA","+")<cr>
-    map <silent><buffer> cap :call ColorV#copy("RGBAP","+")<cr>
-    map <silent><buffer> cn :call ColorV#copy("NAME","+")<cr>
-    map <silent><buffer> ce :call ColorV#copy("NAME","+")<cr>
+    "map <silent><buffer> <c-c> :call <SID>copy("","+")<cr>
+    map <silent><buffer> C :call <SID>copy("","+")<cr>
+    map <silent><buffer> cc :call <SID>copy("","+")<cr>
+    map <silent><buffer> cx :call <SID>copy("0x","+")<cr>
+    map <silent><buffer> cs :call <SID>copy("#","+")<cr>
+    map <silent><buffer> c# :call <SID>copy("#","+")<cr>
+    map <silent><buffer> cr :call <SID>copy("RGB","+")<cr>
+    map <silent><buffer> cp :call <SID>copy("RGBP","+")<cr>
+    map <silent><buffer> caa :call <SID>copy("RGBA","+")<cr>
+    map <silent><buffer> cap :call <SID>copy("RGBAP","+")<cr>
+    map <silent><buffer> cn :call <SID>copy("NAME","+")<cr>
+    map <silent><buffer> ce :call <SID>copy("NAME","+")<cr>
 
-    map <silent><buffer> Y :call ColorV#copy()<cr>
-    map <silent><buffer> yy :call ColorV#copy()<cr>
-    map <silent><buffer> yx :call ColorV#copy("0x")<cr>
-    map <silent><buffer> ys :call ColorV#copy("#")<cr>
-    map <silent><buffer> y# :call ColorV#copy("#")<cr>
-    map <silent><buffer> yr :call ColorV#copy("RGB")<cr>
-    map <silent><buffer> yp :call ColorV#copy("RGBP")<cr>
-    map <silent><buffer> yaa :call ColorV#copy("RGBA")<cr>
-    map <silent><buffer> yap :call ColorV#copy("RGBAP")<cr>
-    map <silent><buffer> yn :call ColorV#copy("NAME")<cr>
-    map <silent><buffer> ye :call ColorV#copy("NAME")<cr>
+    map <silent><buffer> Y :call <SID>copy()<cr>
+    map <silent><buffer> yy :call <SID>copy()<cr>
+    map <silent><buffer> yx :call <SID>copy("0x")<cr>
+    map <silent><buffer> ys :call <SID>copy("#")<cr>
+    map <silent><buffer> y# :call <SID>copy("#")<cr>
+    map <silent><buffer> yr :call <SID>copy("RGB")<cr>
+    map <silent><buffer> yp :call <SID>copy("RGBP")<cr>
+    map <silent><buffer> yaa :call <SID>copy("RGBA")<cr>
+    map <silent><buffer> yap :call <SID>copy("RGBAP")<cr>
+    map <silent><buffer> yn :call <SID>copy("NAME")<cr>
+    map <silent><buffer> ye :call <SID>copy("NAME")<cr>
     
     "paste color
-    map <silent><buffer> <c-v> :call ColorV#paste("+")<cr>
-    map <silent><buffer> p :call ColorV#paste()<cr>
-    map <silent><buffer> P :call ColorV#paste()<cr>
-    map <silent><buffer> <middlemouse> :call ColorV#paste("+")<cr>
+    map <silent><buffer> <c-v> :call <SID>paste("+")<cr>
+    map <silent><buffer> p :call <SID>paste()<cr>
+    map <silent><buffer> P :call <SID>paste()<cr>
+    map <silent><buffer> <middlemouse> :call <SID>paste("+")<cr>
 
 endfunction "}}}
 "}}}
@@ -1501,23 +1517,23 @@ endfunction
 "}}}
 function! s:caution(msg) "{{{
     echohl Modemsg
-    exe "echom \"[ColorV]:".escape(a:msg,'"')."\""
+    exe "echom \"[ColorV] ".escape(a:msg,'"')."\""
     echohl Normal
 endfunction "}}}
 function! s:warning(msg) "{{{
     echohl Warningmsg
-    exe "echom \"[ColorV]:".escape(a:msg,'"')."\""
+    exe "echom \"[ColorV] ".escape(a:msg,'"')."\""
     echohl Normal
 endfunction "}}}
 function! s:echo(msg) "{{{
     if g:ColorV_silent_set==0
-        exe "echom \"[ColorV]:".a:msg."\""
+        exe "echom \"[ColorV] ".a:msg."\""
     else
     	echom ""
     endif
 endfunction "}}}
 
-function! ColorV#paste(...) "{{{
+function! s:paste(...) "{{{
     if  exists("a:1") && a:1=="\""
         let l:cliptext = @"
         call s:echo("Paste with Clipboard(reg\"): ".l:cliptext)
@@ -1539,10 +1555,10 @@ function! ColorV#paste(...) "{{{
     	return
     endif
     call s:echo("Set with first color in clipboard. HEX: [".hex."]")
-    call s:set_buf_hex(hex)
+    call s:draw_buf_hex(hex)
 
 endfunction "}}}
-function! ColorV#copy(...) "{{{
+function! s:copy(...) "{{{
     let fmt=exists("a:1") ? a:1 : "HEX"
     let l:cliptext=s:hex2txt(g:ColorV.HEX,fmt)
     let g:ColorV.history_copy=exists("g:ColorV.history_copy") ? g:ColorV.history_copy : []
@@ -1624,7 +1640,7 @@ function! ColorV#change_word(...) "{{{
         call ColorV#Win(s:mode,hex)
     endif
 endfunction "}}}
-function! ColorV#exit() "{{{
+function! s:exit() "{{{
     if expand('%') !=g:ColorV.name
         call s:echo("Not the [ColorV] buffer")
         return
