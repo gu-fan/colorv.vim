@@ -1301,7 +1301,9 @@ function! s:map_define() "{{{
     map <silent><buffer> p :call <SID>paste()<cr>
     map <silent><buffer> P :call <SID>paste()<cr>
     map <silent><buffer> <middlemouse> :call <SID>paste("+")<cr>
-
+    
+    "show all text
+    noremap <silent><buffer> <c-a> ggVG
 endfunction "}}}
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

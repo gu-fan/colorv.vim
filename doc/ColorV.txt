@@ -198,7 +198,12 @@ current color. You can use |g:ColorV_show_star| to set it show or not.
     Except, no main pallet.
     Instead, a Saturation line and a Value line.
 
-
+                                                *colorv-interface-colorname*
+    If there is a color name for current HEX, it's name will show
+    in the right top of ColorV window. 
+    In mini mode it is showing under the second line (Value line) ,use ctrl-A
+    to see that.
+    See |colorv-colorname| for details.
 ==============================================================================
 COMMANDS                                            *colorv-commands*
 
@@ -310,7 +315,7 @@ which was used with cut/copy between other applications.
                                                     *colorv-colorname*
     The colorname are the the name of the colors, like 'red', 'green', 
     'blue', 'OrangeRed', 'cornsilk'
-
+    
     If not the exact hex of colors, then add '~' and '~~' to the end,
     the approximation rate to exact colors can be adjusted by
     |g:ColorV_name_approx|
