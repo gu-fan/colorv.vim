@@ -39,12 +39,12 @@ let s:mini_pos=[["Hex:",1,42,11],
     \["H:",1,32,5],["S:",2,32,5],["V:",3,32,5]
     \]
 let s:tips_list=[
-            \'Choose Color :2-Click/2-Space/Ctrl-K/Ctrl-J',
-            \'Toggle:<TAB>/<C-N>/J     Backward:<S-TAB>/<C-P>/K',
+            \'Choose Color:2-Click/2-Space/Ctrl-K/Ctrl-J',
+            \'Toggle:<TAB>/<C-N>/J    Back:<S-TAB>/<C-P>/K',
             \'Goto Parameter:x/r/gg/b/u/s/v ',
-            \'Edit Parameter:x:Enter/a/i',
-            \'Colorname(W3C): na/ne       (X11):nx ',
-            \'Yank(reg"):yy/yr/ys/yn/... (reg+):cc/cr/cs/cn/... ',
+            \'Edit Parameter:Enter/a/i',
+            \'Colorname(W3C): na/ne      (X11):nx',
+            \'Yank(reg"):yy/yr/ys/yn/... (reg+):cc/cr/cs/cn/...',
             \'Paste:Ctrl-V/p',
             \'Help:F1/H      ',
             \'Quit:q/Q/Ctrl-W_q',
@@ -505,10 +505,10 @@ function! s:init_misc() "{{{
     hi arrowCheck guibg=bg guifg=fg gui=Bold,reverse
     if s:mode=="max" || s:mode=="mid"
         let arrow_ptn='\(\%<6l\%>2l>.\{6}\|\%2l>.\{12}
-                    \\|\%1l\%>53c[\.?x]\)'
+                    \\|\%1l\%>52c?\)'
     elseif s:mode=="min"
         let arrow_ptn='\(\%<6l\%<39c>.\{6}\|\%1l\%>39c>.\{12}
-                    \\|\%1l\%>53c[\.?x]\)'
+                    \\|\%1l\%>52c?\)'
     endif
     if !exists("s:misc_dict")|let s:misc_dict={}|endif
     let s:misc_dict["arrowCheck"]=matchadd("arrowCheck",arrow_ptn)
@@ -578,55 +578,59 @@ function! s:draw_text(...) "{{{
         let line[1]=s:line("G:".g."   S:".s,24)
         let line[2]=s:line("B:".b."   V:".v,24)
     endif
- 
-    if exists("g:ColorV_show_quit") && g:ColorV_show_quit==1 
-        let line[0]=s:line_sub(line[0],"x",55)
-    endif
-
+    
+    " quit mark
+    " if exists("g:ColorV_show_quit") && g:ColorV_show_quit==1 
+    "     let line[0]=s:line_sub(line[0],"X",60)
+    " endif
+    
+    " tips mark (Question mark)
     if exists("g:ColorV_show_tips") && g:ColorV_show_tips==1
-    	let l:show_Qo=0
-        let l:show_tips=1
-    elseif exists("g:ColorV_show_tips") && g:ColorV_show_tips==2
-    	let l:show_Qo=1
-        let l:show_tips=0
-    else  
-    	let l:show_Qo=0
-        let l:show_tips=0
+    	" let l:show_Qo=0
+        let line[0]=s:line_sub(line[0],"?",54)
+        " let l:show_tips=1
+    " elseif exists("g:ColorV_show_tips") && g:ColorV_show_tips==2
+    " 	" let l:show_Qo=1
+    "     let l:show_tips=0
+    " else  
+    " 	" let l:show_Qo=0
+    "     let l:show_tips=0
     endif
-    if exists("s:toggle_tips") && s:toggle_tips==0
-        let l:show_tips=0
-    elseif exists("s:toggle_tips") && s:toggle_tips==1
-        let l:show_tips=1
-    endif
+    " if exists("s:toggle_tips") && s:toggle_tips==0
+    "     let l:show_tips=0
+    " elseif exists("s:toggle_tips") && s:toggle_tips==1
+    "     let l:show_tips=1
+    " endif
     
     "tips
-    if s:mode=="max" 
-        if l:show_tips 
-            " let line[6]=s:line_sub(line[6],"Choose:2-Click/2-Space",24)
-            " let line[7]=s:line_sub(line[7],"Toggle:TAB     Edit:Enter",24)
-            " let line[8]=s:line_sub(line[8],"Yank:yy/yr...  Paste:^V/p",24)
-            " let line[9]=s:line_sub(line[9],"Help:F1/H      Quit:q/Q/^Wq",24)
-            if l:show_Qo==1
-                let line[0]=s:line_sub(line[0],".",54)
-            endif
-        endif
-        if l:show_Qo && !l:show_tips
-            let line[0]=s:line_sub(line[0],"?",54)
-        endif
-        elseif s:mode=="min" || s:mode=="mid"
-        if l:show_tips
-            " let line[0]=s:line_sub(line[0],"Edit:Enter",59)
-            " let line[1]=s:line_sub(line[1],"Help:F1/H",59)
-            " let line[2]=s:line_sub(line[2],"Quit:q/^Wq",59)
-            if l:show_Qo
-                let line[0]=s:line_sub(line[0],".",54)
-            endif
-        endif
-        if l:show_Qo && !l:show_tips
-            let line[0]=s:line_sub(line[0],"?",54)
-        endif
-    endif
-
+    " if s:mode=="max" 
+        " if l:show_tips 
+        "     " let line[6]=s:line_sub(line[6],"Choose:2-Click/2-Space",24)
+        "     " let line[7]=s:line_sub(line[7],"Toggle:TAB     Edit:Enter",24)
+        "     " let line[8]=s:line_sub(line[8],"Yank:yy/yr...  Paste:^V/p",24)
+        "     " let line[9]=s:line_sub(line[9],"Help:F1/H      Quit:q/Q/^Wq",24)
+        "     " if l:show_Qo==1
+        "         let line[0]=s:line_sub(line[0],"?",54)
+        "     " endif
+        " endif
+        " if l:show_Qo && !l:show_tips
+        "     let line[0]=s:line_sub(line[0],"?",54)
+        " endif
+    " elseif s:mode=="min" || s:mode=="mid"
+    "     if l:show_tips
+    "         " let line[0]=s:line_sub(line[0],"Edit:Enter",59)
+    "         " let line[1]=s:line_sub(line[1],"Help:F1/H",59)
+    "         " let line[2]=s:line_sub(line[2],"Quit:q/^Wq",59)
+    "         " if l:show_Qo
+    "             let line[0]=s:line_sub(line[0],".",54)
+    "         " endif
+    "     endif
+    "     " if l:show_Qo && !l:show_tips
+    "     "     let line[0]=s:line_sub(line[0],"?",54)
+    "     " endif
+    " endif
+    
+    " hello world
     let [h1,h2,h3]=[s:his_color0,s:his_color1,s:his_color2]
     for [x,y,z,t] in s:clrf
         "if [h1,h2,h3] == [x,y,z]
@@ -644,7 +648,8 @@ function! s:draw_text(...) "{{{
             break
         endif
     endfor
-
+    
+    " colorname
     let nam=s:hex2nam(hex)
     if !empty(nam)
         if s:mode=="min"
@@ -801,10 +806,12 @@ function! s:set_in_pos(...) "{{{
         call s:draw_history_block(hex)
         "call s:update_text(hex)
         call s:draw_text(hex)
+        call s:echo("HEX(Pallet): ".hex)
 
+    "hue line
     elseif l==1 &&  c<=s:pal_W 
         let [h1,s1,v1]=ColorV#rgb2hsv(ColorV#hex2rgb(s:hueline_list[(c-1)]))
-        call s:echo("Hue(Line): ".h1)
+        call s:echo("Hue(Hue Line): ".h1)
         let hex=ColorV#rgb2hex(ColorV#hsv2rgb([h1,s,v]))
         call s:draw_buf_hex(hex)
     elseif s:mode=="min" && l==2 && ( c<=s:pal_W  )
@@ -879,13 +886,13 @@ function! s:set_in_pos(...) "{{{
             return -1
         endif
     "}}}
-    elseif l==1 && c==54 &&  strpart(getline(1),53)=~'[?\.]'
+    elseif l==1 && c==54 && strpart(getline(1),53,1)=~'?'
         call s:echo_tips()
         setl noma
         return -1
-    elseif l==1 && c==55  && strpart(getline(1),54)=~'x'
-        call s:exit()
-        return -1
+    " elseif l==1 && c==60 && strpart(getline(1),59,1)=~'X'
+    "     call s:exit()
+    "     return -1
     else 
     	call s:warning("Not Proper Position.")
         setl noma
@@ -1152,7 +1159,7 @@ function! ColorV#Win(...) "{{{
         if exists("hex_list[0][0]")
             let hex=s:fmt_hex(hex_list[0][0])
             " let fmt=hex_list[0][3]
-            call s:caution("Use formatted [".hex."]") 
+            call s:caution("Use [".hex."]") 
         "elseif !len("a:2")
             "let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
             "let s:skip_his_block=1

@@ -398,13 +398,9 @@ OPTIONS                                             *colorv-options*
                                 color on the hue-line
 
                                                 *g:ColorV_show_tips*
-                                                (default=2)
+                                                (default=1)
     g:ColorV_show_tips      Show tips in normal and mini window.
-                            will show tip mark(?) if set to 2.
-
-                                                *g:ColorV_show_quit*
-                                                (default=0)
-    g:ColorV_show_quit      Show Quit mark if set to 1.
+                            will show tip mark(?) if set to 1.
 
                                                 *g:ColorV_show_star*
                                                 (default=1)
@@ -469,7 +465,6 @@ EXAMPLE                                             *colorv-example*
 
     "Keep It Simple and Silent
     let g:ColorV_show_tips=0
-    let g:ColorV_show_quit=0
     let g:ColorV_show_star=1
     let g:ColorV_word_mini=1
     let g:ColorV_silent_set=1
@@ -583,7 +578,9 @@ LICENSE                                             *colorv-license*
 ==============================================================================
 HISTORY                                             *colorv-history*
 " 1.4.0
+"FIXED: 110602  rmv quit mark. fix silent_set to 0 at default.
 " DONE: 110602  change tip text. add g:ColorV_echo_tips (0/1/2)
+" DONE: 110602  change arrow_ptn color to reverse.
 " DONE: 110602  fix the pallet. no black line and white column now. 
 " DONE: 110602  add max/mid/min mode. default is mid mode
 " DONE: 110602  tips only shows in cmdline now

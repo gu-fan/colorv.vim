@@ -25,7 +25,7 @@ let g:ColorV.rgb=[]
 let g:ColorV.hsv=[]
 
 if !exists('g:ColorV_silent_set')
-    let g:ColorV_silent_set=1
+    let g:ColorV_silent_set=0
 endif
 if !exists('g:ColorV_set_register')
     let g:ColorV_set_register=0
@@ -37,11 +37,11 @@ if !exists('g:ColorV_dynamic_hue_step')
     let g:ColorV_dynamic_hue_step=6
 endif
 if !exists('g:ColorV_show_tips')
-    let g:ColorV_show_tips=2
+    let g:ColorV_show_tips=1
 endif
-if !exists('g:ColorV_show_quit')
-    let g:ColorV_show_quit=0
-endif
+" if !exists('g:ColorV_show_quit')
+"     let g:ColorV_show_quit=0
+" endif
 if !exists('g:ColorV_show_star')
     let g:ColorV_show_star=1
 endif
