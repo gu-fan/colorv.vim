@@ -4,7 +4,7 @@
 " Summary: A color manager with color toolkits
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 1.3.0 
+" Version: 1.4.0 
 " Last Update: 2011-06-01
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
@@ -20,13 +20,11 @@ let g:colorV_loaded = 1
 "SVAR: {{{
 "s:mode ()
 " TODO: add s:mode max mid min
-let s:mode= exists("s:mode") ? s:mode : "normal"
+let s:mode= exists("s:mode") ? s:mode : "max"
 let [s:pal_W,s:pal_H]=[20,10]
 let [s:poff_x,s:poff_y]=[0,1]
-let [s:max,s:mid,s:min]=[s:pal_H+1,6,1]
-let s:norm_height=s:pal_H+1
-let s:mini_height=3
-let s:mid_height=6
+let [s:max_h,s:mid_h,s:min_h]=[11,6,3]
+
 let s:hue_width=30
 let s:sat_width=30
 let s:val_width=30
@@ -55,7 +53,7 @@ let s:fmt.HEX='\x\@<!\x\{6}\x\@!'
 "#fff only
 let s:fmt.HEX3='#\zs\x\{3}\x\@!'
 let s:t='fghDPijmrYFGtudBevwxklyzEIZOJLMnHsaKbcopqNACQRSTUVWX'
-" TODO: use X11 in *.vim
+" DONE: 110601  use X11 in *.vim
 "X11 Standard
 let s:clrnX11=[['Gray', 'BEBEBE'], ['Green', '00FF00']
             \, ['Maroon', 'B03060'], ['Purple', 'A020F0']]
@@ -333,7 +331,7 @@ endfunction "}}}
 function! s:draw_history_block(hex) "{{{
     setl ma
     let hex= strpart(printf("%06x",'0x'.a:hex),0,6) 
-    let g:ColorV.history_set=exists("g:ColorV.history_set") ? g:ColorV.history_set : []
+    let g:ColorV.history_set=exists("g:ColorV.history_set") ? g:ColorV.history_set : ['ff0000']
     
     if exists("s:skip_his_block") && s:skip_his_block==1
     	let s:skip_his_block=0
@@ -493,13 +491,14 @@ function! s:clear_hsvmatch() "{{{
     let s:hsv_dict={}
 endfunction "}}}
 
-function! s:draw_misc() "{{{
+function! s:init_misc() "{{{
     call s:clear_miscmatch()
-    hi arrowCheck guibg=#b30000 guifg=#cccccc gui=Bold
-    if s:mode=="normal"
+    " hi arrowCheck guibg=#b30000 guifg=#cccccc gui=Bold
+    hi arrowCheck guibg=bg guifg=fg gui=Bold,reverse
+    if s:mode=="max" || s:mode=="mid"
         let arrow_ptn='\(\%<6l\%>2l>.\{6}\|\%2l>.\{12}
                     \\|\%1l\%>53c[\.?x]\)'
-    elseif s:mode=="mini"
+    elseif s:mode=="min"
         let arrow_ptn='\(\%<6l\%<39c>.\{6}\|\%1l\%>39c>.\{12}
                     \\|\%1l\%>53c[\.?x]\)'
     endif
@@ -534,7 +533,7 @@ endfunction "}}}
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "DRAW_TEXT:{{{1
-function! s:init_text(...) "{{{
+function! s:draw_text(...) "{{{
     setl ma
     let cur=s:clear_text()
     let hex=exists("a:1") ? printf("%06x",'0x'.a:1) : 
@@ -544,10 +543,12 @@ function! s:init_text(...) "{{{
     let [r,g,b]=[printf("%3d",r),printf("%3d",g),printf("%3d",b)]
     let [h,s,v]=[printf("%3d",h),printf("%3d",s),printf("%3d",v)]
     
-    if s:mode=="normal"
-    	let height=s:norm_height
-    elseif s:mode=="mini"
-        let height=s:mini_height
+    if s:mode=="max"
+    	let height=s:max_h
+    elseif s:mode=="min"
+        let height=s:min_h
+    elseif s:mode=="mid"
+        let height=s:mid_h
     endif
     
     let line=[] 
@@ -556,13 +557,13 @@ function! s:init_text(...) "{{{
         call add(line,m)
     endfor
 
-    if s:mode=="normal"
+    if s:mode=="max" || s:mode=="mid"
         let line[0]=s:line("ColorV ".g:ColorV.ver,3)
         let line[1]=s:line("Hex:#".hex,24)
         let line[2]=s:line("R:".r."   H:".h,24)
         let line[3]=s:line("G:".g."   S:".s,24)
         let line[4]=s:line("B:".b."   V:".v,24)
-    elseif s:mode=="mini"
+    elseif s:mode=="min"
         let line[0]=s:line("ColorV ".g:ColorV.ver,3)
         let line[0]=s:line_sub(line[0],"R:".r."   H:".h,24)
         let line[0]=s:line_sub(line[0],"Hex:#".hex,42)
@@ -589,12 +590,14 @@ function! s:init_text(...) "{{{
     elseif exists("s:toggle_tips") && s:toggle_tips==1
         let l:show_tips=1
     endif
-    if s:mode=="normal"
+    
+    "tips
+    if s:mode=="max" 
         if l:show_tips 
-            let line[6]=s:line_sub(line[6],"Choose:2-Click/2-Space",24)
-            let line[7]=s:line_sub(line[7],"Toggle:TAB     Edit:Enter",24)
-            let line[8]=s:line_sub(line[8],"Yank:yy/yr...  Paste:^V/p",24)
-            let line[9]=s:line_sub(line[9],"Help:F1/H      Quit:q/Q/^Wq",24)
+            " let line[6]=s:line_sub(line[6],"Choose:2-Click/2-Space",24)
+            " let line[7]=s:line_sub(line[7],"Toggle:TAB     Edit:Enter",24)
+            " let line[8]=s:line_sub(line[8],"Yank:yy/yr...  Paste:^V/p",24)
+            " let line[9]=s:line_sub(line[9],"Help:F1/H      Quit:q/Q/^Wq",24)
             if l:show_Qo==1
                 let line[0]=s:line_sub(line[0],".",54)
             endif
@@ -602,11 +605,11 @@ function! s:init_text(...) "{{{
         if l:show_Qo && !l:show_tips
             let line[0]=s:line_sub(line[0],"?",54)
         endif
-        elseif s:mode=="mini"
+        elseif s:mode=="min" || s:mode=="mid"
         if l:show_tips
-            let line[0]=s:line_sub(line[0],"Edit:Enter",59)
-            let line[1]=s:line_sub(line[1],"Help:F1/H",59)
-            let line[2]=s:line_sub(line[2],"Quit:q/^Wq",59)
+            " let line[0]=s:line_sub(line[0],"Edit:Enter",59)
+            " let line[1]=s:line_sub(line[1],"Help:F1/H",59)
+            " let line[2]=s:line_sub(line[2],"Quit:q/^Wq",59)
             if l:show_Qo
                 let line[0]=s:line_sub(line[0],".",54)
             endif
@@ -623,7 +626,7 @@ function! s:init_text(...) "{{{
         if s:approx2(h1,x) && s:approx2(h2,y) && s:approx2(h3,z)
             let t=tr(t,s:t,s:e)
             let a=tr(s:a,s:t,s:e)
-            if s:mode=="mini"
+            if s:mode=="min"
                 let line[1]=s:line_sub(line[1],t,40)
                 let line[2]=s:line_sub(line[2],a,50)
             else
@@ -636,7 +639,7 @@ function! s:init_text(...) "{{{
 
     let nam=s:hex2nam(hex)
     if !empty(nam)
-        if s:mode=="mini"
+        if s:mode=="min"
         let line[1]=s:line_sub(line[1],nam,3)
         else
         let line[0]=s:line_sub(line[0],nam,40)
@@ -665,7 +668,8 @@ endfunction "}}}
 function! s:get_star_pos() "{{{
     let HSV=g:ColorV.HSV
     let [h,s,v]=[HSV.H,HSV.S,HSV.V]
-    if s:mode=="normal"
+    
+    if s:mode=="max" || s:mode=="mid"
         let h_step=100.0/(s:pal_H-1)
         let w_step=100.0/(s:pal_W-1)
         let l=float2nr(round((100.0-v)/h_step))+1+s:poff_y
@@ -677,7 +681,7 @@ function! s:get_star_pos() "{{{
             let c= s:pal_W+s:poff_x
         endif
     
-    elseif s:mode=="mini"
+    elseif s:mode=="min"
         " XXX: there should be 3(or 2 if with dynamic hueline) stars here , 
         " but the saturation star background is different .
         " So NOT do this .
@@ -724,27 +728,20 @@ function! s:set_buf_hex(hex) "{{{
         call s:warning("Not [ColorV] buffer")
         return
     endif
-    
     setl ma
-
     let hex= printf("%06x",'0x'.a:hex) 
-
-
     call s:update_global(hex)
-
     call s:draw_hueLine(1)
-    
-    if s:mode == "mini"
+    if s:mode == "min"
         call s:draw_satLine(2)
         call s:draw_valLine(3)
     else
         call s:draw_pallet_hex(hex)
     endif
-    
+
+    call s:init_misc()
     call s:draw_history_block(hex)
-    call s:init_text(hex)
-
-
+    call s:draw_text(hex)
     setl noma
 endfunction "}}}
 
@@ -788,13 +785,13 @@ function! ColorV#set_in_pos(...) "{{{
     let [r,g,b]=[clr.RGB.R,clr.RGB.G,clr.RGB.B]
     let [h,s,v]=[clr.HSV.H,clr.HSV.S,clr.HSV.V]
     "pallet
-    if s:mode=="normal" && l > s:poff_y && l<= s:pal_H+s:poff_y && c<= s:pal_W
+    if s:mode=="max" || s:mode=="mid" && l > s:poff_y && l<= s:pal_H+s:poff_y && c<= s:pal_W
         let idx=(l-s:poff_y-1)*s:pal_W+c-s:poff_x-1
         let hex=b:pal_list[idx]
         call s:update_global(hex)
         call s:draw_history_block(hex)
         "call s:update_text(hex)
-        call s:init_text(hex)
+        call s:draw_text(hex)
     " WORKAROUND: 110519  error while between s:pal_w and hue_width
     " delete hue_width to avoid this
     elseif l==1 && ( c<=s:pal_W  )
@@ -802,14 +799,14 @@ function! ColorV#set_in_pos(...) "{{{
         call s:echo("Hue(Line): ".h1)
         let hex=ColorV#rgb2hex(ColorV#hsv2rgb([h1,s,v]))
         call s:set_buf_hex(hex)
-    elseif s:mode=="mini" && l==2 && ( c<=s:pal_W  )
+    elseif s:mode=="min" && l==2 && ( c<=s:pal_W  )
         " let hex=s:satline_list[(c-1)]
         let [h1,s1,v1]=ColorV#rgb2hsv(ColorV#hex2rgb(s:satline_list[(c-1)]))
         call s:echo("SAT(Saturation Line): ".s1)
 
         let hex=ColorV#rgb2hex(ColorV#hsv2rgb([h,s1,v]))
         call s:set_buf_hex(hex)
-    elseif s:mode=="mini" && l==3 && ( c<=s:pal_W  )
+    elseif s:mode=="min" && l==3 && ( c<=s:pal_W  )
         " let hex=s:valline_list[(c-1)]
         let [h1,s1,v1]=ColorV#rgb2hsv(ColorV#hex2rgb(s:valline_list[(c-1)]))
         call s:echo("VAL(Value Line): ".v1)
@@ -830,18 +827,18 @@ function! ColorV#set_in_pos(...) "{{{
             let hex=s:his_color2
             call s:echo("HEX(history 2): ".hex)
         endif
-        " if s:mode=="mini"
+        " if s:mode=="min"
         call s:set_buf_hex(hex)
         " else
         "     call s:update_global(hex)
         "     call s:draw_history_block(hex)
         "     "call s:update_text(hex)
-        "     call s:init_text(hex)
+        "     call s:draw_text(hex)
         " endif
     "}}}
     " Arrow section "{{{
     " WORKAROUND: add mini mode
-    elseif s:mode=="normal" && l<=5 && l>=2 && c>=24 && c<37
+    elseif  s:mode=="max" || s:mode=="mid" && l<=5 && l>=2 && c>=24 && c<37
         let idx=0
         let l:in_pos=0
         for [name,y,x,width] in s:norm_pos
@@ -857,7 +854,7 @@ function! ColorV#set_in_pos(...) "{{{
             setl noma
             return -1
         endif
-    elseif s:mode=="mini" && l<=3 && c>=24 && c<=52
+    elseif s:mode=="min" && l<=3 && c>=24 && c<=52
         let idx=0
         let l:in_pos=0
         for [name,y,x,width] in s:mini_pos
@@ -898,9 +895,9 @@ endfunction "}}}
 function! ColorV#toggle_arrow(...) "{{{
     setl ma
     if !exists("b:arrowck_pos")|let b:arrowck_pos=0|endif
-    if s:mode=="normal"
+    if s:mode=="max" || s:mode=="mid"
         let l:cur_pos=s:norm_pos
-    elseif s:mode=="mini"
+    elseif s:mode=="min"
         let l:cur_pos = s:mini_pos
     endif
     let len=len(l:cur_pos)
@@ -1027,11 +1024,11 @@ function! ColorV#switching_tips() "{{{
     let txt_list=s:tips_list
     if exists("s:toggle_tips") && s:toggle_tips==1
     	let s:toggle_tips=0
-    	call s:init_text()
+    	" call s:draw_text()
     	call s:seq_echo(txt_list)
     elseif !exists("s:toggle_tips") || s:toggle_tips==0
     	let s:toggle_tips=1
-    	call s:init_text()
+    	" call s:draw_text()
     	call s:seq_echo(txt_list)
     endif
 endfunction "}}}
@@ -1064,8 +1061,8 @@ endfun "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "INIT: "{{{1
 function! ColorV#Win(...) "{{{
-    "window check
-    if bufexists(g:ColorV.name) "{{{
+    " window check "{{{
+    if bufexists(g:ColorV.name) 
     	let nr=bufnr('\[ColorV\]')
     	let winnr=bufwinnr(nr)
         if winnr>0 && bufname(nr)==g:ColorV.name
@@ -1096,8 +1093,8 @@ function! ColorV#Win(...) "{{{
         execute  "botright" 'new' 
         silent! file [ColorV]
     endif "}}}
-
-    setl ft=ColorV "{{{
+    " local setting "{{{
+    setl ft=ColorV 
     setl nocursorline nocursorcolumn
     setl tw=0
     setl buftype=nofile
@@ -1113,8 +1110,8 @@ function! ColorV#Win(...) "{{{
     setl sidescrolloff=0
     call s:init_hide()
     call s:map_define() "}}}
-    
-    if exists("a:2") "{{{
+    " hex set "{{{
+    if exists("a:2") 
     	"skip history if no new hex 
         let hex_list=s:txt2hex(a:2)
         if exists("hex_list[0][0]")
@@ -1135,43 +1132,58 @@ function! ColorV#Win(...) "{{{
         let s:skip_his_block=1
     endif "}}}
 
-    if exists("a:1") && a:1== "mini" "{{{
-    	let s:mode="mini"
+    " call s:update_global(hex)
+    " call s:init_misc()
+
+    " draw window "{{{
+    if exists("a:1") && a:1== "min" 
+    	let s:mode="min"
         if winnr('$') != 1
-            execute 'resize' s:mini_height
+            execute 'resize' s:min_h
             redraw
         endif
-    	call s:init_mini(hex)
+    	call s:set_buf_hex(hex)
+    elseif  exists("a:1") && a:1== "max"
+    	let s:mode="max" 
+    	let s:pal_H=s:max_h-1
+        if winnr('$') != 1
+            execute 'resize' s:max_h
+            redraw
+        endif
+        call s:set_buf_hex(hex)
     else
-    	let s:mode="normal"
+    	let s:mode="mid" 
+    	let s:pal_H=s:mid_h-1
         if winnr('$') != 1
-            execute 'resize' s:norm_height
+            execute 'resize' s:mid_h
             redraw
         endif
-        call s:init_normal(hex)
+        call s:set_buf_hex(hex)
+    	
     endif "}}}
 
 endfunction "}}}
-function! s:init_normal(hex) "{{{
-    let hex= s:fmt_hex(a:hex)
-    call s:update_global(hex)
-    call s:draw_hueLine(1)
-    call s:draw_pallet_hex(hex)
-    call s:draw_history_block(hex)
-    call s:draw_misc()
-    call s:init_text(hex)
-endfunction "}}}
-function! s:init_mini(hex) "{{{
-    let hex= s:fmt_hex(a:hex)
-    call s:update_global(hex)
-    call s:draw_hueLine(1)
-    call s:draw_satLine(2)
-    call s:draw_valLine(3)
-    call s:draw_history_block(hex)
-    call s:draw_misc()
-    call s:init_text(hex)
-endfunction
-"}}}
+" function! s:init_max(hex) "{{{
+"     let hex= s:fmt_hex(a:hex)
+"     call s:update_global(hex)
+"     call s:draw_hueLine(1)
+"     call s:draw_pallet_hex(hex)
+"     call s:draw_history_block(hex)
+"     call s:init_misc()
+"     call s:draw_text(hex)
+" endfunction "}}}
+" 
+" function! s:init_min(hex) "{{{
+"     let hex= s:fmt_hex(a:hex)
+"     call s:update_global(hex)
+"     call s:draw_hueLine(1)
+"     call s:draw_satLine(2)
+"     call s:draw_valLine(3)
+"     call s:draw_history_block(hex)
+"     call s:init_misc()
+"     call s:draw_text(hex)
+" endfunction
+" "}}}
 
 function! s:init_hide() "{{{
     "hi cursor guibg=#000 guifg=#000 
@@ -1565,7 +1577,7 @@ function! ColorV#open_word() "{{{
     endif
     
     if g:ColorV_word_mini==1
-        call ColorV#Win("mini",hex)
+        call ColorV#Win("min",hex)
     else
         call ColorV#Win(s:mode,hex)
     endif
@@ -1607,7 +1619,7 @@ function! ColorV#change_word(...) "{{{
     endif
 
     if g:ColorV_word_mini==1
-        call ColorV#Win("mini",hex)
+        call ColorV#Win("min",hex)
     else
         call ColorV#Win(s:mode,hex)
     endif
