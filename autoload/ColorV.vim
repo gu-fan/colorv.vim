@@ -788,7 +788,6 @@ function! ColorV#Win(...) "{{{
         silent! file [ColorV]
     endif "}}}
     " local setting "{{{
-    setl ft=ColorV 
     setl nocursorline nocursorcolumn
     setl tw=0
     setl buftype=nofile
@@ -827,30 +826,25 @@ function! ColorV#Win(...) "{{{
     " draw window "{{{
     if exists("a:1") && a:1== "min" 
     	let s:mode="min"
-        if winnr('$') != 1
-            execute 'resize' s:min_h
-            redraw
-        endif
-    	call s:draw_buf_hex(hex)
+        setl ft=ColorV_min 
+        let l:win_h=s:min_h
     elseif  exists("a:1") && a:1== "max"
     	let s:mode="max" 
+        setl ft=ColorV_max 
     	let s:pal_H=s:max_h-1
-        if winnr('$') != 1
-            execute 'resize' s:max_h
-            redraw
-        endif
-        call s:draw_buf_hex(hex)
+        let l:win_h=s:max_h
     else
     	let s:mode="mid" 
+        setl ft=ColorV_mid 
     	let s:pal_H=s:mid_h-1
-        if winnr('$') != 1
-            execute 'resize' s:mid_h
-            redraw
-        endif
-        call s:draw_buf_hex(hex)
-    	
-    endif "}}}
-
+        let l:win_h=s:mid_h
+    endif 
+    if winnr('$') != 1
+        execute 'resize' l:win_h
+        redraw
+    endif
+    call s:draw_buf_hex(hex)
+    "}}}
 endfunction "}}}
 function! s:init_hide() "{{{
     "hi cursor guibg=#000 guifg=#000 

@@ -1,5 +1,5 @@
 *ColorV.txt*               ColorV        Color Viewer for Vim
-
+*colorv*
 ver:1.4.0                               <Rykka.Krin@gmail.com>
 
 CONTENTS                               *colorv-contents*
@@ -31,27 +31,25 @@ INTRO                                               *colorv-intro*
         <leader>cv
 
     Open a ColorV window by word under cursor.
-        #ff9744 rgb(33,44,155) orangered 'cadetblue'
-    Put cursor on above words 
+    #ff9744 rgb(33,44,155) orangered 'cadetblue'
         <leader>cw
 
-    Change the word under cursor with chosing color after quit the ColorV window.
+    Change the word under cursor with chosing color after exit ColorV window.
         <leader>cg
 
     Copy the color in the ColorV window
         yy
 
     Use GTK eyedropper to pick colors in screen.
-    If '+python' compiled and pygtk2.0 included.
+    ('+python' compiled and pygtk2.0 included)
         <leader>cd
 
-    There are several configs and commands to define ColorV. 
-    See detail in help docs.
+    There are configs and commands to define ColorV. 
+    See details in help docs. 
+    :h colorv
 
-    Have a closer look at it. 
-    http://flic.kr/p/9PVEE3
-    or 
-    http://i52.tinypic.com/119qz3d.jpg
+    Have a closer look at it. http://flic.kr/p/9PVEE3
+    or http://i52.tinypic.com/119qz3d.jpg
 
     If useful, please rate it
     http://www.vim.org/scripts/script.php?script_id=3597
@@ -69,33 +67,28 @@ INSTALL                                             *colorv-install*
     Download the latest version of tar.gz file, 
     extract it into your VIMFILE folder.
     ("~/.vim" for linux. "$HOME/vimfiles" for windows)
-
     Then use help tag to generate tags.
 >
     :helptags ~/.vim/doc
 <
     Using git:
-    git clone
+    open terminal and input
 >
     git clone git://github.com/rykka/ColorV.git ~/.vim/bundle/ColorV
 <
-    then add &runtimepath to your vimrc
+    then add &runtimepath to your vimrc; then run helptags
     (NOT necessary if pathogen.vim installed) 
 >
     set rtp+=~/.vim/bundle/ColorV/
-<
-    run helptags
->
     :helptags ~/.vim/bundle/ColorV/doc
 <   
-
     Using Vundle:
-    First, install the script [Vundle.vim](https://github.com/gmarik/vundle)
+    Install script [Vundle.vim](https://github.com/gmarik/vundle)
     then put this line in your vimrc
 >
     Bundle 'rykka/colorv'
 <
-    and use this to install it.
+    and use this command to install it.
 >
     :BundleInstall
 <
@@ -333,7 +326,7 @@ which was used with cut/copy between other applications.
     The X11 standard is used by vim gui colors and X Window system.
     The W3C standard is mostly used in HTML/CSS and browsers.
 
-    There are several clash between X11 and W3C colornames.
+    There are several clashes between X11 and W3C colornames.
         Gray    (X11)	#BEBEBE
         Gray    (W3C) 	#7F7F7F
         Green   (X11) 	#00FF00
@@ -598,7 +591,7 @@ HISTORY                                             *colorv-history*
 " 1.5.0
 " TODO: use '+' and '-' to add/subtract parameter. 
 " TODO: don't put duplicated color into history 
-" 1.4.0
+" 1.4.0 'mid' mode 
 "FIXED: 110603  s:echo() will escape with '"'
 "FIXED: 110603  using option name g:ColorV_dynamic_hue 
 " DONE: 110602  colorname interface description. ctrl-a to show texts.
@@ -609,7 +602,7 @@ HISTORY                                             *colorv-history*
 " DONE: 110602  add max/mid/min mode. default is mid mode
 " DONE: 110602  tips only shows in cmdline now
 
-" 1.3.0
+" 1.3.0 X11
 " DONE: 110601  X11 standard colorname support and used with &ft==vim
 "FIXED: 110601  error star mark color while using history_block
 " DONE: 110601  easy set color with hue/sat/val line
