@@ -1,3 +1,4 @@
+##VERSION:##
 - **NEW!(1.4.0)**  'mid' mode by default. Tips now echo in CmdLine.
 - **NEW!(1.3.0)**  Color name (X11 Standard) Support.
 - **NEW!(1.2.0)**  Color name (W3C Standard) Support.
@@ -91,17 +92,17 @@ and use this to install it.
     nmap <leader>cgw :ColorVchange<CR>
     
     "dynamci hue
-    "let g:ColorV_dynamic_hueline=1
-    "let g:ColorV_dynamic_hueline_step=9
+    "let g:ColorV_dynamic_hue=1
+    "let g:ColorV_dynamic_hue_step=9
 
     "Keep It Simple and Silent
     let g:ColorV_show_tips=0
-    let g:ColorV_show_quit=0
+    "let g:ColorV_echo_tips=1
     let g:ColorV_show_star=1
     let g:ColorV_word_mini=1
     let g:ColorV_silent_set=1
     
-    "set and copy to "+
+    "copy to "+ each time set colors
     "let g:ColorV_set_register=2
     "colorname approximate ratio
     "let g:ColorV_name_approx=10
