@@ -1,3 +1,5 @@
+**NEW!(1.4.0)**  'mid' mode by default. Tips now echo in CmdLine.
+**NEW!(1.3.0)**  Color name (X11 Standard) Support.
 **NEW!(1.2.0)**  Color name (W3C Standard) Support.
 
 #INTRO:#

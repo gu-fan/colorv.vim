@@ -3,7 +3,7 @@
 "    File: plugin/ColorV.vim
 " Summary: A color manager with color toolkits
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
-" Last Update: 2011-06-01
+" Last Update: 2011-06-03
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim

@@ -200,9 +200,9 @@ current color. You can use |g:ColorV_show_star| to set it show or not.
 
                                                 *colorv-interface-colorname*
     If there is a color name for current HEX, it's name will show
-    in the right top of ColorV window. 
-    In mini mode it is showing under the second line (Value line) ,use ctrl-A
-    to see that.
+    in the right top of ColorV window. It's always W3C standard name.
+    In mini mode it is showing under the second line (Value line), 
+    use ctrl-A to see it.
     See |colorv-colorname| for details.
 ==============================================================================
 COMMANDS                                            *colorv-commands*
@@ -320,25 +320,31 @@ which was used with cut/copy between other applications.
     the approximation rate to exact colors can be adjusted by
     |g:ColorV_name_approx|
 
+    There are several color names that have the same Hex.
+        Aqua            #00ffff
+        Cyan            #00ffff
+        Magenta         #ff00ff
+        Fuchsia         #ff00ff
+
     Note 
     The X11 standard is used by vim gui colors and X Window system.
     The W3C standard is mostly used in HTML/CSS and browsers.
 
     There are several clash between X11 and W3C
-    Gray    (X11)	#BEBEBE
-    Gray    (W3C) 	#7F7F7F
-    Green   (X11) 	#00FF00
-    Green   (W3C) 	#007F00
-    Maroon  (X11) 	#B03060
-    Maroon  (W3C) 	#7F0000
-    Purple  (X11) 	#A020F0
-    Purple  (W3C) 	#7F007F
+        Gray    (X11)	#BEBEBE
+        Gray    (W3C) 	#7F7F7F
+        Green   (X11) 	#00FF00
+        Green   (W3C) 	#007F00
+        Maroon  (X11) 	#B03060
+        Maroon  (W3C) 	#7F0000
+        Purple  (X11) 	#A020F0
+        Purple  (W3C) 	#7F007F
     You can get the name table from
     http://en.wikipedia.org/wiki/X11_color_names
-
-    By default, when use |:ColorVword| and |:ColorVchange| in a vim filetype
-    files, the ColorV will automatically use X11 color names. 
-    And the name showing in ColorV window is always W3C color name.
+    
+    By default, when useing |:ColorVword| and |:ColorVchange| in vim filetype
+    files, ColorV will automatically use X11 color names. 
+    But the name showing in ColorV window is always W3C color name.
     You can entering a X11 name by 'nx' and W3C name by 'ne'.
 
                                                     *colorv-mapping-paste*
@@ -363,6 +369,9 @@ which was used with cut/copy between other applications.
     <2-Space>       Choose current showing colors under cursor.
     <2-Leftmouse>   Choose current showing colors under cursor.
 
+                                                    *colorv-mapping-text*
+    <C-A>/A         Show text. It is a mapping of 'ggVG'.
+    
                                                     *colorv-mapping-help*
     ?           Toggle tips showing.
     H/<F1>      Show this help documents.
@@ -465,16 +474,17 @@ EXAMPLE                                             *colorv-example*
     nmap <leader>cgw :ColorVchange<CR>
     
     "dynamci hue
-    "let g:ColorV_dynamic_hueline=1
-    "let g:ColorV_dynamic_hueline_step=9
+    "let g:ColorV_dynamic_hue=1
+    "let g:ColorV_dynamic_hue_step=9
 
     "Keep It Simple and Silent
     let g:ColorV_show_tips=0
+    "let g:ColorV_echo_tips=1
     let g:ColorV_show_star=1
     let g:ColorV_word_mini=1
     let g:ColorV_silent_set=1
     
-    "set and copy to "+
+    "copy to "+ each time set colors
     "let g:ColorV_set_register=2
     "colorname approximate ratio
     "let g:ColorV_name_approx=10
@@ -582,8 +592,12 @@ LICENSE                                             *colorv-license*
     }}}
 ==============================================================================
 HISTORY                                             *colorv-history*
-" 1.4.0
+" 1.5.0
 " TODO: use '+' and '-' to add/subtract parameter. 
+" TODO: don't put duplicated color into history 
+" 1.4.0
+"FIXED: 110603  s:echo() will escape with '"'
+"FIXED: 110603  using option name g:ColorV_dynamic_hue 
 " DONE: 110602  colorname interface description. ctrl-a to show texts.
 "FIXED: 110602  rmv quit mark. fix silent_set to 0 at default.
 " DONE: 110602  change tip text. add g:ColorV_echo_tips (0/1/2)
