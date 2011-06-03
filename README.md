@@ -1,4 +1,4 @@
-##VERSION:##
+###VERSION:###
 - **NEW!(1.4.0)**  'mid' mode by default. Tips now echo in CmdLine.
 - **NEW!(1.3.0)**  Color name (X11 Standard) Support.
 - **NEW!(1.2.0)**  Color name (W3C Standard) Support.
@@ -36,9 +36,9 @@ There are several configs and commands to define ColorV.
 See detail in help docs.
 
 Have a closer look at it. 
-http://flic.kr/p/9LuPxG
+http://flic.kr/p/9PVEE3
 or 
-http://i55.tinypic.com/330ryhl.jpg
+http://i52.tinypic.com/119qz3d.jpg
 
 If useful, please rate it
 http://www.vim.org/scripts/script.php?script_id=3597

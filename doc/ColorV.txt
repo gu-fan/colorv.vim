@@ -46,9 +46,9 @@ INTRO                                               *colorv-intro*
     See detail in help docs.
 
     Have a closer look at it. 
-    http://flic.kr/p/9LuPxG
+    http://flic.kr/p/9PVEE3
     or 
-    http://i55.tinypic.com/330ryhl.jpg
+    http://i52.tinypic.com/119qz3d.jpg
 
     If useful, please rate it
     http://www.vim.org/scripts/script.php?script_id=3597
@@ -330,7 +330,7 @@ which was used with cut/copy between other applications.
     The X11 standard is used by vim gui colors and X Window system.
     The W3C standard is mostly used in HTML/CSS and browsers.
 
-    There are several clash between X11 and W3C
+    There are several clash between X11 and W3C colornames.
         Gray    (X11)	#BEBEBE
         Gray    (W3C) 	#7F7F7F
         Green   (X11) 	#00FF00
@@ -599,7 +599,7 @@ HISTORY                                             *colorv-history*
 "FIXED: 110603  s:echo() will escape with '"'
 "FIXED: 110603  using option name g:ColorV_dynamic_hue 
 " DONE: 110602  colorname interface description. ctrl-a to show texts.
-"FIXED: 110602  rmv quit mark. fix silent_set to 0 at default.
+"FIXED: 110602  rmv quit mark.rmv g:ColorV_show_quit. fix silent_set
 " DONE: 110602  change tip text. add g:ColorV_echo_tips (0/1/2)
 " DONE: 110602  change arrow_ptn color to reverse.
 " DONE: 110602  fix the pallet. no black line and white column now. 
