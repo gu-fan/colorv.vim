@@ -1,6 +1,6 @@
 *ColorV.txt*               ColorV        Color Viewer for Vim
 *colorv*
-ver:1.4.0                               <Rykka.Krin@gmail.com>
+ver:1.5.0                               <Rykka.Krin@gmail.com>
 
 CONTENTS                               *colorv-contents*
 
@@ -13,15 +13,15 @@ CONTENTS                               *colorv-contents*
  7. Options                             |colorv-options|
  8. Variables                           |colorv-variables|
  9. Functions                           |colorv-functions|
-10. Todo                                |colorv-todo|
-11. Credits                             |colorv-credits|
-12. License                             |colorv-license|
+10. Credits                             |colorv-credits|
+11. License                             |colorv-license|
+12. Todo                                |colorv-todo|
 13. History                             |colorv-history|
 ==============================================================================
 VERSION                                             *colorv-version*
-- NEW!(1.4.0)  'mid' mode by default. Tips now echo in CmdLine.
-- NEW!(1.3.0)  Color name (X11 Standard) Support.
-- NEW!(1.2.0)  Color name (W3C Standard) Support.
+- NEW! 1.4.0  'mid' mode by default. Tips now echo in CmdLine.
+- NEW! 1.3.0  Color name (X11 Standard) Support.
+- NEW! 1.2.0  Color name (W3C Standard) Support.
 ------------------------------------------------------------------------------
 INTRO                                               *colorv-intro*
 
@@ -352,9 +352,9 @@ which was used with cut/copy between other applications.
     <S-Tab>/<C-P>/K Toggle arrow backward to choose color parameters.
     x/r/g/b/u/s/v   Toggle arrow to the color parameters.
                     (hex/red/green/blue/hue/sat/val)
-    a/i             Start editing the parameter chosen by arrow.
-    <Enter>         Start editing the parameter chosen by arrow.
-    <Kenter>        Start editing the parameter chosen by arrow.
+    a/i             Start editing the RGB/HSV parameter chosen by arrow.
+    <Enter>         Start editing the RGB/HSV parameter chosen by arrow.
+    <Kenter>        Start editing the RGB/HSV parameter chosen by arrow.
     
     na/ne           Choose color by entering a colorname.(W3C standard)   
     nx              Choose color by entering a colorname.(X11 standard)   
@@ -432,6 +432,11 @@ OPTIONS                                             *colorv-options*
                             set 1 to echo with sequence.
                             set 2 to echo with random sequence.
                             
+                                                *g:ColorV_tune_step*
+                                                (default=5)
+    g:ColorV_tune_step      The step when tuning RGB/HSV parameters. 
+                            
+                            
 ------------------------------------------------------------------------------
 VARIABLES                                           *colorv-variables*
 
@@ -462,23 +467,28 @@ VARIABLES                                           *colorv-variables*
 ------------------------------------------------------------------------------
 EXAMPLE                                             *colorv-example*
 
+    By default, you can easily use ColorV without any config.
+    But you can tuning it on your own.
     Put these line in your vimrc file:
 >
 
     "<leader>ca may confilct with NerdCommentor.vim and Calendar.vim
-    nmap <leader>cga :ColorVchangeAll<CR>
-    nmap <leader>cgw :ColorVchange<CR>
+    "nmap <leader>cga :ColorVchangeAll<CR>
+    "nmap <leader>cgw :ColorVchange<CR>
     
     "dynamci hue
     "let g:ColorV_dynamic_hue=1
     "let g:ColorV_dynamic_hue_step=9
 
     "Keep It Simple and Silent
-    let g:ColorV_show_tips=0
-    "let g:ColorV_echo_tips=1
     let g:ColorV_show_star=1
     let g:ColorV_word_mini=1
     let g:ColorV_silent_set=1
+
+    "tip mark
+    let g:ColorV_show_tips=0
+    "show tips one by one
+    "let g:ColorV_echo_tips=1
     
     "copy to "+ each time set colors
     "let g:ColorV_set_register=2
@@ -556,14 +566,6 @@ CREDITS                                             *colorv-credits*
     Special Thanks to the Vim Author: Bram Moolenaar <Bram@vim.org>.
 
 ==============================================================================
-TODO                                                *colorv-todo*
-
-    The priority of TODO items, If you have any advice or patch, feel free to submit it at github.
-
-    - +6 history window
-    - +4 color text list generator
-    - +2 term/cterm support
-==============================================================================
 LICENSE                                             *colorv-license*
 
     Copyright 2010-2011 Rykka Krn. All rights reserved.
@@ -587,10 +589,20 @@ LICENSE                                             *colorv-license*
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }}}
 ==============================================================================
+TODO                                                *colorv-todo*
+
+    The priority of TODO items, If you have any advice or patch, feel free to submit it at github.
+
+" TODO: +6 history window
+" TODO: +4 color text list generator
+" TODO: +2 term/cterm support
+-------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
-" 1.5.0
-" TODO: use '+' and '-' to add/subtract parameter. 
+" 1.5.0 '+' and '-'
+" DONE: 110605  use '+' and '-' to add/subtract  RGB/HSV parameter. 
 " TODO: don't put duplicated color into history 
+" DONE: 110603  now &filetype will showing the min/mid/max state
+
 " 1.4.0 'mid' mode 
 "FIXED: 110603  s:echo() will escape with '"'
 "FIXED: 110603  using option name g:ColorV_dynamic_hue 

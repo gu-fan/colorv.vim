@@ -16,7 +16,7 @@ if v:version < 700
 endif
 
 let g:ColorV={}
-let g:ColorV.ver="1.4.0.0"
+let g:ColorV.ver="1.5.0.0"
 let g:ColorV.name="[ColorV]"
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={}
@@ -50,6 +50,9 @@ if !exists('g:ColorV_word_mini')
 endif
 if !exists('g:ColorV_echo_tips')
     let g:ColorV_echo_tips=0
+endif
+if !exists('g:ColorV_tune_step')
+    let g:ColorV_tune_step=5
 endif
 
 

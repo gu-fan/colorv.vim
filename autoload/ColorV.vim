@@ -4,7 +4,7 @@
 " Summary: A color manager with color toolkits
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 1.4.0 
+" Version: 1.5.0 
 " Last Update: 2011-06-03
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
@@ -39,8 +39,8 @@ let s:mini_pos=[["Hex:",1,42,11],
 let s:tips_list=[
             \'Choose: 2-Click/2-Space/Ctrl-K/Ctrl-J',
             \'Toggle: <TAB>/<C-N>/J   Back: <S-TAB>/<C-P>/K',
-            \'Goto Parameter: x/r/gg/b/u/s/v ',
-            \'Edit Parameter: Enter/a/i',
+            \'Goto Parameter(RGB/HSV): r/gg/b/u/s/v    Hex:x',
+            \'Edit Parameter(RGB/HSV): Enter/a/i',
             \'Colorname(W3C): na/ne      (X11):nx',
             \'Yank(reg"): yy/yr/ys/yn/... (reg+): cc/cr/cs/cn/...',
             \'Paste: <C-V>/p',
@@ -163,7 +163,8 @@ let s:clrf=[   ['ff0000', '00ff00', '0000ff', 'Uryyb Jbeyq']
 let s:a='Elxxn'
 let s:e='stuQCvwzeLSTghqOrijkxylmRVMBWYZaUfnXopbcdANPDEFGHIJK'
 
-
+let s:tune_step=exists("g:ColorV_tune_step") && g:ColorV_tune_step >0
+            \ ? g:ColorV_tune_step : 5
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "CORE: "{{{
@@ -693,7 +694,7 @@ function! s:draw_text(...) "{{{
     endfor
 
     if !exists("b:arrowck_pos")|let b:arrowck_pos=0|endif
-    call <SID>toggle_arrow(b:arrowck_pos)
+    call s:toggle_arrow(b:arrowck_pos)
     call setpos('.',cur)
     setl noma
 endfunction "}}}
@@ -892,6 +893,11 @@ function! s:map_define() "{{{
     nmap <silent><buffer> i :call <SID>edit_at_arrow()<cr>
     nmap <silent><buffer> <Enter> :call <SID>edit_at_arrow()<cr>
     nmap <silent><buffer> <kEnter> :call <SID>edit_at_arrow()<cr>
+    nmap <silent><buffer> <kEnter> :call <SID>edit_at_arrow()<cr>
+    nmap <silent><buffer> = :call <SID>edit_at_arrow(-1,"+")<cr>
+    nmap <silent><buffer> + :call <SID>edit_at_arrow(-1,"+")<cr>
+    nmap <silent><buffer> - :call <SID>edit_at_arrow(-1,"-")<cr>
+    nmap <silent><buffer> _ :call <SID>edit_at_arrow(-1,"-")<cr>
 
     "edit name
     nmap <silent><buffer> na :call <SID>edit_colorname()<cr>
@@ -955,6 +961,7 @@ function! s:draw_buf_hex(hex) "{{{
         return
     endif
     setl ma
+    setl lz
     let hex= printf("%06x",'0x'.a:hex) 
     call s:update_global(hex)
     call s:draw_hueLine(1)
@@ -968,6 +975,7 @@ function! s:draw_buf_hex(hex) "{{{
     call s:init_misc()
     call s:draw_history_block(hex)
     call s:draw_text(hex)
+    setl nolz
     setl noma
 endfunction "}}}
 function! s:draw_bufandpos_hex(hex) "{{{
@@ -1061,7 +1069,7 @@ function! s:set_in_pos(...) "{{{
         let l:in_pos=0
         for [name,y,x,width] in s:norm_pos
             if l==y && c>=x && c<(x+width)
-                call <SID>toggle_arrow(idx)
+                call s:toggle_arrow(idx)
                 let l:in_pos=1
                 break
             endif
@@ -1077,7 +1085,7 @@ function! s:set_in_pos(...) "{{{
         let l:in_pos=0
         for [name,y,x,width] in s:mini_pos
             if l==y && c>=x && c<(x+width)
-                call <SID>toggle_arrow(idx)
+                call s:toggle_arrow(idx)
                 let l:in_pos=1
                 break
             endif
@@ -1146,61 +1154,102 @@ function! s:toggle_arrow(...) "{{{
 endfunction "}}}
 function! s:edit_at_arrow(...) "{{{
     "setl ma
-    let postition=exists("a:1")? a:1 : b:arrowck_pos
-    call <SID>toggle_arrow(postition)
+    let postition=exists("a:1") && a:1!=-1 ? a:1 : b:arrowck_pos
+    let tune=exists("a:2") ? a:2 == "+" ? 1 : a:2 == "-" ? -1  : 0  : 0
+    call s:toggle_arrow(postition)
     let clr=g:ColorV
     let hex=clr.HEX
     let [r,g,b]=[clr.RGB.R,clr.RGB.G,clr.RGB.B]
     let [h,s,v]=[clr.HSV.H,clr.HSV.S,clr.HSV.V]
     if postition==0 "{{{
-        let hex=input("Hex(000000~ffffff):")
-        if hex =~ '^\x\{6}$'
-            "do nothing then
-        else 
-            let l:error_input=1
+    	if tune==0
+            let hex=input("Hex(000000~ffffff):")
+            if hex =~ '^\x\{6}$'
+                "do nothing then
+            else 
+                let l:error_input=1
+            endif
+        else
+            return
         endif
     elseif postition==1
-        let r=input("RED(0~255):")
-        if r =~ '^\d\{,3}$' && r<256 && r>=0
-            let hex = ColorV#rgb2hex([r,g,b])
-        else 
-            let l:error_input=1
+        if tune==0
+            let r=input("RED(0~255):")
+            if r =~ '^\d\{,3}$' && r<256 && r>=0
+                let hex = ColorV#rgb2hex([r,g,b])
+            else 
+                let l:error_input=1
+            endif
+        else
+            let r+=tune*s:tune_step
+            let r= r<0 ? 0 : r> 255 ? 255 :r
+            let hex=ColorV#rgb2hex([r,g,b])
         endif
     elseif postition==2
-        let g=input("GREEN(0~255):")
-        if g =~ '^\d\{,3}$' && g<256 && g>=0
-            let hex = ColorV#rgb2hex([r,g,b])
-        else 
-            let l:error_input=1
+        if tune==0
+            let g=input("GREEN(0~255):")
+            if g =~ '^\d\{,3}$' && g<256 && g>=0
+                let hex = ColorV#rgb2hex([r,g,b])
+            else 
+                let l:error_input=1
+            endif
+        else
+            let g+=tune*s:tune_step
+            let g= g<0 ? 0 : g> 255 ? 255 :g
+            let hex=ColorV#rgb2hex([r,g,b])
         endif
     elseif postition==3
-        let b=input("BLUE(0~255):")
-        if b =~ '^\d\{,3}$' && b<256 && b>=0
-            let hex = ColorV#rgb2hex([r,g,b])
-        else 
-            let l:error_input=1
+        if tune==0
+            let b=input("BLUE(0~255):")
+            if b =~ '^\d\{,3}$' && b<256 && b>=0
+                let hex = ColorV#rgb2hex([r,g,b])
+            else 
+                let l:error_input=1
+            endif
+        else
+            let b+=tune*s:tune_step
+            let b= b<0 ? 0 : b> 255 ? 255 :b
+            let hex=ColorV#rgb2hex([r,g,b])
         endif
     elseif postition==4
-        let h=input("Hue(0~360):")
-        if h =~ '^\d\{,3}$' && h<=360 && h>=0
+        if tune==0
+            let h=input("Hue(0~360):")
+            if h =~ '^\d\{,3}$' && h<=360 && h>=0
+                let hex = ColorV#rgb2hex(ColorV#hsv2rgb([h,s,v]))
+            else 
+                let l:error_input=1
+            endif
+        else
+            let h+=tune*s:tune_step
+            let h= h<0 ? 0 : h> 360 ? 360 :h
             let hex = ColorV#rgb2hex(ColorV#hsv2rgb([h,s,v]))
-        else 
-            let l:error_input=1
         endif
     elseif postition==5
-        let s=input("Saturation(0~100):") 
-        if s =~ '^\d\{,3}$' && s<=100 && s>=0
+        if tune==0
+            let s=input("Saturation(0~100):") 
+            if s =~ '^\d\{,3}$' && s<=100 && s>=0
+                let hex = ColorV#rgb2hex(ColorV#hsv2rgb([h,s,v]))
+            else 
+                let l:error_input=1
+                echom "Error input." 
+            endif
+        else
+            let s+=tune*s:tune_step
+            let s= s<0 ? 0 : s> 100 ? 100 :s
             let hex = ColorV#rgb2hex(ColorV#hsv2rgb([h,s,v]))
-        else 
-            let l:error_input=1
-            echom "Error input." 
         endif
     elseif postition==6
-        let v=input("Value:(0~100):") 
-        if v =~ '^\d\{,3}$' && v<=100 && v>=0
+        if tune==0
+            let v=input("Value:(0~100):") 
+            if v =~ '^\d\{,3}$' && v<=100 && v>=0
+                let hex = ColorV#rgb2hex(ColorV#hsv2rgb([h,s,v]))
+            else 
+                let l:error_input=1
+            endif
+        else
+            let v+=tune*s:tune_step
+            let v= v<0 ? 0 : v> 100 ? 100 :v
             let hex = ColorV#rgb2hex(ColorV#hsv2rgb([h,s,v]))
-        else 
-            let l:error_input=1
         endif
     else 
             return -1
@@ -1209,14 +1258,10 @@ function! s:edit_at_arrow(...) "{{{
 
     if exists("l:error_input") && l:error_input==1
     	call s:warning("Error input. Nothing changed.")
-            "let hex=g:ColorV.HEX
-            "let s:skip_his_block=1
         return
     endif
     call s:draw_buf_hex(hex)
 
-    "call s:draw_bufandpos_hex(hex)
-    "setl noma
 endfunction "}}}
 function! s:edit_colorname(...) "{{{
     if exists("a:1") && a:1=="X11"
@@ -1590,6 +1635,7 @@ endfunction "}}}
 "GUI
 "python pyGTK needed 
 function! ColorV#Dropper() "{{{
+call s:caution("Using GTK color picker.")
 python << EOF
 import pygtk,gtk,vim
 pygtk.require('2.0')
