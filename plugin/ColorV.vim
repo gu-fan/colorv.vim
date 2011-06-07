@@ -3,7 +3,6 @@
 "    File: plugin/ColorV.vim
 " Summary: A color manager with color toolkits
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
-" Last Update: 2011-06-03
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -16,7 +15,7 @@ if v:version < 700
 endif
 
 let g:ColorV={}
-let g:ColorV.ver="1.5.0.0"
+let g:ColorV.ver="1.6.0.0"
 let g:ColorV.name="[ColorV]"
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={}

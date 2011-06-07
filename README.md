@@ -1,9 +1,3 @@
-###VERSION:###
-- **NEW!(1.5.0)**  '+' and '-' to tuning at RGB/HSV parameters.
-- **NEW!(1.4.0)**  'mid' mode by default. Tips now echo in CmdLine.
-- **NEW!(1.3.0)**  Color name (X11 Standard) Support.
-- **NEW!(1.2.0)**  Color name (W3C Standard) Support.
-
 ##INTRO:##
     
 **ColorV** or **ColorV.vim** is a Color Viewer and Color Picker of Vim.
@@ -43,6 +37,14 @@ Submit at github
 https://github.com/rykka/colorv
 
 And you can contact me at <Rykka.Krin@gmail.com>
+
+###VERSION:###
+- **NEW! 1.6.0**  'N:' and horizontal parameters in mini mode.
+- **NEW! 1.5.0**  '+' and '-' to tuning at RGB/HSV parameters.
+- **NEW! 1.4.0**  'mid' mode by default. Tips now echo in CmdLine.
+- **NEW! 1.3.0**  Color name (X11 Standard) Support.
+- **NEW! 1.2.0**  Color name (W3C Standard) Support.
+
 ##INSTALL:##
     
 - Using vim.org: http://www.vim.org/scripts/script.php?script_id=3597

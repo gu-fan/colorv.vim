@@ -4,8 +4,8 @@
 " Summary: A color manager with color toolkits
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 1.5.0 
-" Last Update: 2011-06-03
+" Version: 1.6.0 
+" Last Update: 2011-06-07
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -26,16 +26,18 @@ let [s:max_h,s:mid_h,s:min_h]=[11,6,3]
 let s:hue_width=30
 let s:sat_width=30
 let s:val_width=30
-let s:his_set_rect=[40,2,5,4]
+let s:his_set_rect=[42,2,5,4]
 let s:his_cpd_rect=[24,7,2,1]
 let s:line_width=60
-let s:norm_pos=[["Hex:",2,24,11],
+let s:norm_pos=[["Hex:",2,24,10],
     \["R:",3,24,5],["G:",4,24,5],["B:",5,24,5],
-    \["H:",3,32,5],["S:",4,32,5],["V:",5,32,5]
+    \["H:",3,32,5],["S:",4,32,5],["V:",5,32,5],
+    \["N:",1,42,15]
     \]
-let s:mini_pos=[["Hex:",1,42,11],
-    \["R:",1,24,5],["G:",2,24,5],["B:",3,24,5],
-    \["H:",1,32,5],["S:",2,32,5],["V:",3,32,5]
+let s:mini_pos=[["Hex:",1,22,10],
+    \["R:",2,22,5],["G:",2,29,5],["B:",2,36,5],
+    \["H:",3,22,5],["S:",3,29,5],["V:",3,36,5],
+    \["N:",1,42,15]
     \]
 let s:tips_list=[
             \'Choose: 2-Click/2-Space/Ctrl-K/Ctrl-J',
@@ -573,20 +575,31 @@ function! s:clear_hsvmatch() "{{{
     let s:hsv_dict={}
 endfunction "}}}
 
-function! s:init_misc() "{{{
+function! s:draw_misc() "{{{
     call s:clear_miscmatch()
-    " hi arrowCheck guibg=#b30000 guifg=#cccccc gui=Bold
-    hi arrowCheck guibg=bg guifg=fg gui=Bold,reverse
+
+    "arrow chose
+    hi arrowChose guibg=bg guifg=fg gui=Bold,reverse
     if s:mode=="max" || s:mode=="mid"
-        let arrow_ptn='\(\%<6l\%>2l>.\{6}\|\%2l>.\{12}
-                    \\|\%1l\%>52c?\)'
+        let chose_ptn='\%<6l\%>2l_\zs.\{5}
+                    \\|\%1l\%(_N:\)\zs.\{15}
+                    \\|\%2l\%<35c_\zs.\{10}
+                    \\|\%1l\%>52c?'
     elseif s:mode=="min"
-        let arrow_ptn='\(\%<6l\%<39c>.\{6}\|\%1l\%>39c>.\{12}
-                    \\|\%1l\%>52c?\)'
+        let chose_ptn='\%<6l\%>1l_\zs.\{5}
+                    \\|\%1l\%>35c\%(_N:\)\zs.\{15}
+                    \\|\%1l\%<35c_\zs.\{10}
+                    \\|\%1l\%>52c?'
     endif
     if !exists("s:misc_dict")|let s:misc_dict={}|endif
-    let s:misc_dict["arrowCheck"]=matchadd("arrowCheck",arrow_ptn)
+    let s:misc_dict["arrowChose"]=matchadd("arrowChose",chose_ptn)
     
+    "invisible arrow
+    hi arrow_invis guibg=bg guifg=bg 
+    let arrow_ptn='\%<6l_
+                \\|N:'
+    let s:misc_dict["arrow_invis"]=matchadd("arrow_invis",arrow_ptn)
+
     if g:ColorV_show_star==1
         let fg= g:ColorV.HSV.V<50 ?  "cccccc" : "222222"
         let bg= g:ColorV.HEX
@@ -624,23 +637,35 @@ function! s:draw_text(...) "{{{
     "parameters
     if s:mode=="max" || s:mode=="mid"
         let line[0]=s:line("ColorV ".g:ColorV.ver,3)
-        let line[1]=s:line("Hex:#".hex,24)
+        let line[0]=s:line_sub(line[0],"N:",40)
+        let line[1]=s:line("Hex:".hex,24)
         let line[2]=s:line("R:".r."   H:".h,24)
         let line[3]=s:line("G:".g."   S:".s,24)
         let line[4]=s:line("B:".b."   V:".v,24)
     elseif s:mode=="min"
         let line[0]=s:line("ColorV ".g:ColorV.ver,3)
-        let line[0]=s:line_sub(line[0],"R:".r."   H:".h,24)
-        let line[0]=s:line_sub(line[0],"Hex:#".hex,42)
-        let line[1]=s:line("G:".g."   S:".s,24)
-        let line[2]=s:line("B:".b."   V:".v,24)
+        let line[0]=s:line_sub(line[0],"Hex:".hex,22)
+        let line[0]=s:line_sub(line[0],"N:",40)
+        let line[1]=s:line("R:".r."  G:".g."  B:".b,22)
+        let line[2]=s:line("H:".h."  S:".s."  V:".v,22)
     endif
-    
+     
     " tips mark (Question mark)
     if exists("g:ColorV_show_tips") && g:ColorV_show_tips==1
         let line[0]=s:line_sub(line[0],"?",54)
     endif
     
+    " colorname
+    let nam=s:hex2nam(hex)
+    if !empty(nam)
+        if s:mode=="min"
+        let line[0]=s:line_sub(line[0],nam,42)
+        " let line[1]=s:line_sub(line[1],nam,3)
+        else
+        let line[0]=s:line_sub(line[0],nam,42)
+        endif
+    endif
+
     " hello world
     let [h1,h2,h3]=[s:his_color0,s:his_color1,s:his_color2]
     for [x,y,z,t] in s:clrf
@@ -650,25 +675,16 @@ function! s:draw_text(...) "{{{
             let t=tr(t,s:t,s:e)
             let a=tr(s:a,s:t,s:e)
             if s:mode=="min"
-                let line[1]=s:line_sub(line[1],t,40)
-                let line[2]=s:line_sub(line[2],a,50)
+                let line[1]=s:line_sub(line[1],t,42)
+                let line[2]=s:line_sub(line[2],a,52)
             else
-                let line[2]=s:line_sub(line[2],t,40)
-                let line[4]=s:line_sub(line[4],a,50)
+                let line[2]=s:line_sub(line[2],t,42)
+                let line[4]=s:line_sub(line[4],a,52)
             endif
             break
         endif
     endfor
-    
-    " colorname
-    let nam=s:hex2nam(hex)
-    if !empty(nam)
-        if s:mode=="min"
-        let line[1]=s:line_sub(line[1],nam,3)
-        else
-        let line[0]=s:line_sub(line[0],nam,40)
-        endif
-    endif
+   
 
     "draw star mark at pos
     for i in range(height)
@@ -687,7 +703,7 @@ function! s:draw_text(...) "{{{
     endfor
 
     if !exists("b:arrowck_pos")|let b:arrowck_pos=0|endif
-    call s:toggle_arrow(b:arrowck_pos)
+    call s:draw_arrow(b:arrowck_pos)
     call setpos('.',cur)
     setl noma
 endfunction "}}}
@@ -745,6 +761,45 @@ function! s:line_sub(line,text,pos) "{{{
     return substitute(line,pat,'\1'.text,'')
 endfunction "}}}
 
+function! s:draw_arrow(...) "{{{
+    setl ma
+    if !exists("b:arrowck_pos")|let b:arrowck_pos=0|endif
+    if s:mode=="max" || s:mode=="mid"
+        let l:cur_pos=s:norm_pos
+    elseif s:mode=="min"
+        let l:cur_pos = s:mini_pos
+    endif
+    let len=len(l:cur_pos)
+    " rmv all
+    for i in range(len)
+        let old= l:cur_pos[i]
+        let o=substitute(getline(old[1]),"_".old[0]," ".old[0],"")
+        call setline(old[1],o)
+    endfor
+
+    let goto=exists("a:1") ? a:1 : -1
+    if goto>=0 && goto < len
+        let b:arrowck_pos=goto
+        let new= l:cur_pos[goto]
+    elseif goto==-1
+        let b:arrowck_pos+=1
+        if  b:arrowck_pos>(len-1)|let b:arrowck_pos=0|endif
+        let new = l:cur_pos[b:arrowck_pos]
+
+    elseif goto==-2
+        let b:arrowck_pos-=1
+        if  b:arrowck_pos<0|let b:arrowck_pos=(len-1)|endif
+        let new = l:cur_pos[b:arrowck_pos]
+    else 
+    	return -1
+    endif
+    " change by matching text ptn (x_pos[0])
+    let n=substitute(getline(new[1])," ".new[0],"_".new[0],"")
+    call setline(new[1],n)
+
+    redraw
+    setl noma
+endfunction "}}}
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "INIT: "{{{1
@@ -863,23 +918,23 @@ function! s:map_define() "{{{
     nmap <silent><buffer> <2-leftmouse> :call <SID>set_in_pos()<cr>
     nmap <silent><buffer> <3-leftmouse> :call <SID>set_in_pos()<cr>
 
-    nmap <silent><buffer> <tab> :call <SID>toggle_arrow()<cr>
-    nmap <silent><buffer> <c-n> :call <SID>toggle_arrow()<cr>
-    nmap <silent><buffer> J :call <SID>toggle_arrow()<cr>
-    nmap <silent><buffer> K :call <SID>toggle_arrow(-2)<cr>
-    nmap <silent><buffer> <c-p> :call <SID>toggle_arrow(-2)<cr>
-    nmap <silent><buffer> <s-tab> :call <SID>toggle_arrow(-2)<cr>
+    nmap <silent><buffer> <tab> :call <SID>draw_arrow()<cr>
+    nmap <silent><buffer> <c-n> :call <SID>draw_arrow()<cr>
+    nmap <silent><buffer> J :call <SID>draw_arrow()<cr>
+    nmap <silent><buffer> K :call <SID>draw_arrow(-2)<cr>
+    nmap <silent><buffer> <c-p> :call <SID>draw_arrow(-2)<cr>
+    nmap <silent><buffer> <s-tab> :call <SID>draw_arrow(-2)<cr>
     
     "xrgbhsv
-    nmap <silent><buffer> x :call <SID>toggle_arrow(0)<cr>
-    nmap <silent><buffer> r :call <SID>toggle_arrow(1)<cr>
-    nmap <silent><buffer> g :call <SID>toggle_arrow(2)<cr>
-    nmap <silent><buffer> gg :call <SID>toggle_arrow(2)<cr>
-    nmap <silent><buffer> b :call <SID>toggle_arrow(3)<cr>
+    nmap <silent><buffer> x :call <SID>draw_arrow(0)<cr>
+    nmap <silent><buffer> r :call <SID>draw_arrow(1)<cr>
+    nmap <silent><buffer> g :call <SID>draw_arrow(2)<cr>
+    nmap <silent><buffer> gg :call <SID>draw_arrow(2)<cr>
+    nmap <silent><buffer> b :call <SID>draw_arrow(3)<cr>
 
-    nmap <silent><buffer> u :call <SID>toggle_arrow(4)<cr>
-    nmap <silent><buffer> s :call <SID>toggle_arrow(5)<cr>
-    nmap <silent><buffer> v :call <SID>toggle_arrow(6)<cr>
+    nmap <silent><buffer> u :call <SID>draw_arrow(4)<cr>
+    nmap <silent><buffer> s :call <SID>draw_arrow(5)<cr>
+    nmap <silent><buffer> v :call <SID>draw_arrow(6)<cr>
 
     "edit
     nmap <silent><buffer> a :call <SID>edit_at_arrow()<cr>
@@ -979,7 +1034,7 @@ function! s:draw_buf_hex(hex) "{{{
         call s:draw_palette_hex(hex)
     endif
 
-    call s:init_misc()
+    call s:draw_misc()
     call s:draw_history_block(hex)
     call s:draw_text(hex)
     setl nolz
@@ -1057,14 +1112,14 @@ function! s:set_in_pos(...) "{{{
     "history_block section "{{{
     elseif l<=(s:his_set_rect[3]+s:his_set_rect[1]-1)
                 \ && l>=s:his_set_rect[1] &&
-                \ c>=s:his_set_rect[0] && c<=(40+s:his_set_rect[2]*3-1)  
-        if c<=(40+s:his_set_rect[2]*1-1)
+                \ c>=s:his_set_rect[0] && c<=(s:his_set_rect[0]+s:his_set_rect[2]*3-1)  
+        if c<=(s:his_set_rect[0]+s:his_set_rect[2]*1-1)
             let hex=s:his_color0
             call s:echo("HEX(history 0): ".hex)
-        elseif c<=(40+s:his_set_rect[2]*2-1)
+        elseif c<=(s:his_set_rect[0]+s:his_set_rect[2]*2-1)
             let hex=s:his_color1
             call s:echo("HEX(history 1): ".hex)
-        elseif c<=(40+s:his_set_rect[2]*3-1)
+        elseif c<=(s:his_set_rect[0]+s:his_set_rect[2]*3-1)
             let hex=s:his_color2
             call s:echo("HEX(history 2): ".hex)
         endif
@@ -1072,12 +1127,12 @@ function! s:set_in_pos(...) "{{{
     "}}}
     " Arrow section "{{{
     " WORKAROUND: add mini mode
-    elseif  s:mode=="max" || s:mode=="mid" && l<=5 && l>=2 && c>=24 && c<37
+    elseif  s:mode=="max" || s:mode=="mid" && l<=5
         let idx=0
         let l:in_pos=0
         for [name,y,x,width] in s:norm_pos
             if l==y && c>=x && c<(x+width)
-                call s:toggle_arrow(idx)
+                call s:draw_arrow(idx)
                 let l:in_pos=1
                 break
             endif
@@ -1088,12 +1143,12 @@ function! s:set_in_pos(...) "{{{
             setl noma
             return -1
         endif
-    elseif s:mode=="min" && l<=3 && c>=24 && c<=52
+    elseif s:mode=="min" && l<=3 
         let idx=0
         let l:in_pos=0
         for [name,y,x,width] in s:mini_pos
             if l==y && c>=x && c<(x+width)
-                call s:toggle_arrow(idx)
+                call s:draw_arrow(idx)
                 let l:in_pos=1
                 break
             endif
@@ -1123,57 +1178,22 @@ function! s:set_in_pos(...) "{{{
 
     setl noma
 endfunction "}}}
-function! s:toggle_arrow(...) "{{{
-    setl ma
-    if !exists("b:arrowck_pos")|let b:arrowck_pos=0|endif
-    if s:mode=="max" || s:mode=="mid"
-        let l:cur_pos=s:norm_pos
-    elseif s:mode=="min"
-        let l:cur_pos = s:mini_pos
-    endif
-    let len=len(l:cur_pos)
-    for i in range(len)
-        let old= l:cur_pos[i]
-        let o=substitute(getline(old[1]),"> ".old[0],"  ".old[0],"")
-        call setline(old[1],o)
-    endfor
-
-    let goto=exists("a:1") ? a:1 : -1
-    if goto>=0 && goto < len
-        let b:arrowck_pos=goto
-        let new= l:cur_pos[goto]
-    elseif goto==-1
-        let b:arrowck_pos+=1
-        if  b:arrowck_pos>(len-1)|let b:arrowck_pos=0|endif
-        let new = l:cur_pos[b:arrowck_pos]
-
-    elseif goto==-2
-        let b:arrowck_pos-=1
-        if  b:arrowck_pos<0|let b:arrowck_pos=(len-1)|endif
-        let new = l:cur_pos[b:arrowck_pos]
-    else 
-    	return -1
-    endif
-    let n=substitute(getline(new[1]),"  ".new[0],"> ".new[0],"")
-    call setline(new[1],n)
-
-    redraw
-    setl noma
-endfunction "}}}
 function! s:edit_at_arrow(...) "{{{
     "setl ma
     let postition=exists("a:1") && a:1!=-1 ? a:1 : b:arrowck_pos
     let tune=exists("a:2") ? a:2 == "+" ? 1 : a:2 == "-" ? -1  : 0  : 0
-    call s:toggle_arrow(postition)
+    call s:draw_arrow(postition)
     let clr=g:ColorV
     let hex=clr.HEX
     let [r,g,b]=[clr.RGB.R,clr.RGB.G,clr.RGB.B]
     let [h,s,v]=[clr.HSV.H,clr.HSV.S,clr.HSV.V]
     if postition==0 "{{{
     	if tune==0
-            let hex=input("Hex(000000~ffffff):")
+            let hex=input("Hex(000000~ffffff,000~fff):")
             if hex =~ '^\x\{6}$'
                 "do nothing then
+            elseif hex =~ '^\x\{3}$'
+                let hex=substitute(hex,'.','&&','g')
             else 
                 let l:error_input=1
             endif
@@ -1259,6 +1279,9 @@ function! s:edit_at_arrow(...) "{{{
             let v= v<0 ? 0 : v> 100 ? 100 :v
             let hex = ColorV#rgb2hex(ColorV#hsv2rgb([h,s,v]))
         endif
+    elseif postition==7
+        call s:edit_colorname()
+        return
     else 
             return -1
     setl noma
