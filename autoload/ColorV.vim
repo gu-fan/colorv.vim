@@ -26,7 +26,8 @@ let [s:max_h,s:mid_h,s:min_h]=[11,6,3]
 let s:hue_width=30
 let s:sat_width=30
 let s:val_width=30
-let s:block_rect=[40,2,5,4]
+let s:his_set_rect=[40,2,5,4]
+let s:his_cpd_rect=[24,7,2,1]
 let s:line_width=60
 let s:norm_pos=[["Hex:",2,24,11],
     \["R:",3,24,5],["G:",4,24,5],["B:",5,24,5],
@@ -419,19 +420,11 @@ endfunction "}}}
 function! s:draw_history_block(hex) "{{{
     setl ma
     let hex= strpart(printf("%06x",'0x'.a:hex),0,6) 
-    let g:ColorV.history_set=exists("g:ColorV.history_set") ? g:ColorV.history_set : ['ff0000']
-    
-    if exists("s:skip_his_block") && s:skip_his_block==1
-    	let s:skip_his_block=0
-    else
-        call add(g:ColorV.history_set,hex)
-    endif
-
     let len=len(g:ColorV.history_set)
     let s:his_color2= len >2 ? g:ColorV.history_set[len-3] : 'ffffff'
     let s:his_color1= len >1 ? g:ColorV.history_set[len-2] : 'ffffff'
     let s:his_color0= len >0 ? g:ColorV.history_set[len-1] : a:hex
-    call s:draw_multi_block(s:block_rect,[s:his_color0,s:his_color1,s:his_color2])
+    call s:draw_multi_block(s:his_set_rect,[s:his_color0,s:his_color1,s:his_color2])
     setl noma
 endfunction "}}}
 
@@ -960,9 +953,23 @@ function! s:draw_buf_hex(hex) "{{{
         call s:warning("Not [ColorV] buffer")
         return
     endif
+
+    
     setl ma
     setl lz
     let hex= printf("%06x",'0x'.a:hex) 
+    
+    " update history_set
+    let g:ColorV.history_set=exists("g:ColorV.history_set") ? g:ColorV.history_set : ['ff0000']
+    
+    if exists("s:skip_his_block") && s:skip_his_block==1
+    	let s:skip_his_block=0
+    else
+        if get(g:ColorV.history_set,-1)!=hex
+            call add(g:ColorV.history_set,hex)
+        endif
+    endif
+    
     call s:update_global(hex)
     call s:draw_hueLine(1)
     if s:mode == "min"
@@ -1020,12 +1027,12 @@ function! s:set_in_pos(...) "{{{
     if s:mode=="max" || s:mode=="mid" && l > s:poff_y && l<= s:pal_H+s:poff_y && c<= s:pal_W
         let idx=(l-s:poff_y-1)*s:pal_W+c-s:poff_x-1
         let hex=b:pal_clr_list[idx]
-        call s:update_global(hex)
-        call s:draw_history_block(hex)
-        "call s:update_text(hex)
-        call s:draw_text(hex)
+        " call s:update_global(hex)
+        " call s:draw_history_block(hex)
+        " call s:draw_text(hex)
         call s:echo("HEX(Pallet): ".hex)
 
+        call s:draw_buf_hex(hex)
     "hue line
     elseif l==1 &&  c<=s:pal_W 
         let [h1,s1,v1]=ColorV#rgb2hsv(ColorV#hex2rgb(s:hueline_list[(c-1)]))
@@ -1048,15 +1055,16 @@ function! s:set_in_pos(...) "{{{
         call s:draw_buf_hex(hex)
 
     "history_block section "{{{
-    elseif l<=(s:block_rect[3]+s:block_rect[1]-1) && l>=s:block_rect[1] &&
-                \c>=s:block_rect[0] && c<=(40+s:block_rect[2]*3-1)  
-        if c<=(40+s:block_rect[2]*1-1)
+    elseif l<=(s:his_set_rect[3]+s:his_set_rect[1]-1)
+                \ && l>=s:his_set_rect[1] &&
+                \ c>=s:his_set_rect[0] && c<=(40+s:his_set_rect[2]*3-1)  
+        if c<=(40+s:his_set_rect[2]*1-1)
             let hex=s:his_color0
             call s:echo("HEX(history 0): ".hex)
-        elseif c<=(40+s:block_rect[2]*2-1)
+        elseif c<=(40+s:his_set_rect[2]*2-1)
             let hex=s:his_color1
             call s:echo("HEX(history 1): ".hex)
-        elseif c<=(40+s:block_rect[2]*3-1)
+        elseif c<=(40+s:his_set_rect[2]*3-1)
             let hex=s:his_color2
             call s:echo("HEX(history 2): ".hex)
         endif
@@ -1479,7 +1487,10 @@ function! s:copy(...) "{{{
     let fmt=exists("a:1") ? a:1 : "HEX"
     let l:cliptext=s:hex2txt(g:ColorV.HEX,fmt)
     let g:ColorV.history_copy=exists("g:ColorV.history_copy") ? g:ColorV.history_copy : []
-    call add(g:ColorV.history_copy,g:ColorV.HEX)
+    "no duplicated color to history
+    if get(g:ColorV.history_copy,-1)!=g:ColorV.HEX
+        call add(g:ColorV.history_copy,g:ColorV.HEX)
+    endif
     if  exists("a:2") && a:2=="\""
         echo "Copied to Clipboard(reg\"):" l:cliptext
         let @" = l:cliptext
@@ -1496,7 +1507,7 @@ function! s:exit() "{{{
         call s:echo("Not the [ColorV] buffer")
         return
     endif
-    bw \[ColorV\]
+    bd 
     call s:changing()
 endfunction "}}}
 function! s:changing() "{{{

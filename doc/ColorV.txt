@@ -4,21 +4,27 @@ ver:1.5.0                               <Rykka.Krin@gmail.com>
 
 CONTENTS                               *colorv-contents*
 
+ DESCRIPTION
  1. Intro                               |colorv-intro|
  2. Install                             |colorv-install|
  3. Usage                               |colorv-usage|
  4. Interface                           |colorv-interface|
+
+ ADVANCED SETTINGS
  5. Commands                            |colorv-commands|
  6. Mappings                            |colorv-mappings|
  7. Options                             |colorv-options|
  8. Variables                           |colorv-variables|
  9. Functions                           |colorv-functions|
-10. Credits                             |colorv-credits|
-11. License                             |colorv-license|
-12. Todo                                |colorv-todo|
-13. History                             |colorv-history|
+ 
+ CREDITS AND HISTORY
+ 10. Credits                             |colorv-credits|
+ 11. License                             |colorv-license|
+ 12. Todo                                |colorv-todo| 
+ 13. History                             |colorv-history|
 ==============================================================================
 VERSION                                             *colorv-version*
+- NEW! 1.5.0  '+' and '-' to tuning at RGB/HSV parameters.
 - NEW! 1.4.0  'mid' mode by default. Tips now echo in CmdLine.
 - NEW! 1.3.0  Color name (X11 Standard) Support.
 - NEW! 1.2.0  Color name (W3C Standard) Support.
@@ -251,7 +257,7 @@ MAPPINGS                                            *colorv-mappings*
                     Redefine it with :ColorVchange<CR>
                     Use |g:ColorV_word_mini| to open with mini window.
                     Note If you change a color name , but what your chosing 
-                    color don't match any color name. the name will be ''.
+                    color don't match any color name. it will be null('').
 
     <leader>ca      Open ColorV normal with cursor word and change all later.
                     Redefine it with :ColorVchangeALL<CR>
@@ -352,9 +358,11 @@ which was used with cut/copy between other applications.
     <S-Tab>/<C-P>/K Toggle arrow backward to choose color parameters.
     x/r/g/b/u/s/v   Toggle arrow to the color parameters.
                     (hex/red/green/blue/hue/sat/val)
-    a/i             Start editing the RGB/HSV parameter chosen by arrow.
-    <Enter>         Start editing the RGB/HSV parameter chosen by arrow.
-    <Kenter>        Start editing the RGB/HSV parameter chosen by arrow.
+    a/i             Start editing RGB/HSV parameter chosen by arrow.
+    <Enter>         Start editing RGB/HSV parameter chosen by arrow.
+    <Kenter>        Start editing RGB/HSV parameter chosen by arrow.
+    +/=             Start tuning(add) RGB/HSV parameter chosen by arrow.
+    -/_             Start tuning(sub) RGB/HSV parameter chosen by arrow.
     
     na/ne           Choose color by entering a colorname.(W3C standard)   
     nx              Choose color by entering a colorname.(X11 standard)   
@@ -476,7 +484,7 @@ EXAMPLE                                             *colorv-example*
     "nmap <leader>cga :ColorVchangeAll<CR>
     "nmap <leader>cgw :ColorVchange<CR>
     
-    "dynamci hue
+    "dynamic hue
     "let g:ColorV_dynamic_hue=1
     "let g:ColorV_dynamic_hue_step=9
 
@@ -599,8 +607,9 @@ TODO                                                *colorv-todo*
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
 " 1.5.0 '+' and '-'
+"FIXED: 110607  use :bd in exit() instead :bw
 " DONE: 110605  use '+' and '-' to add/subtract  RGB/HSV parameter. 
-" TODO: don't put duplicated color into history 
+" DONE: 110605  don't put duplicated color into history 
 " DONE: 110603  now &filetype will showing the min/mid/max state
 
 " 1.4.0 'mid' mode 
