@@ -204,8 +204,6 @@ current color. You can use |g:ColorV_show_star| to set it show or not.
                                                 *colorv-interface-colorname*
     If there is a color name for current HEX, it's name will show
     in the right top of ColorV window. It's always W3C standard name.
-    In mini mode it is showing under the second line (Value line), 
-    use ctrl-A to see it.
     See |colorv-colorname| for details.
 ==============================================================================
 COMMANDS                                            *colorv-commands*
@@ -365,6 +363,7 @@ which was used with cut/copy between other applications.
     +/=             Start tuning(add) RGB/HSV parameter chosen by arrow.
     -/_             Start tuning(sub) RGB/HSV parameter chosen by arrow.
     
+    nn              Toggle arrow to color name parameter.
     na/ne           Choose color by entering a colorname.(W3C standard)   
     nx              Choose color by entering a colorname.(X11 standard)   
                     See |colorv-colorname| for details.
@@ -374,9 +373,6 @@ which was used with cut/copy between other applications.
     <2-Space>       Choose current showing colors under cursor.
     <2-Leftmouse>   Choose current showing colors under cursor.
 
-                                                    *colorv-mapping-text*
-    <C-A>/A         Show text. It is a mapping of 'ggVG'.
-    
                                                     *colorv-mapping-help*
     ?           Toggle tips showing.
     H/<F1>      Show this help documents.
@@ -609,13 +605,14 @@ TODO                                                *colorv-todo*
 HISTORY                                             *colorv-history*
 " 1.6.0 'N:' and horizontal
 " DONE: 110607  hide text 'N:' by default
+"FIXED: 110607  del C-A mapping
 " DONE: 110607  add "N:" para with color name. 
 " DONE: 110607  change 'min' mode para to be horizontalized
 "FIXED: 110607  correct set position in history block 
 "FIXED: 110607  support 000~fff for 'Hex' para input
 
 " 1.5.0 '+' and '-'
-"FIXED: 110607  use :bd in exit() instead :bw
+"FIXED: 110606  use :bd in exit() instead :bw
 "FIXED: 110606  update history_set in set_buf_hex()
 " DONE: 110605  use '+' and '-' to add/subtract  RGB/HSV parameter. 
 " DONE: 110605  don't put duplicated color into history 

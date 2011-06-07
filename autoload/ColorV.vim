@@ -704,7 +704,10 @@ function! s:draw_text(...) "{{{
 
     if !exists("b:arrowck_pos")|let b:arrowck_pos=0|endif
     call s:draw_arrow(b:arrowck_pos)
+
+    "put cursor back
     call setpos('.',cur)
+
     setl noma
 endfunction "}}}
 function! s:get_star_pos() "{{{
@@ -948,6 +951,7 @@ function! s:map_define() "{{{
     nmap <silent><buffer> _ :call <SID>edit_at_arrow(-1,"-")<cr>
 
     "edit name
+    nmap <silent><buffer> nn :call <SID>draw_arrow(7)<cr>
     nmap <silent><buffer> na :call <SID>edit_colorname()<cr>
     nmap <silent><buffer> ne :call <SID>edit_colorname()<cr>
     nmap <silent><buffer> nx :call <SID>edit_colorname("X11")<cr>
@@ -995,8 +999,8 @@ function! s:map_define() "{{{
     map <silent><buffer> <middlemouse> :call <SID>paste("+")<cr>
     
     "show all text
-    noremap <silent><buffer> <c-a> ggVG
-    noremap <silent><buffer> A ggVG
+    " noremap <silent><buffer> <c-a> ggVG
+    " noremap <silent><buffer> A ggVG
 
     "easy moving
     noremap j gj
@@ -1259,7 +1263,6 @@ function! s:edit_at_arrow(...) "{{{
                 let hex = ColorV#rgb2hex(ColorV#hsv2rgb([h,s,v]))
             else 
                 let l:error_input=1
-                echom "Error input." 
             endif
         else
             let s+=tune*s:tune_step
