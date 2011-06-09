@@ -1,6 +1,6 @@
 *ColorV.txt*               ColorV      Color Viewer and Picker for Vim
 *colorv*
-ver:1.6.0                               <Rykka.Krin@gmail.com>
+ver:1.7.0                               <Rykka.Krin@gmail.com>
 
 CONTENTS                               *colorv-contents*
 
@@ -113,7 +113,7 @@ up the window by issuing the command:
 >
     :ColorV
 <
-    you can add |colorv-formatted-text| argument after the |:ColorV| command. Which
+    you can add |colorv-format-text| argument after the |:ColorV| command. Which
 will directly open the ColorV window with the color.
 
     There is a lighter version of the ColorV window (|colorv-mini|).
@@ -142,7 +142,7 @@ which the color is at you demand.
     See |colorv-mapping-copy| for detail mapping.
 
     The formats could be HEX, RGB, RGBP and more...
-    See |colorv-formatted-text| for detail info.
+    See |colorv-format-text| for detail info.
 >
     #:#ffffff
     HEX:ffffff
@@ -151,7 +151,7 @@ which the color is at you demand.
 <
 
                                                     *colorv-usage-paste*
-    Paste a |colorv-formatted-text| to ColorV and set showing this color:
+    Paste a |colorv-format-text| to ColorV and set showing this color:
 
     Using p to paste text in register" to the window and set the color.
     Using <c-v> to paste text in register+ to the window and set the color.
@@ -159,7 +159,7 @@ which the color is at you demand.
 
                                                     *colorv-usage-word*
     Open ColorV with word under cursor and do some actions:
-    the word could be in |colorv-formatted-text| .
+    the word could be in |colorv-format-text| .
 
     you can open the ColorV window with the word under cursor.
     Using <leader>cw or with command |:ColorVword|
@@ -211,13 +211,13 @@ COMMANDS                                            *colorv-commands*
                                                     *:ColorV*
     |:ColorV|
     |:ColorVnorm|       Open |colorv-normal| window.
-    Can have arguments of color-texts. see |colorv-formatted-text|
+    Can have arguments of color-texts. see |colorv-format-text|
                                                     *:ColorVmini*
     |:ColorVmini|       Open |colorv-mini| window.
-    Can have arguments of color-texts. see |colorv-formatted-text|
+    Can have arguments of color-texts. see |colorv-format-text|
                                                     *:ColorVword*
     |:ColorVword|     Open the ColorV window with word under cursor.
-                    the word could be in |colorv-formatted-text| .
+                    the word could be in |colorv-format-text| .
     You can use |g:ColorV_word_mini| to open with mini window.
                                                     *:ColorVchange*
     |:ColorVchange|     Open the ColorV window with word under cursor. And
@@ -229,6 +229,12 @@ will change the color-text after closing the ColorV window.
 will change all color-text in current buf after closing the ColorV window.
     You can use |g:ColorV_word_mini| to open with mini window.
     
+                                                    *:ColorVchange2*
+    |:ColorVchange2| {args}(NAME\HEX\RGB\0x\RGBA...) 
+                      Open the ColorV window with word under cursor. And
+                      Change to the format later.
+                      See details in |colorv-format-text|
+
                                                     *:ColorVdropper*
     |:ColorVdropper|    Open a gtk colorpicker to drop colors.
                       Requires +python and pygtk2
@@ -248,7 +254,7 @@ MAPPINGS                                            *colorv-mappings*
                     Redefine it with :ColorVmini<CR>
 
     <leader>cw      Open ColorV window with cursor word <cWORD>.
-                    the word could be in |colorv-formatted-text| .
+                    the word could be in |colorv-format-text| .
                     Redefine it with :ColorVword<CR>
                     Use |g:ColorV_word_mini| to open with mini window.
 
@@ -262,6 +268,10 @@ MAPPINGS                                            *colorv-mappings*
                     Redefine it with :ColorVchangeALL<CR>
                     Use |g:ColorV_word_mini| to open with mini window.
 
+    <leader>c2x     Change cursor word to HEX format later.
+    <leader>c2r     Change cursor word to RGB format later.
+    <leader>c2n     Change cursor word to NAME format later.
+    <leader>c23     Change cursor word to # format later.
 ------------------------------------------------------------------------------
 
                                                     *colorv-mapping-buffer*
@@ -299,8 +309,8 @@ or not a specific register was used (e.g.  "xdd).
     the register+ (|quoteplus|) is CLIPBOARD register (in default option),
 which was used with cut/copy between other applications.
 
-                                                    *colorv-formatted-text*
-    |colorv-formatted-text| is the text format of the colors.
+                                                    *colorv-format-text*
+    |colorv-format-text| is the text format of the colors.
     There are  following formats currently:
     #       #ffffff
     0x      0xffffff
@@ -349,8 +359,8 @@ which was used with cut/copy between other applications.
     You can entering a X11 name by 'nx' and W3C name by 'ne'.
 
                                                     *colorv-mapping-paste*
-    <Ctrl-v>    paste |colorv-formatted-text| in register+ to set showing color.
-    p/P         paste |colorv-formatted-text| in register" to set showing color.
+    <Ctrl-v>    paste |colorv-format-text| in register+ to set showing color.
+    p/P         paste |colorv-format-text| in register" to set showing color.
 
                                                     *colorv-mapping-edit*
     <Tab>/<C-N>/J   Toggle arrow foreward to choose color parameters.
@@ -367,6 +377,7 @@ which was used with cut/copy between other applications.
     na/ne           Choose color by entering a colorname.(W3C standard)   
     nx              Choose color by entering a colorname.(X11 standard)   
                     See |colorv-colorname| for details.
+    nt              Set with colorname by exact color.
 
                                                     *colorv-mapping-set*
     <C-K>/<C-J>     Choose current showing colors under cursor.
@@ -603,9 +614,14 @@ TODO                                                *colorv-todo*
 " TODO: +1 term/cterm support
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
-" 1.6.0 'N:' and horizontal
+" 1.7.0 change
+" DONE: 110609  add mapping c2x c2n c2r c23
+" DONE: 110609  add :ColorVchange2
+" DONE: 110609  add s:tune_colorname() and map nt
 " DONE: 110609  optimize s:set_in_pos() arrow check part
 " DONE: 110609  add flag color for colorname input
+
+" 1.6.0 'N:' and horizontal
 " DONE: 110607  hide text 'N:' by default
 "FIXED: 110607  del C-A mapping
 " DONE: 110607  add "N:" para with color name. 

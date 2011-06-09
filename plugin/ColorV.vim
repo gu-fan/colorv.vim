@@ -21,6 +21,7 @@ command! -nargs=0  ColorVword call ColorV#open_word()
 command! -nargs=0  ColorVchange call ColorV#change_word()
 command! -nargs=0  ColorVchangeAll call ColorV#change_word("all")
 command! -nargs=0  ColorVclear call ColorV#clear_all()
+command! -nargs=1  ColorVchange2 call ColorV#change_word("",<q-args>)
 
 if has('python')
 command! -nargs=0  ColorVdropper call ColorV#Dropper()
@@ -46,6 +47,19 @@ if !hasmapto(':ColorVchangeALl<CR>')
   silent! nmap <unique> <silent> <Leader>ca :ColorVchangeAll<CR>
 endif
 
+if !hasmapto(':ColorVchange2 HEX<CR>')
+  silent! nmap <unique> <silent> <Leader>c2x :ColorVchange2 HEX<CR>
+endif
+if !hasmapto(':ColorVchange2 NAME<CR>')
+  silent! nmap <unique> <silent> <Leader>c2n :ColorVchange2 NAME<CR>
+endif
+if !hasmapto(':ColorVchange2 RGB<CR>')
+  silent! nmap <unique> <silent> <Leader>c2r :ColorVchange2 RGB<CR>
+endif
+
+if !hasmapto(':ColorVchange2 #<CR>')
+  silent! nmap <unique> <silent> <Leader>c23 :ColorVchange2 #<CR>
+endif
 if !hasmapto(':ColorVdropper<CR>') && has('python')
   silent! nmap <unique> <silent> <Leader>cd :ColorVdropper<CR>
 endif
