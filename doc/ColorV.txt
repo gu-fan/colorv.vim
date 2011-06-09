@@ -1,4 +1,4 @@
-*ColorV.txt*               ColorV        Color Viewer for Vim
+*ColorV.txt*               ColorV      Color Viewer and Picker for Vim
 *colorv*
 ver:1.6.0                               <Rykka.Krin@gmail.com>
 
@@ -25,7 +25,7 @@ CONTENTS                               *colorv-contents*
 ==============================================================================
 INTRO                                               *colorv-intro*
 
-    *ColorV* or *ColorV.vim* is a Color Viewer and Color Picker of Vim.
+    *ColorV* or *ColorV.vim* is a Color Viewer and Color Picker for Vim.
 
     Open a ColorV window.
         <leader>cv
@@ -600,7 +600,7 @@ TODO                                                *colorv-todo*
 
 " TODO: +6 history window
 " TODO: +4 color text list generator
-" TODO: +2 term/cterm support
+" TODO: +1 term/cterm support
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
 " 1.6.0 'N:' and horizontal

@@ -1,7 +1,7 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  Script: ColorV 
 "    File: autoload/ColorV.vim
-" Summary: A color manager with color toolkits
+" Summary: A Color Viewer and Color Picker for Vim
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
 " Version: 1.6.2 
