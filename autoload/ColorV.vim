@@ -4,28 +4,31 @@
 " Summary: A color manager with color toolkits
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 1.6.0 
-" Last Update: 2011-06-07
+" Version: 1.6.2 
+" Last Update: 2011-06-09
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
 
 if !has("gui_running") || v:version < 700 || exists("g:colorV_loaded")
-    " "GUI MODE ONLY"
     finish
 endif
-
 let g:colorV_loaded = 1
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "SVAR: {{{
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let s:ver="1.6.2.2"
+
 let s:mode= exists("s:mode") ? s:mode : "max"
-let [s:pal_W,s:pal_H]=[20,10]
-let [s:poff_x,s:poff_y]=[0,1]
 let [s:max_h,s:mid_h,s:min_h]=[11,6,3]
 
-let s:hue_width=30
-let s:sat_width=30
-let s:val_width=30
+let [s:pal_W,s:pal_H]=[20,10]
+let [s:poff_x,s:poff_y]=[0,1]
+
+" let s:hue_width=30
+" let s:sat_width=30
+" let s:val_width=30
 let s:his_set_rect=[42,2,5,4]
 let s:his_cpd_rect=[24,7,2,1]
 let s:line_width=60
@@ -42,7 +45,7 @@ let s:min_pos=[["Hex:",1,22,10],
 let s:tips_list=[
             \'Choose: 2-Click/2-Space/Ctrl-K/Ctrl-J',
             \'Toggle: <TAB>/<C-N>/J   Back: <S-TAB>/<C-P>/K',
-            \'Goto Parameter(RGB/HSV): r/gg/b/u/s/v    Hex:x',
+            \'Goto Parameter(RGB/HSV): r/gg/b/u/s/v/x    Name:nn',
             \'Edit Parameter(RGB/HSV): Enter/a/i',
             \'Colorname(W3C): na/ne      (X11):nx',
             \'Yank(reg"): yy/yr/ys/yn/... (reg+): cc/cr/cs/cn/...',
@@ -169,8 +172,49 @@ let s:e='stuQCvwzeLSTghqOrijkxylmRVMBWYZaUfnXopbcdANPDEFGHIJK'
 let s:tune_step=exists("g:ColorV_tune_step") && g:ColorV_tune_step >0
             \ ? g:ColorV_tune_step : 5
 "}}}
+"GVAR: "{{{ 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:ColorV={}
+let g:ColorV.name="[ColorV]"
+let g:ColorV.HEX="ff0000"
+let g:ColorV.RGB={}
+let g:ColorV.HSV={}
+let g:ColorV.rgb=[]
+let g:ColorV.hsv=[]
+let g:ColorV.ver=s:ver
+
+
+if !exists('g:ColorV_silent_set')
+    let g:ColorV_silent_set=0
+endif
+if !exists('g:ColorV_set_register')
+    let g:ColorV_set_register=0
+endif
+if !exists('g:ColorV_dynamic_hue')
+    let g:ColorV_dynamic_hue=0
+endif
+if !exists('g:ColorV_dynamic_hue_step')
+    let g:ColorV_dynamic_hue_step=6
+endif
+if !exists('g:ColorV_show_tips')
+    let g:ColorV_show_tips=1
+endif
+if !exists('g:ColorV_show_star')
+    let g:ColorV_show_star=1
+endif
+if !exists('g:ColorV_word_mini')
+    let g:ColorV_word_mini=1
+endif
+if !exists('g:ColorV_echo_tips')
+    let g:ColorV_echo_tips=0
+endif
+if !exists('g:ColorV_tune_step')
+    let g:ColorV_tune_step=5
+endif
+
+"}}}
 "CORE: "{{{
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NOTE: Can be called directly with other plugins
 " in [r,g,b] 0~255
 " out [H,S,V] 0~360 0~100
@@ -261,8 +305,8 @@ function! ColorV#hex2rgb(hex) "{{{
    return [printf("%d",r),printf("%d",g),printf("%d",b)]
 endfunction "}}}
 "}}}
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "HELP: "{{{
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:all_echo(txt_list) "{{{
     let txt_list=a:txt_list
     call s:caution("[Tips of Keyboard Shortcuts]")
@@ -358,8 +402,8 @@ function! s:update_global(hex) "{{{
     let g:ColorV.hsv=[h,s,v]
 endfunction "}}}
 "}}}
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "DRAW: "{{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "Input: h,l,c,[loffset,coffset]
 function! s:draw_palette(h,l,c,...) "{{{
     call s:clear_palmatch()
@@ -816,8 +860,8 @@ function! s:draw_arrow(...) "{{{
     setl noma
 endfunction "}}}
 "}}}
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "INIT: "{{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! ColorV#Win(...) "{{{
     " window check "{{{
     if bufexists(g:ColorV.name) 
@@ -1084,8 +1128,8 @@ function! s:draw_bufandpos_rgb(rgb) "{{{
     setl noma
 endfunction "}}}
 "}}}
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "EDIT: "{{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:set_in_pos(...) "{{{
     setl ma
 
@@ -1294,17 +1338,9 @@ endfunction "}}}
 function! s:edit_colorname(...) "{{{
     if exists("a:1") && a:1=="X11"
         let text = input("Input color name(X11:Blue/Green/Red):")
-        " if empty(text)
-        "     call s:warning("Nothing input. Nothing changed.")
-        "     return
-        " endif        
         let hex=s:nam2hex(text,a:1)
     else
         let text = input("Input color name(W3C:Blue/Lime/Red):")
-        " if empty(text)
-        "     call s:warning("Nothing input. Nothing changed.")
-        "     return
-        " endif        
         let hex=s:nam2hex(text)
     endif
     
@@ -1360,8 +1396,8 @@ function! s:change_word_hue(step) "{{{
     setl noma
 endfun "}}}
 "}}}
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "TEXT: "{{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " input: text
 " return: hexlist [[hex,idx,len,fmt],[hex,idx,len,fmt],...]
 function! s:txt2hex(txt) "{{{
@@ -1695,7 +1731,9 @@ function! ColorV#change_word(...) "{{{
         call ColorV#Win(s:mode,hex)
     endif
 endfunction "}}}
-"GUI
+"}}}
+"PGTK: "{{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "python pyGTK needed 
 function! ColorV#Dropper() "{{{
 call s:caution("Using GTK color picker.")

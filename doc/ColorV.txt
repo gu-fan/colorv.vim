@@ -604,6 +604,8 @@ TODO                                                *colorv-todo*
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
 " 1.6.0 'N:' and horizontal
+" DONE: 110609  optimize s:set_in_pos() arrow check part
+" DONE: 110609  add flag color for colorname input
 " DONE: 110607  hide text 'N:' by default
 "FIXED: 110607  del C-A mapping
 " DONE: 110607  add "N:" para with color name. 

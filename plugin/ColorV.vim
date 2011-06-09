@@ -14,47 +14,6 @@ if v:version < 700
     finish
 endif
 
-let g:ColorV={}
-let g:ColorV.ver="1.6.0.0"
-let g:ColorV.name="[ColorV]"
-let g:ColorV.HEX="ff0000"
-let g:ColorV.RGB={}
-let g:ColorV.HSV={}
-let g:ColorV.rgb=[]
-let g:ColorV.hsv=[]
-
-if !exists('g:ColorV_silent_set')
-    let g:ColorV_silent_set=0
-endif
-if !exists('g:ColorV_set_register')
-    let g:ColorV_set_register=0
-endif
-if !exists('g:ColorV_dynamic_hue')
-    let g:ColorV_dynamic_hue=0
-endif
-if !exists('g:ColorV_dynamic_hue_step')
-    let g:ColorV_dynamic_hue_step=6
-endif
-if !exists('g:ColorV_show_tips')
-    let g:ColorV_show_tips=1
-endif
-" if !exists('g:ColorV_show_quit')
-"     let g:ColorV_show_quit=0
-" endif
-if !exists('g:ColorV_show_star')
-    let g:ColorV_show_star=1
-endif
-if !exists('g:ColorV_word_mini')
-    let g:ColorV_word_mini=1
-endif
-if !exists('g:ColorV_echo_tips')
-    let g:ColorV_echo_tips=0
-endif
-if !exists('g:ColorV_tune_step')
-    let g:ColorV_tune_step=5
-endif
-
-
 command! -nargs=*  ColorV call ColorV#Win("",<q-args>)
 command! -nargs=*  ColorVnorm call ColorV#Win("",<q-args>)
 command! -nargs=*  ColorVmini call ColorV#Win("min",<q-args>)
