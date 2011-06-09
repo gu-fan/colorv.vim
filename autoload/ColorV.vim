@@ -29,12 +29,12 @@ let s:val_width=30
 let s:his_set_rect=[42,2,5,4]
 let s:his_cpd_rect=[24,7,2,1]
 let s:line_width=60
-let s:norm_pos=[["Hex:",2,24,10],
+let s:mid_pos=[["Hex:",2,24,10],
     \["R:",3,24,5],["G:",4,24,5],["B:",5,24,5],
     \["H:",3,32,5],["S:",4,32,5],["V:",5,32,5],
     \["N:",1,42,15]
     \]
-let s:mini_pos=[["Hex:",1,22,10],
+let s:min_pos=[["Hex:",1,22,10],
     \["R:",2,22,5],["G:",2,29,5],["B:",2,36,5],
     \["H:",3,22,5],["S:",3,29,5],["V:",3,36,5],
     \["N:",1,42,15]
@@ -158,7 +158,7 @@ let s:clrf=[   ['ff0000', '00ff00', '0000ff', 'Uryyb Jbeyq']
             \, ['016549', 'FFFFFF', 'CD132A', 'Zrkvpb~']
             \, ['0000B2', 'F7D900', '0000B2', 'Zbyqbin~']
             \, ['008851', 'FFFFFF', '008851', 'Avtrevn']
-            \, ['188100', 'FFFFFF', '188100', 'Abesbyx Vfynaq']
+            \, ['188100', 'FFFFFF', '188100', 'Norfolk Island']
             \, ['CC0000', 'FFFFFF', 'CC0000', 'Creh']
             \, ['002A7E', 'FCD115', 'CE1125', 'Ebznavn']
             \, ['009246', 'F8F808', 'DD171D', 'Frartny~']
@@ -299,17 +299,22 @@ function! s:seq_echo(txt_list) "{{{
 endfunction "}}}
 function! s:caution(msg) "{{{
     echohl Modemsg
-    exe "echom \"[ColorV] ".escape(a:msg,'"')."\""
+    exe "echom \"[Caution] ".escape(a:msg,'"')."\""
     echohl Normal
 endfunction "}}}
 function! s:warning(msg) "{{{
     echohl Warningmsg
-    exe "echom \"[ColorV] ".escape(a:msg,'"')."\""
+    exe "echom \"[Warning] ".escape(a:msg,'"')."\""
+    echohl Normal
+endfunction "}}}
+function! s:error(msg) "{{{
+    echohl Errormsg
+    exe "echom \"[Error] ".escape(a:msg,'"')."\""
     echohl Normal
 endfunction "}}}
 function! s:echo(msg) "{{{
     if g:ColorV_silent_set==0
-        exe "echom \"[ColorV] ".escape(a:msg,'"')."\""
+        exe "echom \"[Note] ".escape(a:msg,'"')."\""
     else
     	echom ""
     endif
@@ -425,7 +430,7 @@ function! s:draw_history_block(hex) "{{{
     let len=len(g:ColorV.history_set)
     let s:his_color2= len >2 ? g:ColorV.history_set[len-3] : 'ffffff'
     let s:his_color1= len >1 ? g:ColorV.history_set[len-2] : 'ffffff'
-    let s:his_color0= len >0 ? g:ColorV.history_set[len-1] : a:hex
+    let s:his_color0= len >0 ? g:ColorV.history_set[len-1] : hex
     call s:draw_multi_block(s:his_set_rect,[s:his_color0,s:his_color1,s:his_color2])
     setl noma
 endfunction "}}}
@@ -745,7 +750,8 @@ function! s:clear_text() "{{{
         return
     endif
     let cur=getpos('.')
-    silent! normal! ggVG"_x
+    " silent! normal! ggVG"_x
+    silent %delete _
     return cur
 endfunction "}}}
 "return text in blank line
@@ -755,22 +761,28 @@ function! s:line(text,pos) "{{{
     return repeat(' ',a:pos-1).a:text.repeat(' ',suf_len)
 endfunction "}}}
 "return substitute line at pos in input line
+"could not use doublewidth text
 function! s:line_sub(line,text,pos) "{{{
     let [line,text,pos]=[a:line,a:text,a:pos]
     if len(line) < len(text)+pos
     	let line = line.repeat(' ',len(text)+pos-len(line))
     endif
-    let pat='^\(.\{'.(pos-1).'}\)\%(.\{'.len(text).'}\)'
-    return substitute(line,pat,'\1'.text,'')
+    if pos!=1
+        let pat='^\(.\{'.(pos-1).'}\)\%(.\{'.len(text).'}\)'
+        return substitute(line,pat,'\1'.text,'')
+    else
+    	let pat='^\%(.\{'.len(text).'}\)'
+        return substitute(line,pat,text,'')
+    endif
 endfunction "}}}
 
 function! s:draw_arrow(...) "{{{
     setl ma
     if !exists("b:arrowck_pos")|let b:arrowck_pos=0|endif
     if s:mode=="max" || s:mode=="mid"
-        let l:cur_pos=s:norm_pos
+        let l:cur_pos=s:mid_pos
     elseif s:mode=="min"
-        let l:cur_pos = s:mini_pos
+        let l:cur_pos = s:min_pos
     endif
     let len=len(l:cur_pos)
     " rmv all
@@ -1006,6 +1018,19 @@ function! s:map_define() "{{{
     noremap j gj
     noremap k gk
 endfunction "}}}
+function! s:update_his_set(hex)
+    let hex= printf("%06x",'0x'.a:hex) 
+    " update history_set
+    let g:ColorV.history_set=exists("g:ColorV.history_set") ? g:ColorV.history_set : ['ff0000']
+    
+    if exists("s:skip_his_block") && s:skip_his_block==1
+    	let s:skip_his_block=0
+    else
+        if get(g:ColorV.history_set,-1)!=hex
+            call add(g:ColorV.history_set,hex)
+        endif
+    endif
+endfunction
 function! s:draw_buf_hex(hex) "{{{
 
     if expand('%') != g:ColorV.name
@@ -1018,17 +1043,7 @@ function! s:draw_buf_hex(hex) "{{{
     setl lz
     let hex= printf("%06x",'0x'.a:hex) 
     
-    " update history_set
-    let g:ColorV.history_set=exists("g:ColorV.history_set") ? g:ColorV.history_set : ['ff0000']
-    
-    if exists("s:skip_his_block") && s:skip_his_block==1
-    	let s:skip_his_block=0
-    else
-        if get(g:ColorV.history_set,-1)!=hex
-            call add(g:ColorV.history_set,hex)
-        endif
-    endif
-    
+    call s:update_his_set(hex)
     call s:update_global(hex)
     call s:draw_hueLine(1)
     if s:mode == "min"
@@ -1082,37 +1097,32 @@ function! s:set_in_pos(...) "{{{
     let hex=clr.HEX
     let [r,g,b]=[clr.RGB.R,clr.RGB.G,clr.RGB.B]
     let [h,s,v]=[clr.HSV.H,clr.HSV.S,clr.HSV.V]
-    "pallet
+    "pallet "{{{
     if s:mode=="max" || s:mode=="mid" && l > s:poff_y && l<= s:pal_H+s:poff_y && c<= s:pal_W
         let idx=(l-s:poff_y-1)*s:pal_W+c-s:poff_x-1
         let hex=b:pal_clr_list[idx]
-        " call s:update_global(hex)
-        " call s:draw_history_block(hex)
-        " call s:draw_text(hex)
         call s:echo("HEX(Pallet): ".hex)
-
         call s:draw_buf_hex(hex)
-    "hue line
+    "}}}
+    "hue line "{{{
     elseif l==1 &&  c<=s:pal_W 
         let [h1,s1,v1]=ColorV#rgb2hsv(ColorV#hex2rgb(s:hueline_list[(c-1)]))
         call s:echo("Hue(Hue Line): ".h1)
         let hex=ColorV#rgb2hex(ColorV#hsv2rgb([h1,s,v]))
         call s:draw_buf_hex(hex)
     elseif s:mode=="min" && l==2 && ( c<=s:pal_W  )
-        " let hex=s:satline_list[(c-1)]
         let [h1,s1,v1]=ColorV#rgb2hsv(ColorV#hex2rgb(s:satline_list[(c-1)]))
         call s:echo("SAT(Saturation Line): ".s1)
 
         let hex=ColorV#rgb2hex(ColorV#hsv2rgb([h,s1,v]))
         call s:draw_buf_hex(hex)
     elseif s:mode=="min" && l==3 && ( c<=s:pal_W  )
-        " let hex=s:valline_list[(c-1)]
         let [h1,s1,v1]=ColorV#rgb2hsv(ColorV#hex2rgb(s:valline_list[(c-1)]))
         call s:echo("VAL(Value Line): ".v1)
 
         let hex=ColorV#rgb2hex(ColorV#hsv2rgb([h,s,v1]))
         call s:draw_buf_hex(hex)
-
+    "}}}
     "history_block section "{{{
     elseif l<=(s:his_set_rect[3]+s:his_set_rect[1]-1)
                 \ && l>=s:his_set_rect[1] &&
@@ -1129,49 +1139,33 @@ function! s:set_in_pos(...) "{{{
         endif
         call s:draw_buf_hex(hex)
     "}}}
-    " Arrow section "{{{
-    " WORKAROUND: add mini mode
-    elseif  s:mode=="max" || s:mode=="mid" && l<=5
-        let idx=0
-        let l:in_pos=0
-        for [name,y,x,width] in s:norm_pos
-            if l==y && c>=x && c<(x+width)
-                call s:draw_arrow(idx)
-                let l:in_pos=1
-                break
-            endif
-            let idx+=1
-        endfor
-        if l:in_pos != 1
-            call s:warning("Not Proper Position.")
-            setl noma
-            return -1
-        endif
-    elseif s:mode=="min" && l<=3 
-        let idx=0
-        let l:in_pos=0
-        for [name,y,x,width] in s:mini_pos
-            if l==y && c>=x && c<(x+width)
-                call s:draw_arrow(idx)
-                let l:in_pos=1
-                break
-            endif
-            let idx+=1
-        endfor
-        if l:in_pos != 1
-            call s:warning("Not Proper Position.")
-            setl noma
-            return -1
-        endif
-    "}}}
     elseif l==1 && c==54 && strpart(getline(1),53,1)=~'?'
         call s:echo_tips()
         setl noma
         return -1
     else 
-    	call s:warning("Not Proper Position.")
+    	"arrow check "{{{
+    	if s:mode=="min" 
+            let l:pos=s:min_pos
+        elseif s:mode=="max" || s:mode=="mid" 
+            let l:pos=s:mid_pos
+        endif
+
+        let idx=0
+        if exists("l:pos")
+            for [name,y,x,width] in l:pos
+                if l==y && c>=x && c<(x+width)
+                    call s:draw_arrow(idx)
+                    return
+                endif
+                let idx+=1
+            endfor
+        endif "}}}
+
+        call s:warning("Not Proper Position.")
         setl noma
         return -1
+
     endif
 
     if exists("g:ColorV_set_register") && g:ColorV_set_register==1
@@ -1300,19 +1294,49 @@ endfunction "}}}
 function! s:edit_colorname(...) "{{{
     if exists("a:1") && a:1=="X11"
         let text = input("Input color name(X11:Blue/Green/Red):")
+        " if empty(text)
+        "     call s:warning("Nothing input. Nothing changed.")
+        "     return
+        " endif        
         let hex=s:nam2hex(text,a:1)
     else
         let text = input("Input color name(W3C:Blue/Lime/Red):")
+        " if empty(text)
+        "     call s:warning("Nothing input. Nothing changed.")
+        "     return
+        " endif        
         let hex=s:nam2hex(text)
     endif
-
+    
     if !empty(hex)
         call s:draw_buf_hex(hex)
     else
-    	call s:warning("Not a correct colorname. Nothing changed.")
+        let t=tr(text,s:t,s:e)
+        let flg_l=s:flag_clr(t)
+        if type(flg_l)!=type(0)
+            call s:update_his_set(flg_l[2])
+            call s:update_his_set(flg_l[1])
+            call s:draw_buf_hex(flg_l[0])
+            let n=tr(flg_l[3],s:t,s:e)
+            call s:caution("Hello! ".n."!")
+        else
+            call s:warning("Not correct colorname. Nothing changed.")
+        endif
     endif
 endfunction "}}}
-
+function! s:flag_clr(nam) "{{{
+    if empty(a:nam)
+    	return 0
+    endif
+    let clr_list=s:clrf
+    for [c1,c2,c3,flg] in clr_list
+        if flg =~?  a:nam.'\~\='
+            return [c1,c2,c3,flg]
+            break
+        endif
+    endfor
+    return 0
+endfunction "}}}
 function! s:echo_tips() "{{{
     let txt_list=s:tips_list
     if exists("g:ColorV_echo_tips") && g:ColorV_echo_tips ==1
@@ -1446,12 +1470,14 @@ function! s:fmt_hex(hex) "{{{
     return strpart(printf("%06x",'0x'.a:hex),0,6) 
 endfunction "}}}
 function! s:nam2hex(nam,...) "{{{
+    if empty(a:nam)
+    	return 0
+    endif
     if exists("a:1") && a:1 == "X11"
     	let clr_list=s:clrn+s:clrnX11
     else
     	let clr_list=s:clrn+s:clrnW3C
     endif
-    
     for [nam,clr] in clr_list
         if a:nam ==? nam   
             return clr
