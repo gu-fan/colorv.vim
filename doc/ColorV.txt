@@ -61,9 +61,10 @@ INTRO                                               *colorv-intro*
     And you can contact me at <Rykka.Krin@gmail.com>
 ------------------------------------------------------------------------------
 VERSION                                             *colorv-version*
+- NEW! 1.7.0  Change word under cursor to another format
 - NEW! 1.6.0  'N:' and horizontal parameters in mini mode.
 - NEW! 1.5.0  '+' and '-' to tuning at RGB/HSV parameters.
-- NEW! 1.4.0  'mid' mode by default. Tips now echo in CmdLine.
+- NEW! 1.4.0  'mid' mode added and default.
 - NEW! 1.3.0  Color name (X11 Standard) Support.
 - NEW! 1.2.0  Color name (W3C Standard) Support.
 ==============================================================================
@@ -271,7 +272,8 @@ MAPPINGS                                            *colorv-mappings*
     <leader>c2x     Change cursor word to HEX format later.
     <leader>c2r     Change cursor word to RGB format later.
     <leader>c2n     Change cursor word to NAME format later.
-    <leader>c23     Change cursor word to # format later.
+    <leader>c2#     Change cursor word to # format later.
+                    See details in |colorv-format-text|
 ------------------------------------------------------------------------------
 
                                                     *colorv-mapping-buffer*
@@ -302,12 +304,15 @@ MAPPINGS                                            *colorv-mappings*
     cap         Copy RGBAP format 'rgba(100%,100%,100%.100%)' into register+
     cn          Copy NAM format 'white' into register+
 
-    the register" (|quotequote|) is Unnamed register used with  the "d", "c",
+    NOTE
+    The register" (|quotequote|) is Unnamed register used with  the "d", "c",
 "s", "x" commands or copied with the yank "y" command, regardless of whether
 or not a specific register was used (e.g.  "xdd).
+    you can use 'p' to put in vim.
 
-    the register+ (|quoteplus|) is CLIPBOARD register (in default option),
+    The register+ (|quoteplus|) is CLIPBOARD register (in default option),
 which was used with cut/copy between other applications.
+    you can use '"+p' to put in vim. and use <C-V> in other applications.
 
                                                     *colorv-format-text*
     |colorv-format-text| is the text format of the colors.
