@@ -928,12 +928,12 @@ function! ColorV#Win(...) "{{{
                 endif
             endif
         else
-            call s:echo("Open a new [ColorV]")
+            " call s:echo("Open a new [ColorV]")
             execute "botright" 'new' 
             silent! file [ColorV]
         endif
     else
-        call s:echo("Open a new [ColorV]")
+        " call s:echo("Open a new [ColorV]")
         execute  "botright" 'new' 
         silent! file [ColorV]
     endif "}}}
@@ -1732,8 +1732,6 @@ function! ColorV#open_word() "{{{
         call ColorV#Win(s:mode,hex)
     endif
 endfunction "}}}
-
-" a:2 fmt
 function! ColorV#change_word(...) "{{{
     let g:ColorV.word_bufnr=bufnr('%')
     let g:ColorV.word_bufname=bufname('%')
@@ -1770,11 +1768,13 @@ function! ColorV#change_word(...) "{{{
     else
     	call s:caution("Will Change [".pat."] after ColorV closed.")
     endif
+
     if exists("a:2")
     	if a:2=~'RGB\|RGBA\|RGBP\|RGBAP\|HEX\|0x\|NAME\|#'
             let g:ColorV.change2=a:2
         endif
     endif
+
     if g:ColorV_word_mini==1
         call ColorV#Win("min",hex)
     else

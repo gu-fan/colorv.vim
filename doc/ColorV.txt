@@ -271,6 +271,7 @@ MAPPINGS                                            *colorv-mappings*
 
     <leader>c2x     Change cursor word to HEX format later.
     <leader>c2r     Change cursor word to RGB format later.
+    <leader>c2p     Change cursor word to RGBP format later.
     <leader>c2n     Change cursor word to NAME format later.
     <leader>c2#     Change cursor word to # format later.
                     See details in |colorv-format-text|
@@ -382,7 +383,7 @@ which was used with cut/copy between other applications.
     na/ne           Choose color by entering a colorname.(W3C standard)   
     nx              Choose color by entering a colorname.(X11 standard)   
                     See |colorv-colorname| for details.
-    nt              Set with colorname by exact color.
+    nt              Set color with exact color of colorname.
 
                                                     *colorv-mapping-set*
     <C-K>/<C-J>     Choose current showing colors under cursor.
@@ -455,7 +456,8 @@ OPTIONS                                             *colorv-options*
                             
                                                 *g:ColorV_tune_step*
                                                 (default=5)
-    g:ColorV_tune_step      The step when tuning RGB/HSV parameters. 
+    g:ColorV_tune_step      The step when tuning RGB/HSV parameters with
+                            '+' and '-'
                             
                             
 ------------------------------------------------------------------------------
@@ -619,9 +621,9 @@ TODO                                                *colorv-todo*
 " TODO: +1 term/cterm support
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
-" 1.7.0 change
-" DONE: 110609  add mapping c2x c2n c2r c23
-" DONE: 110609  add :ColorVchange2
+" 1.7.0 change 2
+" DONE: 110609  add mapping c2x c2n c2r c2# c2p
+" DONE: 110609  add command |:ColorVchange2|
 " DONE: 110609  add s:tune_colorname() and map nt
 " DONE: 110609  optimize s:set_in_pos() arrow check part
 " DONE: 110609  add flag color for colorname input
