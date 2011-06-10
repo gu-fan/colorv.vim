@@ -20,7 +20,7 @@ let g:colorV_loaded = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ColorV={}
 let g:ColorV.name="[ColorV]"
-let g:ColorV.ver="1.7.0.0"
+let g:ColorV.ver="1.7.0.1"
 
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={}
@@ -1051,9 +1051,9 @@ function! s:map_define() "{{{
 
     "edit name
     nmap <silent><buffer> nn :call <SID>draw_arrow(7)<cr>
-    nmap <silent><buffer> na :call <SID>edit_colorname()<cr>
-    nmap <silent><buffer> ne :call <SID>edit_colorname()<cr>
-    nmap <silent><buffer> nx :call <SID>edit_colorname("X11")<cr>
+    nmap <silent><buffer> na :call <SID>input_colorname()<cr>
+    nmap <silent><buffer> ne :call <SID>input_colorname()<cr>
+    nmap <silent><buffer> nx :call <SID>input_colorname("X11")<cr>
     nmap <silent><buffer> nt :call <SID>tune_colorname()<cr>
 
     " WONTFIX:quick quit without wait for next key after q
@@ -1494,7 +1494,7 @@ function! s:txt2hex(txt) "{{{
                 call add(clr,fmt)
                 call add(hex_list,clr)
             endfor
-        " "NAMW and NAMX format 
+        " "NAMW and NAMX format ;not a <cword> here
         " elseif fmt=="NAMW"
         "     for clr in var
         "     	let clr[0]=s:nam2hex(clr[0])
