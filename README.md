@@ -1,6 +1,7 @@
 ##INTRO:##
-    
 **ColorV** or **ColorV.vim** is a Color Viewer and Color Picker of Vim.
+Have a look at it. http://flic.kr/p/9PVEE3 
+or http://i52.tinypic.com/119qz3d.jpg
 
 Open a ColorV window.  `<leader>cv`
 
@@ -21,8 +22,6 @@ Use GTK eyedropper to pick colors in screen.  `<leader>cd`
 There are several configs and commands to define ColorV. 
 See details in help docs.  `:h colorv`
 
-Have a closer look at it. http://flic.kr/p/9PVEE3 
-or http://i52.tinypic.com/119qz3d.jpg
 
 If useful, please rate it
 http://www.vim.org/scripts/script.php?script_id=3597
@@ -30,8 +29,6 @@ http://www.vim.org/scripts/script.php?script_id=3597
 If have any advice, patches or bug reports.
 Submit at github 
 https://github.com/rykka/colorv
-
-And you can contact me at <Rykka.Krin@gmail.com>
 
 ##VERSION:##
 - **NEW! 1.7.0**  Change word under cursor to another format
