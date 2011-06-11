@@ -145,7 +145,7 @@ which the color is at you demand.
     The formats could be HEX, RGB, RGBP and more...
     See |colorv-format-text| for detail info.
 >
-    #:#ffffff
+    NS6:#ffffff     (Number sign 6)
     HEX:ffffff
     RGB:rgb(255,255,255)
     RGBP:rgb(100%,100%,100%)
@@ -194,7 +194,7 @@ and use <2-space>/<c-k> to choose colors.
     The history pallet is showing the current color and last two colors.
 
                                                     *colorv-interface-starmark*
-    There is also a star (*) mark at the position in the pallet that matches
+    There is also a star mark(asterisk *) at the position in the pallet that matches
 current color. You can use |g:ColorV_show_star| to set it show or not.
 
                                                     *colorv-interface-mini*
@@ -243,6 +243,9 @@ will change all color-text in current buf after closing the ColorV window.
                                                     *:ColorVclear*
     |:ColorVclear|      In case that you mess up other buffers with ColorV.
                       Use this.
+
+                                                    *:ColorVquit*
+    |:ColorVquit|       Quit ColorV
 ==============================================================================
 MAPPINGS                                            *colorv-mappings*
 
@@ -273,8 +276,11 @@ MAPPINGS                                            *colorv-mappings*
     <leader>c2r     Change cursor word to RGB format later.
     <leader>c2p     Change cursor word to RGBP format later.
     <leader>c2n     Change cursor word to NAME format later.
-    <leader>c2#     Change cursor word to # format later.
+    <leader>c2#     Change cursor word to NS6 format later.
                     See details in |colorv-format-text|
+
+    <leader>cq      Quit ColorV.
+    
 ------------------------------------------------------------------------------
 
                                                     *colorv-mapping-buffer*
@@ -285,8 +291,8 @@ MAPPINGS                                            *colorv-mappings*
 
     Y           Copy HEX format 'ffffff' into register"
     yy          Copy HEX format 'ffffff' into register"
-    ys          Copy # format '#ffffff' into register"
-    y#          Copy # format '#ffffff' into register"
+    ys          Copy NS6 format '#ffffff' into register"
+    y#          Copy NS6 format '#ffffff' into register"
     yx          Copy 0x plain '0xffffff' into register"
     yr          Copy RGB format 'rgb(255,255,255)' into register"
     yp          Copy RGBP format 'rgb(100%,100%,100%)' into register"
@@ -296,8 +302,8 @@ MAPPINGS                                            *colorv-mappings*
 
     C           Copy HEX format 'ffffff' into register+
     cc          Copy HEX format 'ffffff' into register+
-    c#          Copy # format '#ffffff' into register+
-    cs          Copy # format '#ffffff' into register+
+    c#          Copy NS6 format '#ffffff' into register+
+    cs          Copy NS6 format '#ffffff' into register+
     cx          Copy 0x plain '0xffffff' into register+
     cr          Copy RGB format 'rgb(255,255,255)' into register+
     cp          Copy RGBP format 'rgb(100%,100%,100%)' into register+
@@ -318,14 +324,15 @@ which was used with cut/copy between other applications.
                                                     *colorv-format-text*
     |colorv-format-text| is the text format of the colors.
     There are  following formats currently:
-    #       #ffffff
+    NS6     #ffffff     (Number Sign 6)
+    NS3     #fff
     0x      0xffffff
     HEX     ffffff
     RGB     rgb(255,255,255)
     RGBP    rgb(100%,100%,100%)
     RGBA    rgba(255,255,255,255)
     RGBAP   rgba(100%,100%,100%,100%)
-    NAME    black/white (see |colorv-colorname|)
+    NAME    red/lime/blue (see |colorv-colorname|)
 
     You can also define your own color formats with |colorv-var-colors|.
 
@@ -436,7 +443,8 @@ OPTIONS                                             *colorv-options*
 
                                                 *g:ColorV_show_star*
                                                 (default=1)
-    g:ColorV_show_star      Show Star mark |colorv-star-mark| if set to 1.
+    g:ColorV_show_star      Show Star mark if set to 1.
+                            See |colorv-interface-starmark|
 
                                                 *g:ColorV_word_mini*
                                                 (default=1)
@@ -622,7 +630,9 @@ TODO                                                *colorv-todo*
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
 " 1.7.6
-" DONE: 110611  the hex word will include '#' before.
+" DONE: 110611  change format name "#" to 'NS6'. add in s:txt2hex()
+"FIXED: 110611  change2 doesnt unlet with s:changing()
+" DONE: 110611  cursor word will include '#' format.
 " DONE: 110611  add g:ColorV_win_pos 'top/bot'
 " DONE: 110611  now |:ColorVword| doesnt move cursor into ColorV window.
 " DONE: 110611  now |:ColorVchange| will move cursor back.

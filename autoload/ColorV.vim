@@ -209,9 +209,12 @@ let s:fmt.RGBA='rgba(\s*\d\{1,3},\s*\d\{1,3},\s*\d\{1,3}\,\s*\d\{1,3}%\=)'
 let s:fmt.RGBP='rgb(\s*\d\{1,3}%,\s*\d\{1,3}%,\s*\d\{1,3}%)'
 let s:fmt.RGBAP='rgba(\s*\d\{1,3}%,\s*\d\{1,3}%,\s*\d\{1,3}%,\s*\d\{1,3}%\=)'
 " TODO: change to defalt format name 'HEX' '#' , '0x'  '#3'
-let s:fmt.HEX='\x\@<!\x\{6}\x\@!'
+let s:fmt.HEX='[#\x]\@<!\x\{6}\x\@!'
+let s:fmt.0x='0x\x\{6}\x\@!'
+"number sign 
+let s:fmt.NS6='#\x\{6}\x\@!'
 "#fff only
-let s:fmt.HEX3='#\zs\x\{3}\x\@!'
+let s:fmt.NS3='#\x\{3}\x\@!'
 
 let s:fmt.NAMW=''
 for [nam,hex] in s:clrnW3C+s:clrn
@@ -399,10 +402,9 @@ function! s:echo(msg) "{{{
 endfunction "}}}
 function! s:debug(msg) "{{{
     if exists("g:ColorV_debug") && g:ColorV_debug==1
-        echoe "[Error] ".escape(a:msg,'"')
+        echoe "[Debug] ".escape(a:msg,'"')
     endif
 endfunction "}}}
-
 function! s:roll(min,max) "{{{
     let init= str2nr(strftime("%S%m"))*9+
              \str2nr(strftime("%Y"))*3+
@@ -791,7 +793,7 @@ function! s:draw_text(...) "{{{
     endfor
    
 
-    "draw star mark at pos
+    "draw star mark(asterisk) at pos
     for i in range(height)
     	let line[i]=substitute(line[i],'\*',' ','g')
     endfor
@@ -1132,8 +1134,10 @@ function! s:map_define() "{{{
     " noremap <silent><buffer> A ggVG
 
     "easy moving
-    noremap j gj
-    noremap k gk
+    noremap <silent><buffer>j gj
+    noremap <silent><buffer>k gk
+
+    " command! -buffer -nargs=1 Debug call s:debug(<q-args>)
 endfunction "}}}
 function! s:draw_buf_hex(hex) "{{{
 
@@ -1497,7 +1501,15 @@ function! s:txt2hex(txt) "{{{
                 call add(clr,fmt)
                 call add(hex_list,clr)
             endfor
-        elseif fmt=="HEX3"
+        elseif fmt=="NS6"
+            call s:debug("fmt is NS6 in hex_list")
+            for clr in var
+                let clr[0]=substitute(clr[0],'#','','')
+                call add(clr,fmt)
+                call add(hex_list,clr)
+            endfor
+            call s:debug(clr[0]." ".clr[1]." ".clr[2]." ".clr[3]." ")
+        elseif fmt=="NS3"
             for clr in var
                 let clr[0]=substitute(clr[0],'.','&&','g')
                 call add(clr,fmt)
@@ -1553,7 +1565,7 @@ function! s:hex2txt(hex,fmt,...) "{{{
                     \.float2nr(b/2.55)."%,100%)"
     elseif a:fmt=="HEX"
         let text=hex
-    elseif a:fmt=="#"
+    elseif a:fmt=="NS6"
         let text="#".hex
     elseif a:fmt=="0x"
         let text="0x".hex
@@ -1702,15 +1714,15 @@ function! s:changing() "{{{
             endif
             
             " error with '#fff' '#ffffff' if put cursor on '#'
-            if (exists("s:ColorV.word_pre") && s:ColorV.word_pre=="#")
-            " \||( exists("s:ColorV.word_cur") && s:ColorV.word_cur=="#")
-                let idx=s:ColorV.word_list[1]-1
-                let len=s:ColorV.word_list[2]+1
-                call s:debug("have #")
-            else
+            " if (exists("s:ColorV.word_pre") && s:ColorV.word_pre=="#")
+            " " \||( exists("s:ColorV.word_cur") && s:ColorV.word_cur=="#")
+            "     let idx=s:ColorV.word_list[1]-1
+            "     let len=s:ColorV.word_list[2]+1
+            "     call s:debug("have #")
+            " else
                 let idx=s:ColorV.word_list[1]
                 let len=s:ColorV.word_list[2]
-            endif
+            " endif
             let new_pat=substitute(pat,'\%'.(idx+1).'c.\{'.len.'}',str,'')
 
             if exists("s:ColorV.change_all") && s:ColorV.change_all ==1
@@ -1794,22 +1806,23 @@ function! ColorV#change_word(...) "{{{
     let pat = expand('<cWORD>')
     let word= expand('<cword>')
 
-    "check "#" before
-    silent normal! b
-    if word=~'\x\{6}\|\x\{3}' &&
-                \matchstr(getline('.'), '\%' . 
-                \(col('.')>1 ? col('.')-1 :col('.')). 'c' . '.') =="#"
-        " let word='#'.word
-        let s:ColorV.word_pre="#"
-    else
-        let s:ColorV.word_pre=""
-    endif
-    if word=~'#'
-        let s:ColorV.word_cur="#"
-    else
-        let s:ColorV.word_cur=""
-    endif
+    " "check '#' before
+    " silent normal! b
+    " if word=~'\x\{6}\|\x\{3}' &&
+    "             \matchstr(getline('.'), '\%' . 
+    "             \(col('.')>1 ? col('.')-1 :col('.')). 'c' . '.') =="#"
+    "     " let word='#'.word
+    "     let s:ColorV.word_pre="#"
+    " else
+    "     let s:ColorV.word_pre=""
+    " endif
+    " if word=~'#'
+    "     let s:ColorV.word_cur="#"
+    " else
+    "     let s:ColorV.word_cur=""
+    " endif
     
+    "could not change '#ffffff'
     let s:ColorV.word_pat=pat
     let clr_hex=s:nam2hex(word)
     let hex_list=s:txt2hex(pat)
@@ -1842,11 +1855,10 @@ function! ColorV#change_word(...) "{{{
     endif
 
     if exists("a:2")
-    	if a:2=~'RGB\|RGBA\|RGBP\|RGBAP\|HEX\|0x\|NAME\|#'
-            let s:ColorV.change2=a:2
-        elseif exists("s:ColorV.change2")
-            unlet s:ColorV.change2
-        endif
+            \ && a:2=~'RGB\|RGBA\|RGBP\|RGBAP\|HEX\|0x\|NAME\|NS6'
+        let s:ColorV.change2=a:2
+    elseif exists("s:ColorV.change2")
+        unlet s:ColorV.change2
     endif
 
     if g:ColorV_word_mini==1

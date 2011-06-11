@@ -63,7 +63,7 @@ if !hasmapto(':ColorVchange2 RGBP<CR>')
 endif
 
 if !hasmapto(':ColorVchange2 #<CR>')
-  silent! nmap <unique> <silent> <Leader>c2# :ColorVchange2 #<CR>
+  silent! nmap <unique> <silent> <Leader>c2# :ColorVchange2 NS6<CR>
 endif
 if !hasmapto(':ColorVdropper<CR>') && has('python')
   silent! nmap <unique> <silent> <Leader>cd :ColorVdropper<CR>
