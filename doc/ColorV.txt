@@ -630,12 +630,12 @@ TODO                                                *colorv-todo*
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
 " 1.7.6
-" DONE: 110611  change format name "#" to 'NS6'. add in s:txt2hex()
+"FIXED: 110611  fix format name "#" which was invalid to 'NS6'.
 "FIXED: 110611  change2 doesnt unlet with s:changing()
-" DONE: 110611  cursor word will include '#' format.
+"FIXED: 110611  cursor word will include '#' format.
 " DONE: 110611  add g:ColorV_win_pos 'top/bot'
-" DONE: 110611  now |:ColorVword| doesnt move cursor into ColorV window.
-" DONE: 110611  now |:ColorVchange| will move cursor back.
+"FIXED: 110611  now |:ColorVword| doesnt move cursor into ColorV window.
+"FIXED: 110611  now |:ColorVchange| will move cursor back.
 " DONE: 110611  add |:ColorVquit| and <leader>cq
 
 " 1.7.0 change 2

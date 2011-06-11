@@ -4,7 +4,7 @@
 " Summary: A Color Viewer and Color Picker for Vim
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 1.7.2 
+" Version: 1.7.6 
 " Last Update: 2011-06-09
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
@@ -20,7 +20,7 @@ let g:colorV_loaded = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ColorV={}
 let g:ColorV.name="[ColorV]"
-let g:ColorV.ver="1.7.2.1"
+let g:ColorV.ver="1.7.6.1"
 
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={}
