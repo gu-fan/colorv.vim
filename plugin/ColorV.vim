@@ -6,11 +6,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
-if !has("gui_running")
-    " "GUI MODE ONLY"
-    finish
-endif
-if v:version < 700
+
+if !has("gui_running") || v:version < 700
     finish
 endif
 

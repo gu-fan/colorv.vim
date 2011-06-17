@@ -4,8 +4,8 @@
 " Summary: A Color Viewer and Color Picker for Vim
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 1.7.6 
-" Last Update: 2011-06-09
+" Version: 1.7.7 
+" Last Update: 2011-06-11
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -20,7 +20,7 @@ let g:colorV_loaded = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ColorV={}
 let g:ColorV.name="[ColorV]"
-let g:ColorV.ver="1.7.6.1"
+let g:ColorV.ver="1.7.7.0"
 
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={}
@@ -59,6 +59,10 @@ endif
 if !exists('g:ColorV_win_pos')
     let g:ColorV_win_pos="bot"
 endif
+if !exists('g:ColorV_uppercase')
+    let g:ColorV_uppercase=1
+endif
+
 "}}}
 "SVAR: {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -69,9 +73,6 @@ let [s:max_h,s:mid_h,s:min_h]=[11,6,3]
 let [s:pal_W,s:pal_H]=[20,10]
 let [s:poff_x,s:poff_y]=[0,1]
 
-" let s:hue_width=30
-" let s:sat_width=30
-" let s:val_width=30
 let s:his_set_rect=[42,2,5,4]
 let s:his_cpd_rect=[24,7,2,1]
 let s:line_width=60
@@ -96,7 +97,6 @@ let s:tips_list=[
             \'Help: F1/H               Tips: ?',
             \'Quit: q/Q/<C-W>q/<C-W><C-Q>',
             \]
-
 
 let s:t='fghDPijmrYFGtudBevwxklyzEIZOJLMnHsaKbcopqNACQRSTUVWX'
 
@@ -208,26 +208,28 @@ let s:fmt.RGB='rgb(\s*\d\{1,3},\s*\d\{1,3},\s*\d\{1,3})'
 let s:fmt.RGBA='rgba(\s*\d\{1,3},\s*\d\{1,3},\s*\d\{1,3}\,\s*\d\{1,3}%\=)'
 let s:fmt.RGBP='rgb(\s*\d\{1,3}%,\s*\d\{1,3}%,\s*\d\{1,3}%)'
 let s:fmt.RGBAP='rgba(\s*\d\{1,3}%,\s*\d\{1,3}%,\s*\d\{1,3}%,\s*\d\{1,3}%\=)'
-" TODO: change to defalt format name 'HEX' '#' , '0x'  '#3'
+"ffffff
 let s:fmt.HEX='[#\x]\@<!\x\{6}\x\@!'
-let s:fmt.0x='0x\x\{6}\x\@!'
-"number sign 
+"0xffffff
+let s:fmt.HEX0='0x\x\{6}\x\@!'
+"number sign 6 #ffffff
 let s:fmt.NS6='#\x\{6}\x\@!'
-"#fff only
+"#fff 
 let s:fmt.NS3='#\x\{3}\x\@!'
 
-let s:fmt.NAMW=''
-for [nam,hex] in s:clrnW3C+s:clrn
-    let s:fmt.NAMW .='\<'.nam.'\>\|'
-endfor
-
-let s:fmt.NAMX=''
-for [nam,hex] in s:clrnX11+s:clrn
-    let s:fmt.NAMX .='\<'.nam.'\>\|'
-endfor
-
-let s:fmt.NAMW =substitute(s:fmt.NAMW,'\\|$','','')
-let s:fmt.NAMX =substitute(s:fmt.NAMX,'\\|$','','')
+let s:fmt.HSV='hsv(\s*\d\{1,3},\s*\d\{1,3},\s*\d\{1,3})'
+" let s:fmt.NAMW=''
+" for [nam,hex] in s:clrnW3C+s:clrn
+"     let s:fmt.NAMW .='\<'.nam.'\>\|'
+" endfor
+" 
+" let s:fmt.NAMX=''
+" for [nam,hex] in s:clrnX11+s:clrn
+"     let s:fmt.NAMX .='\<'.nam.'\>\|'
+" endfor
+" 
+" let s:fmt.NAMW =substitute(s:fmt.NAMW,'\\|$','','')
+" let s:fmt.NAMX =substitute(s:fmt.NAMX,'\\|$','','')
 
 let s:a='Elxxn'
 let s:e='stuQCvwzeLSTghqOrijkxylmRVMBWYZaUfnXopbcdANPDEFGHIJK'
@@ -321,7 +323,12 @@ function! ColorV#rgb2hex(rgb)   "{{{
     catch /^Vim\%((\a\+)\)\=:E808/
         " call s:debug("error E808")
     endtry
-   return printf("%06x",r*0x10000+g*0x100+b*0x1)
+    let hex=printf("%06x",r*0x10000+g*0x100+b*0x1)
+    if exists("g:ColorV_uppercase") && g:ColorV_uppercase == 1
+    	let hex=substitute(hex,'\l','\u\0','g')
+    endif
+    
+   return hex
 endfunction "}}}
 " in ffffff
 " out [r,g,b]
@@ -442,6 +449,10 @@ function! s:update_his_set(hex) "{{{
 endfunction "}}}
 function! s:update_global(hex) "{{{
     let hex= strpart(printf("%06x",'0x'.a:hex),0,6) 
+    if exists("g:ColorV_uppercase") && g:ColorV_uppercase == 1
+    	let hex=substitute(hex,'\l','\u\0','g')
+    endif
+
     let g:ColorV.HEX=hex
     let [r,g,b]= ColorV#hex2rgb(hex)
     let [h,s,v]= ColorV#rgb2hsv([r,g,b])
@@ -722,6 +733,9 @@ function! s:draw_text(...) "{{{
     let cur=s:clear_text()
     let hex=exists("a:1") ? printf("%06x",'0x'.a:1) : 
                 \exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
+    if exists("g:ColorV_uppercase") && g:ColorV_uppercase == 1
+    	let hex=substitute(hex,'\l','\u\0','g')
+    endif
     let [r,g,b]=ColorV#hex2rgb(hex)
     let [h,s,v]=ColorV#rgb2hsv([r,g,b])
     let [r,g,b]=[printf("%3d",r),printf("%3d",g),printf("%3d",b)]
@@ -1101,7 +1115,7 @@ function! s:map_define() "{{{
     "map <silent><buffer> <c-c> :call <SID>copy("","+")<cr>
     map <silent><buffer> C :call <SID>copy("","+")<cr>
     map <silent><buffer> cc :call <SID>copy("","+")<cr>
-    map <silent><buffer> cx :call <SID>copy("0x","+")<cr>
+    map <silent><buffer> cx :call <SID>copy("HEX0","+")<cr>
     map <silent><buffer> cs :call <SID>copy("#","+")<cr>
     map <silent><buffer> c# :call <SID>copy("#","+")<cr>
     map <silent><buffer> cr :call <SID>copy("RGB","+")<cr>
@@ -1113,7 +1127,7 @@ function! s:map_define() "{{{
 
     map <silent><buffer> Y :call <SID>copy()<cr>
     map <silent><buffer> yy :call <SID>copy()<cr>
-    map <silent><buffer> yx :call <SID>copy("0x")<cr>
+    map <silent><buffer> yx :call <SID>copy("HEX0")<cr>
     map <silent><buffer> ys :call <SID>copy("#")<cr>
     map <silent><buffer> y# :call <SID>copy("#")<cr>
     map <silent><buffer> yr :call <SID>copy("RGB")<cr>
@@ -1501,6 +1515,12 @@ function! s:txt2hex(txt) "{{{
                 call add(clr,fmt)
                 call add(hex_list,clr)
             endfor
+        elseif fmt=="HEX0"
+            for clr in var
+                let clr[0]=substitute(clr[0],'0x','','')
+                call add(clr,fmt)
+                call add(hex_list,clr)
+            endfor
         elseif fmt=="NS6"
             call s:debug("fmt is NS6 in hex_list")
             for clr in var
@@ -1511,6 +1531,7 @@ function! s:txt2hex(txt) "{{{
             call s:debug(clr[0]." ".clr[1]." ".clr[2]." ".clr[3]." ")
         elseif fmt=="NS3"
             for clr in var
+                let clr[0]=substitute(clr[0],'#','','')
                 let clr[0]=substitute(clr[0],'.','&&','g')
                 call add(clr,fmt)
                 call add(hex_list,clr)
@@ -1535,6 +1556,16 @@ function! s:txt2hex(txt) "{{{
                 call add(clr,fmt)
                 call add(hex_list,clr)
             endfor
+        elseif fmt=="HSV"
+            for clr in var
+                let list=split(clr[0],',')
+                let h=matchstr(list[0],'\d\{1,3}')
+                let s=matchstr(list[1],'\d\{1,3}')
+                let v=matchstr(list[2],'\d\{1,3}')
+                let clr[0] = ColorV#rgb2hex(ColorV#hsv2rgb([h,s,v]))
+                call add(clr,fmt)
+                call add(hex_list,clr)
+            endfor
         " "NAMW and NAMX format ;not a <cword> here
         " elseif fmt=="NAMW"
         "     for clr in var
@@ -1550,9 +1581,17 @@ endfunction "}}}
 function! s:hex2txt(hex,fmt,...) "{{{
     
     let hex=printf("%06x","0x".a:hex)
+    if exists("g:ColorV_uppercase") && g:ColorV_uppercase == 1
+    	let hex=substitute(hex,'\l','\u\0','g')
+    endif
+
     let [r,g,b] = ColorV#hex2rgb(hex)
+    
     if a:fmt=="RGB"
         let text="rgb(".r.",".g.",".b.")"
+    elseif a:fmt=="HSV"
+        let [h,s,v]=ColorV#rgb2hsv([r,g,b])
+        let text="hsv(".h.",".s.",".v.")"
     elseif a:fmt=="RGBP"
         let text="rgb(".float2nr(r/2.55)."%,"
                     \.float2nr(g/2.55)."%,"
@@ -1567,7 +1606,7 @@ function! s:hex2txt(hex,fmt,...) "{{{
         let text=hex
     elseif a:fmt=="NS6"
         let text="#".hex
-    elseif a:fmt=="0x"
+    elseif a:fmt=="HEX0"
         let text="0x".hex
     elseif a:fmt=="NAME"
         if exists("a:1") 
@@ -1654,11 +1693,14 @@ endfunction "}}}
 function! s:copy(...) "{{{
     let fmt=exists("a:1") ? a:1 : "HEX"
     let l:cliptext=s:hex2txt(g:ColorV.HEX,fmt)
+    
+    " g:ColorV.history_copy
     let g:ColorV.history_copy=exists("g:ColorV.history_copy") ? g:ColorV.history_copy : []
     "no duplicated color to history
     if get(g:ColorV.history_copy,-1)!=g:ColorV.HEX
         call add(g:ColorV.history_copy,g:ColorV.HEX)
     endif
+
     if  exists("a:2") && a:2=="\""
         echo "Copied to Clipboard(reg\"):" l:cliptext
         let @" = l:cliptext
@@ -1855,7 +1897,7 @@ function! ColorV#change_word(...) "{{{
     endif
 
     if exists("a:2")
-            \ && a:2=~'RGB\|RGBA\|RGBP\|RGBAP\|HEX\|0x\|NAME\|NS6'
+            \ && a:2=~'RGB\|RGBA\|RGBP\|RGBAP\|HEX\|HEX0\|NAME\|NS6'
         let s:ColorV.change2=a:2
     elseif exists("s:ColorV.change2")
         unlet s:ColorV.change2

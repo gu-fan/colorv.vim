@@ -293,7 +293,7 @@ MAPPINGS                                            *colorv-mappings*
     yy          Copy HEX format 'ffffff' into register"
     ys          Copy NS6 format '#ffffff' into register"
     y#          Copy NS6 format '#ffffff' into register"
-    yx          Copy 0x plain '0xffffff' into register"
+    yx          Copy HEX0 plain '0xffffff' into register"
     yr          Copy RGB format 'rgb(255,255,255)' into register"
     yp          Copy RGBP format 'rgb(100%,100%,100%)' into register"
     yaa         Copy RGBA format 'rgba(255,255,255,255)' into register"
@@ -304,7 +304,7 @@ MAPPINGS                                            *colorv-mappings*
     cc          Copy HEX format 'ffffff' into register+
     c#          Copy NS6 format '#ffffff' into register+
     cs          Copy NS6 format '#ffffff' into register+
-    cx          Copy 0x plain '0xffffff' into register+
+    cx          Copy HEX0 plain '0xffffff' into register+
     cr          Copy RGB format 'rgb(255,255,255)' into register+
     cp          Copy RGBP format 'rgb(100%,100%,100%)' into register+
     caa         Copy RGBA format 'rgba(255,255,255,255)' into register+
@@ -326,7 +326,7 @@ which was used with cut/copy between other applications.
     There are  following formats currently:
     NS6     #ffffff     (Number Sign 6)
     NS3     #fff
-    0x      0xffffff
+    HEX0    0xffffff
     HEX     ffffff
     RGB     rgb(255,255,255)
     RGBP    rgb(100%,100%,100%)
@@ -461,12 +461,16 @@ OPTIONS                                             *colorv-options*
     g:ColorV_echo_tips      The method of echo tips. set 0 to echo all.
                             set 1 to echo with sequence.
                             set 2 to echo with random sequence.
-                            
+
                                                 *g:ColorV_tune_step*
                                                 (default=5)
     g:ColorV_tune_step      The step when tuning RGB/HSV parameters with
                             '+' and '-'
                             
+                                                *g:ColorV_uppercase*
+                                                (default=1)
+    g:ColorV_uppercase      The showing and copy hex using uppercase.
+                            'FFFFFF'
                             
 ------------------------------------------------------------------------------
 VARIABLES                                           *colorv-variables*
@@ -629,6 +633,11 @@ TODO                                                *colorv-todo*
 " TODO: +1 term/cterm support
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
+"FIXED: 110617  error of opening 'NS3' format '#fff'
+" DONE: 110617  g:ColorV_uppercase=1 lowecase to uppercase 'FFFFFF'
+" DONE: 110617  add format 'HSV' "hsv(360,100,100)"
+"FIXED: 110617  change format "0xffffff" name to 'HEX0'
+
 " 1.7.6
 "FIXED: 110611  fix format name "#" which was invalid to 'NS6'.
 "FIXED: 110611  change2 doesnt unlet with s:changing()
