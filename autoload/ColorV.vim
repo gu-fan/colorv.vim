@@ -5,7 +5,7 @@
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
 " Version: 2.0.0 
-" Last Update: 2011-06-11
+" Last Update: 2011-06-19
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -1977,8 +1977,6 @@ color_dlg.destroy()
 EOF
 endfunction "}}}
 "}}}
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" V 2.0 {{{
 " LIST: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ColorV.listname="[ColorV List]"
@@ -2005,11 +2003,11 @@ function! ColorV#list_win(...) "{{{
                 endif
             endif
         else
-            execute  'vert' 'new' 
+            execute  'bo' 'vnew' 
             silent! file [ColorV List]
         endif
     else
-        execute  'vert' 'new' 
+        execute  'bo' 'vnew' 
         silent! file [ColorV List]
     endif "}}}
     
@@ -2070,6 +2068,19 @@ function! ColorV#gen_win(hex,...) "{{{
     let step=exists("a:3") ? a:3 : 10
     let list=s:generate_list(hex,type,nums,step)
     call ColorV#list_win(list)
+endfunction "}}}
+function! ColorV#word_gen(...) "{{{
+    if ColorV#open_word()==-1
+    	return -1
+    endif
+    let hex=g:ColorV.HEX
+    let type=exists("a:1") ? a:1 : "hue"
+    let nums=exists("a:2") ? a:2 : 10
+    let step=exists("a:3") ? a:3 : 10
+    let list=s:generate_list(hex,type,nums,step)
+    call ColorV#list_win(list)
+    call ColorV#exit()
+    call ColorV#Win(hex)
 endfunction "}}}
 function! s:generate_list(hex,...) "{{{
     let hex=a:hex
@@ -2169,16 +2180,19 @@ function! s:generate_list(hex,...) "{{{
     return list
 endfunction "}}}
 
-function! s:color_preview() "{{{
+function! ColorV#color_preview() "{{{
     "parse each line with color format text
     "then highlight the color text
-    " for line in buf
-    " call s:txt2hex(line)
+    let file_lines=readfile(expand('%'))
+    for line in file_lines
+        let hex_list=s:txt2hex(line)
+        echo hex_list
+    endfor
     " hl txt hex
     " matchadd list_dict
 endfunction "}}}
 "}}}
-"}}}
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let &cpo = s:save_cpo
 unlet s:save_cpo
 " vim:tw=78:fdm=marker:
