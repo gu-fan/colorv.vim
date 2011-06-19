@@ -31,13 +31,7 @@ Submit at github
 https://github.com/rykka/colorv
 
 ##VERSION:##
-- **NEW! 1.7.0**  Change word under cursor to another format
-- **NEW! 1.6.0**  'N:' and horizontal parameters in mini mode.
-- **NEW! 1.5.0**  '+' and '-' to tuning at RGB/HSV parameters.
-- **NEW! 1.4.0**  'mid' mode added and default.
-- **NEW! 1.3.0**  Color name (X11 Standard)
-- **NEW! 1.2.0**  Color name (W3C Standard)
-
+- **NEW! 2.0.0**  window of Color Name list 
 ##INSTALL:##
     
 - Using vim.org: http://www.vim.org/scripts/script.php?script_id=3597
