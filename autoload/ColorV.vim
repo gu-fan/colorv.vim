@@ -4,7 +4,7 @@
 " Summary: A Color Viewer and Color Picker for Vim
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 1.7.7 
+" Version: 2.0.0 
 " Last Update: 2011-06-11
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
@@ -20,7 +20,7 @@ let g:colorV_loaded = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ColorV={}
 let g:ColorV.name="[ColorV]"
-let g:ColorV.ver="1.7.7.2"
+let g:ColorV.ver="2.0.0.1"
 
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={}
@@ -247,14 +247,21 @@ let s:tune_step=exists("g:ColorV_tune_step") && g:ColorV_tune_step >0
 " out [H,S,V] 0~360 0~100
 function! ColorV#rgb2hsv(rgb)  "{{{
     let [r,g,b]=[a:rgb[0],a:rgb[1],a:rgb[2]] 
-    if r>255||g>255||b>255
-            call s:warning("RGB input error")
-    	return -1
-    endif
+    " if r>255||g>255||b>255
+    "         call s:warning("RGB input error")
+    " 	return -1
+    " endif
+    let r=type(r)==type("0") ? str2nr(r) : r
+    let g=type(g)==type("0") ? str2nr(g) : g
+    let b=type(b)==type("0") ? str2nr(b) : b
+    let r=fmod(r,256.0)
+    let g=fmod(g,256.0)
+    let b=fmod(b,256.0)
     "WKRND: 110601  weird with float input
     let r=type(r)==type(0.0) ? float2nr(r) : r
     let g=type(g)==type(0.0) ? float2nr(g) : g
     let b=type(b)==type(0.0) ? float2nr(b) : b
+
 
     let max=max([r,g,b])+0.0
     let min=min([r,g,b])+0.0
@@ -273,9 +280,15 @@ endfunction "}}}
 " out [R,G,B] 0~255      "Follow info from wikipedia"
 function! ColorV#hsv2rgb(hsv) "{{{
     let [h,s,v]=[a:hsv[0]+0.0,a:hsv[1]+0.0,a:hsv[2]+0.0]
-    if s>100||v>100||s<0||v<0
-            call s:warning("HSV input error")
-            return -1
+    " if s>100||v>100||s<0||v<0
+    "         call s:warning("HSV input error")
+    "         return -1
+    " endif
+    if s>100
+        let s=fmod(s,100.0)
+    endif
+    if v>100
+        let v=fmod(v,100.0)
     endif
     let h=fmod(h,360.0)
     let v=v*2.55
@@ -1965,6 +1978,207 @@ EOF
 endfunction "}}}
 "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" V 2.0 {{{
+" LIST: "{{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:ColorV.listname="[ColorV List]"
+function! ColorV#list_win(...) "{{{
+    if bufexists(g:ColorV.listname) "{{{
+    	let nr=bufnr('\[ColorV List\]')
+    	let winnr=bufwinnr(nr)
+        if winnr>0 && bufname(nr)==g:ColorV.listname
+            if bufwinnr('%') ==winnr
+                if expand('%') !=g:ColorV.listname
+                    call s:warning("Not [ColorV List] buffer")
+                    return
+                else
+                call s:echo("All ready in [ColorV List] window.")
+                endif
+            else
+            	"Becareful
+                exec winnr."wincmd w"
+                if expand('%') !=g:ColorV.listname
+                    call s:warning("Not [ColorV List] buffer")
+                return
+                else
+                    call s:echo("[ColorV List] all ready exists.")
+                endif
+            endif
+        else
+            execute  'vert' 'new' 
+            silent! file [ColorV List]
+        endif
+    else
+        execute  'vert' 'new' 
+        silent! file [ColorV List]
+    endif "}}}
+    
+    " local setting "{{{
+    setl nocursorline nocursorcolumn
+    setl tw=0
+    setl buftype=nofile
+    setl bufhidden=delete
+    setl nolist
+    setl noswapfile
+    setl nobuflisted
+    setl nowrap
+    setl nofoldenable
+    setl nomodeline
+    setl nonumber
+    setl foldcolumn=0
+    setl sidescrolloff=0
+    if v:version >= 703
+        setl cc=
+    endif
+
+    setl ft=ColorV_list 
+    
+    nmap <silent><buffer> q :q<cr>
+    nmap <silent><buffer> Q :q<cr>
+    " call s:aug_init()
+    " call s:map_define() "}}}
+
+    if winnr('$') != 1
+        execute 'vertical resize' 30
+        redraw
+    endif
+
+    let list=exists("a:1") ? a:1 : s:clrn+s:clrnW3C
+    call s:draw_list_buf(list)
+endfunction "}}}
+function! s:draw_list_buf(list) "{{{
+    setl ma
+    let list=a:list
+    call s:draw_list_text(list)
+    call s:color_preview()
+    setl noma
+endfunction "}}}
+function! s:draw_list_text(list) "{{{
+    let list=a:list
+    for i in range(len(list))
+        let name=list[i][0]
+        let hex="#".list[i][1]
+        let line=s:line_sub(name,hex,22)
+        call setline(i+1,line)
+    endfor
+endfunction "}}}
+
+function! ColorV#gen_win(hex,...) "{{{
+    let hex=a:hex
+    let type=exists("a:1") ? a:1 : "hue"
+    let nums=exists("a:2") ? a:2 : 10
+    let step=exists("a:3") ? a:3 : 10
+    let list=s:generate_list(hex,type,nums,step)
+    call ColorV#list_win(list)
+endfunction "}}}
+function! s:generate_list(hex,...) "{{{
+    let hex=a:hex
+    let type=exists("a:1") ? a:1 : "Hue"
+    let nums=exists("a:2") ? a:2 : 10
+    let step=exists("a:3") ? a:3 : 10
+    let [h,s,v]=ColorV#rgb2hsv(ColorV#hex2rgb(hex))
+    let list=[]
+    for i in range(nums)
+    	if type=="Hue" 
+    	    "h+
+            let h{i}=h+step*i
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h{i},s,v]))
+        elseif type=="Saturation"
+            "s+
+            let s{i}=s+step*i
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h,s{i},v]))
+        elseif type=="Value"
+            "v+
+            let v{i}=v+step*i
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h,s,v{i}]))
+        elseif type=="Monochromatic"
+            "s+step v+step
+            let v{i}=v+step*i
+            let s{i}=s+step*i
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h,s{i},v{i}]))
+        elseif type=="Analogous"
+            "h+30
+            let h{i}=h+30*i
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h{i},s,v]))
+        elseif type=="Triadic"
+            "h+120
+            let h{i}=h+120*i
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h{i},s,v]))
+        elseif type=="Tetradic" || type=="Rectangle"
+            "h+60,h+120,...
+            if i==0
+            	let h{i}=h
+            else
+                let h{i}=fmod(i,2)==1 ? h{i-1}+60 : h{i-1}+120
+            endif
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h{i},s,v]))
+        elseif type=="Neutral"
+            "h+15
+            let h{i}=h+15*i
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h{i},s,v]))
+        elseif type=="Clash"
+            "h+90,h+180,...
+            if i==0
+            	let h{i}=h
+            else
+                let h{i}=fmod(i,2)==1 ? h{i-1}+90 : h{i-1}+180
+            endif
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h{i},s,v]))
+        elseif type=="Square"
+            "h+90
+            let h{i}=h+90*i
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h{i},s,v]))
+        elseif type=="Five-Tone"
+            "h+115,+40,+50,+40,+115
+            if i==0
+            	let h{i}=h
+            else
+                let h{i}=fmod(i,5)==1 ? h{i-1}+115 : 
+                        \fmod(i,5)==2 ? h{i-1}+40 : 
+                        \fmod(i,5)==3 ? h{i-1}+50 : 
+                        \fmod(i,5)==4 ? h{i-1}+40 :
+                        \h{i-1}+115
+            endif
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h{i},s,v]))
+        elseif type=="Six-Tone"
+            "h+30,90,...
+            if i==0
+            	let h{i}=h
+            else
+                let h{i}=fmod(i,2)==1 ? h{i-1}+30 : h{i-1}+90
+            endif
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h{i},s,v]))
+        elseif type=="Complementary"
+            "h+180
+            let h{i}=h+180*i
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h{i},s,v]))
+        elseif type=="Split-Complementary"
+            "h+150,h+60,... 
+            if i==0
+            	let h{i}=h
+            else
+                let h{i}=fmod(i,2)==1 ? h{i-1}+150 : h{i-1}+60
+            endif
+            let hex{i}=ColorV#rgb2hex(ColorV#hsv2rgb([h{i},s,v]))
+        else
+            call s:warning("Not a Correct color generator Type.")
+            return [['ERROR','-1']]
+        endif
+    	call add(list,[type.i,hex{i}])
+    endfor
+    return list
+endfunction "}}}
+
+function! s:color_preview() "{{{
+    "parse each line with color format text
+    "then highlight the color text
+    " for line in buf
+    " call s:txt2hex(line)
+    " hl txt hex
+    " matchadd list_dict
+endfunction "}}}
+"}}}
+"}}}
 let &cpo = s:save_cpo
 unlet s:save_cpo
 " vim:tw=78:fdm=marker:

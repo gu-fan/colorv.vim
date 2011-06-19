@@ -1,6 +1,6 @@
 *ColorV.txt*               ColorV      Color Viewer and Picker for Vim
 *colorv*
-ver:1.7.0                               <Rykka.Krin@gmail.com>
+ver:2.0.0                               <Rykka.Krin@gmail.com>
 
 CONTENTS                               *colorv-contents*
 
@@ -278,6 +278,8 @@ MAPPINGS                                            *colorv-mappings*
     <leader>c2n     Change cursor word to NAME format later.
     <leader>c2#     Change cursor word to NS6 format later.
                     See details in |colorv-format-text|
+
+    <leader>cl      Open colorname list window
 
     <leader>cq      Quit ColorV.
     
@@ -632,7 +634,11 @@ TODO                                                *colorv-todo*
 " TODO: +1 term/cterm support
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
-
+" 2.0.0 pre
+" DONE: 110619  list window
+" DONE: 110619  generate list with hue/sat/val
+" DONE: 110619  generate list with colorscheme. 'analogous'...
+"FIXED: 110619  fmod() with input of ColorV#rgb2hsv() ColorV#hsv2rgb()
 "FIXED: 110619  help docs and map define of format 'HSV' ('ch/yh').
 
 " 1.7.7
