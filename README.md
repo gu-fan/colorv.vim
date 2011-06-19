@@ -32,6 +32,7 @@ https://github.com/rykka/colorv
 
 ##VERSION:##
 - **NEW! 2.0.0**  window of Color Name list 
+
 ##INSTALL:##
     
 - Using vim.org: http://www.vim.org/scripts/script.php?script_id=3597
