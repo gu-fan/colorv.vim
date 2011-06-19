@@ -289,27 +289,25 @@ MAPPINGS                                            *colorv-mappings*
 
                                                     *colorv-mapping-copy*
 
-    Y           Copy HEX format 'ffffff' into register"
-    yy          Copy HEX format 'ffffff' into register"
-    ys          Copy NS6 format '#ffffff' into register"
-    y#          Copy NS6 format '#ffffff' into register"
+    Y/yy        Copy HEX format 'ffffff' into register"
+    ys/y#       Copy NS6 format '#ffffff' into register"
     yx          Copy HEX0 plain '0xffffff' into register"
     yr          Copy RGB format 'rgb(255,255,255)' into register"
     yp          Copy RGBP format 'rgb(100%,100%,100%)' into register"
     yaa         Copy RGBA format 'rgba(255,255,255,255)' into register"
     yap         Copy RGBAP format 'rgba(100%,100%,100%.100%)' into register"
     yn          Copy NAM format 'white' into register"
+    yh          Copy HSV format 'hsv(360,100,100)' into register"
 
-    C           Copy HEX format 'ffffff' into register+
-    cc          Copy HEX format 'ffffff' into register+
-    c#          Copy NS6 format '#ffffff' into register+
-    cs          Copy NS6 format '#ffffff' into register+
+    C/cc        Copy HEX format 'ffffff' into register+
+    cs/c#       Copy NS6 format '#ffffff' into register+
     cx          Copy HEX0 plain '0xffffff' into register+
     cr          Copy RGB format 'rgb(255,255,255)' into register+
     cp          Copy RGBP format 'rgb(100%,100%,100%)' into register+
     caa         Copy RGBA format 'rgba(255,255,255,255)' into register+
     cap         Copy RGBAP format 'rgba(100%,100%,100%.100%)' into register+
     cn          Copy NAM format 'white' into register+
+    ch          Copy HSV format 'hsv(360,100,100)' into register+
 
     NOTE
     The register" (|quotequote|) is Unnamed register used with  the "d", "c",
@@ -333,6 +331,7 @@ which was used with cut/copy between other applications.
     RGBA    rgba(255,255,255,255)
     RGBAP   rgba(100%,100%,100%,100%)
     NAME    red/lime/blue (see |colorv-colorname|)
+    HSV     hsv(360,100,100)
 
     You can also define your own color formats with |colorv-var-colors|.
 
@@ -633,6 +632,10 @@ TODO                                                *colorv-todo*
 " TODO: +1 term/cterm support
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
+
+"FIXED: 110619  help docs and map define of format 'HSV' ('ch/yh').
+
+" 1.7.7
 "FIXED: 110617  error of opening 'NS3' format '#fff'
 " DONE: 110617  g:ColorV_uppercase=1 lowecase to uppercase 'FFFFFF'
 " DONE: 110617  add format 'HSV' "hsv(360,100,100)"

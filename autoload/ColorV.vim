@@ -20,7 +20,7 @@ let g:colorV_loaded = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ColorV={}
 let g:ColorV.name="[ColorV]"
-let g:ColorV.ver="1.7.7.0"
+let g:ColorV.ver="1.7.7.2"
 
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={}
@@ -77,15 +77,15 @@ let s:his_set_rect=[42,2,5,4]
 let s:his_cpd_rect=[24,7,2,1]
 let s:line_width=60
 let s:mid_pos=[["Hex:",2,24,10],
-    \["R:",3,24,5],["G:",4,24,5],["B:",5,24,5],
-    \["H:",3,32,5],["S:",4,32,5],["V:",5,32,5],
-    \["N:",1,42,15]
-    \]
+            \["R:",3,24,5],["G:",4,24,5],["B:",5,24,5],
+            \["H:",3,32,5],["S:",4,32,5],["V:",5,32,5],
+            \["N:",1,42,15]
+            \]
 let s:min_pos=[["Hex:",1,22,10],
-    \["R:",2,22,5],["G:",2,29,5],["B:",2,36,5],
-    \["H:",3,22,5],["S:",3,29,5],["V:",3,36,5],
-    \["N:",1,42,15]
-    \]
+            \["R:",2,22,5],["G:",2,29,5],["B:",2,36,5],
+            \["H:",3,22,5],["S:",3,29,5],["V:",3,36,5],
+            \["N:",1,42,15]
+            \]
 let s:tips_list=[
             \'Choose: 2-Click/2-Space/Ctrl-K/Ctrl-J',
             \'Toggle: <TAB>/<C-N>/J   Back: <S-TAB>/<C-P>/K',
@@ -178,9 +178,9 @@ let s:clrn=[
 \, ['White'               , 'ffffff'], ['WhiteSmoke'          , 'f5f5f5']
 \, ['Yellow'              , 'ffff00'], ['YellowGreen'         , '9acd32']
 \]
-let s:clrf=[   ['ff0000', '00ff00', '0000ff', 'Uryyb Jbeyq']
-            \, ['0000ff', '00ff00', 'ff0000', 'qyebj byyrU']
-            \, ['000000', 'c00000', '009a00', 'Nstunavfgna~']
+let s:clrf=[   ['FF0000', '00FF00', '0000FF', 'Uryyb Jbeyq']
+            \, ['0000FF', '00FF00', 'FF0000', 'qyebj byyrU']
+            \, ['000000', 'C00000', '009A00', 'Nstunavfgna~']
             \, ['370095', 'FCE015', 'D81B3E', 'Naqbeen~']
             \, ['00257E', 'FFC725', '00257E', 'Oneonqbf~']
             \, ['000000', 'FFDA0C', 'F3172F', 'Orytvhz']
@@ -1042,6 +1042,58 @@ function! ColorV#Win(...) "{{{
     call s:draw_buf_hex(hex)
     "}}}
 endfunction "}}}
+function! s:draw_buf_hex(hex) "{{{
+
+    if expand('%') != g:ColorV.name
+        call s:warning("Not [ColorV] buffer")
+        return
+    endif
+
+    
+    setl ma
+    setl lz
+    let hex= printf("%06x",'0x'.a:hex) 
+    
+    call s:update_his_set(hex)
+    call s:update_global(hex)
+    call s:draw_hueLine(1)
+    if s:mode == "min"
+        call s:draw_satLine(2)
+        call s:draw_valLine(3)
+    else
+        call s:draw_palette_hex(hex)
+    endif
+
+    call s:draw_misc()
+    call s:draw_history_block(hex)
+    call s:draw_text(hex)
+    setl nolz
+    setl noma
+endfunction "}}}
+function! s:draw_bufandpos_hex(hex) "{{{
+    call s:draw_bufandpos_rgb(ColorV#hex2rgb(a:hex))
+endfunction "}}}
+function! s:draw_bufandpos_rgb(rgb) "{{{
+    setl ma
+    let [h,s,v]=ColorV#rgb2hsv(a:rgb)
+    let [h,s,v]=[h+0.0,s+0.0,v+0.0]
+    let hex=ColorV#rgb2hex(a:rgb)
+
+    let h_step=100.0/(s:pal_H-1)
+    let w_step=100.0/(s:pal_W-1)
+    let l=float2nr(round((100.0-v)/h_step))+1+s:poff_y
+    let c=float2nr(round((100.0-s)/w_step))+1+s:poff_x
+    if l>=s:pal_H+s:poff_y
+    	let l= s:pal_H+s:poff_y
+    endif
+    if l>=s:pal_W+s:poff_x
+    	let c= s:pal_W+s:poff_x
+    endif
+
+    call s:draw_buf_hex(hex)
+    call cursor(l,c)
+    setl noma
+endfunction "}}}
 function! s:aug_init() "{{{
     "hi cursor guibg=#000 guifg=#000 
     "hi visual guibg=NONE guibg=NONE
@@ -1116,26 +1168,26 @@ function! s:map_define() "{{{
     map <silent><buffer> C :call <SID>copy("","+")<cr>
     map <silent><buffer> cc :call <SID>copy("","+")<cr>
     map <silent><buffer> cx :call <SID>copy("HEX0","+")<cr>
-    map <silent><buffer> cs :call <SID>copy("#","+")<cr>
-    map <silent><buffer> c# :call <SID>copy("#","+")<cr>
+    map <silent><buffer> cs :call <SID>copy("NS6","+")<cr>
+    map <silent><buffer> c# :call <SID>copy("NS6","+")<cr>
     map <silent><buffer> cr :call <SID>copy("RGB","+")<cr>
     map <silent><buffer> cp :call <SID>copy("RGBP","+")<cr>
     map <silent><buffer> caa :call <SID>copy("RGBA","+")<cr>
     map <silent><buffer> cap :call <SID>copy("RGBAP","+")<cr>
     map <silent><buffer> cn :call <SID>copy("NAME","+")<cr>
-    map <silent><buffer> ce :call <SID>copy("NAME","+")<cr>
+    map <silent><buffer> ch :call <SID>copy("HSV","+")<cr>
 
     map <silent><buffer> Y :call <SID>copy()<cr>
     map <silent><buffer> yy :call <SID>copy()<cr>
     map <silent><buffer> yx :call <SID>copy("HEX0")<cr>
-    map <silent><buffer> ys :call <SID>copy("#")<cr>
-    map <silent><buffer> y# :call <SID>copy("#")<cr>
+    map <silent><buffer> ys :call <SID>copy("NS6")<cr>
+    map <silent><buffer> y# :call <SID>copy("NS6")<cr>
     map <silent><buffer> yr :call <SID>copy("RGB")<cr>
     map <silent><buffer> yp :call <SID>copy("RGBP")<cr>
     map <silent><buffer> yaa :call <SID>copy("RGBA")<cr>
     map <silent><buffer> yap :call <SID>copy("RGBAP")<cr>
     map <silent><buffer> yn :call <SID>copy("NAME")<cr>
-    map <silent><buffer> ye :call <SID>copy("NAME")<cr>
+    map <silent><buffer> yh :call <SID>copy("HSV")<cr>
     
     "paste color
     map <silent><buffer> <c-v> :call <SID>paste("+")<cr>
@@ -1152,58 +1204,6 @@ function! s:map_define() "{{{
     noremap <silent><buffer>k gk
 
     " command! -buffer -nargs=1 Debug call s:debug(<q-args>)
-endfunction "}}}
-function! s:draw_buf_hex(hex) "{{{
-
-    if expand('%') != g:ColorV.name
-        call s:warning("Not [ColorV] buffer")
-        return
-    endif
-
-    
-    setl ma
-    setl lz
-    let hex= printf("%06x",'0x'.a:hex) 
-    
-    call s:update_his_set(hex)
-    call s:update_global(hex)
-    call s:draw_hueLine(1)
-    if s:mode == "min"
-        call s:draw_satLine(2)
-        call s:draw_valLine(3)
-    else
-        call s:draw_palette_hex(hex)
-    endif
-
-    call s:draw_misc()
-    call s:draw_history_block(hex)
-    call s:draw_text(hex)
-    setl nolz
-    setl noma
-endfunction "}}}
-function! s:draw_bufandpos_hex(hex) "{{{
-    call s:draw_bufandpos_rgb(ColorV#hex2rgb(a:hex))
-endfunction "}}}
-function! s:draw_bufandpos_rgb(rgb) "{{{
-    setl ma
-    let [h,s,v]=ColorV#rgb2hsv(a:rgb)
-    let [h,s,v]=[h+0.0,s+0.0,v+0.0]
-    let hex=ColorV#rgb2hex(a:rgb)
-
-    let h_step=100.0/(s:pal_H-1)
-    let w_step=100.0/(s:pal_W-1)
-    let l=float2nr(round((100.0-v)/h_step))+1+s:poff_y
-    let c=float2nr(round((100.0-s)/w_step))+1+s:poff_x
-    if l>=s:pal_H+s:poff_y
-    	let l= s:pal_H+s:poff_y
-    endif
-    if l>=s:pal_W+s:poff_x
-    	let c= s:pal_W+s:poff_x
-    endif
-
-    call s:draw_buf_hex(hex)
-    call cursor(l,c)
-    setl noma
 endfunction "}}}
 "}}}
 "EDIT: "{{{1
@@ -1918,13 +1918,11 @@ function! ColorV#exit() "{{{
     	let nr=bufnr('\[ColorV\]')
     	let winnr=bufwinnr(nr)
         if winnr>0 && bufname(nr)==g:ColorV.name
-            if bufwinnr('%') == winnr
-                if expand('%') ==g:ColorV.name
-                    call s:echo("Close current [ColorV].")
-                    " call s:warning("Not [ColorV] buffer")
-                    " return
-                    bd
-                endif
+            if bufwinnr('%') == winnr && expand('%') ==g:ColorV.name
+                call s:echo("Close current [ColorV].")
+                " call s:warning("Not [ColorV] buffer")
+                " return
+                bd
             else
             	"Becareful
                 exec winnr."wincmd w"
