@@ -57,6 +57,10 @@ endif
 if !hasmapto(':ColorVchange2 HEX<CR>')
   silent! nmap <unique> <silent> <Leader>c2x :ColorVchange2 HEX<CR>
 endif
+if !hasmapto(':ColorVchange2 HSV<CR>')
+  silent! nmap <unique> <silent> <Leader>c2h :ColorVchange2 HSV<CR>
+endif
+
 if !hasmapto(':ColorVchange2 NAME<CR>')
   silent! nmap <unique> <silent> <Leader>c2n :ColorVchange2 NAME<CR>
 endif
@@ -70,6 +74,7 @@ endif
 
 if !hasmapto(':ColorVchange2 #<CR>')
   silent! nmap <unique> <silent> <Leader>c2# :ColorVchange2 NS6<CR>
+  silent! nmap <unique> <silent> <Leader>c2s :ColorVchange2 NS6<CR>
 endif
 
 if !hasmapto(':ColorVdropper<CR>') && has('python')

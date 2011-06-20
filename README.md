@@ -90,10 +90,6 @@ and use this to install it.
     :BundleInstall
 
 ##VIMRC EXAMPLE##
-
-    "<leader>ca may confilct with NerdCommentor.vim and Calendar.vim
-    nmap <leader>cga :ColorVchangeAll<CR>
-    nmap <leader>cgw :ColorVchange<CR>
     
     "dynamic hue
     "let g:ColorV_dynamic_hue=1

@@ -20,6 +20,7 @@ let g:colorV_loaded = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ColorV={}
 let g:ColorV.name="[ColorV]"
+let g:ColorV.listname="[ColorV List]"
 let g:ColorV.ver="2.0.2.1"
 
 let g:ColorV.HEX="ff0000"
@@ -1068,13 +1069,9 @@ function! ColorV#Win(...) "{{{
     if exists("a:2") 
     	"skip history if no new hex 
         let hex_list=s:txt2hex(a:2)
-        " let clr_hex=s:nam2hex(a:2)
         if exists("hex_list[0][0]")
             let hex=s:fmt_hex(hex_list[0][0])
             call s:caution("Use [".hex."] Format:".hex_list[0][4]) 
-        " elseif !empty(clr_hex)
-        "     let hex=clr_hex
-        "     call s:caution("Use color name [".hex."]") 
         else
             let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
             let s:skip_his_block=1
@@ -1748,12 +1745,8 @@ function! s:paste(...) "{{{
         call s:echo("Paste with Clipboard(reg\"): ".l:cliptext)
     endif
     let hex_list=s:txt2hex(l:cliptext)
-    " let clr_hex=s:nam2hex(l:cliptext)
     if len(hex_list)>0
         let hex=hex_list[0][0]
-    " elseif !empty(clr_hex)
-    "     let hex=clr_hex
-        "let nam=s:hex2nam
     else
     	call s:warning("Could not find color in the text") 
     	return
@@ -1805,8 +1798,6 @@ function! s:changing() "{{{
                 return -1
             endif
             
-            "XXX: wrong substitute while change2 NAME with "#"
-            " because of '~'!
             if exists("s:ColorV.word_list[0]")
                 let hex=g:ColorV.HEX
                 let fmt=s:ColorV.word_list[4]
@@ -1827,16 +1818,8 @@ function! s:changing() "{{{
                 return 
             endif
             
-            " error with '#fff' '#ffffff' if put cursor on '#'
-            " if (exists("s:ColorV.word_pre") && s:ColorV.word_pre=="#")
-            " " \||( exists("s:ColorV.word_cur") && s:ColorV.word_cur=="#")
-            "     let idx=s:ColorV.word_list[1]-1
-            "     let len=s:ColorV.word_list[2]+1
-            "     call s:debug("have #")
-            " else
-                let idx=s:ColorV.word_list[1]
-                let len=s:ColorV.word_list[2]
-            " endif
+            let idx=s:ColorV.word_list[1]
+            let len=s:ColorV.word_list[2]
             let new_pat=substitute(pat,'\%'.(idx+1).'c.\{'.len.'}',str,'')
 
             if exists("s:ColorV.change_all") && s:ColorV.change_all ==1
@@ -1855,10 +1838,8 @@ function! s:changing() "{{{
         endif
         let s:ColorV.change_word=0
         let s:ColorV.change_all=0
-        "back to origin pos
-        "WORKAROUND: not correct back position
-        "exe cur_bufwinnr."wincmd w"
-        "call setpos('.',cur_pos)
+
+        "Back to origin pos
         let cur_winnr = bufwinnr(s:ColorV.word_bufname)
         exe cur_winnr."wincmd w"
         call setpos('.',s:ColorV.word_pos)
@@ -1886,16 +1867,8 @@ function! ColorV#open_word() "{{{
     let pat = expand('<cWORD>')
     let word=expand('<cword>')
     let hex_list=s:txt2hex(pat)
-    " let clr_hex=s:nam2hex(word)
     if exists("hex_list[0][0]")
         let hex=s:fmt_hex(hex_list[0][0])
-        "let s:ColorV.word_list=hex_list[0]
-    " elseif !empty(clr_hex)
-    "     if &filetype=="vim"
-    "         let hex=s:nam2hex(word,"X11")
-    "     else
-    "         let hex=clr_hex
-    "     endif
     else
         call s:warning("Could not find a color under cursor.")
         return -1
@@ -1911,9 +1884,6 @@ function! ColorV#open_word() "{{{
         exe cur_winnr."wincmd w"
         call setpos('.',s:ColorV.word_pos)
     endif
-    " if s:ColorV.word_bufnr==bufnr('%') && s:ColorV.word_pos==getpos('.')
-    "             \ && s:ColorV.word_bufname==bufname('%')
-    " endif
 endfunction "}}}
 function! ColorV#change_word(...) "{{{
     let s:ColorV.word_bufnr=bufnr('%')
@@ -1923,40 +1893,11 @@ function! ColorV#change_word(...) "{{{
     let pat = expand('<cWORD>')
     let word= expand('<cword>')
 
-    " "check '#' before
-    " silent normal! b
-    " if word=~'\x\{6}\|\x\{3}' &&
-    "             \matchstr(getline('.'), '\%' . 
-    "             \(col('.')>1 ? col('.')-1 :col('.')). 'c' . '.') =="#"
-    "     " let word='#'.word
-    "     let s:ColorV.word_pre="#"
-    " else
-    "     let s:ColorV.word_pre=""
-    " endif
-    " if word=~'#'
-    "     let s:ColorV.word_cur="#"
-    " else
-    "     let s:ColorV.word_cur=""
-    " endif
-    
-    "could not change '#ffffff'
     let s:ColorV.word_pat=pat
-    " let clr_hex=s:nam2hex(word)
     let hex_list=s:txt2hex(pat)
     if exists("hex_list[0][0]")
         let hex=s:fmt_hex(hex_list[0][0])
         let s:ColorV.word_list=hex_list[0]
-    " elseif !empty(clr_hex)
-    "     if &filetype=="vim"
-    "         let hex=s:nam2hex(word,"X11")
-    "     else
-    "         let hex=clr_hex
-    "     endif
-    "     " let str=s:hex2nam(hex)
-    "     let str=word
-    "     let str_idx=match(pat,str)
-    "     let str_len=len(str)
-    "     let s:ColorV.word_list=[hex,str_idx,str_len,"NAME"]
     else 
         call s:warning("Could not find a color under cursor.")
         return
@@ -1972,7 +1913,7 @@ function! ColorV#change_word(...) "{{{
     endif
 
     if exists("a:2")
-            \ && a:2=~'RGB\|RGBA\|RGBP\|RGBAP\|HEX\|HEX0\|NAME\|NS6'
+            \ && a:2=~'RGB\|RGBA\|RGBP\|RGBAP\|HEX\|HEX0\|NAME\|NS6\|HSV'
         let s:ColorV.change2=a:2
     elseif exists("s:ColorV.change2")
         unlet s:ColorV.change2
@@ -1985,26 +1926,18 @@ function! ColorV#change_word(...) "{{{
     endif
 endfunction "}}}
 function! ColorV#exit() "{{{
-    " if expand('%') !=g:ColorV.name
-    "     call s:echo("Not the [ColorV] buffer")
-    "     return
-    " endif
     if bufexists(g:ColorV.name) 
     	let nr=bufnr('\[ColorV\]')
     	let winnr=bufwinnr(nr)
         if winnr>0 && bufname(nr)==g:ColorV.name
             if bufwinnr('%') == winnr && expand('%') ==g:ColorV.name
                 call s:echo("Close [ColorV].")
-                " call s:warning("Not [ColorV] buffer")
-                " return
                 bd
             else
             	"Becareful
                 exec winnr."wincmd w"
                 if expand('%') ==g:ColorV.name
                     call s:echo("Close existing [ColorV].")
-                    " call s:warning("Not [ColorV] buffer")
-                    " return
                     bd
                 endif
             endif
@@ -2017,23 +1950,18 @@ function! ColorV#exit() "{{{
         if winnr>0 && bufname(nr)==g:ColorV.listname
             if bufwinnr('%') == winnr && expand('%') ==g:ColorV.listname
                 call s:echo("Close [ColorV List].")
-                " call s:warning("Not [ColorV] buffer")
-                " return
                 bd
             else
             	"Becareful
                 exec winnr."wincmd w"
                 if expand('%') ==g:ColorV.listname
                     call s:echo("Close existing [ColorV List].")
-                    " call s:warning("Not [ColorV] buffer")
-                    " return
                     bd
                 endif
             endif
         endif    
     endif
     
-    " bd 
     if exists("s:ColorV.change_word") && s:ColorV.change_word ==1
         call s:changing()
     endif
@@ -2064,7 +1992,6 @@ endfunction "}}}
 "}}}
 " LIST: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ColorV.listname="[ColorV List]"
 function! ColorV#list_win(...) "{{{
     if bufexists(g:ColorV.listname) "{{{
     	let nr=bufnr('\[ColorV List\]')
@@ -2131,14 +2058,14 @@ function! ColorV#list_win(...) "{{{
         redraw
     endif
 
-    let list=exists("a:1") ? a:1 : ""
-    call s:draw_list_buf(list)
-endfunction "}}}
-function! ColorV#list_and_colorv(...) "{{{
     let list=exists("a:1") && !empty(a:1) ? a:1 : 
                 \ [['Color Name List','=======']]+ s:clrn
                 \+[['W3C_Standard','=======']]+s:clrnW3C
                 \+[['X11_Standard','=======']]+s:clrnX11
+    call s:draw_list_buf(list)
+endfunction "}}}
+function! ColorV#list_and_colorv(...) "{{{
+    let list=exists("a:1") && !empty(a:1) ? a:1 : ""
     call ColorV#exit()
     call ColorV#list_win(list)
     if g:ColorV_word_mini==1
@@ -2151,7 +2078,8 @@ function! s:draw_list_buf(list) "{{{
     setl ma
     let list=a:list
     call s:draw_list_text(list)
-    "preview without highlight name
+
+    "preview without highlight colorname
     call ColorV#preview("noname")
     setl noma
 endfunction "}}}
@@ -2185,16 +2113,8 @@ function! ColorV#cursor_gen(...) "{{{
     let pat = expand('<cWORD>')
     let word=expand('<cword>')
     let hex_list=s:txt2hex(pat)
-    " let clr_hex=s:nam2hex(word)
     if exists("hex_list[0][0]")
         let hex=s:fmt_hex(hex_list[0][0])
-        "let s:ColorV.word_list=hex_list[0]
-    " elseif !empty(clr_hex)
-    "     if &filetype=="vim"
-    "         let hex=s:nam2hex(word,"X11")
-    "     else
-    "         let hex=clr_hex
-    "     endif
     else
         call s:warning("Could not find a color under cursor.")
         return -1
@@ -2207,7 +2127,6 @@ function! ColorV#cursor_gen(...) "{{{
     let list=s:generate_list(hex,type,nums,step)
     call ColorV#exit()
     call ColorV#list_win(list)
-    " call ColorV#Win("min",hex)
     if g:ColorV_word_mini==1
         call ColorV#Win("min",hex)
     else
