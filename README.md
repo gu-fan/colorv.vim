@@ -1,41 +1,63 @@
 ##INTRO:##
-**ColorV** or **ColorV.vim** is a Color Viewer and Color Picker of Vim.
-Have a look at it. http://flic.kr/p/9PVEE3 
-or http://i52.tinypic.com/119qz3d.jpg
+**ColorV** is a color tool for Vim.
 
-Open a ColorV window.  `<leader>cv`
+Have a look at it.
+    ColorV window
+        Normal          http://flic.kr/p/9Vh7ES
+        Mini            http://flic.kr/p/9Vh7P1
+    Colorname List window 
+        colorname list  http://flic.kr/p/9Vh7xG
+    Generated List window
+        Analogous       http://flic.kr/p/9Vh4Nh
+        Monochromatic   http://flic.kr/p/9Vh8zj
+    Preview color text in file
+        preview css     http://flic.kr/p/9VehHD
+        preview vim     http://flic.kr/p/9VehUi
 
-Open a ColorV window by word under cursor.
+Have a try of it. 
+Install it first. See details with |colorv-install|.
+
+Open ColorV window.  `<leader>cv`
+
+Open color name list window. `<leader>cl`
+
+Open ColorV window by word under cursor.
 
     #ff9744 rgb(33,44,155) orangered  'cadetblue'
 
 put cursor on above words. `<leader>cw`
 
 Change the word under cursor with chosing color after quit the ColorV window.
-`<leader>cg`
+`<leader>cgg`
+
+Generate Analogous color scheme with cursor word `<leader>cgea`
+See details in |colorv-generate|
 
 Copy the color in the ColorV window.  `yy`
 
 Use GTK eyedropper to pick colors in screen.  `<leader>cd`
 ('+python' compiled and pygtk2.0 included.)
 
+
 There are several configs and commands to define ColorV. 
 See details in help docs.  `:h colorv`
 
-
 If useful, please rate it
-http://www.vim.org/scripts/script.php?script_id=3597
+    http://www.vim.org/scripts/script.php?script_id=3597
 
 If have any advice, patches or bug reports.
 Submit at github 
-https://github.com/rykka/colorv
+    https://github.com/rykka/colorv
 
 ##VERSION:##
-- **NEW! 2.0.0**  window of Color Name list 
+- NEW! 2.0.2  Preview Color in files or in line
+- NEW! 2.0.1  Generate color scheme (Analogous/Monochromatic/...)
+- NEW! 2.0.0  Color Name list window
 
 ##INSTALL:##
     
-- Using vim.org: http://www.vim.org/scripts/script.php?script_id=3597
+- Using vim.org: 
+    http://www.vim.org/scripts/script.php?script_id=3597
 
 Download the latest version of tar.gz file, extract it into your VIMFILE folder.("~/.vim" for linux. "$HOME/vimfiles" for windows)
 

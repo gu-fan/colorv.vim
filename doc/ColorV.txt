@@ -1,6 +1,6 @@
-*ColorV.txt*               ColorV      Color Viewer and Picker for Vim
+*ColorV.txt* *ColorV.vim*   ColorV         Color tool for Vim
 *colorv*
-ver:2.0.0                               <Rykka.Krin@gmail.com>
+ver:2.0.2                               <Rykka.Krin@gmail.com>
 
 CONTENTS                               *colorv-contents*
 
@@ -25,17 +25,40 @@ CONTENTS                               *colorv-contents*
 ==============================================================================
 INTRO                                               *colorv-intro*
 
-    *ColorV* or *ColorV.vim* is a Color Viewer and Color Picker for Vim.
+    *ColorV* is a color tool for Vim.
 
-    Open a ColorV window.
+    Have a look at it.
+        ColorV window
+            Normal          http://flic.kr/p/9Vh7ES
+            Mini            http://flic.kr/p/9Vh7P1
+        Colorname List window 
+            colorname list  http://flic.kr/p/9Vh7xG
+        Generated List window
+            Analogous       http://flic.kr/p/9Vh4Nh
+            Monochromatic   http://flic.kr/p/9Vh8zj
+        Preview color text in file
+            preview css     http://flic.kr/p/9VehHD
+            preview vim     http://flic.kr/p/9VehUi
+    
+    Have a try of it. 
+    Install it first. See details with |colorv-install|.
+
+    Open ColorV window.
         <leader>cv
 
-    Open a ColorV window by word under cursor.
+    Open color name list window. 
+        <leader>cl
+
+    Open ColorV window by word under cursor.
     #ff9744 rgb(33,44,155) orangered 'cadetblue'
         <leader>cw
 
     Change the word under cursor with chosing color after exit ColorV window.
-        <leader>cg
+        <leader>cgg
+
+    Generate Analogous color scheme with cursor word 
+        <leader>cgea
+    See details in |colorv-generate|
 
     Copy the color in the ColorV window
         yy
@@ -48,9 +71,6 @@ INTRO                                               *colorv-intro*
     See details in help docs. 
     :h colorv
 
-    Have a closer look at it. http://flic.kr/p/9PVEE3
-    or http://i52.tinypic.com/119qz3d.jpg
-
     If useful, please rate it
     http://www.vim.org/scripts/script.php?script_id=3597
 
@@ -61,7 +81,9 @@ INTRO                                               *colorv-intro*
     And you can contact me at <Rykka.Krin@gmail.com>
 ------------------------------------------------------------------------------
 VERSION                                             *colorv-version*
-- NEW! 2.0.0  window of Color Name list 
+- NEW! 2.0.2  Preview Color in files or in line
+- NEW! 2.0.1  Generate color scheme (Analogous/Monochromatic/...)
+- NEW! 2.0.0  Color Name list window
 ==============================================================================
 INSTALL                                             *colorv-install*
 
@@ -86,7 +108,7 @@ INSTALL                                             *colorv-install*
     :helptags ~/.vim/bundle/ColorV/doc
 <   
     Using Vundle:
-    Install script [Vundle.vim](https://github.com/gmarik/vundle)
+    Install git and script [Vundle.vim](https://github.com/gmarik/vundle)
     then put this line in your vimrc
 >
     Bundle 'rykka/colorv'
@@ -201,6 +223,67 @@ current color. You can use |g:ColorV_show_star| to set it show or not.
     If there is a color name for current HEX, it's name will show
     in the right top of ColorV window. It's always W3C standard name.
     See |colorv-colorname| for details.
+
+                                                *colorv-colorname*
+    The colorname are the the name of the colors, like 'red', 'green', 
+    'blue', 'OrangeRed', 'cornsilk'
+    
+    If not the exact hex of colors, then add '~' and '~~' to the end,
+    the approximation rate to exact colors can be adjusted by
+    |g:ColorV_name_approx|
+
+    There are several color names that have the same Hex.
+        Aqua            #00ffff
+        Cyan            #00ffff
+        Magenta         #ff00ff
+        Fuchsia         #ff00ff
+
+    Note 
+    The X11 standard is used by vim gui colors and X Window system.
+    The W3C standard is mostly used in HTML/CSS and browsers.
+
+    There are several clashes between X11 and W3C colornames.
+        Gray    (X11)	#BEBEBE
+        Gray    (W3C) 	#7F7F7F
+        Green   (X11) 	#00FF00
+        Green   (W3C) 	#007F00
+        Maroon  (X11) 	#B03060
+        Maroon  (W3C) 	#7F0000
+        Purple  (X11) 	#A020F0
+        Purple  (W3C) 	#7F007F
+    You can get the name table from
+    http://en.wikipedia.org/wiki/X11_color_names
+    
+    By default, when useing |:ColorVword| and |:ColorVchange| in vim filetype
+    files, ColorV will automatically use X11 color names. 
+    But the name showing in ColorV window is always W3C color name.
+    You can entering a X11 name by 'nx' and W3C name by 'ne'.
+
+                                                *colorv-interface-list*
+    A window that showing the list of colornames or generated colors.
+    It could be triggered by <leader>cl or generating colors with colors.
+    See |colorv-generate| for details.
+
+                                                *colorv-generate*
+    Type of generating various color scheme by input color.
+    There are following types currently:
+        Hue/Saturation/Value        Generate by H/S/V to step change 
+        Monochromatic               Generate by S and V to step change 
+        Analogous                   Generate by same S/V
+        Triadic                     Generate 3 colors by same S/V
+        Rectangle(Tetradic)         Generate 4 colors by same S/V
+        Neutral                     Generate by same S/V
+        Clash                       Generate clash color by same S/V
+        Square                      Generate 4 colors with same H step
+                                    by same S/V
+        Five-Tone                   Generate 5 colors by same S/V
+        Six-Tone                    Generate 6 colors by same S/V
+        Complementary               Generate opposite color by same S/V
+        Split-Complementary         Generate 2 opposite colors by same S/V
+    NOTE
+    With |g:ColorV_input_gen_step| set to 1, you could change the step with
+    input while generating with Hue/Saturation/Value/Monochromatic.
+
 ==============================================================================
 COMMANDS                                            *colorv-commands*
 
@@ -238,6 +321,10 @@ will change all color-text in current buf after closing the ColorV window.
                                                     *:ColorVclear*
     |:ColorVclear|      In case that you mess up other buffers with ColorV.
                       Use this.
+                                                    *:ColorVgenerate*
+    |:ColorVgenerate|   Generate colors with input.
+                      :ColorVgenerate {hex}[, {type}, {nums}, {step}]
+                      See |colorv-generate| for details.
 
                                                     *:ColorVquit*
     |:ColorVquit|       Quit ColorV
@@ -274,10 +361,34 @@ MAPPINGS                                            *colorv-mappings*
     <leader>c2#     Change cursor word to NS6 format later.
                     See details in |colorv-format-text|
 
-    <leader>cl      Open colorname list window
+    <leader>cl      Open colorname list window. See |colorv-interface-list|
 
     <leader>cq      Quit ColorV.
-    
+
+                                                    *colorv-mapping-generate*
+    <leader>cgeh    Hue
+    <leader>cges    Saturation
+    <leader>cgev    Value
+    <leader>cgea    Analogous
+    <leader>cgen    Neutral
+    <leader>cgec    Clash
+    <leader>cgep    Split-Complementary
+    <leader>cgeq    Square
+    <leader>cge1/m  Monochromatic
+    <leader>cge2    Complementary
+    <leader>cge3/t  Triadic
+    <leader>cge4    Rectangle(Tetradic)
+    <leader>cge5    Five-Tone
+    <leader>cge6    Six-Tone
+    See |colorv-generate| for details.
+                                                    *colorv-mapping-preview*
+    <leader>cpp     preview all color text in current file with highlighting 
+                    colors.
+    <leader>cpl     preview all color text in current line with highlighting
+                    colors.
+    <leader>cpc     clear preview highlighting.
+   Set |g:ColorV_prev_name| and |g:ColorV_prev_mass| to change it's behavior. 
+
 ------------------------------------------------------------------------------
 
                                                     *colorv-mapping-buffer*
@@ -332,40 +443,6 @@ which was used with cut/copy between other applications.
 
     You can also define your own color formats with |colorv-var-colors|.
 
-                                                    *colorv-colorname*
-    The colorname are the the name of the colors, like 'red', 'green', 
-    'blue', 'OrangeRed', 'cornsilk'
-    
-    If not the exact hex of colors, then add '~' and '~~' to the end,
-    the approximation rate to exact colors can be adjusted by
-    |g:ColorV_name_approx|
-
-    There are several color names that have the same Hex.
-        Aqua            #00ffff
-        Cyan            #00ffff
-        Magenta         #ff00ff
-        Fuchsia         #ff00ff
-
-    Note 
-    The X11 standard is used by vim gui colors and X Window system.
-    The W3C standard is mostly used in HTML/CSS and browsers.
-
-    There are several clashes between X11 and W3C colornames.
-        Gray    (X11)	#BEBEBE
-        Gray    (W3C) 	#7F7F7F
-        Green   (X11) 	#00FF00
-        Green   (W3C) 	#007F00
-        Maroon  (X11) 	#B03060
-        Maroon  (W3C) 	#7F0000
-        Purple  (X11) 	#A020F0
-        Purple  (W3C) 	#7F007F
-    You can get the name table from
-    http://en.wikipedia.org/wiki/X11_color_names
-    
-    By default, when useing |:ColorVword| and |:ColorVchange| in vim filetype
-    files, ColorV will automatically use X11 color names. 
-    But the name showing in ColorV window is always W3C color name.
-    You can entering a X11 name by 'nx' and W3C name by 'ne'.
 
                                                     *colorv-mapping-paste*
     <Ctrl-v>    paste |colorv-format-text| in register+ to set showing color.
@@ -452,6 +529,12 @@ OPTIONS                                             *colorv-options*
                                                 (default=5)
     g:ColorV_name_approx    Approximation rate to the exact color of color
                             name.
+
+                                                *g:ColorV_win_pos*
+                                                (default="bot")
+    g:ColorV_win_pos        Default ColorV position when opened.
+                            you could use "top" instead.
+
                                                 *g:ColorV_echo_tips*
                                                 (default=0)
     g:ColorV_echo_tips      The method of echo tips. set 0 to echo all.
@@ -463,11 +546,37 @@ OPTIONS                                             *colorv-options*
     g:ColorV_tune_step      The step when tuning RGB/HSV parameters with
                             '+' and '-'
                             
-                                                *g:ColorV_uppercase*
+                                                *g:ColorV_input_gen_step*
                                                 (default=1)
-    g:ColorV_uppercase      The showing and copy hex using uppercase.
-                            'FFFFFF'
+    g:ColorV_input_gen_step Input changeing step while generate list.
+                            See |colorv-generate| for details.
                             
+                                                *g:ColorV_gen_def_type*
+                                                (default="Hue")
+    g:ColorV_gen_def_type   Generated color default types.
+                                                *g:ColorV_gen_def_nums*
+                                                (default=20)
+    g:ColorV_gen_def_nums   Generated color default numbers.
+                                                *g:ColorV_gen_def_step*
+                                                (default=5)
+    g:ColorV_gen_def_step   Generated color default steps.
+
+                                                *g:ColorV_cursor_back*
+                                                (default=1)
+    g:ColorV_cursor_back    Put cursor back to previous window after
+                            open ColorV window and ColorV List window.
+
+                                                *g:ColorV_prev_name*
+                                                (default=1)
+    g:ColorV_prev_name      Preview colorname with color.
+                            If you don't want to make the colorname text
+                            like 'red', 'black', 'navy' to be colored.
+                            set it to 0
+
+                                                *g:ColorV_prev_mass*
+                                                (default=0)
+    g:ColorV_prev_mass      Preview colors with fg/bg in same colors.
+
 ------------------------------------------------------------------------------
 VARIABLES                                           *colorv-variables*
 
@@ -535,17 +644,17 @@ plugins.
                                                     *ColorV#rgb2hsv()*
     ColorV#rgb2hsv(rgb)             Convert RGB to HSV.
                                     " input [r,g,b] 0~255 num
-                                    " return [H,S,V] 0~360 0~100 num
+                                    "return [H,S,V] 0~360 0~100 num
 
                                                     *ColorV#hsv2rgb()*
     ColorV#hsv2rgb(hsv)             Convert HSV to RGB.
                                     " input [h,s,v] 0~360 0~100 num
-                                    " return [R,G,B] 0~255  num
+                                    "return [R,G,B] 0~255  num
 
                                                     *ColorV#rgb2hex()*
     ColorV#rgb2hex(rgb)             Convert RGB to HEX.
                                     " input [r,g,b]  0~255  num/str
-                                    " return ffffff         str
+                                    "return ffffff         str
 
                                     NOTE:In VIM ,string "255" could be used
                                     mostly the same as number '255'.
@@ -559,8 +668,16 @@ plugins.
                                                     *ColorV#hex2rgb()*
     ColorV#hex2rgb(hex)             Convert HEX to RGB.
                                     " input ffffff          num/str
-                                    " return [r,g,b] 0~255  str
+                                    "return [r,g,b] 0~255  str
 
+                                                    *ColorV#hex2hsv()*
+    ColorV#hex2hsv(hex)             Convert HEX to HSV.
+                                    " input ffffff          num/str
+                                    "return [h,s,v] 0~360 0~100 num
+                                                    *ColorV#hsv2hex()*
+    ColorV#hsv2hex(hsv)             Convert HSV to HEX.
+                                    " input [h,s,v] 0~360 0~100 num
+                                    "return ffffff         str
 ==============================================================================
 DEPENDENCIES                                        *colorv-dependencies*
 
@@ -625,10 +742,31 @@ TODO                                                *colorv-todo*
     The priority of TODO items, If you have any advice or patch, feel free to submit it at github.
 
 " TODO: +6 history window
-" TODO: +4 color text list generator
+" TODO: +3 fav color/colorscheme with user defined names
+" TODO: +1 image(png/jpg/...) view?
 " TODO: +1 term/cterm support
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
+CHANGELOG                                           *colorv-changelog* 
+
+" 2.0.2 preivew
+" DONE: 110621  preview in list window without highlighting color name
+" DONE: 110620  preview with color names
+" DONE: 110620  preview files and lines
+"FIXED: 110620  preview rgba(255,255,255,1.0) format in css file
+" DONE: 110620  support colornames in s:txt2hex() 
+"FIXED: 110620  the star mark of pallet use s:rlt_clr()
+" DONE: 110620  add hex2hsv() hsv2hex
+" DONE: 110620  g:ColorV_xxx options and help docs added
+"FIXED: 110620  fmod hsv2rgb() and rgb2hsv() rgb2hex() input with warning
+" TODO: 110620  readme doc and image changed
+
+" 2.0.1 generator
+" DONE: 110620  generate with word under cursor
+" DONE: 110620  generator with types (Analogous,Monochromatic,...)
+" DONE: 110620  create generated list window
+"FIXED: 110620  open list window with colorv window
+
 " 2.0.0 pre
 " DONE: 110619  list window
 " DONE: 110619  generate list with hue/sat/val
