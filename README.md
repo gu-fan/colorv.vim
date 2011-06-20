@@ -2,6 +2,7 @@
 **ColorV** is a color tool for Vim.
 
 Have a look at it.
+
     ColorV window
         Normal          http://flic.kr/p/9Vh7ES
         Mini            http://flic.kr/p/9Vh7P1
