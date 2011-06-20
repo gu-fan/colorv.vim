@@ -3,17 +3,17 @@
 
 Have a look at it.
 
-    ColorV window
-        Normal          http://flic.kr/p/9Vh7ES
-        Mini            http://flic.kr/p/9Vh7P1
-    Colorname List window 
-        colorname list  http://flic.kr/p/9Vh7xG
-    Generated List window
-        Analogous       http://flic.kr/p/9Vh4Nh
-        Monochromatic   http://flic.kr/p/9Vh8zj
-    Preview color text in file
-        preview css     http://flic.kr/p/9VehHD
-        preview vim     http://flic.kr/p/9VehUi
+* ColorV window
+    * Normal          http://flic.kr/p/9Vh7ES
+    * Mini            http://flic.kr/p/9Vh7P1
+* Colorname List window 
+    * colorname list  http://flic.kr/p/9Vh7xG
+* Generated List window
+    * Analogous       http://flic.kr/p/9Vh4Nh
+    * Monochromatic   http://flic.kr/p/9Vh8zj
+* Preview color text in file
+    * preview css     http://flic.kr/p/9VehHD
+    * preview vim     http://flic.kr/p/9VehUi
 
 Have a try of it. 
 Install it first. See details with |colorv-install|.
