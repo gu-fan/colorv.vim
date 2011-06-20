@@ -748,9 +748,12 @@ TODO                                                *colorv-todo*
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
 CHANGELOG                                           *colorv-changelog* 
+" 2.0.2.1
+"FIXED: 110621  optimize s:txt2hex() with pat_fmt
+"FIXED: 110621  rmv s:nam2hex() in check hex functions.
+"FIXED: 110621  rmv highlighting color name in list window 
 
 " 2.0.2 preivew
-" DONE: 110621  preview in list window without highlighting color name
 " DONE: 110620  preview with color names
 " DONE: 110620  preview files and lines
 "FIXED: 110620  preview rgba(255,255,255,1.0) format in css file

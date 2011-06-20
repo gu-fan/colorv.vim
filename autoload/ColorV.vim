@@ -1068,13 +1068,13 @@ function! ColorV#Win(...) "{{{
     if exists("a:2") 
     	"skip history if no new hex 
         let hex_list=s:txt2hex(a:2)
-        let clr_hex=s:nam2hex(a:2)
+        " let clr_hex=s:nam2hex(a:2)
         if exists("hex_list[0][0]")
             let hex=s:fmt_hex(hex_list[0][0])
             call s:caution("Use [".hex."] Format:".hex_list[0][4]) 
-        elseif !empty(clr_hex)
-            let hex=clr_hex
-            call s:caution("Use color name [".hex."]") 
+        " elseif !empty(clr_hex)
+        "     let hex=clr_hex
+        "     call s:caution("Use color name [".hex."]") 
         else
             let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
             let s:skip_his_block=1
@@ -1544,7 +1544,7 @@ endfunction "}}}
 "TEXT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " input: text
-" return: hexlist [[hex,idx,len,fmt],[hex,idx,len,fmt],...]
+" return: hexlist [[hex,idx,len,str,fmt],[hex,idx,len,str,fmt],...]
 function! s:txt2hex(txt) "{{{
     let text = a:txt
     let hex_dict={}
@@ -1560,11 +1560,12 @@ function! s:txt2hex(txt) "{{{
                 let pat_idx=match(text,pat)
                 let pat_str=matchstr(text,pat)
                 let pat_len=len(pat_str)
+                let pat_fmt=fmt
                 let text=strpart(text,0,pat_idx).strpart(text,pat_len+pat_idx)
                 exec "let hex_dict.".fmt."=exists(\"hex_dict.".fmt."\") ? hex_dict.".fmt." : []"
 
                 exec "call add(hex_dict.".fmt
-                            \",[pat_str,pat_idx,pat_len,pat_str])"
+                            \",[pat_str,pat_idx,pat_len,pat_str,pat_fmt])"
             endif
         endfor
         if o_dict==hex_dict          
@@ -1579,20 +1580,20 @@ function! s:txt2hex(txt) "{{{
     for [fmt,var] in items(hex_dict)
         if fmt=="HEX"
             for clr in var
-                call add(clr,fmt)
+                " call add(clr,fmt)
                 call add(hex_list,clr)
             endfor
         elseif fmt=="HEX0"
             for clr in var
                 let clr[0]=substitute(clr[0],'0x','','')
-                call add(clr,fmt)
+                " call add(clr,fmt)
                 call add(hex_list,clr)
             endfor
         elseif fmt=="NS6"
             call s:debug("fmt is NS6 in hex_list")
             for clr in var
                 let clr[0]=substitute(clr[0],'#','','')
-                call add(clr,fmt)
+                " call add(clr,fmt)
                 call add(hex_list,clr)
             endfor
             call s:debug(clr[0]." ".clr[1]." ".clr[2]." ".clr[3]." ")
@@ -1600,7 +1601,7 @@ function! s:txt2hex(txt) "{{{
             for clr in var
                 let clr[0]=substitute(clr[0],'#','','')
                 let clr[0]=substitute(clr[0],'.','&&','g')
-                call add(clr,fmt)
+                " call add(clr,fmt)
                 call add(hex_list,clr)
             endfor
         elseif fmt=="RGB" || fmt =="RGBA"
@@ -1614,7 +1615,7 @@ function! s:txt2hex(txt) "{{{
                     return
                 endif
                 let clr[0] = ColorV#rgb2hex([r,g,b])
-                call add(clr,fmt)
+                " call add(clr,fmt)
                 call add(hex_list,clr)
             endfor
         elseif fmt=="RGBP" || fmt =="RGBAP"
@@ -1624,7 +1625,7 @@ function! s:txt2hex(txt) "{{{
                 let g=matchstr(list[1],'\d\{1,3}')
                 let b=matchstr(list[2],'\d\{1,3}')
                 let clr[0] = ColorV#rgb2hex([r*2.55,g*2.55,b*2.55])
-                call add(clr,fmt)
+                " call add(clr,fmt)
                 call add(hex_list,clr)
             endfor
         elseif fmt=="HSV"
@@ -1634,14 +1635,14 @@ function! s:txt2hex(txt) "{{{
                 let s=matchstr(list[1],'\d\{1,3}')
                 let v=matchstr(list[2],'\d\{1,3}')
                 let clr[0] = ColorV#hsv2hex([h,s,v])
-                call add(clr,fmt)
+                " call add(clr,fmt)
                 call add(hex_list,clr)
             endfor
         " "NAME and NAMX format ;not a <cword> here
         elseif fmt=="NAME"
             for clr in var
                 let clr[0]=s:nam2hex(clr[0])
-                call add(clr,fmt)
+                " call add(clr,fmt)
                 call add(hex_list,clr)
             endfor
         endif
@@ -1747,11 +1748,11 @@ function! s:paste(...) "{{{
         call s:echo("Paste with Clipboard(reg\"): ".l:cliptext)
     endif
     let hex_list=s:txt2hex(l:cliptext)
-    let clr_hex=s:nam2hex(l:cliptext)
+    " let clr_hex=s:nam2hex(l:cliptext)
     if len(hex_list)>0
         let hex=hex_list[0][0]
-    elseif !empty(clr_hex)
-        let hex=clr_hex
+    " elseif !empty(clr_hex)
+    "     let hex=clr_hex
         "let nam=s:hex2nam
     else
     	call s:warning("Could not find color in the text") 
@@ -1808,7 +1809,7 @@ function! s:changing() "{{{
             " because of '~'!
             if exists("s:ColorV.word_list[0]")
                 let hex=g:ColorV.HEX
-                let fmt=s:ColorV.word_list[3]
+                let fmt=s:ColorV.word_list[4]
                 if exists("s:ColorV.change2")
                     let fmt=s:ColorV.change2
                 endif
@@ -1885,16 +1886,16 @@ function! ColorV#open_word() "{{{
     let pat = expand('<cWORD>')
     let word=expand('<cword>')
     let hex_list=s:txt2hex(pat)
-    let clr_hex=s:nam2hex(word)
+    " let clr_hex=s:nam2hex(word)
     if exists("hex_list[0][0]")
         let hex=s:fmt_hex(hex_list[0][0])
         "let s:ColorV.word_list=hex_list[0]
-    elseif !empty(clr_hex)
-        if &filetype=="vim"
-            let hex=s:nam2hex(word,"X11")
-        else
-            let hex=clr_hex
-        endif
+    " elseif !empty(clr_hex)
+    "     if &filetype=="vim"
+    "         let hex=s:nam2hex(word,"X11")
+    "     else
+    "         let hex=clr_hex
+    "     endif
     else
         call s:warning("Could not find a color under cursor.")
         return -1
@@ -1940,22 +1941,22 @@ function! ColorV#change_word(...) "{{{
     
     "could not change '#ffffff'
     let s:ColorV.word_pat=pat
-    let clr_hex=s:nam2hex(word)
+    " let clr_hex=s:nam2hex(word)
     let hex_list=s:txt2hex(pat)
     if exists("hex_list[0][0]")
         let hex=s:fmt_hex(hex_list[0][0])
         let s:ColorV.word_list=hex_list[0]
-    elseif !empty(clr_hex)
-        if &filetype=="vim"
-            let hex=s:nam2hex(word,"X11")
-        else
-            let hex=clr_hex
-        endif
-        " let str=s:hex2nam(hex)
-        let str=word
-        let str_idx=match(pat,str)
-        let str_len=len(str)
-        let s:ColorV.word_list=[hex,str_idx,str_len,"NAME"]
+    " elseif !empty(clr_hex)
+    "     if &filetype=="vim"
+    "         let hex=s:nam2hex(word,"X11")
+    "     else
+    "         let hex=clr_hex
+    "     endif
+    "     " let str=s:hex2nam(hex)
+    "     let str=word
+    "     let str_idx=match(pat,str)
+    "     let str_len=len(str)
+    "     let s:ColorV.word_list=[hex,str_idx,str_len,"NAME"]
     else 
         call s:warning("Could not find a color under cursor.")
         return
@@ -2184,16 +2185,16 @@ function! ColorV#cursor_gen(...) "{{{
     let pat = expand('<cWORD>')
     let word=expand('<cword>')
     let hex_list=s:txt2hex(pat)
-    let clr_hex=s:nam2hex(word)
+    " let clr_hex=s:nam2hex(word)
     if exists("hex_list[0][0]")
         let hex=s:fmt_hex(hex_list[0][0])
         "let s:ColorV.word_list=hex_list[0]
-    elseif !empty(clr_hex)
-        if &filetype=="vim"
-            let hex=s:nam2hex(word,"X11")
-        else
-            let hex=clr_hex
-        endif
+    " elseif !empty(clr_hex)
+    "     if &filetype=="vim"
+    "         let hex=s:nam2hex(word,"X11")
+    "     else
+    "         let hex=clr_hex
+    "     endif
     else
         call s:warning("Could not find a color under cursor.")
         return -1
