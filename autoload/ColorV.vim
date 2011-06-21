@@ -1071,11 +1071,11 @@ function! ColorV#Win(...) "{{{
         let hex_list=s:txt2hex(a:2)
         if exists("hex_list[0][0]")
             let hex=s:fmt_hex(hex_list[0][0])
-            call s:caution("Use [".hex."] Format:".hex_list[0][4]) 
+            call s:echo("Use [".hex."] Format:".hex_list[0][4]) 
         else
             let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
             let s:skip_his_block=1
-            call s:caution("Use default [".hex."]") 
+            call s:echo("Use default [".hex."]") 
         endif
     else 
         let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
