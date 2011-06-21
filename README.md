@@ -80,7 +80,7 @@ then add &runtimepath to your vimrc; then run helptags
 
 - Using Vundle:
 
-Install script [Vundle.vim](https://github.com/gmarik/vundle)
+Install git and script [Vundle.vim](https://github.com/gmarik/vundle)
 then put this line in your vimrc
 
     Bundle 'rykka/colorv'

@@ -1870,7 +1870,7 @@ function! ColorV#open_word() "{{{
     if exists("hex_list[0][0]")
         let hex=s:fmt_hex(hex_list[0][0])
     else
-        call s:warning("Could not find a color under cursor.")
+        call s:error("Could not find a color under cursor.")
         return -1
     endif
     if g:ColorV_word_mini==1
@@ -1899,7 +1899,7 @@ function! ColorV#change_word(...) "{{{
         let hex=s:fmt_hex(hex_list[0][0])
         let s:ColorV.word_list=hex_list[0]
     else 
-        call s:warning("Could not find a color under cursor.")
+        call s:error("Could not find a color under cursor.")
         return
     endif
 
@@ -2140,6 +2140,107 @@ function! ColorV#cursor_gen(...) "{{{
     endif
     
 endfunction "}}}
+function! ColorV#gen_list(hex,...) "{{{
+    let hex=a:hex
+    let type=exists("a:1") && !empty(a:1) ? a:1 : g:ColorV_gen_def_type
+    let nums=exists("a:2") && !empty(a:2) ? a:2 : g:ColorV_gen_def_nums 
+    let step=exists("a:3") && !empty(a:3) ? a:3 : g:ColorV_gen_def_step
+    let [h,s,v]=ColorV#hex2hsv(hex)
+    let hex_list=[]
+    for i in range(nums)
+    	if type=="Hue" 
+    	    "h+
+            let h{i}=h+step*i
+            let hex{i}=ColorV#hsv2hex([h{i},s,v])
+        elseif type=="Saturation"
+            "s+
+            " let s{i}= s+step*i<=100 ? s+step*i : 100
+            let s{i}=s+step*i
+            let hex{i}=ColorV#hsv2hex([h,s{i},v])
+        elseif type=="Value"
+            "v+
+            " let v{i}= v+step*i<=100 ? v+step*i : 100
+            let v{i}=v+step*i
+            let hex{i}=ColorV#hsv2hex([h,s,v{i}])
+        elseif type=="Monochromatic"
+            "s+step v+step
+            " let v{i}= v+step*i<=100 ? v+step*i : 100
+            " let s{i}= s+step*i<=100 ? s+step*i : 100
+            let s{i}=s+step*i
+            let v{i}=v+step*i
+            let hex{i}=ColorV#hsv2hex([h,s{i},v{i}])
+        elseif type=="Analogous"
+            "h+30
+            let h{i}=h+30*i
+            let hex{i}=ColorV#hsv2hex([h{i},s,v])
+        elseif type=="Triadic"
+            "h+120
+            let h{i}=h+120*i
+            let hex{i}=ColorV#hsv2hex([h{i},s,v])
+        elseif type=="Tetradic" || type=="Rectangle"
+            "h+60,h+120,...
+            if i==0
+            	let h{i}=h
+            else
+                let h{i}=fmod(i,2)==1 ? h{i-1}+60 : h{i-1}+120
+            endif
+            let hex{i}=ColorV#hsv2hex([h{i},s,v])
+        elseif type=="Neutral"
+            "h+15
+            let h{i}=h+15*i
+            let hex{i}=ColorV#hsv2hex([h{i},s,v])
+        elseif type=="Clash"
+            "h+90,h+180,...
+            if i==0
+            	let h{i}=h
+            else
+                let h{i}=fmod(i,2)==1 ? h{i-1}+90 : h{i-1}+180
+            endif
+            let hex{i}=ColorV#hsv2hex([h{i},s,v])
+        elseif type=="Square"
+            "h+90
+            let h{i}=h+90*i
+            let hex{i}=ColorV#hsv2hex([h{i},s,v])
+        elseif type=="Five-Tone"
+            "h+115,+40,+50,+40,+115
+            if i==0
+            	let h{i}=h
+            else
+                let h{i}=fmod(i,5)==1 ? h{i-1}+115 : 
+                        \fmod(i,5)==2 ? h{i-1}+40 : 
+                        \fmod(i,5)==3 ? h{i-1}+50 : 
+                        \fmod(i,5)==4 ? h{i-1}+40 :
+                        \h{i-1}+115
+            endif
+            let hex{i}=ColorV#hsv2hex([h{i},s,v])
+        elseif type=="Six-Tone"
+            "h+30,90,...
+            if i==0
+            	let h{i}=h
+            else
+                let h{i}=fmod(i,2)==1 ? h{i-1}+30 : h{i-1}+90
+            endif
+            let hex{i}=ColorV#hsv2hex([h{i},s,v])
+        elseif type=="Complementary"
+            "h+180
+            let h{i}=h+180*i
+            let hex{i}=ColorV#hsv2hex([h{i},s,v])
+        elseif type=="Split-Complementary"
+            "h+150,h+60,... 
+            if i==0
+            	let h{i}=h
+            else
+                let h{i}=fmod(i,2)==1 ? h{i-1}+150 : h{i-1}+60
+            endif
+            let hex{i}=ColorV#hsv2hex([h{i},s,v])
+        else
+            call s:warning("Not Correct color generator Type.")
+            return -1
+        endif
+    	call add(hex_list,hex{i})
+    endfor
+    return hex_list
+endfunction "}}}
 function! s:generate_list(hex,...) "{{{
     let hex=a:hex
     let type=exists("a:1") && !empty(a:1) ? a:1 : g:ColorV_gen_def_type
@@ -2279,6 +2380,9 @@ function! ColorV#prev_txt(txt) "{{{
             else
             	continue
             endif
+        elseif hex_item[4]=="NS6" || hex_item[4]=="NS3" 
+           \|| hex_item[4]=="HEX" || hex_item[4]=="HEX0"
+            let ptn_{hex_item[0]}=hex_item[3].'\x\@!'
         else
             let ptn_{hex_item[0]}=hex_item[3]
         endif

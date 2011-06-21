@@ -761,6 +761,10 @@ TODO                                                *colorv-todo*
 HISTORY                                             *colorv-history*
 CHANGELOG                                           *colorv-changelog* 
 
+
+" 2.0.2.2
+"FIXED: 110621  preview 'NS3','NS6'... followed by '\x\@!'
+
 " 2.0.2.1
 "FIXED: 110621  optimize s:txt2hex() with pat_fmt
 "FIXED: 110621  rmv s:nam2hex() in check hex functions.
@@ -783,8 +787,8 @@ CHANGELOG                                           *colorv-changelog*
 " DONE: 110620  create generated list window
 "FIXED: 110620  open list window with colorv window
 
-" 2.0.0 pre
-" DONE: 110619  list window
+" 2.0.0 list window
+" DONE: 110619  list window of color names.
 " DONE: 110619  generate list with hue/sat/val
 " DONE: 110619  generate list with colorscheme. 'analogous'...
 "FIXED: 110619  fmod() with input of ColorV#rgb2hsv() ColorV#hsv2rgb()
