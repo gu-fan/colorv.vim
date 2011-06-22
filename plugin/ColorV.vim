@@ -14,13 +14,13 @@ endif
 command! -nargs=*  ColorV call ColorV#Win("",<q-args>)
 command! -nargs=*  ColorVnorm call ColorV#Win("",<q-args>)
 command! -nargs=*  ColorVmini call ColorV#Win("min",<q-args>)
+command! -nargs=0  ColorVclear call ColorV#clear_all()
 command! -nargs=0  ColorVquit call ColorV#exit()
 
-command! -nargs=0  ColorVword call ColorV#open_word()
-command! -nargs=0  ColorVchange call ColorV#change_word()
-command! -nargs=0  ColorVchangeAll call ColorV#change_word("all")
-command! -nargs=0  ColorVclear call ColorV#clear_all()
-command! -nargs=1  ColorVchange2 call ColorV#change_word("",<q-args>)
+command! -nargs=0  ColorVword call ColorV#cursor_change()
+command! -nargs=0  ColorVchange call ColorV#cursor_change(1)
+command! -nargs=0  ColorVchangeAll call ColorV#cursor_change(1,"all")
+command! -nargs=1  ColorVchange2 call ColorV#cursor_change(1,"",<q-args>)
 
 command! -nargs=0  ColorVlist call ColorV#list_and_colorv()
 command! -nargs=+  ColorVgenerate call ColorV#gen_win(<f-args>)
@@ -29,6 +29,7 @@ command! -nargs=+  ColorVwordgen call ColorV#cursor_gen(<f-args>)
 command! -nargs=0  ColorVpreview call ColorV#preview()
 command! -nargs=0  ColorVpreviewline call ColorV#preview_line()
 " command! -nargs=0  ColorVpreviewclear call <SID>clear_prevmatch()
+
 
 if has('python')
 command! -nargs=0  ColorVdropper call ColorV#Dropper()

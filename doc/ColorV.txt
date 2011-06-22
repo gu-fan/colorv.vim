@@ -4,24 +4,24 @@ ver:2.0.2                               <Rykka.Krin@gmail.com>
 
 CONTENTS                               *colorv-contents*
 
- DESCRIPTION
+ DESCRIPTION                            *colorv-description*
  1. Intro                               |colorv-intro|
  2. Install                             |colorv-install|
  3. Usage                               |colorv-usage|
  4. Interface                           |colorv-interface|
 
- ADVANCED SETTINGS
+ ADVANCED SETTINGS                      *colorv_advanced_setting*
  5. Commands                            |colorv-commands|
  6. Mappings                            |colorv-mappings|
  7. Options                             |colorv-options|
  8. Variables                           |colorv-variables|
  9. Functions                           |colorv-functions|
  
- CREDITS AND HISTORY
- 10. Credits                             |colorv-credits|
- 11. License                             |colorv-license|
- 12. Todo                                |colorv-todo| 
- 13. History                             |colorv-history|
+ CREDITS AND HISTORY                    *colorv-credits-history*
+ 10. Credits                            |colorv-credits|
+ 11. License                            |colorv-license|
+ 12. Todo                               |colorv-todo| 
+ 13. History                            |colorv-history|
 ==============================================================================
 INTRO                                               *colorv-intro*
 
@@ -149,7 +149,8 @@ which the color is at you demand.
                                                     *colorv-usage-edit*
     Edit a color with Hex/RGB/HSV:
 
-    using <tab> to toggle the arrow position of the edit area .You can use mouse to choose it either.
+    Using <tab> to toggle the arrow position of the edit area.
+    You can use leftmouse doubleclick to choose it either.
     using <Enter>/<kEnter> to edit the value. Notice the input tips.
 
                                                     *colorv-usage-copy*
@@ -219,20 +220,21 @@ and use <2-space>/<c-k> to choose colors.
     The history pallet is showing the current color and last two colors.
 
                                                     *colorv-interface-starmark*
-    There is also a star mark(asterisk *) at the position in the pallet that matches
-current color. You can use |g:ColorV_show_star| to set it show or not.
+    There is also a star mark(asterisk *) at the position in the pallet that
+matches current color. 
+    You can use |g:ColorV_show_star| to set it show or not.
 
                                                     *colorv-interface-mini*
     The ColorV mini window looks like the normal window in most places.
     Except, no main pallet.
     Instead, a Saturation line and a Value line.
 
-                                                *colorv-interface-colorname*
+                                                    *colorv-interface-colorname*
     If there is a color name for current HEX, it's name will show
     in the right top of ColorV window. It's always W3C standard name.
     See |colorv-colorname| for details.
 
-                                                *colorv-colorname*
+                                                    *colorv-colorname*
     The colorname are the the name of the colors, like 'red', 'green', 
     'blue', 'OrangeRed', 'cornsilk'
     
@@ -495,6 +497,23 @@ which was used with cut/copy between other applications.
     <c-w>q          Quit ColoV.
     <c-w><c-q>      Quit ColorV.
 
+                                                    *colorv-buffer-generate*
+    Generate color list with current HEX in ColorV window.
+    geh    Hue
+    ges    Saturation
+    gev    Value
+    gea    Analogous
+    gen    Neutral
+    gec    Clash
+    gep    Split-Complementary
+    geq    Square
+    ge1/m  Monochromatic
+    ge2    Complementary
+    ge3/t  Triadic
+    ge4    Rectangle(Tetradic)
+    ge5    Five-Tone
+    ge6    Six-Tone
+    See |colorv-generate| for details.
 
 ==============================================================================
 OPTIONS                                             *colorv-options*
@@ -690,6 +709,13 @@ plugins.
     ColorV#hsv2hex(hsv)             Convert HSV to HEX.
                                     " input [h,s,v] 0~360 0~100 num
                                     "return ffffff         str
+                                    
+                                                    *ColorV#gen_list()*
+    ColorV#gen_list({hex}[,{type}[,{num}[,{step}]]])             
+                                    Generate hex list by color.
+                                    "input  {hex}[,{type}[,{num}[,{step}]]]
+                                    "return ["ffffff","ffffff",...]
+                                    See details in |colorv-generate|.
 ==============================================================================
 DEPENDENCIES                                        *colorv-dependencies*
 
@@ -751,16 +777,37 @@ LICENSE                                             *colorv-license*
 ==============================================================================
 TODO                                                *colorv-todo*
 
-    The priority of TODO items, If you have any advice or patch, feel free to submit it at github.
+    The priority of TODO items, If you have any advice or patch, 
+    feel free to submit it at github.
 
 " TODO: +6 history window
-" TODO: +3 fav color/colorscheme with user defined names
+" TODO: +3 fav color with user defined names
+" TODO: +3 colorscheme with colors
 " TODO: +1 image(png/jpg/...) view?
 " TODO: +1 term/cterm support
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
 CHANGELOG                                           *colorv-changelog* 
 
+" 2.0.3
+"FIXED: 110622  preview word correctly in one WORD.
+"FIXED: 110622  error of hex_list output idx
+"FIXED: 110622  could not locate the rgb() in a WORD
+"               bacause of [hex,.] in for loop mix up with hex
+"               outside.
+"FIXED: 110622  still may not the right position of color text
+"               the cursor color text may not same with hex_list[0]
+"FIXED: 110622  this :substitute may couse error if cursor is in center of
+"               pat. because it's always find in line
+"FIXED: 110622  rmv func open_word. use change_cursor() instead.
+"FIXED: 110622  could not find the correct pos of change_pat
+"FIXED: 110622  could not find >2 hex. copy()'s items are identical.
+"               deepcopy() instead.
+"FIXED: 110622  error of pat_idx in s:txt2hex() if more than one
+" DONE: 110622  add mapping in colorv buffer to generator with current color
+"FIXED: 110622  change fmt.HEX to exclude '0x'
+" DONE: 110622  open_word() and change_cursor() will search line if nothing
+                under cursor.
 
 " 2.0.2.2
 "FIXED: 110621  preview 'NS3','NS6'... followed by '\x\@!'
