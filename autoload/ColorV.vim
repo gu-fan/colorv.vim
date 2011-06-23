@@ -2013,20 +2013,28 @@ function! ColorV#cursor_change(...) "{{{
 
     if exists("a:1") && a:1==1
         let s:ColorV.change_word=1
-    else
-        let s:ColorV.change_word=0
-    endif
-    if exists("a:2") && a:2=="all"
-    	let s:ColorV.change_all=1
-        call s:caution("Will Substitute ALL [".pat."] after ColorV closed.")
-    else
     	let s:ColorV.change_all=0
     	call s:caution("Will Change [".pat."] after ColorV closed.")
+    elseif exists("a:1") && a:1==2
+        let s:ColorV.change_word=1
+    	let s:ColorV.change_all=1
+        call s:caution("Will Change ALL [".pat."] after ColorV closed.")
+    elseif exists("a:1") && a:1==3
+        let type=exists("a:2") ? a:2 : ""
+        let nums=exists("a:3") ? a:3 : ""
+        let step=exists("a:4") ? a:4 : ""
+        call s:echo("Will Generate color list with [".pat."].")
+        let list=s:generate_list(hex,type,nums,step)
+        call ColorV#list_win(list)
+    else
+        let s:ColorV.change_word=0
+    	let s:ColorV.change_all=0
     endif
-
-    if exists("a:3")
-            \ && a:3=~'RGB\|RGBA\|RGBP\|RGBAP\|HEX\|HEX0\|NAME\|NS6\|HSV'
-        let s:ColorV.change2=a:3
+    
+    "change2
+    if exists("a:1") && (a:1==2 || a:1==1) && exists("a:2")
+            \ && a:2=~'RGB\|RGBA\|RGBP\|RGBAP\|HEX\|HEX0\|NAME\|NS6\|HSV'
+        let s:ColorV.change2=a:2
     elseif exists("s:ColorV.change2")
         unlet s:ColorV.change2
     endif
@@ -2036,6 +2044,15 @@ function! ColorV#cursor_change(...) "{{{
     else
         call ColorV#Win(s:mode,hex)
     endif
+
+    " cursor back
+    " wrong pos if open at top sometimes? if it's [No Name]
+    if exists("g:ColorV_cursor_back") && g:ColorV_cursor_back==1
+        let cur_winnr = bufwinnr(s:ColorV.word_bufname)
+        exe cur_winnr."wincmd w"
+        call setpos('.',s:ColorV.word_pos)
+    endif
+    
 endfunction "}}}
 function! ColorV#clear_all() "{{{
     call s:clear_blockmatch()
@@ -2222,44 +2239,43 @@ function! ColorV#gen_win(hex,...) "{{{
     let list=s:generate_list(hex,type,nums,step)
     call ColorV#list_win(list)
 endfunction "}}}
-function! ColorV#cursor_gen(...) "{{{
-    " if ColorV#open_word()==-1
-    "     return -1
-    " endif
-    let s:ColorV.word_bufnr=bufnr('%')
-    let s:ColorV.word_bufname=bufname('%')
-    let s:ColorV.word_bufwinnr=bufwinnr('%')
-    let s:ColorV.word_pos=getpos('.')
-    let pat = expand('<cWORD>')
-    let word=expand('<cword>')
-    let hex_list=s:txt2hex(pat)
-    if exists("hex_list[0][0]")
-        let hex=s:fmt_hex(hex_list[0][0])
-    else
-        call s:warning("Could not find a color under cursor.")
-        return -1
-    endif
-    
-    " let hex=g:ColorV.HEX
-    let type=exists("a:1") ? a:1 : ""
-    let nums=exists("a:2") ? a:2 : ""
-    let step=exists("a:3") ? a:3 : ""
-    let list=s:generate_list(hex,type,nums,step)
-    call ColorV#exit()
-    call ColorV#list_win(list)
-    if g:ColorV_word_mini==1
-        call ColorV#Win("min",hex)
-    else
-        call ColorV#Win(s:mode,hex)
-    endif
-    " wrong pos if open at top sometimes? if it's [No Name]
-    if exists("g:ColorV_cursor_back") && g:ColorV_cursor_back==1
-        let cur_winnr = bufwinnr(s:ColorV.word_bufname)
-        exe cur_winnr."wincmd w"
-        call setpos('.',s:ColorV.word_pos)
-    endif
-    
-endfunction "}}}
+" function! ColorV#cursor_gen(...) "{{{
+"     " if ColorV#open_word()==-1
+"     "     return -1
+"     " endif
+"     let s:ColorV.word_bufnr=bufnr('%')
+"     let s:ColorV.word_bufname=bufname('%')
+"     let s:ColorV.word_bufwinnr=bufwinnr('%')
+"     let s:ColorV.word_pos=getpos('.')
+"     let pat = expand('<cWORD>')
+"     let word=expand('<cword>')
+"     let hex_list=s:txt2hex(pat)
+"     if exists("hex_list[0][0]")
+"         let hex=s:fmt_hex(hex_list[0][0])
+"     else
+"         call s:warning("Could not find a color under cursor.")
+"         return -1
+"     endif
+"     " let hex=g:ColorV.HEX
+"     let type=exists("a:1") ? a:1 : ""
+"     let nums=exists("a:2") ? a:2 : ""
+"     let step=exists("a:3") ? a:3 : ""
+"     let list=s:generate_list(hex,type,nums,step)
+"     " call ColorV#exit()
+"     call ColorV#list_win(list)
+"     if g:ColorV_word_mini==1
+"         call ColorV#Win("min",hex)
+"     else
+"         call ColorV#Win(s:mode,hex)
+"     endif
+"     " wrong pos if open at top sometimes? if it's [No Name]
+"     if exists("g:ColorV_cursor_back") && g:ColorV_cursor_back==1
+"         let cur_winnr = bufwinnr(s:ColorV.word_bufname)
+"         exe cur_winnr."wincmd w"
+"         call setpos('.',s:ColorV.word_pos)
+"     endif
+"     
+" endfunction "}}}
 function! ColorV#gen_list(hex,...) "{{{
     let hex=a:hex
     let type=exists("a:1") && !empty(a:1) ? a:1 : g:ColorV_gen_def_type
