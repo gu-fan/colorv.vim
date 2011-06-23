@@ -284,7 +284,7 @@ function! ColorV#rgb2hsv(rgb)  "{{{
     let g=type(g)==type("0") ? str2nr(g) : g
     let b=type(b)==type("0") ? str2nr(b) : b
     if r>255||g>255||b>255
-            call s:warning("RGB input error")
+            call s:warning("RGB input out of boundary. fmod with 256.")
             let r=fmod(r,256.0)
             let g=fmod(g,256.0)
             let b=fmod(b,256.0)
@@ -319,11 +319,19 @@ function! ColorV#hsv2rgb(hsv) "{{{
     " endif
     if s>100
         let s=fmod(s,100.0)
+    elseif s<0
+        let s=100-fmod(abs(s),100.0)
     endif
     if v>100
         let v=fmod(v,100.0)
+    elseif v<0
+        let v=100-fmod(abs(v),100.0)
     endif
-    let h=fmod(h,360.0)
+    if h>=360
+        let h=fmod(h,360.0)
+    elseif h<0
+        let h=360-fmod(abs(h),360.0)
+    endif
     let v=v*2.55
     if s==0
     	let [R,G,B]=[v,v,v]
