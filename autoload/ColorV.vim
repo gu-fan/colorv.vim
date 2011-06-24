@@ -1077,6 +1077,7 @@ function! ColorV#Win(...) "{{{
     setl nofoldenable
     setl nomodeline
     setl nonumber
+    setl noea
     setl foldcolumn=0
     setl sidescrolloff=0
     if v:version >= 703
@@ -2172,6 +2173,7 @@ function! ColorV#list_win(...) "{{{
     setl nofoldenable
     setl nomodeline
     setl nonumber
+    setl noea
     setl foldcolumn=0
     setl sidescrolloff=0
     if v:version >= 703
