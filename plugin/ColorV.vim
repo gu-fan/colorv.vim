@@ -19,12 +19,12 @@ command! -nargs=0  ColorVquit call ColorV#exit()
 
 command! -nargs=0  ColorVword call ColorV#cursor_change()
 command! -nargs=0  ColorVchange call ColorV#cursor_change(1)
-command! -nargs=0  ColorVchangeAll call ColorV#cursor_change(1,"all")
-command! -nargs=1  ColorVchange2 call ColorV#cursor_change(1,"",<q-args>)
+command! -nargs=0  ColorVchangeAll call ColorV#cursor_change(2)
+command! -nargs=1  ColorVchange2 call ColorV#cursor_change(1,<q-args>)
 
 command! -nargs=0  ColorVlist call ColorV#list_and_colorv()
 command! -nargs=+  ColorVgenerate call ColorV#gen_win(<f-args>)
-command! -nargs=+  ColorVwordgen call ColorV#cursor_gen(<f-args>)
+command! -nargs=+  ColorVwordgen call ColorV#cursor_change(3,<f-args>)
 
 command! -nargs=0  ColorVpreview call ColorV#preview()
 command! -nargs=0  ColorVpreviewline call ColorV#preview_line()

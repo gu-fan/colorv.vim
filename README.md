@@ -1,11 +1,8 @@
 ##INTRO:##
 **ColorV** is a color tool for Vim.
 
-Have a look at it.
+Have a look of it.
 
-* ColorV window
-    * Normal          http://flic.kr/p/9Vh7ES
-    * Mini            http://flic.kr/p/9Vh7P1
 * Colorname List window 
     * colorname list  http://flic.kr/p/9Vh7xG
 * Generated List window
@@ -16,7 +13,7 @@ Have a look at it.
     * preview vim     http://flic.kr/p/9VehUi
 
 Have a try of it. 
-Install it first. See details with |colorv-install|.
+(Install first. See details with |colorv-install|.)
 
 Open ColorV window.  `<leader>cv`
 

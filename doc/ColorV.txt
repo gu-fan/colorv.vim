@@ -789,7 +789,13 @@ TODO                                                *colorv-todo*
 HISTORY                                             *colorv-history*
 CHANGELOG                                           *colorv-changelog* 
 
+" 2.0.4
+"FIXED: 110624  s:generate_list use gen_list() inside
+
+
 " 2.0.3
+"FIXED: 110623  rmv func cursor_gen(). use change_cursor() instead.
+"FIXED: 110622  When opening ColorV#win(),always set to 'bottom'/'top'
 "FIXED: 110622  preview word correctly in one WORD.
 "FIXED: 110622  error of hex_list output idx
 "FIXED: 110622  could not locate the rgb() in a WORD

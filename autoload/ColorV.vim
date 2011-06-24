@@ -2184,12 +2184,10 @@ function! ColorV#list_win(...) "{{{
     
     nmap <silent><buffer> q :call ColorV#exit()<cr>
     nmap <silent><buffer> Q :call ColorV#exit()<cr>
-    "nmap <silent><buffer> <esc> :call ColorV#exit()<cr>
     nmap <silent><buffer> <c-w>q :call ColorV#exit()<cr>
     nmap <silent><buffer> <c-w><c-q> :call ColorV#exit()<cr>
     nmap <silent><buffer> H :h colorv-interface-list<cr>
     nmap <silent><buffer> <F1> :h colorv-interface-list<cr>
-    " call s:aug_init()
     " call s:map_define() "}}}
 
     if winnr('$') != 1
@@ -2241,43 +2239,6 @@ function! ColorV#gen_win(hex,...) "{{{
     let list=s:generate_list(hex,type,nums,step)
     call ColorV#list_win(list)
 endfunction "}}}
-" function! ColorV#cursor_gen(...) "{{{
-"     " if ColorV#open_word()==-1
-"     "     return -1
-"     " endif
-"     let s:ColorV.word_bufnr=bufnr('%')
-"     let s:ColorV.word_bufname=bufname('%')
-"     let s:ColorV.word_bufwinnr=bufwinnr('%')
-"     let s:ColorV.word_pos=getpos('.')
-"     let pat = expand('<cWORD>')
-"     let word=expand('<cword>')
-"     let hex_list=s:txt2hex(pat)
-"     if exists("hex_list[0][0]")
-"         let hex=s:fmt_hex(hex_list[0][0])
-"     else
-"         call s:warning("Could not find a color under cursor.")
-"         return -1
-"     endif
-"     " let hex=g:ColorV.HEX
-"     let type=exists("a:1") ? a:1 : ""
-"     let nums=exists("a:2") ? a:2 : ""
-"     let step=exists("a:3") ? a:3 : ""
-"     let list=s:generate_list(hex,type,nums,step)
-"     " call ColorV#exit()
-"     call ColorV#list_win(list)
-"     if g:ColorV_word_mini==1
-"         call ColorV#Win("min",hex)
-"     else
-"         call ColorV#Win(s:mode,hex)
-"     endif
-"     " wrong pos if open at top sometimes? if it's [No Name]
-"     if exists("g:ColorV_cursor_back") && g:ColorV_cursor_back==1
-"         let cur_winnr = bufwinnr(s:ColorV.word_bufname)
-"         exe cur_winnr."wincmd w"
-"         call setpos('.',s:ColorV.word_pos)
-"     endif
-"     
-" endfunction "}}}
 function! ColorV#gen_list(hex,...) "{{{
     let hex=a:hex
     let type=exists("a:1") && !empty(a:1) ? a:1 : g:ColorV_gen_def_type
