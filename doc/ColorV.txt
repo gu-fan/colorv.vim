@@ -1,6 +1,6 @@
 *ColorV.txt* *ColorV.vim*   ColorV         Color tool for Vim
 *colorv*
-ver:2.0.2                               <Rykka.Krin@gmail.com>
+ver:2.1.0                               <Rykka.Krin@gmail.com>
 
 CONTENTS                               *colorv-contents*
 
@@ -788,6 +788,10 @@ TODO                                                *colorv-todo*
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
 CHANGELOG                                           *colorv-changelog* 
+
+" 2.1.0
+" DONE: 110728 256 color terminal supported.
+" DONE: 110727 ColorV#hex2term() added.
 
 " 2.0.4
 "FIXED: 110624  s:generate_list use gen_list() inside

@@ -7,7 +7,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-if !has("gui_running") || v:version < 700
+if v:version < 700
     finish
 endif
 
