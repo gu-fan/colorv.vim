@@ -1,316 +1,198 @@
-*ColorV.txt*                ColorV         A Color tool for Vim
-ver:2.2.0                               <Rykka.Krin@gmail.com>
+*colorv.txt*                ColorV         A Color tool for Vim
+ 
+              _________     ______            ___    __     ~
+              __  ____/________  /______________ |  / /     ~
+              _  /    _  __ \_  /_  __ \_  ___/_ | / /      ~
+              / /___  / /_/ /  / / /_/ /  /   __ |/ /       ~
+              \____/  \____//_/  \____//_/    _____/        ~
+                                                            ~
+                             Ver:2.5                        ~
+                                
+==============================================================================
 
->
-            _________     ______            ___    __
-            __  ____/________  /______________ |  / /
-            _  /    _  __ \_  /_  __ \_  ___/_ | / / 
-            / /___  / /_/ /  / / /_/ /  /   __ |/ /  
-            \____/  \____//_/  \____//_/    _____/   
-<                           
-
-CONTENTS                               *colorv-contents*
+ CONTENTS                               *colorv-contents*
 
  DESCRIPTION                            *colorv-description*
  1. Intro                               |colorv-intro|
  2. Install                             |colorv-install|
  3. Usage                               |colorv-usage|
- 4. Interface                           |colorv-interface|
 
- ADVANCED SETTINGS                      *colorv_advanced_setting*
- 5. Commands                            |colorv-commands|
- 6. Mappings                            |colorv-mappings|
+ ADVANCED                               *colorv_advanced*
+ 4. Commands                            |colorv-commands|
+ 5. Mappings                            |colorv-mappings|
+ 6. Colorname                           |colorv-colorname|
  7. Options                             |colorv-options|
  8. Variables                           |colorv-variables|
  9. Functions                           |colorv-functions|
  
- CREDITS AND HISTORY                    *colorv-credits-history*
- 10. Credits                            |colorv-credits|
+ CREDITS                                *colorv-credits*
+ 10. Developer                          |colorv-developer|
  11. License                            |colorv-license|
  12. Todo                               |colorv-todo| 
- 13. History                            |colorv-history|
+ 13. Changelog                          |colorv-changelog|
 ==============================================================================
 INTRO                                               *colorv-intro*
 
     *ColorV* is a color tool for Vim.
-
-    Have a look at it.
-        ColorV window
-            Normal          http://flic.kr/p/9Vh7ES
-            Mini            http://flic.kr/p/9Vh7P1
-        Colorname List window 
-            colorname list  http://flic.kr/p/9Vh7xG
-        Generated List window
-            Analogous       http://flic.kr/p/9Vh4Nh
-            Monochromatic   http://flic.kr/p/9Vh8zj
-        Preview color text in file
-            preview css     http://flic.kr/p/9VehHD
-            preview vim     http://flic.kr/p/9VehUi
+    With this you can deal with colors easily.
     
-    Have a try of it. 
-    Install it first. See details with |colorv-install|.
+    A Quick Start~
+    Open ColorV window to select colors. 
+        <leader>cv   mid mode:Normal Win.
+        <leader>cm   min mode:Less Space.
+        <leader>cx   max mode:More Info.
 
-    Open ColorV window.
-        <leader>cv
-
-    Open color name list window. 
+    Open colorname list window, where you can get W3C standard colornames.
         <leader>cl
 
-    Open ColorV window by word under cursor.
-    #ff9744 rgb(33,44,155) orangered 'cadetblue'
+    Open ColorV window by word under cursor, to see the color visually.
         <leader>cw
+        #ff9744 rgb(33,44,155) orangered 'cadetblue'
+        Put your cursor on the word 'rgb(33,44,155)' and press <leader>cw.
+        You will see a ColorV is opend with the color of it.
 
-    Change the word under cursor with chosing color after exit ColorV window.
+    Easily change word under cursor with visually chosing color.
         <leader>cgg
+        Put your cursor on the word 'orangered' and press <leader>cgg.
+        After chosing a color (e.g. yellow),
+        close the window by pressing "q". 
+        You will see the word is changed to 'Yellow'.
 
-    Generate Analogous color scheme with cursor word 
-        <leader>cgea
-    See details in |colorv-generate|
+    Generate 'Monochromatic' colorscheme List (and more) with cursor.
+        <leader>cnm
 
-    Copy the color in the ColorV window
-        yy
+    Copy the color in the ColorV window quickly.
+        cc/<Ctrl-C>/yy
 
-    Use GTK eyedropper to pick colors in screen.
-    ('+python' compiled and pygtk2.0 included)
+    Paste a color text to the ColorV window to have a visual look.
+        p/<Ctrl-V>
+
+    Use GTK eyedropper to pick colors on screen easily.
         <leader>cd
+        ('+python' compiled and pygtk2.0 included)
 
-    There are configs and commands to define ColorV. 
-    See details in help docs. 
-    :h colorv
-
-    If useful, please rate it
-    http://www.vim.org/scripts/script.php?script_id=3597
-
-    If have any advice, patches or bug reports.
-    Submit it at github.
-    https://github.com/rykka/colorv
-
-    And you can contact me at <Rykka.Krin@gmail.com>
-------------------------------------------------------------------------------
-VERSION                                             *colorv-version*
-- NEW! 2.0.2  Preview Colors in buffer.
-- NEW! 2.0.1  Generate color scheme (Analogous/Monochromatic/...)
-- NEW! 2.0.0  Color Name list window
 ==============================================================================
 INSTALL                                             *colorv-install*
 
-    Using vim.org:
+    1.Using Vundle (Recommend):~
+    Install git and script [Vundle.vim](https://github.com/gmarik/vundle)
+    then put this line in your vimrc  
+        Bundle 'Rykka/colorv'
+    and use this command to install it.  
+        :BundleInstall
+ 
+    2.Using vim.org:~
     http://www.vim.org/scripts/script.php?script_id=3597
     Download the latest version of tar.gz file, 
     extract it into your VIMFILE folder.
     ("~/.vim" for linux. "$HOME/vimfiles" for windows)
     Then use help tag to generate tags.
->
-    :helptags ~/.vim/doc
-<
-    Using git:
-    open terminal and input
->
-    git clone git://github.com/rykka/ColorV.git ~/.vim/bundle/ColorV
-<
-    then add &runtimepath to your vimrc; then run helptags
+        :helptags ~/.vim/doc     
+ 
+    3.Using git:~
+    open terminal go and input.
+        git clone git://github.com/Rykka/ColorV.git ~/.vim/bundle/ColorV 
+    then add &runtimepath to your vimrc;
     (NOT necessary if pathogen.vim installed) 
->
-    set rtp+=~/.vim/bundle/ColorV/
-    :helptags ~/.vim/bundle/ColorV/doc
-<   
-    Using Vundle:
-    Install git and script [Vundle.vim](https://github.com/gmarik/vundle)
-    then put this line in your vimrc
->
-    Bundle 'rykka/colorv'
-<
-    and use this command to install it.
->
-    :BundleInstall
-<
+        set rtp+=~/.vim/bundle/ColorV/ 
+    Then run helptags.
+        :helptags ~/.vim/bundle/ColorV/doc 
 ==============================================================================
 USAGE                                               *colorv-usage*
 
                                                     *colorv-usage-window*
+    Open the Window:~
     Open the ColorV normal window (|colorv-normal|) by typing:
-
     <Leader>cv
+    This is the Main window of ColorV. You can get/set colors here.
 
-    This mapping is set up automatically , while you do not already have
-a mapping for <Leader>cv or |:ColorV| or <Plug>ColorVnorm . You can also bring
-up the window by issuing the command:
->
-    :ColorV
-<
-    you can add |colorv-format-text| argument after the |:ColorV| command. Which
-will directly open the ColorV window with the color.
+    Mini version of the ColorV window (|colorv-min|).
+    Use <leader>cm or |:ColorVmin| to open it.
 
-    There is a lighter version of the ColorV window (|colorv-mini|).
-    and you can use <leader>cm or |:ColorVmini| to open it.
+    Max version of the ColorV window (|colorv-max|).
+    Use <leader>cx or |:ColorVmax| to open it.
 
-                                                   *colorv-usage-pallet*
-    Choose a color from the pallet:
-
+                                                   *colorv-usage-pallette*
+    Choose a color from the pallette:~
     Using h/j/k/l and other motion mappings to goto position on
 which the color is at you demand.
     Using <c-k>/<2-space> to set the current color in the cursor position.
-
-    You can also use mouse. Doubleclick the color you demand.
+    You can also use mouse. Doubleclick it.
 
                                                     *colorv-usage-edit*
-    Edit a color with Hex/RGB/HSV:
-
-    Using <tab> to toggle the arrow position of the edit area.
-    You can use leftmouse doubleclick to choose it either.
-    using <Enter>/<kEnter> to edit the value. Notice the input tips.
+    Edit the color with Hex/RGB/HSV/HSL/YIQ:~
+    Move cursor to the property.
+    using <Enter>/<kEnter> to edit the value. 
+    Notice the input tips.
 
                                                     *colorv-usage-copy*
-    Copy a color from ColorV with current color:
-
+    Copy the color in ColorV window:~
     using y/Y and related mappings to copy formated text into register"
     using cc/C and related mappings to copy formated text into register+
     See |colorv-mapping-copy| for detail mapping.
 
-    The formats could be HEX, RGB, RGBP and more...
-    See |colorv-format-text| for detail info.
->
-    NS6:#ffffff     (Number sign 6)
-    HEX:ffffff
-    RGB:rgb(255,255,255)
-    RGBP:rgb(100%,100%,100%)
-<
-
                                                     *colorv-usage-paste*
-    Paste a |colorv-format-text| to ColorV and set showing this color:
-
+    Paste a color to ColorV window:~
+    Paste a |colorv-format-text| to ColorV and showing this color:
     Using p to paste text in register" to the window and set the color.
     Using <c-v> to paste text in register+ to the window and set the color.
     The color text could be HEX , RGB ,RGB% and RGBA.
 
                                                     *colorv-usage-word*
-    Open ColorV with word under cursor and do some actions:
-    the word could be in |colorv-format-text| .
-
-    you can open the ColorV window with the word under cursor.
+    Open ColorV with word under cursor:~
+    You can open ColorV window with word under cursor.
     Using <leader>cw or with command |:ColorVword|
 
-    And you can set the word auto changed with the chosen color after you
-close the ColorV window .
-    Using <leader>cg or with command |:ColorVchange|
+    And you can set the word auto changed with the chosen color after
+    close the ColorV window .
+    Using <leader>cgg or with command |:ColorVchange|
 
-    Also you can change all the same color word in current buffer with it.
-    Using <leader>ca or with command |:ColorVchangeAll|
+    And More, you can change all the same color word in current buffer with it.
+    Using <leader>cga or with command |:ColorVchangeAll|
 
 
                                                     *colorv-usage-eyedropper*
-    Open ColorV with eyedropper. Requires +python and pygtk2
+    Open ColorV with eyedropper:~
+    Requires +python and pygtk2
     Using <leader>cd or command |:ColorVdropper|
 
                                                     *colorv-usage-generate*
-    Generate color list. See |colorv-generate| for details.
-    map |colorv-mapping-generate|. command |:ColorVgenerate| 
+    Generate color list:~
+    See |colorv-generate| for scheme type details.
+    See mappping |colorv-mapping-generate|. 
+    See command |:ColorVgenerate| 
 
                                                     *colorv-usage-preview*
-    Preview color text in current buffer.
-    <leader>cpp or command |:ColorVpreview|
+    Preview color text in current buffer:~
+    <leader>cpp or command |:ColorVpreview|. 
+    This may take some while if it's a large file.
 
-==============================================================================
-INTERFACE                                           *colorv-interface*
+    <leader>cpl to preview in current line. 
+    This is much faster.
 
-                                                    *colorv-interface-normal*
-    The ColorV normal window looks like most GUI color pickers.
-
-    there are a pallet , a Hue line , a HEX/RGB/HSV edit area , and a history
-color block.
-    You can use mouse to click ,or use motion keys to move around,
-and use <2-space>/<c-k> to choose colors.
-
-                                                    *colorv-interface-color*
-    The current color is the color displaying with it's HEX/RGB/HSV values.
-
-    The history pallet is showing the current color and last two colors.
-
-                                                    *colorv-interface-starmark*
-    There is also a star mark(asterisk *) at the position in the pallet that
-matches current color. 
-    You can use |g:ColorV_show_star| to set it show or not.
-
-                                                    *colorv-interface-mini*
-    The ColorV mini window looks like the normal window in most places.
-    Except, no main pallet.
-    Instead, a Saturation line and a Value line.
-
-                                                    *colorv-interface-colorname*
-    If there is a color name for current HEX, it's name will show
-    in the right top of ColorV window. It's always W3C standard name.
-    See |colorv-colorname| for details.
-
-                                                    *colorv-colorname*
-    The colorname are the the name of the colors, like 'red', 'green', 
-    'blue', 'OrangeRed', 'cornsilk'
-    
-    If not the exact hex of colors, then add '~' and '~~' to the end,
-    the approximation rate to exact colors can be adjusted by
-    |g:ColorV_name_approx|
-
-    There are several color names that have the same Hex.
-        Aqua            #00ffff
-        Cyan            #00ffff
-        Magenta         #ff00ff
-        Fuchsia         #ff00ff
-
-    Note 
-    The X11 standard is used by vim gui colors and X Window system.
-    The W3C standard is mostly used in HTML/CSS and browsers.
-
-    There are several clashes between X11 and W3C colornames.
-        Gray    (X11)	#BEBEBE
-        Gray    (W3C) 	#7F7F7F
-        Green   (X11) 	#00FF00
-        Green   (W3C) 	#007F00
-        Maroon  (X11) 	#B03060
-        Maroon  (W3C) 	#7F0000
-        Purple  (X11) 	#A020F0
-        Purple  (W3C) 	#7F007F
-    You can get the name table from
-    http://en.wikipedia.org/wiki/X11_color_names
-    
-    By default, when useing |:ColorVchange| in vim filetype
-    files, ColorV will automatically use X11 color names. 
-    But the name showing in ColorV window is always W3C color name.
-    You can entering X11 name by 'nx' and W3C name by 'ne'.
-
-                                                *colorv-interface-list*
-    A window that showing the list of colornames or generated colors.
-    It could be triggered by <leader>cl or generating colors with colors.
-    See |colorv-generate| for details.
-
-                                                *colorv-generate*
-    Type of generating various color scheme by input color.
-    There are following types currently:
-        Hue/Saturation/Value        Generate by H/S/V to step change 
-        Monochromatic               Generate by S and V to step change 
-        Analogous                   Generate by same S/V
-        Triadic                     Generate 3 colors by same S/V
-        Rectangle(Tetradic)         Generate 4 colors by same S/V
-        Neutral                     Generate by same S/V
-        Clash                       Generate clash color by same S/V
-        Square                      Generate 4 colors with same H step
-                                    by same S/V
-        Five-Tone                   Generate 5 colors by same S/V
-        Six-Tone                    Generate 6 colors by same S/V
-        Complementary               Generate opposite color by same S/V
-        Split-Complementary         Generate 2 opposite colors by same S/V
-    NOTE
-    With |g:ColorV_input_gen_step| set to 1, you could change the step with
-    input while generating with Hue/Saturation/Value/Monochromatic.
+    <leader>cpb to preview in current file with  text-blocking.
+    This is much clearer.
+     
 
 ==============================================================================
 COMMANDS                                            *colorv-commands*
 
                                                     *:ColorV*
-    |:ColorV|
-    |:ColorVnorm|       Open |colorv-normal| window.
-    Can have arguments of color-texts. see |colorv-format-text|
-                                                    *:ColorVmini*
-    |:ColorVmini|       Open |colorv-mini| window.
-    Can have arguments of color-texts. see |colorv-format-text|
+    |:ColorV| [text]       Open ColorV window with previous mode.
+                                                    *:ColorVmid*
+    |:ColorVmid| [text]    Open |colorv-normal| window.
+                                                    *:ColorVmin*
+    |:ColorVmin| [text]    Open |colorv-min| window.
+                         This mode is mini mode.
+                         But still you can choose colors easily.
+                                                    *:ColorVmax*
+    |:ColorVmax| [text]    Open |colorv-max| window.
+                         This mode contains more infos.
+                         The YIQ/HLS color space,
+                         and the copied_color_history pallette.
+    
+    See |colorv-format-text| to get [text] for above commands.
+
                                                     *:ColorVword*
     |:ColorVword|     Open the ColorV window with word under cursor.
                     the word could be in |colorv-format-text| .
@@ -326,10 +208,10 @@ will change all color-text in current buf after closing the ColorV window.
     You can use |g:ColorV_word_mini| to open with mini window.
     
                                                     *:ColorVchange2*
-    |:ColorVchange2| {args}(NAME\HEX\RGB\0x\RGBA...) 
+    |:ColorVchange2| {args} (NAME\HEX\RGB\0x\RGBA...) 
                       Open the ColorV window with word under cursor. And
                       Change to the format later.
-                      See details in |colorv-format-text|
+                      See details of {args} in |colorv-format-text|
 
                                                     *:ColorVdropper*
     |:ColorVdropper|    Open a gtk colorpicker to drop colors.
@@ -360,13 +242,11 @@ MAPPINGS                                            *colorv-mappings*
                     Redefine it with :ColorVmini<CR>
 
     <leader>cw      Open ColorV window with cursor word <cWORD>.
-                    the word could be in |colorv-format-text| .
+                    the word could be the pattern of |colorv-format-text| .
                     Redefine it with :ColorVword<CR>
-                    Use |g:ColorV_word_mini| to open with mini window.
 
     <leader>cgg      Open ColorV window with cursor word and change it later.
                     Redefine it with :ColorVchange<CR>
-                    Use |g:ColorV_word_mini| to open with mini window.
                     Note If you change a color name , but what your chosing 
                     color don't match any color name. it will be null('').
 
@@ -383,41 +263,48 @@ MAPPINGS                                            *colorv-mappings*
     <leader>c2h     Change cursor word to HSV format later.
                     See details in |colorv-format-text|
 
-    <leader>cl      Open colorname list window. See |colorv-interface-list|
+    <leader>cl      Open colorname list window.
 
     <leader>cq      Quit ColorV.
 
                                                     *colorv-mapping-generate*
     Generate color list with current word by matching type.
-    <leader>cgeh    Hue
-    <leader>cges    Saturation
-    <leader>cgev    Value
-    <leader>cgea    Analogous
-    <leader>cgen    Neutral
-    <leader>cgec    Clash
-    <leader>cgep    Split-Complementary
-    <leader>cgeq    Square
-    <leader>cge1/m  Monochromatic
-    <leader>cge2    Complementary
-    <leader>cge3/t  Triadic
-    <leader>cge4    Rectangle(Tetradic)
-    <leader>cge5    Five-Tone
-    <leader>cge6    Six-Tone
+    <leader>cnh    Hue
+    <leader>cns    Saturation
+    <leader>cnv    Value
+    <leader>cna    Analogous
+    <leader>cnn    Neutral
+    <leader>cnc    Clash
+    <leader>cnp    Split-Complementary
+    <leader>cnq    Square
+    <leader>cn1/m  Monochromatic
+    <leader>cn2    Complementary
+    <leader>cn3/t  Triadic
+    <leader>cn4    Rectangle(Tetradic)
+    <leader>cn5    Five-Tone
+    <leader>cn6    Six-Tone
     See |colorv-generate| for details.
 
                                                     *colorv-mapping-preview*
-    <leader>cpp     preview all color text in current file with highlighting 
-                    colors.
-    <leader>cpl     preview all color text in current line with highlighting
-                    colors.
-    <leader>cpc     clear preview highlighting.
-    Set |g:ColorV_prev_name| and |g:ColorV_prev_mass| to change it's behavior. 
+    <leader>cpp    preview all color text in current 'file' with highlighting 
+                   colors.
+    <leader>cpl    preview all color text in current 'line' with highlighting
+                   colors.
+    <leader>cpb    preview all color text in current file with highlighting
+                   colors.
+                   (Block showing color text, which will be clearer for
+                   checking colors.)
+    <leader>cpc    clear preview highlighting.
+    Set |g:ColorV_view_name| and |g:ColorV_view_block| to change it's behavior. 
 
 ------------------------------------------------------------------------------
 
                                                     *colorv-mapping-buffer*
 
     Belows are mappings that have effects ONLY inside ColorV window.
+
+                                                    *colorv-mapping-toggle*
+    m/M         toggle ColorV window modes (max/mid/min)
 
                                                     *colorv-mapping-copy*
 
@@ -451,6 +338,86 @@ or not a specific register was used (e.g.  "xdd).
 which was used with cut/copy between other applications.
     you can use '"+p' to put in vim. and use <C-V> in other applications.
 
+
+
+                                                    *colorv-mapping-paste*
+    <Ctrl-v>    paste |colorv-format-text| in register+ to set showing color.
+    p/P         paste |colorv-format-text| in register" to set showing color.
+
+                                                    *colorv-mapping-set*
+    <C-K>/<C-J>     Choose current showing colors under cursor.
+    <2-Space>       Choose current showing colors under cursor.
+    <2-Leftmouse>   Choose current showing colors under cursor.
+                                                    *colorv-mapping-edit*
+    <Enter>         Start editing RGB/HSV parameter chosen by arrow.
+    <Kenter>        Start editing RGB/HSV parameter chosen by arrow.
+    +/=             Start tuning(add) RGB/HSV parameter chosen by arrow.
+    -/_             Start tuning(sub) RGB/HSV parameter chosen by arrow.
+    
+    na/ne           Choose color by entering a colorname.(W3C standard)   
+    nx              Choose color by entering a colorname.(X11 standard)   
+                    See |colorv-colorname| for details.
+
+
+                                                    *colorv-mapping-help*
+    ?               Toggle tips showing.
+    H/<F1>          Show this help documents.
+
+                                                    *colorv-mapping-quit*
+    q/Q             Quit ColorV.
+    <c-w>q          Quit ColoV.
+    <c-w><c-q>      Quit ColorV.
+
+                                                    *colorv-buffer-generate*
+    Generate color list with current HEX in ColorV window.
+    gh    Hue
+    gs    Saturation
+    gv    Value
+    ga    Analogous
+    gn    Neutral
+    gc    Clash
+    gp    Split-Complementary
+    gq    Square
+    g1/m  Monochromatic
+    g2    Complementary
+    g3/t  Triadic
+    g4    Rectangle(Tetradic)
+    g5    Five-Tone
+    g6    Six-Tone
+    See |colorv-generate| for details.
+
+==============================================================================
+COLORNAME                                            *colorv-colorname*
+    The colorname are the the name of the colors, like 'red', 'green', 
+    'blue', 'OrangeRed', 'cornsilk'
+    
+    There are several color names that have the same Hex.
+        Aqua            #00ffff
+        Cyan            #00ffff
+        Magenta         #ff00ff
+        Fuchsia         #ff00ff
+
+    Note 
+    The X11 standard is used by vim gui colors and X Window system.
+    The W3C standard is mostly used in HTML/CSS and browsers.
+
+    There are several clashes between X11 and W3C colornames.
+        Gray    (X11)	#BEBEBE
+        Gray    (W3C) 	#7F7F7F
+        Green   (X11) 	#00FF00
+        Green   (W3C) 	#007F00
+        Maroon  (X11) 	#B03060
+        Maroon  (W3C) 	#7F0000
+        Purple  (X11) 	#A020F0
+        Purple  (W3C) 	#7F007F
+    You can get the name table from
+    http://en.wikipedia.org/wiki/X11_color_names
+    
+    By default, when useing |:ColorVchange| in vim filetype
+    files, ColorV will automatically use X11 color names. 
+    But the name showing in ColorV window is always W3C color name.
+    You can entering X11 name by 'nx' and W3C name by 'ne'.
+------------------------------------------------------------------------------
                                                     *colorv-format-text*
     |colorv-format-text| is the text format of the colors.
     There are  following formats currently:
@@ -464,102 +431,41 @@ which was used with cut/copy between other applications.
     RGBAP   rgba(100%,100%,100%,100%)
     NAME    red/lime/blue (see |colorv-colorname|)
     HSV     hsv(360,100,100)
+    HSL     hsl(300,100%,100%)      (css3 standard)
+    HSLA    hsl(300,100%,100%,1.0)  (css3 standard)
 
     You can also define your own color formats with |colorv-var-colors|.
-
-
-                                                    *colorv-mapping-paste*
-    <Ctrl-v>    paste |colorv-format-text| in register+ to set showing color.
-    p/P         paste |colorv-format-text| in register" to set showing color.
-
-                                                    *colorv-mapping-edit*
-    <Tab>/<C-N>/J   Toggle arrow foreward to choose color parameters.
-    <S-Tab>/<C-P>/K Toggle arrow backward to choose color parameters.
-    x/r/g/b/u/s/v   Toggle arrow to the color parameters.
-                    (hex/red/green/blue/hue/sat/val)
-
-    a/i             Start editing RGB/HSV parameter chosen by arrow.
-    <Enter>         Start editing RGB/HSV parameter chosen by arrow.
-    <Kenter>        Start editing RGB/HSV parameter chosen by arrow.
-    +/=             Start tuning(add) RGB/HSV parameter chosen by arrow.
-    -/_             Start tuning(sub) RGB/HSV parameter chosen by arrow.
-    
-    nn              Toggle arrow to color name parameter.
-    na/ne           Choose color by entering a colorname.(W3C standard)   
-    nx              Choose color by entering a colorname.(X11 standard)   
-                    See |colorv-colorname| for details.
-    nt              Set color with exact color of colorname.
-
-                                                    *colorv-mapping-set*
-    <C-K>/<C-J>     Choose current showing colors under cursor.
-    <2-Space>       Choose current showing colors under cursor.
-    <2-Leftmouse>   Choose current showing colors under cursor.
-
-                                                    *colorv-mapping-help*
-    ?               Toggle tips showing.
-    H/<F1>          Show this help documents.
-
-                                                    *colorv-mapping-quit*
-    q/Q             Quit ColorV.
-    <c-w>q          Quit ColoV.
-    <c-w><c-q>      Quit ColorV.
-
-                                                    *colorv-buffer-generate*
-    Generate color list with current HEX in ColorV window.
-    geh    Hue
-    ges    Saturation
-    gev    Value
-    gea    Analogous
-    gen    Neutral
-    gec    Clash
-    gep    Split-Complementary
-    geq    Square
-    ge1/m  Monochromatic
-    ge2    Complementary
-    ge3/t  Triadic
-    ge4    Rectangle(Tetradic)
-    ge5    Five-Tone
-    ge6    Six-Tone
-    See |colorv-generate| for details.
+------------------------------------------------------------------------------
+                                                      *colorv-generate*
+    Type of generating various color scheme by input color.
+    There are following types currently:
+        Hue/Saturation/Value        Generate by H/S/V to step change 
+        Monochromatic               Generate by S and V to step change 
+        Analogous                   Generate by same S/V
+        Triadic                     Generate 3 colors by same S/V
+        Rectangle(Tetradic)         Generate 4 colors by same S/V
+        Neutral                     Generate by same S/V
+        Clash                       Generate clash color by same S/V
+        Square                      Generate 4 colors with same H step
+                                    by same S/V
+        Five-Tone                   Generate 5 colors by same S/V
+        Six-Tone                    Generate 6 colors by same S/V
+        Complementary               Generate opposite color by same S/V
+        Split-Complementary         Generate 2 opposite colors by same S/V
+    NOTE
+    The Blue(0000ff) and yellow(ffff00) is actually not the same lumination
+    With |g:ColorV_gen_space| set to "yiq" . 
+    You could get colors with same 'Lumination'. 
 
 ==============================================================================
 OPTIONS                                             *colorv-options*
 
-                                                *g:ColorV_silent_set*
-                                                (default=0)
-    g:ColorV_silent_set      Echo or Not with current color while choose
-                             colors, Silent if set to 1.
-
-                                                *g:ColorV_set_register*
-                                                (default=0)
-    g:ColorV_set_register    Each time you choose a color. the color is
-                             copied to your register.
-                             copy to register" if set to 1
-                             copy to register+ if set to 2
-
-                                                *g:ColorV_dynamic_hue*
-                                                (default=0)
-    g:ColorV_dynamic_hue     Show the hue-line with dynamic hue colors,
-                             if set to 1.
-                             Then it will not show all the hue color in a
-                             color ring at once. but will show
-                             the hue color next to current colors.
-
-                                                *g:ColorV_dynamic_hue_step*
-                                                (default=6)
-    g:ColorV_dynamic_hue_step   When |g:ColorV_dynamic_hue| is set to 1,
-                                this will control hue steps between each
-                                color on the hue-line
-
-                                                *g:ColorV_show_tips*
-                                                (default=1)
-    g:ColorV_show_tips      Show tips in normal and mini window.
-                            will show tip mark(?) if set to 1.
-
-                                                *g:ColorV_show_star*
-                                                (default=1)
-    g:ColorV_show_star      Show Star mark if set to 1.
-                            See |colorv-interface-starmark|
+                                                *g:ColorV_win_space*
+                                                (default="hsv")
+    g:ColorV_win_space      ColorV's Main showing color space.
+                            if set to 'hls'.
+                            The pallete/text will use 'HLS' colorspace.
+                            NOTE:the 'HLS' is the same thing of 'HSL'
 
                                                 *g:ColorV_word_mini*
                                                 (default=1)
@@ -567,61 +473,36 @@ OPTIONS                                             *colorv-options*
                             current word, if set to 1.
                             |:ColorVword| |:ColorVchange| |:ColorVchangeAll|
 
-                                                *g:ColorV_name_approx*
-                                                (default=5)
-    g:ColorV_name_approx    Approximation rate to the exact color of color
-                            name.
-
                                                 *g:ColorV_win_pos*
                                                 (default="bot")
-    g:ColorV_win_pos        Default ColorV position when opened.
-                            you could use "top" instead.
+    g:ColorV_win_pos        Default ColorV window position.
+                            You could use "top" instead.
 
-                                                *g:ColorV_echo_tips*
-                                                (default=0)
-    g:ColorV_echo_tips      The method of echo tips. set 0 to echo all.
-                            set 1 to echo with sequence.
-                            set 2 to echo with random sequence.
+                                                *g:ColorV_gen_space*
+                                                (default="hsv")
+    g:ColorV_gen_space      Generated color with colorspace.
+                            if set to 'yiq'.
+                            You could get colors with same 'Lumination'. 
 
-                                                *g:ColorV_tune_step*
-                                                (default=5)
-    g:ColorV_tune_step      The step when tuning RGB/HSV parameters with
-                            '+' and '-'
-                            
-                                                *g:ColorV_input_gen_step*
+                                                *g:ColorV_view_name*
                                                 (default=1)
-    g:ColorV_input_gen_step Input changeing step while generate list.
-                            See |colorv-generate| for details.
-                            
-                                                *g:ColorV_gen_def_type*
-                                                (default="Hue")
-    g:ColorV_gen_def_type   Generated color default types.
-                                                *g:ColorV_gen_def_nums*
-                                                (default=20)
-    g:ColorV_gen_def_nums   Generated color default numbers.
-                                                *g:ColorV_gen_def_step*
-                                                (default=5)
-    g:ColorV_gen_def_step   Generated color default steps.
-
-                                                *g:ColorV_cursor_back*
-                                                (default=1)
-    g:ColorV_cursor_back    Put cursor back to previous window after
-                            open ColorV window and ColorV List window.
-
-                                                *g:ColorV_prev_name*
-                                                (default=1)
-    g:ColorV_prev_name      Preview colorname with color.
+    g:ColorV_view_name      Show colorname when previewing color.
                             If you don't want to make the colorname text
                             like 'red', 'black', 'navy' to be colored.
                             set it to 0
 
-                                                *g:ColorV_prev_mass*
+                                                *g:ColorV_view_block*
                                                 (default=0)
-    g:ColorV_prev_mass      Preview colors with fg/bg in same colors.
-
+    g:ColorV_view_block     Always Previewing color-text with same fg/bg 
+                            colors.
+                                                *g:ColorV_cache_File*
+                                            (default='~/.vim_ColorV_cache')
+    g:ColorV_cache_File     The history_copied_list's cache file position.
+                            
 ------------------------------------------------------------------------------
 VARIABLES                                           *colorv-variables*
 
+    Global variables that could be used by your scripts.~
     g:ColorV        The |dict| that keeps all ColorV global variables.
     g:ColorV.ver    The Current ColorV version.
 
@@ -629,61 +510,59 @@ VARIABLES                                           *colorv-variables*
     g:ColorV.HEX    The plain hex format (ffffff) of current color.
 
     g:ColorV.rgb    list [r,g,b] (0~255)
-
     g:ColorV.RGB    The dict that keeps the RGB value.
                     'g:ColorV.RGB.R' (0~255)
                     'g:ColorV.RGB.G' (0~255)
                     'g:ColorV.RGB.B' (0~255)
 
     g:ColorV.hsv    list [h,s,v] (0~360) (0~100) (0~100)
-
     g:ColorV.HSV    The dict that keeps the HSV value.
                     'g:ColorV.HSV.H' (0~360)
                     'g:ColorV.HSV.S' (0~100)
                     'g:ColorV.HSV.V' (0~100)
+    
+    g:ColorV.hls    list [h,l,s] (0~360) (0~100) (0~100)
+    g:ColorV.hsl    list [h,s,l] (0~360) (0~100) (0~100)
+    g:ColorV.HLS    The dict that keeps the HSV value.
+                    'g:ColorV.HLS.H' (0~360)
+                    'g:ColorV.HLS.L' (0~100)
+                    'g:ColorV.HLS.S' (0~100)
+                    NOTE: 'HLS' colorspace is the same thing of 'HSL'.
+
+    g:ColorV.yiq    list [y,i,q] (0~100) (-100~100) (-100~100)
+    g:ColorV.YIQ    The dict that keeps the HSV value.
+                    'g:ColorV.YIQ.Y'
+                    'g:ColorV.YIQ.I'
+                    'g:ColorV.YIQ.Q'
 
     g:ColorV.NAME   The colorname of current color.
                     if no exact color fitted then empty.
 
-    You can use them both with mappings ,Snipmate.vim or Necomplcache.vim
 ------------------------------------------------------------------------------
-EXAMPLE                                             *colorv-example*
-
-    By default, you can easily use ColorV without any config.
-    But you can tuning it on your own.
-    Put these line in your vimrc file:
+VIMRC EXAMPLE                                       *colorv-example*
+    If you want tuning the ColorV work fine for you.
+    You can set |colorv-options| and remapping |colorv-mappings| in your
+    vimrc files.
+    For example:
 >
+    "remap the ColorVchange command 
+    nmap <silent> <leader>ce :ColorVchange<CR>
 
-    "dynamic hue
-    "let g:ColorV_dynamic_hue=1
-    "let g:ColorV_dynamic_hue_step=9
-
-    "Keep It Simple and Silent
-    let g:ColorV_show_star=1
-    let g:ColorV_word_mini=1
-    let g:ColorV_silent_set=1
-
-    "tip mark
-    let g:ColorV_show_tips=0
-    "show tips one by one
-    "let g:ColorV_echo_tips=1
-    
-    "copy to "+ each time set colors
-    "let g:ColorV_set_register=2
-    "colorname approximate ratio
-    "let g:ColorV_name_approx=10
-
+    "use HLS colorspace instead of HSV
+    let g:ColorV_win_space="hls"  
+    "use YIQ colorspace for generating color list
+    let g:ColorV_gen_space="yiq" 
+    "Stop coloring colornames 'black/white'
+    let g:ColorV_view_name=0
 <
 ------------------------------------------------------------------------------
 FUNCTIONS                                           *colorv-functions*
 
-    There are several functions that could be used in your setting or
-plugins.
+    Global Functions that could be used by your scripts.~
                                                     *colorv#rgb2hsv()*
     colorv#rgb2hsv(rgb)             Convert RGB to HSV.
                                     " input [r,g,b] 0~255 num
                                     "return [H,S,V] 0~360 0~100 num
-
                                                     *colorv#hsv2rgb()*
     colorv#hsv2rgb(hsv)             Convert HSV to RGB.
                                     " input [h,s,v] 0~360 0~100 num
@@ -716,6 +595,21 @@ plugins.
     colorv#hsv2hex(hsv)             Convert HSV to HEX.
                                     " input [h,s,v] 0~360 0~100 num
                                     "return ffffff         str
+
+                                                    *colorv#hex2hls()*
+    colorv#hex2hls(hex)             Convert HEX to HLS.
+                                    " input ffffff          num/str
+                                    "return [h,l,s] 0~360 0~100 num
+                                                    *colorv#hls2hex()*
+    colorv#hls2hex(hsl)             Convert HLS to HEX.
+                                    " input [h,l,s] 0~360 0~100 num
+                                    "return ffffff         str
+
+    And there are functions which were rarely use.
+        colorv#hex2yiq() (y:0~100,i:-100~100,q:-100~100)
+        colorv#yiq2hex()
+        colorv#rgb2cmyk() (c:0~1,m:0~1,y:0~1,k:0~1)
+        colorv#cmyk2rgb()
                                     
                                                     *colorv#gen_list()*
     colorv#gen_list({hex}[,{type}[,{num}[,{step}]]])             
@@ -726,23 +620,15 @@ plugins.
 ==============================================================================
 DEPENDENCIES                                        *colorv-dependencies*
 
-    - Requires Vim 7.0 or higher.
-    - Requires GUI MODE.
+    - Vim 7.0 or higher.
     - GTK Eyedropper: Requires +python and pygtk2.0.
-
-LIMITATIONS                                         *colorv-limitations*
-
-    - Eyedropper only support with pygtk2.0. 
-      When you don't got that. Please use your eye to drop colors.
-    - Term/cterm not supported. Run it in gui mode, or use a color dislay.
-    - Bugs. Please submit if you catch some.
 ==============================================================================
-CREDITS                                             *colorv-credits*
+DEVELOPER                                             *colorv-developer*
 
-    The |ColorV| is develped by Rykka Krn <Rykka10@gmail.com>.
-
+    |ColorV| is develped by Rykka Krin |<Rykka.Krin@gmail.com>|.
+   
     The reason why I wrote this plugin is because the ColorSel.vim
-    does not support mouse, And it wasn't easy to choose a desired color.
+    does not support mouse, And wasn't so easy to choose one desired color.
 
     Also inspired by the Gpick software by Albertas Vyšniauskas.
     And the KULER software of Adobe.
@@ -756,8 +642,8 @@ CREDITS                                             *colorv-credits*
 
         Vundle/Pathogen/Command-T/...and many other vim plugin authors.
 
-    Special Thanks to the Vim Author: Bram Moolenaar <Bram@vim.org>.
-
+    Special Thanks to the Vim Author and it's developers:
+        Bram Moolenaar <Bram@vim.org>...
 ==============================================================================
 LICENSE                                             *colorv-license*
 
@@ -782,26 +668,27 @@ LICENSE                                             *colorv-license*
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }}}
 ==============================================================================
-TODO                                                *colorv-todo*
-
-    The priority of TODO items, If you have any advice or patch, 
-    feel free to submit it at github.
-
-" TODO: +6 history window
-" TODO: +3 fav color with user defined names
-" TODO: +1 image(png/jpg/...) view?
--------------------------------------------------------------------------------
-HISTORY                                             *colorv-history*
 CHANGELOG                                           *colorv-changelog* 
 " 2.5.0 10-times faster 
-" hls colorspace added
-" rewrite with python 
-" s:max
+" DONE: 110824  hls colorspace added
+" DONE: 110824  draw history_copied_pallette in max mode
+" DONE: 110824  history_copied_list cache supported
+" DONE: 110824  remove useless options
+" DONE: 110823  max mode added
+" DONE: 110821  rewrite core func with python. Now it's 10 times faster.
+" DONE: 110820  use YIQ instead of YUV
+
 " 2.4.0 yuv yiq colorspace list gen
-" 2.3.0 galaxy.vim (a colorscheme plugin) support
+" DONE: 110817  remove the arrow selector method. use highlight instead
+" DONE: 110815  YUV colorspace added
+" DONE: 110815  YUV list gen supported
+
+" 2.3.0 galaxy.vim
+" DONE: 110814  support galaxy terminal color
+" DONE: 110811  support for galaxy.vim to generate colorschemes
+
 " 2.2.0
-" DONE: 110809  support for galaxy.vim to generate colorschemes
-" DONE: 110809  add '+' sign in 'min' mode's pallet to show the saturation
+" DONE: 110809  add '+' sign in 'min' mode's pallette to show the saturation
 " DONE: 110808  added exit_call and update_call for colorv#Win()
 " DONE: 110806  terminal 16 color supported .
 " DONE: 110806  s:fmod() for v:version <=702
@@ -850,7 +737,7 @@ CHANGELOG                                           *colorv-changelog*
 " DONE: 110620  preview files and lines
 "FIXED: 110620  preview rgba(255,255,255,1.0) format in css file
 " DONE: 110620  support colornames in s:txt2hex() 
-"FIXED: 110620  the star mark of pallet use s:rlt_clr()
+"FIXED: 110620  the star mark of pallette use s:rlt_clr()
 " DONE: 110620  add hex2hsv() hsv2hex
 " DONE: 110620  g:ColorV_xxx options and help docs added
 "FIXED: 110620  fmod hsv2rgb() and rgb2hsv() rgb2hex() input with warning
@@ -914,7 +801,7 @@ CHANGELOG                                           *colorv-changelog*
 "FIXED: 110602  rmv quit mark.rmv g:ColorV_show_quit. fix silent_set
 " DONE: 110602  change tip text. add g:ColorV_echo_tips (0/1/2)
 " DONE: 110602  change arrow_ptn color to reverse.
-" DONE: 110602  fix the pallet. no black line and white column now. 
+" DONE: 110602  fix the pallette. no black line and white column now. 
 " DONE: 110602  add max/mid/min mode. default is mid mode
 " DONE: 110602  tips only shows in cmdline now
 
