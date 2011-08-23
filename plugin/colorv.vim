@@ -11,36 +11,41 @@ if v:version < 700
     finish
 endif
 
-command! -nargs=*  ColorV call ColorV#Win("",<q-args>)
-command! -nargs=*  ColorVnorm call ColorV#Win("",<q-args>)
-command! -nargs=*  ColorVmini call ColorV#Win("min",<q-args>)
-command! -nargs=0  ColorVclear call ColorV#clear_all()
-command! -nargs=0  ColorVquit call ColorV#exit()
+command! -nargs=*  ColorV call colorv#win("",<q-args>)
+command! -nargs=*  ColorVmid call colorv#win("",<q-args>)
+command! -nargs=*  ColorVmin call colorv#win("min",<q-args>)
+command! -nargs=*  ColorVmax call colorv#win("max",<q-args>)
+command! -nargs=0  ColorVquit call colorv#exit()
+command! -nargs=0  ColorVclear call colorv#clear_all()
 
-command! -nargs=0  ColorVword call ColorV#cursor_change()
-command! -nargs=0  ColorVchange call ColorV#cursor_change(1)
-command! -nargs=0  ColorVchangeAll call ColorV#cursor_change(2)
-command! -nargs=1  ColorVchange2 call ColorV#cursor_change(1,<q-args>)
+command! -nargs=0  ColorVword call colorv#cursor_win()
+command! -nargs=0  ColorVchange call colorv#cursor_win(1)
+command! -nargs=0  ColorVchangeAll call colorv#cursor_win(2)
+command! -nargs=1  ColorVchange2 call colorv#cursor_win(1,<q-args>)
 
-command! -nargs=0  ColorVlist call ColorV#list_and_colorv()
-command! -nargs=+  ColorVgenerate call ColorV#gen_win(<f-args>)
-command! -nargs=+  ColorVwordgen call ColorV#cursor_change(3,<f-args>)
+command! -nargs=0  ColorVlist call colorv#list_and_colorv()
+command! -nargs=+  ColorVgenerate call colorv#gen_win(<f-args>)
+command! -nargs=+  ColorVwordgen call colorv#cursor_win(3,<f-args>)
 
-command! -nargs=0  ColorVpreview call ColorV#preview()
-command! -nargs=0  ColorVpreviewline call ColorV#preview_line()
-" command! -nargs=0  ColorVpreviewclear call <SID>clear_prevmatch()
+command! -nargs=0  ColorVpreview call colorv#preview()
+command! -nargs=0  ColorVpreviewblock call colorv#preview("B")
+command! -nargs=0  ColorVpreviewline call colorv#preview_line()
+command! -nargs=+  ColorVTimer call colorv#timer(<f-args>)
 
 
 if has('python')
-command! -nargs=0  ColorVdropper call ColorV#Dropper()
+command! -nargs=0  ColorVdropper call colorv#dropper()
 endif
 
 if !hasmapto(':ColorV<CR>')
   silent! nmap <unique> <silent> <Leader>cv :ColorV<CR>
 endif
 
-if !hasmapto(':ColorVmini<CR>')
-  silent! nmap <unique> <silent> <Leader>cm :ColorVmini<CR>
+if !hasmapto(':ColorVmin<CR>')
+  silent! nmap <unique> <silent> <Leader>cm :ColorVmin<CR>
+endif
+if !hasmapto(':ColorVmax<CR>')
+  silent! nmap <unique> <silent> <Leader>cx :ColorVmax<CR>
 endif
 
 if !hasmapto(':ColorVword<CR>')
@@ -90,50 +95,50 @@ if !hasmapto(':ColorVlist<CR>')
 endif
 
 if !hasmapto(':ColorVwordgenerate Hue<CR>')
-  silent! nmap <unique> <silent> <Leader>cgeh :ColorVwordgen Hue<CR>
+  silent! nmap <unique> <silent> <Leader>cnh :ColorVwordgen Hue<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Saturation<CR>')
-  silent! nmap <unique> <silent> <Leader>cges :ColorVwordgen Saturation<CR>
+  silent! nmap <unique> <silent> <Leader>cns :ColorVwordgen Saturation<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Value<CR>')
-  silent! nmap <unique> <silent> <Leader>cgev :ColorVwordgen Value<CR>
+  silent! nmap <unique> <silent> <Leader>cnv :ColorVwordgen Value<CR>
 endif
 
 if !hasmapto(':ColorVwordgenerate Analogous<CR>')
-  silent! nmap <unique> <silent> <Leader>cgea :ColorVwordgen Analogous<CR>
+  silent! nmap <unique> <silent> <Leader>cna :ColorVwordgen Analogous<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Square<CR>')
-  silent! nmap <unique> <silent> <Leader>cgeq :ColorVwordgen Square<CR>
+  silent! nmap <unique> <silent> <Leader>cnq :ColorVwordgen Square<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Neutral<CR>')
-  silent! nmap <unique> <silent> <Leader>cgen :ColorVwordgen Neutral<CR>
+  silent! nmap <unique> <silent> <Leader>cnn :ColorVwordgen Neutral<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Clash<CR>')
-  silent! nmap <unique> <silent> <Leader>cgec :ColorVwordgen Clash<CR>
+  silent! nmap <unique> <silent> <Leader>cnc :ColorVwordgen Clash<CR>
 endif
 
 if !hasmapto(':ColorVwordgenerate Split-Complementary<CR>')
-  silent! nmap <unique> <silent> <Leader>cgep :ColorVwordgen Split-Complementary<CR>
+  silent! nmap <unique> <silent> <Leader>cnp :ColorVwordgen Split-Complementary<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Monochromatic<CR>')
-  silent! nmap <unique> <silent> <Leader>cgem :ColorVwordgen Monochromatic<CR>
-  silent! nmap <unique> <silent> <Leader>cge1 :ColorVwordgen Monochromatic<CR>
+  silent! nmap <unique> <silent> <Leader>cnm :ColorVwordgen Monochromatic<CR>
+  silent! nmap <unique> <silent> <Leader>cn1 :ColorVwordgen Monochromatic<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Complementary<CR>')
-  silent! nmap <unique> <silent> <Leader>cge2 :ColorVwordgen Complementary<CR>
+  silent! nmap <unique> <silent> <Leader>cn2 :ColorVwordgen Complementary<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Triadic<CR>')
-  silent! nmap <unique> <silent> <Leader>cget :ColorVwordgen Triadic<CR>
-  silent! nmap <unique> <silent> <Leader>cge3 :ColorVwordgen Triadic<CR>
+  silent! nmap <unique> <silent> <Leader>cnt :ColorVwordgen Triadic<CR>
+  silent! nmap <unique> <silent> <Leader>cn3 :ColorVwordgen Triadic<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Tetradic<CR>')
-  silent! nmap <unique> <silent> <Leader>cge4 :ColorVwordgen Tetradic<CR>
+  silent! nmap <unique> <silent> <Leader>cn4 :ColorVwordgen Tetradic<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Five-Tone<CR>')
-  silent! nmap <unique> <silent> <Leader>cge5 :ColorVwordgen Five-Tone<CR>
+  silent! nmap <unique> <silent> <Leader>cn5 :ColorVwordgen Five-Tone<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Six-Tone<CR>')
-  silent! nmap <unique> <silent> <Leader>cge6 :ColorVwordgen Six-Tone<CR>
+  silent! nmap <unique> <silent> <Leader>cn6 :ColorVwordgen Six-Tone<CR>
 endif
 
 if !hasmapto(':ColorVpreview<CR>')
@@ -141,6 +146,9 @@ if !hasmapto(':ColorVpreview<CR>')
 endif
 if !hasmapto(':ColorVpreviewline<CR>')
   silent! nmap <unique> <silent> <Leader>cpl :ColorVpreviewline<CR>
+endif
+if !hasmapto(':ColorVpreviewblock<CR>')
+  silent! nmap <unique> <silent> <Leader>cpb :ColorVpreviewblock<CR>
 endif
 
 if !hasmapto(':ColorVpreviewclear<CR>')

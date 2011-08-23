@@ -1,6 +1,13 @@
-*ColorV.txt* *ColorV.vim*   ColorV         Color tool for Vim
-*colorv*
-ver:2.1.0                               <Rykka.Krin@gmail.com>
+*ColorV.txt*                ColorV         A Color tool for Vim
+ver:2.2.0                               <Rykka.Krin@gmail.com>
+
+>
+            _________     ______            ___    __
+            __  ____/________  /______________ |  / /
+            _  /    _  __ \_  /_  __ \_  ___/_ | / / 
+            / /___  / /_/ /  / / /_/ /  /   __ |/ /  
+            \____/  \____//_/  \____//_/    _____/   
+<                           
 
 CONTENTS                               *colorv-contents*
 
@@ -672,18 +679,18 @@ FUNCTIONS                                           *colorv-functions*
 
     There are several functions that could be used in your setting or
 plugins.
-                                                    *ColorV#rgb2hsv()*
-    ColorV#rgb2hsv(rgb)             Convert RGB to HSV.
+                                                    *colorv#rgb2hsv()*
+    colorv#rgb2hsv(rgb)             Convert RGB to HSV.
                                     " input [r,g,b] 0~255 num
                                     "return [H,S,V] 0~360 0~100 num
 
-                                                    *ColorV#hsv2rgb()*
-    ColorV#hsv2rgb(hsv)             Convert HSV to RGB.
+                                                    *colorv#hsv2rgb()*
+    colorv#hsv2rgb(hsv)             Convert HSV to RGB.
                                     " input [h,s,v] 0~360 0~100 num
                                     "return [R,G,B] 0~255  num
 
-                                                    *ColorV#rgb2hex()*
-    ColorV#rgb2hex(rgb)             Convert RGB to HEX.
+                                                    *colorv#rgb2hex()*
+    colorv#rgb2hex(rgb)             Convert RGB to HEX.
                                     " input [r,g,b]  0~255  num/str
                                     "return ffffff         str
 
@@ -696,22 +703,22 @@ plugins.
                                     :echo "ffffff"+1
                                     :echo "0xffffff"+1
 
-                                                    *ColorV#hex2rgb()*
-    ColorV#hex2rgb(hex)             Convert HEX to RGB.
+                                                    *colorv#hex2rgb()*
+    colorv#hex2rgb(hex)             Convert HEX to RGB.
                                     " input ffffff          num/str
                                     "return [r,g,b] 0~255  str
 
-                                                    *ColorV#hex2hsv()*
-    ColorV#hex2hsv(hex)             Convert HEX to HSV.
+                                                    *colorv#hex2hsv()*
+    colorv#hex2hsv(hex)             Convert HEX to HSV.
                                     " input ffffff          num/str
                                     "return [h,s,v] 0~360 0~100 num
-                                                    *ColorV#hsv2hex()*
-    ColorV#hsv2hex(hsv)             Convert HSV to HEX.
+                                                    *colorv#hsv2hex()*
+    colorv#hsv2hex(hsv)             Convert HSV to HEX.
                                     " input [h,s,v] 0~360 0~100 num
                                     "return ffffff         str
                                     
-                                                    *ColorV#gen_list()*
-    ColorV#gen_list({hex}[,{type}[,{num}[,{step}]]])             
+                                                    *colorv#gen_list()*
+    colorv#gen_list({hex}[,{type}[,{num}[,{step}]]])             
                                     Generate hex list by color.
                                     "input  {hex}[,{type}[,{num}[,{step}]]]
                                     "return ["ffffff","ffffff",...]
@@ -782,16 +789,27 @@ TODO                                                *colorv-todo*
 
 " TODO: +6 history window
 " TODO: +3 fav color with user defined names
-" TODO: +3 colorscheme with colors
 " TODO: +1 image(png/jpg/...) view?
-" TODO: +1 term/cterm support
 -------------------------------------------------------------------------------
 HISTORY                                             *colorv-history*
 CHANGELOG                                           *colorv-changelog* 
+" 2.5.0 10-times faster 
+" hls colorspace added
+" rewrite with python 
+" s:max
+" 2.4.0 yuv yiq colorspace list gen
+" 2.3.0 galaxy.vim (a colorscheme plugin) support
+" 2.2.0
+" DONE: 110809  support for galaxy.vim to generate colorschemes
+" DONE: 110809  add '+' sign in 'min' mode's pallet to show the saturation
+" DONE: 110808  added exit_call and update_call for colorv#Win()
+" DONE: 110806  terminal 16 color supported .
+" DONE: 110806  s:fmod() for v:version <=702
 
 " 2.1.0
 " DONE: 110728 256 color terminal supported.
-" DONE: 110727 ColorV#hex2term() added.
+" DONE: 110727 colorv#hex2term() added.
+" DONE: 110727 colorv#rgb2lab added.
 
 " 2.0.4
 "FIXED: 110624  s:generate_list use gen_list() inside
@@ -799,7 +817,7 @@ CHANGELOG                                           *colorv-changelog*
 
 " 2.0.3
 "FIXED: 110623  rmv func cursor_gen(). use change_cursor() instead.
-"FIXED: 110622  When opening ColorV#win(),always set to 'bottom'/'top'
+"FIXED: 110622  When opening colorv#win(),always set to 'bottom'/'top'
 "FIXED: 110622  preview word correctly in one WORD.
 "FIXED: 110622  error of hex_list output idx
 "FIXED: 110622  could not locate the rgb() in a WORD
@@ -848,7 +866,7 @@ CHANGELOG                                           *colorv-changelog*
 " DONE: 110619  list window of color names.
 " DONE: 110619  generate list with hue/sat/val
 " DONE: 110619  generate list with colorscheme. 'analogous'...
-"FIXED: 110619  fmod() with input of ColorV#rgb2hsv() ColorV#hsv2rgb()
+"FIXED: 110619  fmod() with input of colorv#rgb2hsv() colorv#hsv2rgb()
 "FIXED: 110619  help docs and map define of format 'HSV' ('ch/yh').
 
 " 1.7.7
@@ -956,7 +974,7 @@ CHANGELOG                                           *colorv-changelog*
 "FIXED: 110520  arrow no hl while in line 1
 "FIXED: 110520  arrow hl disapear if use Edit
 "FIXED: 110520  E806 using float as string
-"FIXED: 110520  ColorV#rgb2hex E805 using float as number
+"FIXED: 110520  colorv#rgb2hex E805 using float as number
 " DONE: 110520  when init jump to buffer opened before
 " DONE: 110520  seperate with the init and edit function
 " DONE: 110520  read rgb/rgba/rgb%/rgb%a text
