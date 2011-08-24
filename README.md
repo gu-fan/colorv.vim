@@ -8,9 +8,10 @@
 
 >  * Open ColorV window to select colors. 
 
-        <leader>cv   mid mode:Normal Win.
+        <leader>cv   Normal Win.
         <leader>cm   min mode:Less Space.
         <leader>cx   max mode:More Info.
+        
 
 >  * Open colorname list window, where you can get W3C standard colornames.
  
@@ -30,6 +31,7 @@
         After chosing a color (e.g. yellow),
         close the window by pressing "q". 
         You will see the word is changed to 'Yellow'.
+        And you can try with 'rgb(33,44,155)' 'hsl(50,30%,47%)' .
 
 >  * Generate 'Monochromatic' colorscheme List (and more) with cursor.
  
