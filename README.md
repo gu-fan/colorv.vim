@@ -3,26 +3,26 @@
  
 >  With this you can deal with colors easily.
     
->  A Quick Start~
+>  **A Quick Start**
 
->  Open ColorV window to select colors. 
+>  * Open ColorV window to select colors. 
 
         <leader>cv   mid mode:Normal Win.
         <leader>cm   min mode:Less Space.
         <leader>cx   max mode:More Info.
 
->  Open colorname list window, where you can get W3C standard colornames.
+>  * Open colorname list window, where you can get W3C standard colornames.
  
         <leader>cl
 
->  Open ColorV window by word under cursor, to see the color visually.
+>  * Open ColorV window by word under cursor, to see the color visually.
 
         <leader>cw
         #ff9744 rgb(33,44,155) orangered 'cadetblue'
         Put your cursor on the word 'rgb(33,44,155)' and press <leader>cw.
         You will see a ColorV is opend with the color of it.
 
->  Easily change word under cursor with visually chosing color.
+>  * Easily change word under cursor with visually chosing color.
  
         <leader>cgg
         Put your cursor on the word 'orangered' and press <leader>cgg.
@@ -30,19 +30,19 @@
         close the window by pressing "q". 
         You will see the word is changed to 'Yellow'.
 
->  Generate 'Monochromatic' colorscheme List (and more) with cursor.
+>  * Generate 'Monochromatic' colorscheme List (and more) with cursor.
  
         <leader>cnm
 
->   Copy the color in the ColorV window quickly.
+>  *  Copy the color in the ColorV window quickly.
 
         cc/<Ctrl-C>/yy
 
->   Paste a color text to the ColorV window to have a visual look.
+>  * Paste a color text to the ColorV window to have a visual look.
 
         p/<Ctrl-V>
 
->   Use GTK eyedropper to pick colors on screen easily.
+>  * Use GTK eyedropper to pick colors on screen easily.
  
         <leader>cd
         (with '+python' compiled and pygtk2.0 included)
