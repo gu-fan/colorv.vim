@@ -1,3 +1,4 @@
+
 #INTRO:#
 >  **ColorV** is a color tool for Vim.
  
@@ -47,7 +48,6 @@
         <leader>cd
         (with '+python' compiled and pygtk2.0 included)
 
-
 ##NEW IN 2.5:##
 - Rewrite core function in python. 10 times faster.
 - ColorV Win with HLS colorspace(`g:ColorV_win_space="hls"`).
@@ -61,6 +61,7 @@
 >   You'd better delete your previous ColorV files .
  
 >   because the file name have changed to 'colorv.vim'
+ 
 #INSTALL:#
     
   1. Using Vundle (Recommend): 
