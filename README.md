@@ -50,26 +50,45 @@
 >   because the file name have changed to 'colorv.vim'
 #INSTALL:#
     
-> 1. Using Vundle (Recommend): 
+  1. Using Vundle (Recommend): 
+  
 >  Install git and script [Vundle.vim](https://github.com/gmarik/vundle)
+
 >  then put this line in your vimrc  
+
 >      `Bundle 'Rykka/colorv'`
+
 >  and use this command to install it.  
+
 >      `:BundleInstall`
-> 2. Using vim.org: 
+
+  2. Using vim.org: 
 >  http://www.vim.org/scripts/script.php?script_id=3597
+
 >  Download the latest version of tar.gz file, 
+
 >  extract it into your VIMFILE folder.
+
 >  ("~/.vim" for linux. "$HOME/vimfiles" for windows)
+
 >  Then use help tag to generate tags.
+
 >      `:helptags ~/.vim/doc`    
-> 3. Using git: 
+
+  3. Using git: 
+
 >  open terminal go and input.
+  
 >       `git clone git://github.com/Rykka/ColorV.git ~/.vim/bundle/ColorV`
+
 >  then add the folder to &runtimepath in your vimrc;
+
 >  (NOT necessary if pathogen.vim installed) 
+
 >       `set rtp+=~/.vim/bundle/ColorV/`
+
 >  Then run helptags.
+
 >       `:helptags ~/.vim/bundle/ColorV/doc` 
 
 ##VIMRC EXAMPLE##
