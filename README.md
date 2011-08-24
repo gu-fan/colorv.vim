@@ -1,41 +1,51 @@
 #INTRO:#
-> **ColorV** is a color tool for Vim.
-> With this you can deal with colors easily.
+>  **ColorV** is a color tool for Vim.
+ 
+>  With this you can deal with colors easily.
     
-    A Quick Start~
-    Open ColorV window to select colors. 
+>  A Quick Start~
+
+>  Open ColorV window to select colors. 
+
         <leader>cv   mid mode:Normal Win.
         <leader>cm   min mode:Less Space.
         <leader>cx   max mode:More Info.
 
-    Open colorname list window, where you can get W3C standard colornames.
+>  Open colorname list window, where you can get W3C standard colornames.
+ 
         <leader>cl
 
-    Open ColorV window by word under cursor, to see the color visually.
+>  Open ColorV window by word under cursor, to see the color visually.
+
         <leader>cw
         #ff9744 rgb(33,44,155) orangered 'cadetblue'
         Put your cursor on the word 'rgb(33,44,155)' and press <leader>cw.
         You will see a ColorV is opend with the color of it.
 
-    Easily change word under cursor with visually chosing color.
+>  Easily change word under cursor with visually chosing color.
+ 
         <leader>cgg
         Put your cursor on the word 'orangered' and press <leader>cgg.
         After chosing a color (e.g. yellow),
         close the window by pressing "q". 
         You will see the word is changed to 'Yellow'.
 
-    Generate 'Monochromatic' colorscheme List (and more) with cursor.
+>  Generate 'Monochromatic' colorscheme List (and more) with cursor.
+ 
         <leader>cnm
 
-    Copy the color in the ColorV window quickly.
+>   Copy the color in the ColorV window quickly.
+
         cc/<Ctrl-C>/yy
 
-    Paste a color text to the ColorV window to have a visual look.
+>   Paste a color text to the ColorV window to have a visual look.
+
         p/<Ctrl-V>
 
-    Use GTK eyedropper to pick colors on screen easily.
+>   Use GTK eyedropper to pick colors on screen easily.
+ 
         <leader>cd
-        ('+python' compiled and pygtk2.0 included)
+        (with '+python' compiled and pygtk2.0 included)
 
 
 ##NEW IN 2.5:##
@@ -45,8 +55,11 @@
 - History cache and pallette(in Max mode).
 - Terminal supported.
 - YIQ calculator added.
+
 > **NOTE** 
+ 
 >   You'd better delete your previous ColorV files .
+ 
 >   because the file name have changed to 'colorv.vim'
 #INSTALL:#
     
@@ -56,11 +69,11 @@
 
 >  then put this line in your vimrc  
 
->      `Bundle 'Rykka/colorv'`
+>       Bundle 'Rykka/colorv' 
 
 >  and use this command to install it.  
 
->      `:BundleInstall`
+>       :BundleInstall 
 
   2. Using vim.org: 
 >  http://www.vim.org/scripts/script.php?script_id=3597
@@ -73,23 +86,23 @@
 
 >  Then use help tag to generate tags.
 
->      `:helptags ~/.vim/doc`    
+>       :helptags ~/.vim/doc     
 
   3. Using git: 
 
 >  open terminal go and input.
   
->       `git clone git://github.com/Rykka/ColorV.git ~/.vim/bundle/ColorV`
+>        git clone git://github.com/Rykka/ColorV.git ~/.vim/bundle/ColorV 
 
 >  then add the folder to &runtimepath in your vimrc;
 
 >  (NOT necessary if pathogen.vim installed) 
 
->       `set rtp+=~/.vim/bundle/ColorV/`
+>        set rtp+=~/.vim/bundle/ColorV/ 
 
 >  Then run helptags.
 
->       `:helptags ~/.vim/bundle/ColorV/doc` 
+>        :helptags ~/.vim/bundle/ColorV/doc  
 
 ##VIMRC EXAMPLE##
     
