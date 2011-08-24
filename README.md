@@ -1,7 +1,6 @@
-##INTRO:##
-**ColorV** is a color tool for Vim.
-
-With this you can deal with colors easily.
+#INTRO:#
+> **ColorV** is a color tool for Vim.
+> With this you can deal with colors easily.
     
     A Quick Start~
     Open ColorV window to select colors. 
@@ -41,40 +40,37 @@ With this you can deal with colors easily.
 
 ##NEW IN 2.5:##
 - Rewrite core function in python. 10 times faster.
-- ColorV Win with HLS colorspace(g:ColorV_win_space="hls").
-- Max mode(<leader>cx).
+- ColorV Win with HLS colorspace(`g:ColorV_win_space="hls"`).
+- Max mode(`<leader>cx`).
 - History cache and pallette(in Max mode).
 - Terminal supported.
 - YIQ calculator added.
 
-##INSTALL:##
+#INSTALL:#
     
 1.Using Vundle (Recommend): 
-
-    Install git and script [Vundle.vim](https://github.com/gmarik/vundle)
-    then put this line in your vimrc  
-        Bundle 'Rykka/colorv'
-    and use this command to install it.  
-        :BundleInstall
+>  Install git and script [Vundle.vim](https://github.com/gmarik/vundle)
+>  then put this line in your vimrc  
+       `Bundle 'Rykka/colorv'`
+>  and use this command to install it.  
+       `:BundleInstall`
  
 2.Using vim.org: 
-
-    http://www.vim.org/scripts/script.php?script_id=3597
-    Download the latest version of tar.gz file, 
-    extract it into your VIMFILE folder.
-    ("~/.vim" for linux. "$HOME/vimfiles" for windows)
-    Then use help tag to generate tags.
-        :helptags ~/.vim/doc     
+>  http://www.vim.org/scripts/script.php?script_id=3597
+>  Download the latest version of tar.gz file, 
+>  extract it into your VIMFILE folder.
+>  ("~/.vim" for linux. "$HOME/vimfiles" for windows)
+>  Then use help tag to generate tags.
+       `:helptags ~/.vim/doc`    
  
 3.Using git: 
-
-    open terminal go and input.
-        git clone git://github.com/Rykka/ColorV.git ~/.vim/bundle/ColorV 
-    then add &runtimepath to your vimrc;
-    (NOT necessary if pathogen.vim installed) 
-        set rtp+=~/.vim/bundle/ColorV/ 
-    Then run helptags.
-        :helptags ~/.vim/bundle/ColorV/doc 
+>  open terminal go and input.
+        `git clone git://github.com/Rykka/ColorV.git ~/.vim/bundle/ColorV`
+>  then add the folder to &runtimepath in your vimrc;
+>  (NOT necessary if pathogen.vim installed) 
+        `set rtp+=~/.vim/bundle/ColorV/`
+>  Then run helptags.
+        `:helptags ~/.vim/bundle/ColorV/doc` 
 
 ##VIMRC EXAMPLE##
     
