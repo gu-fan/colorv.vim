@@ -64,7 +64,7 @@
  
 #INSTALL:#
     
-  1. Using Vundle (Recommend): 
+  * Using Vundle (Recommend): 
   
 >  Install git and script [Vundle.vim](https://github.com/gmarik/vundle)
 
@@ -76,7 +76,7 @@
 
 >       :BundleInstall 
 
-  2. Using vim.org: 
+  * Using vim.org: 
 
 >  http://www.vim.org/scripts/script.php?script_id=3597
 
@@ -90,7 +90,7 @@
 
 >       :helptags ~/.vim/doc     
 
-  3. Using git: 
+  * Using git: 
 
 >  open terminal go and input.
   
