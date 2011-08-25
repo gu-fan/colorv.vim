@@ -57,31 +57,25 @@ With this you can deal with colors easily.
 ##NEW IN 2.5:##
 + Faster~
 
->   Core function optimized and rewrite in python.
-
->   Now it's 10+times Faster than before.
-
->   (Normal mode: GUI.runtime < 0.06s, TERM.runtime < 0.10s)
+>       Core function optimized and rewrite in python.
+>       Now it's 10+times Faster than before.
+>       (Normal mode: GUI.runtime < 0.06s, TERM.runtime < 0.10s)
 
 + More Modes~
 
->   Max mode added `<leader>cx`  
-
->   It shows more info (RGB/HSV/HLS/YIQ)
-
->   And it shows the copied color history, which is restored when VimEnter .
+>       Max mode added `<leader>cx`  
+>       It shows more info (RGB/HSV/HLS/YIQ)
+>       And it shows the copied color history, which is restored when VimEnter .
 
 + HLS Space~
 
->   Add 'HLS' colorspace for pallette showing and choosing.
- 
->   You can use it by set "g:ColorV_win_space" to "hls"
+>       Add 'HLS' colorspace for pallette showing and choosing.
+>       You can use it by set "g:ColorV_win_space" to "hls"
  
 + Terminal~
 
->   Now ColorV is colorized in Terminal(8/16/256).   
->
->   Please check your '&t_Co' option if your terminal supports more colors.
+>       Now ColorV is colorized in Terminal(8/16/256).   
+>       Please check your '&t_Co' option if your terminal supports more colors.
 
   **NOTE** 
 
