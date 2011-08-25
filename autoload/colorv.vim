@@ -1573,96 +1573,6 @@ endfunction "}}}
 function! s:hi_link(from,to) "{{{
     exe "hi link ". a:from . " " . a:to
 endfunction "}}}
-
-function! s:clear_palmatch() "{{{
-    if !exists("s:pallet_dict")|let s:pallet_dict={}|endif
-    for [key,var] in items(s:pallet_dict)
-        try
-            call matchdelete(var)
-            exe "hi clear ".key
-            call remove(s:pallet_dict,key)
-        catch /^Vim\%((\a\+)\)\=:E803/
-            call s:debug("E803:ID not found")
-            continue
-        catch /^Vim\%((\a\+)\)\=:E802/
-            call s:debug("E802:Invalid ID:-1")
-            continue
-        endtry
-    endfor
-    let s:pallet_dict={}
-endfunction "}}}
-function! s:clear_blockmatch() "{{{
-    if !exists("s:block_dict")|let s:block_dict={}|endif
-
-    for [key,var] in items(s:block_dict)
-        try
-            call matchdelete(var)
-            exe "hi clear ".key
-            call remove(s:block_dict,key)
-        catch /^Vim\%((\a\+)\)\=:E803/
-            call s:debug("E803:ID not found")
-            continue
-        catch /^Vim\%((\a\+)\)\=:E802/
-            call s:debug("E802:Invalid ID:-1")
-            continue
-        endtry
-    endfor
-    let s:block_dict={}
-endfunction "}}}
-function! s:clear_miscmatch() "{{{
-    if !exists("s:misc_dict")|let s:misc_dict={}|endif
-
-    for [key,var] in items(s:misc_dict)
-        try
-            call matchdelete(var)
-            exe "hi clear ".key
-            call remove(s:misc_dict,key)
-        catch /^Vim\%((\a\+)\)\=:E803/
-            call s:debug("E803:ID not found")
-            continue
-        catch /^Vim\%((\a\+)\)\=:E802/
-            call s:debug("E802:Invalid ID:-1")
-            continue
-        endtry
-    endfor
-    let s:misc_dict={}
-endfunction "}}}
-function! s:clear_hsvmatch() "{{{
-    if !exists("s:hsv_dict")|let s:hsv_dict={}|endif
-
-    for [key,var] in items(s:hsv_dict)
-        try
-            call matchdelete(var)
-            exe "hi clear ".key
-            call remove(s:hsv_dict,key)
-        catch /^Vim\%((\a\+)\)\=:E803/
-            call s:debug("E803:ID not found")
-            continue
-        catch /^Vim\%((\a\+)\)\=:E802/
-            call s:debug("E802:Invalid ID:-1")
-            continue
-        endtry
-    endfor
-    let s:hsv_dict={}
-endfunction "}}}
-function! s:clear_prevmatch() "{{{
-    if !exists("s:line_dict")|let s:line_dict={}|endif
-    for [key,var] in items(s:line_dict)
-        try
-            call matchdelete(var)
-            exe "hi clear ".key
-            call remove(s:line_dict,key)
-        catch /^Vim\%((\a\+)\)\=:E803/
-            call s:debug("E803:ID not found")
-            continue
-        catch /^Vim\%((\a\+)\)\=:E802/
-            call s:debug("E802:Invalid ID:-1")
-            continue
-        endtry
-    endfor
-    let s:line_dict={}
-endfunction "}}}
-
 function! s:update_his_set(hex) "{{{
     let hex= printf("%06x",'0x'.a:hex) 
     " update history_set
@@ -1762,6 +1672,96 @@ function! s:hi_misc() "{{{
         let s:misc_dict["cv_q"]=matchadd("cv_q",q_ptn,25)
     endif
 endfunction "}}}
+
+function! s:clear_palmatch() "{{{
+    if !exists("s:pallet_dict")|let s:pallet_dict={}|endif
+    for [key,var] in items(s:pallet_dict)
+        try
+            call matchdelete(var)
+            exe "hi clear ".key
+            call remove(s:pallet_dict,key)
+        catch /^Vim\%((\a\+)\)\=:E803/
+            call s:debug("E803:ID not found")
+            continue
+        catch /^Vim\%((\a\+)\)\=:E802/
+            call s:debug("E802:Invalid ID:-1")
+            continue
+        endtry
+    endfor
+    let s:pallet_dict={}
+endfunction "}}}
+function! s:clear_blockmatch() "{{{
+    if !exists("s:block_dict")|let s:block_dict={}|endif
+
+    for [key,var] in items(s:block_dict)
+        try
+            call matchdelete(var)
+            exe "hi clear ".key
+            call remove(s:block_dict,key)
+        catch /^Vim\%((\a\+)\)\=:E803/
+            call s:debug("E803:ID not found")
+            continue
+        catch /^Vim\%((\a\+)\)\=:E802/
+            call s:debug("E802:Invalid ID:-1")
+            continue
+        endtry
+    endfor
+    let s:block_dict={}
+endfunction "}}}
+function! s:clear_miscmatch() "{{{
+    if !exists("s:misc_dict")|let s:misc_dict={}|endif
+
+    for [key,var] in items(s:misc_dict)
+        try
+            call matchdelete(var)
+            exe "hi clear ".key
+            call remove(s:misc_dict,key)
+        catch /^Vim\%((\a\+)\)\=:E803/
+            call s:debug("E803:ID not found")
+            continue
+        catch /^Vim\%((\a\+)\)\=:E802/
+            call s:debug("E802:Invalid ID:-1")
+            continue
+        endtry
+    endfor
+    let s:misc_dict={}
+endfunction "}}}
+function! s:clear_hsvmatch() "{{{
+    if !exists("s:hsv_dict")|let s:hsv_dict={}|endif
+
+    for [key,var] in items(s:hsv_dict)
+        try
+            call matchdelete(var)
+            exe "hi clear ".key
+            call remove(s:hsv_dict,key)
+        catch /^Vim\%((\a\+)\)\=:E803/
+            call s:debug("E803:ID not found")
+            continue
+        catch /^Vim\%((\a\+)\)\=:E802/
+            call s:debug("E802:Invalid ID:-1")
+            continue
+        endtry
+    endfor
+    let s:hsv_dict={}
+endfunction "}}}
+function! s:clear_prevmatch() "{{{
+    if !exists("s:line_dict")|let s:line_dict={}|endif
+    for [key,var] in items(s:line_dict)
+        try
+            call matchdelete(var)
+            exe "hi clear ".key
+            call remove(s:line_dict,key)
+        catch /^Vim\%((\a\+)\)\=:E803/
+            call s:debug("E803:ID not found")
+            continue
+        catch /^Vim\%((\a\+)\)\=:E802/
+            call s:debug("E802:Invalid ID:-1")
+            continue
+        endtry
+    endfor
+    let s:line_dict={}
+endfunction "}}}
+
 
 function! s:draw_text(...) "{{{
     setl ma
