@@ -13,24 +13,24 @@ With this you can deal with colors easily.
         <leader>cm   min mode:Less Space.
         <leader>cx   max mode:More Info.
 
->       NOTE: Mapping may not exists if it is defined by other plugins.  
+>       NOTE: Mappings may not exist if it has been used by other plugins.
  
 >       Then you should redefine it in your vimrc.
 
 * Open colorname list window, where you can get W3C standard colornames.
  
-        <leader>cl
+>       <leader>cl
 
 * Open ColorV window by word under cursor, to see the color visually.
 
-        <leader>cw
+>       <leader>cw
         #ff9744 rgb(33,44,155) orangered 'cadetblue'
         Put your cursor on the word 'rgb(33,44,155)' and press <leader>cw.
         You will see a ColorV is opend with the color of it.
 
 * Easily change word under cursor with visually choosing color.
  
-        <leader>ce
+>       <leader>ce
         Put your cursor on the word 'orangered' and press <leader>cgg.
         After choosing a color (e.g. yellow),
         close the window by pressing "q". 
@@ -39,19 +39,19 @@ With this you can deal with colors easily.
 
 * Generate 'Monochromatic' (and more) colorscheme List with cursor.
  
-        <leader>cgm
+>       <leader>cgm
 
 *  Copy the color in the ColorV window quickly.
 
-        cc/<Ctrl-C>/yy
+>       cc/<Ctrl-C>/yy
 
 * Paste a color text to the ColorV window to have a visual look.
 
-        p/<Ctrl-V>
+>       p/<Ctrl-V>
 
 * Use pyGTK colorpicker to pick colors on screen easily.
  
-        <leader>cd
+>       <leader>cd
         (with '+python' compiled and pygtk2.0 included)
 
 ##NEW IN 2.5:##
@@ -69,11 +69,11 @@ With this you can deal with colors easily.
 
 >   It shows more info (RGB/HSV/HLS/YIQ)
 
->   And it shows the copied color history, which is restored as VimEnter .
+>   And it shows the copied color history, which is restored when VimEnter .
 
 + HLS Space~
 
->   Add 'HLS' colorspace for pallete showing.
+>   Add 'HLS' colorspace for pallette showing and choosing.
  
 >   You can use it by set "g:ColorV_win_space" to "hls"
  
