@@ -1,8 +1,9 @@
 
 #INTRO:#
->  **ColorV** is a color tool for Vim.
+
+**ColorV** is a color tool for Vim.
  
->  With this you can deal with colors easily.
+With this you can deal with colors easily.
     
 >  **A Quick Start**
 
