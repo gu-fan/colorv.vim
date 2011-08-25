@@ -65,11 +65,11 @@ With this you can deal with colors easily.
 
 + More Modes~
 
->   Add max mode `<leader>cx`  
+>   Max mode added `<leader>cx`  
 
 >   It shows more info (RGB/HSV/HLS/YIQ)
 
->   And it shows the copied color history, which is cached on your disk.
+>   And it shows the copied color history, which is restored as VimEnter .
 
 + HLS Space~
 
