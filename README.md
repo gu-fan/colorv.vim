@@ -61,7 +61,7 @@ With this you can deal with colors easily.
 
 >   Now it's 10+times Faster than before.
 
->   (GUI runtime <0.07s, TERM runtime <0.10s)
+>   (Normal mode: GUI.runtime < 0.06s, TERM.runtime < 0.10s)
 
 + More Modes~
 

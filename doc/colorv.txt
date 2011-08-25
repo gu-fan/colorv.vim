@@ -40,8 +40,9 @@ INTRO                                               *colorv-intro*
         <leader>cv   Normal Win.
         <leader>cm   min mode:Less Space.
         <leader>cx   max mode:More Info.
-        NOTE Mapping may not exists if it is defined by other plugins.  
-        Then you should define it in your vimrc.
+
+        NOTE Mappings may not exist if it has been used by other plugins.  
+             Then you should redefine it in your vimrc.
 
     Open colorname list window, where you can get W3C standard colornames.
         <leader>cl
@@ -81,9 +82,9 @@ NEWS IN 2.5                                         *colorv-news-2.5*
 + More Modes~
     Max mode Added '<leader>cx'  
     It shows more info (RGB/HSV/HLS/YIQ)
-    And it shows the copied color history, which is restored as VimEnter.
+    And it shows the copied color history, which is restored when VimEnter.
 + HLS Space~
-    Add 'HLS' colorspace for pallete showing.
+    Add 'HLS' colorspace for pallette showing and choosing.
     You can use it by set "g:ColorV_win_space" to "hls"
 + Terminal~
     Now ColorV is colorized in Terminal(8/16/256).   
@@ -499,12 +500,12 @@ OPTIONS                                             *colorv-options*
                                                 (default="hsv")
     g:ColorV_win_space      ColorV's Main showing color space.
                             if set to 'hls'.
-                            The pallete/text will use 'HLS' colorspace.
+                            The pallette/text will use 'HLS' colorspace.
                             NOTE:the 'HLS' is the same thing of 'HSL'
 
                                                 *g:ColorV_word_mini*
                                                 (default=1)
-    g:ColorV_word_mini      Show window in mini mode that opened by
+    g:ColorV_word_mini      Show window in min mode that opened by
                             current word, if set to 1.
                             |:ColorVword| |:ColorVchange| |:ColorVchangeAll|
 
@@ -533,6 +534,13 @@ OPTIONS                                             *colorv-options*
                                                 *g:ColorV_cache_File*
                                             (default='~/.vim_ColorV_cache')
     g:ColorV_cache_File     The history_copied_list's cache file position.
+
+                                                *g:ColorV_debug*
+                                                (default=0)
+    g:ColorV_debug          Debug mode with timer.
+                                                *g:ColorV_no_python*
+                                                (default=0)
+    g:ColorV_no_python      Stop using Python for some reason.
 ------------------------------------------------------------------------------
 VIMRC EXAMPLE                                       *colorv-example*
 
@@ -654,7 +662,7 @@ FUNCTIONS                                           *colorv-functions*
                                     {mode} can be 8/16 or "CHECK" 
                                     
                                                     *colorv#gen_list()*
-    colorv#gen_list({hex}[,{type}[,{num}[,{step}]]])             
+    colorv#list_gen({hex}[,{type}[,{num}[,{step}]]])             
                                     Generate hex list by color.
                                     "input  {hex}[,{type}[,{num}[,{step}]]]
                                     "return ["ffffff","ffffff",...]
@@ -662,7 +670,19 @@ FUNCTIONS                                           *colorv-functions*
                                     {type} 'Hue','Value','Monochromatic'...
                                     {nums} Generated color numbers
                                     {step} the step between each color. 
+
+                                                    *colorv#yiq_list_gen*
+    colorv#yiq_list_gen({hex}[,{type}[,{num}[,{step}]]])             
+                                    'yiq' version of colorv#list_gen
+                                    "input  {hex}[,{type}[,{num}[,{step}]]]
+                                    "return ["ffffff","ffffff",...]
+                                    {hex} '000000'~'ffffff'
+                                    {type} 'Hue','Value','Monochromatic'...
+                                    {nums} Generated color numbers
+                                    {step} the step between each color. 
+
                                     See details in |colorv-generate|.
+
 ==============================================================================
 DEVELOPER                                             *colorv-developer*
 

@@ -23,8 +23,6 @@ let g:ColorV={}
 let g:ColorV.name="_ColorV_"
 let g:ColorV.listname="_ColorV-List_"
 let g:ColorV.ver="2.5.0.0"
-" let g:ColorV.isrunning=0
-" let g:ColorV.changed=0
 
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={'R':255,'G':0,'B':0}
@@ -37,46 +35,12 @@ let g:ColorV.yiq=[30,60,21]
 let g:ColorV.hsv=[0,100,100]
 let g:ColorV.NAME="Red"
 
-
-"debug 
-if !exists("g:ColorV_debug")
-    let g:ColorV_debug=0
-endif
-"debug vim func
-if !exists('g:ColorV_no_python')
-    let g:ColorV_no_python=0
-endif
-if !exists('g:ColorV_cache_File')
-let g:ColorV_cache_File = expand('$HOME') . '/.vim_ColorV_cache'
-endif
-if !exists('g:ColorV_load_cache')
-let g:ColorV_load_cache=1
-endif
-if !exists('g:ColorV_word_mini')
-    let g:ColorV_word_mini=1
-endif
-if !exists('g:ColorV_win_pos')
-    let g:ColorV_win_pos="bot"
-endif
-if !exists('g:ColorV_view_name')
-    let g:ColorV_view_name=1
-endif
-if !exists('g:ColorV_view_block')
-    let g:ColorV_view_block=0
-endif
-if !exists('g:ColorV_win_space')
-    let g:ColorV_win_space="hsv"
-endif
-if !exists('g:ColorV_gen_space')
-    let g:ColorV_gen_space="yiq"
-endif
 "}}}
 "SVAR: {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:ColorV={}
 let s:mode= exists("s:mode") ? s:mode : "mid"
 let s:winsize = 5
-
 
 let s:gen_def_nums=20
 let s:gen_def_step=10
@@ -419,6 +383,222 @@ def hls2rgb(hls):
 #}}}
 EOF
 endfunction "}}}
+function! s:py_term_load() "{{{
+    if exists("s:py_term_loaded")
+    	return
+    endif
+    let s:py_term_loaded=1
+    call s:py_core_load()
+ 
+python << EOF
+#{{{dicts
+tmclr8_dict = {
+               0:"000000",1:"800000",2:"008000",
+               3:"808000",4:"000080",5:"800080",
+               6:"008080",7:"c0c0c0",
+               8:"808080",9:"ff0000",10:"00ff00",
+               11:"ffff00",12:"0000ff",13:"ff00ff",
+               14:"00ffff",15:"ffffff"
+}
+tmclr_dict = { 
+            0:"000000", 1:"000080", 2:"008000",
+            3:"008080", 4:"800000", 5:"800080",
+            6:"808000", 7:"c0c0c0", 8:"808080",
+            9:"ff0000", 10:"00ff00", 11:"00ffff",
+            12:"ff0000", 13:"ff00ff", 14:"ffff00",
+            15:"ffffff",           
+            16: '000000', 17: '00005f', 18: '000087',
+            19: '0000af', 20: '0000d7', 21: '0000ff',
+            22: '005f00', 23: '005f5f', 24: '005f87',
+            25: '005faf', 26: '005fd7', 27: '005fff',
+            28: '008700', 29: '00875f', 30: '008787',
+            31: '0087af', 32: '0087d7', 33: '0087ff',
+            34: '00af00', 35: '00af5f', 36: '00af87',
+            37: '00afaf', 38: '00afd7', 39: '00afff',
+            40: '00d700', 41: '00d75f', 42: '00d787',
+            43: '00d7af', 44: '00d7d7', 45: '00d7ff',
+            46: '00ff00', 47: '00ff5f', 48: '00ff87',
+            49: '00ffaf', 50: '00ffd7', 51: '00ffff',
+            52: '5f0000', 53: '5f005f', 54: '5f0087',
+            55: '5f00af', 56: '5f00d7', 57: '5f00ff',
+            58: '5f5f00', 59: '5f5f5f', 60: '5f5f87',
+            61: '5f5faf', 62: '5f5fd7', 63: '5f5fff',
+            64: '5f8700', 65: '5f875f', 66: '5f8787',
+            67: '5f87af', 68: '5f87d7', 69: '5f87ff',
+            70: '5faf00', 71: '5faf5f', 72: '5faf87',
+            73: '5fafaf', 74: '5fafd7', 75: '5fafff',
+            76: '5fd700', 77: '5fd75f', 78: '5fd787',
+            79: '5fd7af', 80: '5fd7d7', 81: '5fd7ff',
+            82: '5fff00', 83: '5fff5f', 84: '5fff87',
+            85: '5fffaf', 86: '5fffd7', 87: '5fffff',
+            88: '870000', 89: '87005f', 90: '870087',
+            91: '8700af', 92: '8700d7', 93: '8700ff',
+            94: '875f00', 95: '875f5f', 96: '875f87',
+            97: '875faf', 98: '875fd7', 99: '875fff',
+            100: '878700', 101: '87875f', 102: '878787',
+            103: '8787af', 104: '8787d7', 105: '8787ff',
+            106: '87af00', 107: '87af5f', 108: '87af87',
+            109: '87afaf', 110: '87afd7', 111: '87afff',
+            112: '87d700', 113: '87d75f', 114: '87d787',
+            115: '87d7af', 116: '87d7d7', 117: '87d7ff',
+            118: '87ff00', 119: '87ff5f', 120: '87ff87',
+            121: '87ffaf', 122: '87ffd7', 123: '87ffff',
+            124: 'af0000', 125: 'af005f', 126: 'af0087',
+            127: 'af00af', 128: 'af00d7', 129: 'af00ff',
+            130: 'af5f00', 131: 'af5f5f', 132: 'af5f87',
+            133: 'af5faf', 134: 'af5fd7', 135: 'af5fff',
+            136: 'af8700', 137: 'af875f', 138: 'af8787',
+            139: 'af87af', 140: 'af87d7', 141: 'af87ff',
+            142: 'afaf00', 143: 'afaf5f', 144: 'afaf87',
+            145: 'afafaf', 146: 'afafd7', 147: 'afafff',
+            148: 'afd700', 149: 'afd75f', 150: 'afd787',
+            151: 'afd7af', 152: 'afd7d7', 153: 'afd7ff',
+            154: 'afff00', 155: 'afff5f', 156: 'afff87',
+            157: 'afffaf', 158: 'afffd7', 159: 'afffff',
+            160: 'd70000', 161: 'd7005f', 162: 'd70087',
+            163: 'd700af', 164: 'd700d7', 165: 'd700ff',
+            166: 'd75f00', 167: 'd75f5f', 168: 'd75f87',
+            169: 'd75faf', 170: 'd75fd7', 171: 'd75fff',
+            172: 'd78700', 173: 'd7875f', 174: 'd78787',
+            175: 'd787af', 176: 'd787d7', 177: 'd787ff',
+            178: 'd7af00', 179: 'd7af5f', 180: 'd7af87',
+            181: 'd7afaf', 182: 'd7afd7', 183: 'd7afff',
+            184: 'd7d700', 185: 'd7d75f', 186: 'd7d787',
+            187: 'd7d7af', 188: 'd7d7d7', 189: 'd7d7ff',
+            190: 'd7ff00', 191: 'd7ff5f', 192: 'd7ff87',
+            193: 'd7ffaf', 194: 'd7ffd7', 195: 'd7ffff',
+            196: 'ff0000', 197: 'ff005f', 198: 'ff0087',
+            199: 'ff00af', 200: 'ff00d7', 201: 'ff00ff',
+            202: 'ff5f00', 203: 'ff5f5f', 204: 'ff5f87',
+            205: 'ff5faf', 206: 'ff5fd7', 207: 'ff5fff',
+            208: 'ff8700', 209: 'ff875f', 210: 'ff8787',
+            211: 'ff87af', 212: 'ff87d7', 213: 'ff87ff',
+            214: 'ffaf00', 215: 'ffaf5f', 216: 'ffaf87',
+            217: 'ffafaf', 218: 'ffafd7', 219: 'ffafff',
+            220: 'ffd700', 221: 'ffd75f', 222: 'ffd787',
+            223: 'ffd7af', 224: 'ffd7d7', 225: 'ffd7ff',
+            226: 'ffff00', 227: 'ffff5f', 228: 'ffff87',
+            229: 'ffffaf', 230: 'ffffd7', 231: 'ffffff',
+            232: '080808', 233: '121212', 234: '1c1c1c',
+            235: '262626', 236: '303030', 237: '3a3a3a',
+            238: '444444', 239: '4e4e4e', 240: '585858',
+            241: '626262', 242: '6c6c6c', 243: '767676',
+            244: '808080', 245: '8a8a8a', 246: '949494',
+            247: '9e9e9e', 248: 'a8a8a8', 249: 'b2b2b2',
+            250: 'bcbcbc', 251: 'c6c6c6', 252: 'd0d0d0',
+            253: 'dadada', 254: 'e4e4e4', 255: 'eeeeee',
+            }
+#}}}
+def hex2term16(hex1): #{{{
+    best_match = 0
+    smallest_distance = 10000000
+    r1,g1,b1 =hex2rgb(hex1)
+    for c in range(16):
+        r2,g2,b2 = hex2rgb(tmclr_dict[c])
+        d = abs(r1-r2)+abs(g1-g2)+abs(b1-b2)
+        if d < smallest_distance:
+            smallest_distance = d
+            best_match = c
+    return best_match #}}}
+def hex2term8(hex1): #{{{
+    best_match = 0
+    smallest_distance = 10000000
+    r1,g1,b1 =hex2rgb(hex1)
+    for c in range(16):
+        r2,g2,b2 = hex2rgb(tmclr8_dict[c])
+        d = abs(r1-r2)+abs(g1-g2)+abs(b1-b2)
+        if d < smallest_distance:
+            smallest_distance = d
+            best_match = c
+    return best_match #}}}
+def hex2term_d6(hex1): #{{{
+    '''calculate the term clr index'''
+    r1,g1,b1 = hex2rgb(hex1)
+    m1=0
+    if   r1 <= 4   : n1,m1=0,1
+    elif r1 <= 47  : n1=0
+    elif r1 <= 91  : n1=1
+    elif r1 <= 96  : n1,m1=1,2
+    elif r1 <= 115 : n1=1
+    elif r1 <= 131 : n1=2
+    elif r1 <= 136 : n1,m1=2,3
+    elif r1 <= 155 : n1=2
+    elif r1 <= 171 : n1=3
+    elif r1 <= 176 : n1,m1=3,4
+    elif r1 <= 195 : n1=3
+    elif r1 <= 211 : n1=4
+    elif r1 <= 216 : n1,m1=4,5
+    elif r1 <= 235 : n1=4
+    elif r1 <= 244 : n1=5
+    elif r1 <= 255 : n1,m1=5,6
+    if   g1 <= 47  : n2=0 
+    elif g1 <= 115 : n2=1
+    elif g1 <= 155 : n2=2
+    elif g1 <= 195 : n2=3
+    elif g1 <= 235 : n2=4
+    else:            n2=5
+    if   b1 <= 47  : n3=0
+    elif b1 <= 115 : n3=1
+    elif b1 <= 155 : n3=2
+    elif b1 <= 195 : n3=3
+    elif b1 <= 235 : n3=4
+    else:            n3=5
+    if   n1==n2==n3 and m1==1:
+    	return 16
+    elif n1==n2==n3 and m1==2:
+    	return 59
+    elif n1==n2==n3 and m1==3:
+    	return 102
+    elif n1==n2==n3 and m1==4:
+    	return 145
+    elif n1==n2==n3 and m1==5:
+    	return 188
+    elif n1==n2==n3 and m1==6:
+    	return 231
+    elif n1==n2==n3:
+    	return (r1-5)/10+232
+    else:
+    	return 16+n1*36+n2*6+n3 #}}}
+def hex2term_d4(hex1): #{{{
+    best_match = 0
+    smallest_distance = 10000000
+    r1,g1,b1 = hex2rgb(hex1)
+    if   r1 <= 47  : n1,m1=16,36
+    elif r1 <= 115 : n1,m1=52,36
+    elif r1 <= 155 : n1,m1=88,36
+    elif r1 <= 195 : n1,m1=124,36
+    elif r1 <= 235 : n1,m1=160,36
+    else:            n1,m1=196,0
+    if   g1 <= 47  : n2,m2=0,0 
+    elif g1 <= 115 : n2,m2=6,24
+    elif g1 <= 155 : n2,m2=12,18
+    elif g1 <= 195 : n2,m2=18,12
+    elif g1 <= 235 : n2,m2=24,6
+    else: n2,m2=30,30
+    if   b1 <= 47  : n3,m3=0,6
+    elif b1 <= 115 : n3,m3=1,10
+    elif b1 <= 155 : n3,m3=2,14
+    elif b1 <= 195 : n3,m3=3,18
+    elif b1 <= 235 : n3,m3=4,22
+    else: n3,m3=5,24
+    #for c in range(n1+n2,n1+n2+6)+range(232+n3*3,232+m3):
+    for c in range(n1-l1,n1+m1)+range(232+n3*3,232+m3):
+    #for c in [n1+n2+n3]+range(232+n3*3,232+m3):
+    #for c in range(16,256):
+        r2,g2,b2 = hex2rgb(tmclr_dict[c])
+        dr,dg,db=abs(r1-r2),abs(g1-g2),abs(b1-b2)
+        if r2==g2==b2:
+            d=dr+dg+db+50
+        else:
+            d=dr+dg+db
+        if d < smallest_distance:
+            smallest_distance = d
+            best_match = c
+    return best_match 
+    #}}}
+
+EOF
+endfunction "}}}
 
 function! colorv#rgb2hsv(rgb)  "{{{
 " in [r,g,b] 0~255
@@ -460,6 +640,13 @@ function! colorv#hsv2rgb(hsv) "{{{
 if has("python") && g:ColorV_no_python!=1
     call s:py_core_load()
     let [h,s,v]=a:hsv
+    if h>=360
+        let h=s:fmod(h,360.0)
+    elseif h<0
+        let h=360-s:fmod(abs(h),360.0)
+    endif
+    let s = s>100 ? 100 : s < 0 ? 0 : s
+    let v = v>100 ? 100 : v < 0 ? 0 : v
 python << EOF
 hsv=[float(vim.eval("h")),float(vim.eval("s")),float(vim.eval("v"))]
 r,g,b=hsv2rgb(hsv)
@@ -574,6 +761,13 @@ function! colorv#hls2rgb(hls) "{{{
 if has("python") && g:ColorV_no_python!=1
     call s:py_core_load()
     let [h,l,s]=a:hls
+    if h>=360
+        let h=s:fmod(h,360.0)
+    elseif h<0
+        let h=360-s:fmod(abs(h),360.0)
+    endif
+    let s = s>100 ? 100 : s < 0 ? 0 : s
+    let l = l>100 ? 100 : l < 0 ? 0 : l
 python << EOF
 hls=[float(vim.eval("h")),float(vim.eval("l")),float(vim.eval("s"))]
 r,g,b=hls2rgb(hls)
@@ -840,183 +1034,6 @@ function! colorv#cmyk2rgb(cmyk) "{{{
     return [R,G,B]
 endfunction "}}}
 
-function! s:py_term_load() "{{{
-    if exists("s:py_term_loaded")
-    	return
-    endif
-    let s:py_term_loaded=1
-    call s:py_core_load()
- 
-python << EOF
-#{{{dicts
-tmclr8_dict = {
-               0:"000000",1:"800000",2:"008000",
-               3:"808000",4:"000080",5:"800080",
-               6:"008080",7:"c0c0c0",
-               8:"808080",9:"ff0000",10:"00ff00",
-               11:"ffff00",12:"0000ff",13:"ff00ff",
-               14:"00ffff",15:"ffffff"
-}
-tmclr_dict = { 
-            0:"000000", 1:"000080", 2:"008000",
-            3:"008080", 4:"800000", 5:"800080",
-            6:"808000", 7:"c0c0c0", 8:"808080",
-            9:"ff0000", 10:"00ff00", 11:"00ffff",
-            12:"ff0000", 13:"ff00ff", 14:"ffff00",
-            15:"ffffff",           
-            16: '000000', 17: '00005f', 18: '000087',
-            19: '0000af', 20: '0000d7', 21: '0000ff',
-            22: '005f00', 23: '005f5f', 24: '005f87',
-            25: '005faf', 26: '005fd7', 27: '005fff',
-            28: '008700', 29: '00875f', 30: '008787',
-            31: '0087af', 32: '0087d7', 33: '0087ff',
-            34: '00af00', 35: '00af5f', 36: '00af87',
-            37: '00afaf', 38: '00afd7', 39: '00afff',
-            40: '00d700', 41: '00d75f', 42: '00d787',
-            43: '00d7af', 44: '00d7d7', 45: '00d7ff',
-            46: '00ff00', 47: '00ff5f', 48: '00ff87',
-            49: '00ffaf', 50: '00ffd7', 51: '00ffff',
-            52: '5f0000', 53: '5f005f', 54: '5f0087',
-            55: '5f00af', 56: '5f00d7', 57: '5f00ff',
-            58: '5f5f00', 59: '5f5f5f', 60: '5f5f87',
-            61: '5f5faf', 62: '5f5fd7', 63: '5f5fff',
-            64: '5f8700', 65: '5f875f', 66: '5f8787',
-            67: '5f87af', 68: '5f87d7', 69: '5f87ff',
-            70: '5faf00', 71: '5faf5f', 72: '5faf87',
-            73: '5fafaf', 74: '5fafd7', 75: '5fafff',
-            76: '5fd700', 77: '5fd75f', 78: '5fd787',
-            79: '5fd7af', 80: '5fd7d7', 81: '5fd7ff',
-            82: '5fff00', 83: '5fff5f', 84: '5fff87',
-            85: '5fffaf', 86: '5fffd7', 87: '5fffff',
-            88: '870000', 89: '87005f', 90: '870087',
-            91: '8700af', 92: '8700d7', 93: '8700ff',
-            94: '875f00', 95: '875f5f', 96: '875f87',
-            97: '875faf', 98: '875fd7', 99: '875fff',
-            100: '878700', 101: '87875f', 102: '878787',
-            103: '8787af', 104: '8787d7', 105: '8787ff',
-            106: '87af00', 107: '87af5f', 108: '87af87',
-            109: '87afaf', 110: '87afd7', 111: '87afff',
-            112: '87d700', 113: '87d75f', 114: '87d787',
-            115: '87d7af', 116: '87d7d7', 117: '87d7ff',
-            118: '87ff00', 119: '87ff5f', 120: '87ff87',
-            121: '87ffaf', 122: '87ffd7', 123: '87ffff',
-            124: 'af0000', 125: 'af005f', 126: 'af0087',
-            127: 'af00af', 128: 'af00d7', 129: 'af00ff',
-            130: 'af5f00', 131: 'af5f5f', 132: 'af5f87',
-            133: 'af5faf', 134: 'af5fd7', 135: 'af5fff',
-            136: 'af8700', 137: 'af875f', 138: 'af8787',
-            139: 'af87af', 140: 'af87d7', 141: 'af87ff',
-            142: 'afaf00', 143: 'afaf5f', 144: 'afaf87',
-            145: 'afafaf', 146: 'afafd7', 147: 'afafff',
-            148: 'afd700', 149: 'afd75f', 150: 'afd787',
-            151: 'afd7af', 152: 'afd7d7', 153: 'afd7ff',
-            154: 'afff00', 155: 'afff5f', 156: 'afff87',
-            157: 'afffaf', 158: 'afffd7', 159: 'afffff',
-            160: 'd70000', 161: 'd7005f', 162: 'd70087',
-            163: 'd700af', 164: 'd700d7', 165: 'd700ff',
-            166: 'd75f00', 167: 'd75f5f', 168: 'd75f87',
-            169: 'd75faf', 170: 'd75fd7', 171: 'd75fff',
-            172: 'd78700', 173: 'd7875f', 174: 'd78787',
-            175: 'd787af', 176: 'd787d7', 177: 'd787ff',
-            178: 'd7af00', 179: 'd7af5f', 180: 'd7af87',
-            181: 'd7afaf', 182: 'd7afd7', 183: 'd7afff',
-            184: 'd7d700', 185: 'd7d75f', 186: 'd7d787',
-            187: 'd7d7af', 188: 'd7d7d7', 189: 'd7d7ff',
-            190: 'd7ff00', 191: 'd7ff5f', 192: 'd7ff87',
-            193: 'd7ffaf', 194: 'd7ffd7', 195: 'd7ffff',
-            196: 'ff0000', 197: 'ff005f', 198: 'ff0087',
-            199: 'ff00af', 200: 'ff00d7', 201: 'ff00ff',
-            202: 'ff5f00', 203: 'ff5f5f', 204: 'ff5f87',
-            205: 'ff5faf', 206: 'ff5fd7', 207: 'ff5fff',
-            208: 'ff8700', 209: 'ff875f', 210: 'ff8787',
-            211: 'ff87af', 212: 'ff87d7', 213: 'ff87ff',
-            214: 'ffaf00', 215: 'ffaf5f', 216: 'ffaf87',
-            217: 'ffafaf', 218: 'ffafd7', 219: 'ffafff',
-            220: 'ffd700', 221: 'ffd75f', 222: 'ffd787',
-            223: 'ffd7af', 224: 'ffd7d7', 225: 'ffd7ff',
-            226: 'ffff00', 227: 'ffff5f', 228: 'ffff87',
-            229: 'ffffaf', 230: 'ffffd7', 231: 'ffffff',
-            232: '080808', 233: '121212', 234: '1c1c1c',
-            235: '262626', 236: '303030', 237: '3a3a3a',
-            238: '444444', 239: '4e4e4e', 240: '585858',
-            241: '626262', 242: '6c6c6c', 243: '767676',
-            244: '808080', 245: '8a8a8a', 246: '949494',
-            247: '9e9e9e', 248: 'a8a8a8', 249: 'b2b2b2',
-            250: 'bcbcbc', 251: 'c6c6c6', 252: 'd0d0d0',
-            253: 'dadada', 254: 'e4e4e4', 255: 'eeeeee',
-            }
-#}}}
-def hex2term16(hex1):
-    best_match = 0
-    smallest_distance = 10000000
-    r1,g1,b1 =hex2rgb(hex1)
-    for c in range(16):
-        r2,g2,b2 = hex2rgb(tmclr_dict[c])
-        d = abs(r1-r2)+abs(g1-g2)+abs(b1-b2)
-        if d < smallest_distance:
-            smallest_distance = d
-            best_match = c
-    return best_match
-def hex2term8(hex1):
-    best_match = 0
-    smallest_distance = 10000000
-    r1,g1,b1 =hex2rgb(hex1)
-    for c in range(16):
-        r2,g2,b2 = hex2rgb(tmclr8_dict[c])
-        d = abs(r1-r2)+abs(g1-g2)+abs(b1-b2)
-        if d < smallest_distance:
-            smallest_distance = d
-            best_match = c
-    return best_match
-def hex2term_d4(hex1): #{{{
-    best_match = 0
-    smallest_distance = 10000000
-    r1,g1,b1 = hex2rgb(hex1)
-    if   r1 <= 47  : n1=16 
-    elif r1 <= 115 : n1=52
-    elif r1 <= 155 : n1=88
-    elif r1 <= 195 : n1=124
-    elif r1 <= 235 : n1=160
-    else: n1=196
-    if   g1 <= 47  : n2=0 
-    elif g1 <= 115 : n2=6
-    elif g1 <= 155 : n2=12
-    elif g1 <= 195 : n2=18
-    elif g1 <= 235 : n2=24
-    else: n2=30
-    if   b1 <= 47  : n3,n4=0,6
-    elif b1 <= 115 : n3,n4=1,10
-    elif b1 <= 155 : n3,n4=2,14
-    elif b1 <= 195 : n3,n4=3,18
-    elif b1 <= 235 : n3,n4=4,22
-    else: n3,n4=5,24
-    for c in [n1+n2+n3]+range(232+n3*3,232+n4):
-        r2,g2,b2 = hex2rgb(tmclr_dict[c])
-        dr,dg,db=abs(r1-r2),abs(g1-g2),abs(b1-b2)
-        if   dr<5 :dr=0
-        elif dr<10:dr=4
-        elif dr<20:dr=11
-        elif dr<30:dr=20
-        elif dr<40:dr=31
-        if   dg<5 :dg=0
-        elif dg<10:dg=5
-        elif dg<20:dg=13
-        elif dg<30:dg=24
-        elif dg<40:dg=35
-        if   db<5 :db=0
-        elif db<10:db=4
-        elif db<20:db=11
-        elif db<30:db=20
-        elif db<40:db=31
-        d = dr+dg+db
-        if d < smallest_distance:
-            smallest_distance = d
-            best_match = c
-    return best_match 
-    #}}}
-
-EOF
-endfunction "}}}
 function! colorv#hex2term(hex,...) "{{{
 " in: hex, CHECK
 "return term 256 color
@@ -1547,8 +1564,11 @@ function! s:hi_color(hl_grp,hl_fg,hl_bg,...) "{{{
         let hl_fg = string(hl_fg)=="" ? "" : " ctermfg=".hl_fg
         let hl_bg = string(hl_bg)=="" ? "" : " ctermbg=".hl_bg
     endif
-    call s:debug("hi ".hl_grp.hl_fg.hl_bg.hl_fmt)
-    exec "hi ".hl_grp.hl_fg.hl_bg.hl_fmt
+    try
+        exec "hi ".hl_grp.hl_fg.hl_bg.hl_fmt
+    catch
+        call s:debug("hi ".hl_grp.hl_fg.hl_bg.hl_fmt)
+    endtry
 endfunction "}}}
 function! s:hi_link(from,to) "{{{
     exe "hi link ". a:from . " " . a:to
@@ -1692,7 +1712,7 @@ function! s:update_global(hex) "{{{
         endif
         " BACK to COLORV window
         if !exists('t:ColorVBufName')
-            call s:debug("No ColorV window. Could NOT exec update_call")
+            call s:error("No ColorV window. Could NOT exec update_call")
             return -1
         else
             if s:is_open()
@@ -2229,7 +2249,6 @@ function! s:map_define() "{{{
     noremap <silent><buffer>j gj
     noremap <silent><buffer>k gk
 
-    " command! -buffer -nargs=1 Debug call s:debug(<q-args>)
 endfunction "}}}
 function! s:on_cursor_moved() "{{{
     let c=col('.')
@@ -2522,7 +2541,7 @@ function! s:caution(msg) "{{{
 endfunction "}}}
 function! s:warning(msg) "{{{
     echohl Warningmsg
-    exe "echom \"[Warning] ".escape(a:msg,'"')."\""
+    exe "echo \"[Warning] ".escape(a:msg,'"')."\""
     echohl Normal
 endfunction "}}}
 function! s:error(msg) "{{{
@@ -2531,12 +2550,15 @@ function! s:error(msg) "{{{
     echohl Normal
 endfunction "}}}
 function! s:echo(msg) "{{{
-        exe "echom \"[Note] ".escape(a:msg,'"')."\""
+        exe "echo \"[Note] ".escape(a:msg,'"')."\""
 endfunction "}}}
 function! s:debug(msg) "{{{
-    if g:ColorV_debug==1
-        echoe "[Debug] ".escape(a:msg,'"')
+    if g:ColorV_debug!=1
+    	return
     endif
+    echohl Errormsg
+    echom "[Debug] ".escape(a:msg,'"')
+    echohl Normal
 endfunction "}}}
 
 function! s:approx2(hex1,hex2,...) "{{{
@@ -3425,7 +3447,6 @@ function! s:changing() "{{{
                     let to_str=s:hex2txt(to_hex,to_fmt)
                 endif
                 let to_str=substitute(to_str,'\~','','g')
-                call s:debug(to_fmt." str:".to_str)
             else
                 call s:error("Don't know what to change to.")
                 let s:ColorV.change_word=0
@@ -3444,6 +3465,7 @@ function! s:changing() "{{{
             	try
                     exec '%s/'.from_pat.'/'.to_pat.'/gc'
                 catch /^Vim\%((\a\+)\)\=:E486/
+                    call s:debug(from_pat." to:".to_fmt.to_str.to_pat)
                     call s:error("E486: Pattern not found.")
                 endtry
             else
@@ -3452,6 +3474,7 @@ function! s:changing() "{{{
                     "  XXX: ptn not found if from_pat=line
                     exec '.s/\%>'.(bgn_idx-1).'c'.from_pat.'/'.to_pat.'/'
                 catch /^Vim\%((\a\+)\)\=:E486/
+                    call s:debug(from_pat." to:".to_fmt.to_str.to_pat)
                     call s:error("E486: Pattern not found.")
                 endtry
             endif
@@ -4107,8 +4130,7 @@ endfunction "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#prev_txt(txt) "{{{
     let hex_list=s:txt2hex(a:txt)
-    for i in range(len(hex_list))
-        let prv_item=hex_list[i]
+    for prv_item in hex_list
         if prv_item[4]=="NAME"
             if exists("s:ColorV_view_name") && s:ColorV_view_name==1
                 let hi_ptn='\<'.prv_item[3].'\>'
@@ -4133,7 +4155,7 @@ function! colorv#prev_txt(txt) "{{{
             call s:hi_color(hi_grp,hi_fg,prv_item[0])
             let s:line_dict[hi_grp]= matchadd(hi_grp,hi_ptn)
         catch /^Vim\%((\a\+)\)\=:E254/
-            " call s:debug("error E254")
+            call s:debug("E254")
         endtry
     endfor
 endfunction "}}}
