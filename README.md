@@ -11,7 +11,10 @@
         <leader>cv   Normal Win.
         <leader>cm   min mode:Less Space.
         <leader>cx   max mode:More Info.
-        
+
+>       **NOTE** Mapping may not exists if it is defined by other plugins.  
+ 
+>       Then you should define it in your vimrc.
 
 * Open colorname list window, where you can get W3C standard colornames.
  
@@ -61,7 +64,7 @@
 
 + More Modes~
 
->   Add max mode '<leader>cx'  
+>   Add max mode `<leader>cx`  
 
 >   It shows more info (RGB/HSV/HLS/YIQ)
 
@@ -79,9 +82,11 @@
 >
 >   Please check your '&t_Co' option if your terminal supports more colors.
 
-> **NOTE** 
- 
->   You'd better delete your previous ColorV files .
+  **NOTE** 
+
+>   If you have previous version of ColorV.
+
+>   You'd better delete your it.
  
 >   because the file name have changed to 'colorv.vim'
  
@@ -136,7 +141,7 @@
 ##VIMRC EXAMPLE##
     
     "remap the ColorVchange command 
-    nmap <silent> <leader>ce :ColorVchange<CR>
+    nmap <silent> <leader>cgg :ColorVchange<CR>
 
     "use HLS colorspace instead of HSV
     let g:ColorV_win_space="hls"  
