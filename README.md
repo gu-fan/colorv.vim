@@ -97,7 +97,7 @@ With this you can deal with colors easily.
 
 >  then put this line in your vimrc  
 
->       Bundle 'Rykka/colorv' 
+>       Bundle 'Rykka/ColorV' 
 
 >  and use this command to install it.  
 

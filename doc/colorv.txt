@@ -99,7 +99,7 @@ INSTALL                                             *colorv-install*
     1.Using Vundle (Recommend):~
     Install git and script [Vundle.vim](https://github.com/gmarik/vundle)
     then put this line in your vimrc  
-        Bundle 'Rykka/colorv'
+        Bundle 'Rykka/ColorV'
     and use this command to install it.  
         :BundleInstall
     And you can update ColorV easily by
