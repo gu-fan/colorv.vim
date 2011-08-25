@@ -1,12 +1,12 @@
 *colorv.txt*                ColorV         A Color tool for Vim
  
-              _________     ______            ___    __     ~
-              __  ____/________  /______________ |  / /     ~
-              _  /    _  __ \_  /_  __ \_  ___/_ | / /      ~
-              / /___  / /_/ /  / / /_/ /  /   __ |/ /       ~
-              \____/  \____//_/  \____//_/    _____/        ~
-                                                            ~
-                             Ver:2.5                        ~
+              _________     ______            ___    __               ~
+              __  ____/________  /______________ |  / /               ~
+              _  /    _  __ \_  /_  __ \_  ___/_ | / /                ~
+              / /___  / /_/ /  / / /_/ /  /   __ |/ /                 ~
+              \____/  \____//_/  \____//_/    _____/                  ~
+                                                                      ~
+                             Ver:2.5                                  ~
                                 
 ==============================================================================
 
@@ -27,9 +27,8 @@
  
  CREDITS                                *colorv-credits*
  10. Developer                          |colorv-developer|
- 11. License                            |colorv-license|
- 12. Todo                               |colorv-todo| 
- 13. Changelog                          |colorv-changelog|
+ 11. Changelog                          |colorv-changelog|
+ 12. License                            |colorv-license|
 ==============================================================================
 INTRO                                               *colorv-intro*
 
@@ -38,9 +37,11 @@ INTRO                                               *colorv-intro*
     
     A Quick Start~
     Open ColorV window to select colors. 
-        <leader>cv   mid mode:Normal Win.
+        <leader>cv   Normal Win.
         <leader>cm   min mode:Less Space.
         <leader>cx   max mode:More Info.
+        NOTE Mapping may not exists if it is defined by other plugins.  
+        Then you should define it in your vimrc.
 
     Open colorname list window, where you can get W3C standard colornames.
         <leader>cl
@@ -51,15 +52,16 @@ INTRO                                               *colorv-intro*
         Put your cursor on the word 'rgb(33,44,155)' and press <leader>cw.
         You will see a ColorV is opend with the color of it.
 
-    Easily change word under cursor with visually chosing color.
-        <leader>cgg
+    Easily change word under cursor with visually choosing color.
+        <leader>ce
         Put your cursor on the word 'orangered' and press <leader>cgg.
-        After chosing a color (e.g. yellow),
+        After choosing a color (e.g. yellow),
         close the window by pressing "q". 
         You will see the word is changed to 'Yellow'.
+        And you can try with 'rgb(33,44,155)' 'hsl(50,30%,47%)' .
 
     Generate 'Monochromatic' colorscheme List (and more) with cursor.
-        <leader>cnm
+        <leader>cgm
 
     Copy the color in the ColorV window quickly.
         cc/<Ctrl-C>/yy
@@ -67,10 +69,29 @@ INTRO                                               *colorv-intro*
     Paste a color text to the ColorV window to have a visual look.
         p/<Ctrl-V>
 
-    Use GTK eyedropper to pick colors on screen easily.
+    Use pyGTK colorpicker to pick colors on screen easily.
         <leader>cd
         ('+python' compiled and pygtk2.0 included)
+------------------------------------------------------------------------------
+NEWS IN 2.5                                         *colorv-news-2.5*
++ Faster~
+    Core function optimized and rewrite in python.
+    Now it's 10+times Faster than before.
+    (GUI runtime <0.07s, TERM runtime <0.10s)
++ More Modes~
+    Add max mode '<leader>cx'  
+    It shows more info (RGB/HSV/HLS/YIQ)
+    And it shows the copied color history, which is cached on your disk.
++ HLS Space~
+    Add 'HLS' colorspace for pallete showing.
+    You can use it by set "g:ColorV_win_space" to "hls"
++ Terminal~
+    Now ColorV is colorized in Terminal(8/16/256).   
+    Please check your '&t_Co' option if your terminal supports more colors.
 
+    NOTE    If you have previous version of ColorV.
+            You'd better delete it.
+            because the file name have changed to 'colorv.vim'
 ==============================================================================
 INSTALL                                             *colorv-install*
 
@@ -80,6 +101,8 @@ INSTALL                                             *colorv-install*
         Bundle 'Rykka/colorv'
     and use this command to install it.  
         :BundleInstall
+    And you can update ColorV easily by
+        :BundleInstall!
  
     2.Using vim.org:~
     http://www.vim.org/scripts/script.php?script_id=3597
@@ -90,9 +113,9 @@ INSTALL                                             *colorv-install*
         :helptags ~/.vim/doc     
  
     3.Using git:~
-    open terminal go and input.
+    Open terminal and input 
         git clone git://github.com/Rykka/ColorV.git ~/.vim/bundle/ColorV 
-    then add &runtimepath to your vimrc;
+    Then add &runtimepath to your vimrc;
     (NOT necessary if pathogen.vim installed) 
         set rtp+=~/.vim/bundle/ColorV/ 
     Then run helptags.
@@ -101,16 +124,21 @@ INSTALL                                             *colorv-install*
 USAGE                                               *colorv-usage*
 
                                                     *colorv-usage-window*
-    Open the Window:~
+    Open the ColorV Window:~
     Open the ColorV normal window (|colorv-normal|) by typing:
     <Leader>cv
-    This is the Main window of ColorV. You can get/set colors here.
+    This is the Main window of ColorV. You get/set colors here.
+    And you can use 'm/M' to change the mode of the window.
 
-    Mini version of the ColorV window (|colorv-min|).
+    Min mode of the ColorV window (|colorv-min|).
     Use <leader>cm or |:ColorVmin| to open it.
 
-    Max version of the ColorV window (|colorv-max|).
+    Max mode of the ColorV window (|colorv-max|).
     Use <leader>cx or |:ColorVmax| to open it.
+    It shows more infos and a history_copied_pallette.
+    Which saves your previously copied color from ColorV.
+    And it's cached on your disk.
+    You can set it to another file by changing |g:ColorV_cache_File|.
 
                                                    *colorv-usage-pallette*
     Choose a color from the pallette:~
@@ -173,7 +201,6 @@ which the color is at you demand.
     <leader>cpb to preview in current file with  text-blocking.
     This is much clearer.
      
-
 ==============================================================================
 COMMANDS                                            *colorv-commands*
 
@@ -223,6 +250,10 @@ will change all color-text in current buf after closing the ColorV window.
                                                     *:ColorVgenerate*
     |:ColorVgenerate|   Generate colors with input.
                       :ColorVgenerate {hex}[, {type}, {nums}, {step}]
+                      {hex} '000000'~'ffffff'
+                      {type} 'Hue','Value','Monochromatic'...
+                      {nums} Generated color numbers
+                      {step} the step between each color. 
                       See |colorv-generate| for details.
 
                                                     *:ColoVpreview*
@@ -232,7 +263,10 @@ will change all color-text in current buf after closing the ColorV window.
     |:ColorVquit|       Quit ColorV
 ==============================================================================
 MAPPINGS                                            *colorv-mappings*
-
+    
+    Global Mappins.~
+    NOTE If Other plugins have used the mapping. 
+         Then you should redfine it In your vimrc.
                                                     *colorv-mapping-global*
 
     <leader>cv      Open ColorV normal window.
@@ -247,7 +281,7 @@ MAPPINGS                                            *colorv-mappings*
 
     <leader>cgg      Open ColorV window with cursor word and change it later.
                     Redefine it with :ColorVchange<CR>
-                    Note If you change a color name , but what your chosing 
+                    Note If you change a color name , but what your choosing 
                     color don't match any color name. it will be null('').
 
     <leader>cga      Open ColorV normal with cursor word and change all later.
@@ -269,20 +303,20 @@ MAPPINGS                                            *colorv-mappings*
 
                                                     *colorv-mapping-generate*
     Generate color list with current word by matching type.
-    <leader>cnh    Hue
-    <leader>cns    Saturation
-    <leader>cnv    Value
-    <leader>cna    Analogous
-    <leader>cnn    Neutral
-    <leader>cnc    Clash
-    <leader>cnp    Split-Complementary
-    <leader>cnq    Square
-    <leader>cn1/m  Monochromatic
-    <leader>cn2    Complementary
-    <leader>cn3/t  Triadic
-    <leader>cn4    Rectangle(Tetradic)
-    <leader>cn5    Five-Tone
-    <leader>cn6    Six-Tone
+    <leader>gh    Hue
+    <leader>gs    Saturation
+    <leader>gv    Value
+    <leader>ga    Analogous
+    <leader>gn    Neutral
+    <leader>gc    Clash
+    <leader>gp    Split-Complementary
+    <leader>gq    Square
+    <leader>g1/m  Monochromatic
+    <leader>g2    Complementary
+    <leader>g3/t  Triadic
+    <leader>g4    Rectangle(Tetradic)
+    <leader>g5    Five-Tone
+    <leader>g6    Six-Tone
     See |colorv-generate| for details.
 
                                                     *colorv-mapping-preview*
@@ -301,7 +335,7 @@ MAPPINGS                                            *colorv-mappings*
 
                                                     *colorv-mapping-buffer*
 
-    Belows are mappings that have effects ONLY inside ColorV window.
+    Mappings that only IN ColorV window.~
 
                                                     *colorv-mapping-toggle*
     m/M         toggle ColorV window modes (max/mid/min)
@@ -360,7 +394,7 @@ which was used with cut/copy between other applications.
 
 
                                                     *colorv-mapping-help*
-    ?               Toggle tips showing.
+    ?               Show tips.
     H/<F1>          Show this help documents.
 
                                                     *colorv-mapping-quit*
@@ -419,7 +453,7 @@ COLORNAME                                            *colorv-colorname*
     You can entering X11 name by 'nx' and W3C name by 'ne'.
 ------------------------------------------------------------------------------
                                                     *colorv-format-text*
-    |colorv-format-text| is the text format of the colors.
+    The format of the color texts.~
     There are  following formats currently:
     NS6     #ffffff     (short for Number Sign 6)
     NS3     #fff
@@ -437,24 +471,25 @@ COLORNAME                                            *colorv-colorname*
     You can also define your own color formats with |colorv-var-colors|.
 ------------------------------------------------------------------------------
                                                       *colorv-generate*
-    Type of generating various color scheme by input color.
-    There are following types currently:
-        Hue/Saturation/Value        Generate by H/S/V to step change 
-        Monochromatic               Generate by S and V to step change 
-        Analogous                   Generate by same S/V
-        Triadic                     Generate 3 colors by same S/V
-        Rectangle(Tetradic)         Generate 4 colors by same S/V
-        Neutral                     Generate by same S/V
-        Clash                       Generate clash color by same S/V
-        Square                      Generate 4 colors with same H step
-                                    by same S/V
-        Five-Tone                   Generate 5 colors by same S/V
-        Six-Tone                    Generate 6 colors by same S/V
-        Complementary               Generate opposite color by same S/V
-        Split-Complementary         Generate 2 opposite colors by same S/V
+    Types for generating color list.~
+    There are following {type} currently:
+        Hue/Saturation/Value        Generate by H/S/V  h/s/v+{step}
+        Monochromatic               Generate by S and V s/v+{step}
+        Analogous                   Generate colors h+15
+        Triadic                     Generate 3 colors 
+        Rectangle(Tetradic)         Generate 4 colors 
+        Neutral                     Generate colors h+30
+        Clash                       Generate 3 clash color 
+        Square                      Generate 4 colors h+90
+        Five-Tone                   Generate 5 colors 
+        Six-Tone                    Generate 6 colors 
+        Complementary               Generate opposite color h+180
+        Split-Complementary         Generate 2 opposite colors
+        Luma                        Generate by Luma+{step} ('yiq' only)
     NOTE
-    The Blue(0000ff) and yellow(ffff00) is actually not the same lumination
-    With |g:ColorV_gen_space| set to "yiq" . 
+    The Blue(0000ff) and yellow(ffff00) is actually not the same lumination.
+    But they are always the same 'value'/'lightness' in HSV and HLS.
+    With |g:ColorV_gen_space| set to 'yiq'. 
     You could get colors with same 'Lumination'. 
 
 ==============================================================================
@@ -498,8 +533,25 @@ OPTIONS                                             *colorv-options*
                                                 *g:ColorV_cache_File*
                                             (default='~/.vim_ColorV_cache')
     g:ColorV_cache_File     The history_copied_list's cache file position.
-                            
 ------------------------------------------------------------------------------
+VIMRC EXAMPLE                                       *colorv-example*
+
+    If you want make the ColorV work fine for you.
+    You can set |colorv-options| and remapping |colorv-mappings| in your
+    vimrc files.
+    For example:
+>
+    "remap the ColorVchange command 
+    nmap <silent> <leader>cr :ColorVchange<CR>
+
+    "use HLS colorspace instead of HSV
+    let g:ColorV_win_space="hls"  
+    "use YIQ colorspace for generating color list
+    let g:ColorV_gen_space="yiq" 
+    "Stop coloring colornames like 'Black','Navy','white'
+    let g:ColorV_view_name=0
+<                    
+==============================================================================
 VARIABLES                                           *colorv-variables*
 
     Global variables that could be used by your scripts.~
@@ -538,38 +590,23 @@ VARIABLES                                           *colorv-variables*
     g:ColorV.NAME   The colorname of current color.
                     if no exact color fitted then empty.
 
-------------------------------------------------------------------------------
-VIMRC EXAMPLE                                       *colorv-example*
-    If you want tuning the ColorV work fine for you.
-    You can set |colorv-options| and remapping |colorv-mappings| in your
-    vimrc files.
-    For example:
->
-    "remap the ColorVchange command 
-    nmap <silent> <leader>ce :ColorVchange<CR>
 
-    "use HLS colorspace instead of HSV
-    let g:ColorV_win_space="hls"  
-    "use YIQ colorspace for generating color list
-    let g:ColorV_gen_space="yiq" 
-    "Stop coloring colornames 'black/white'
-    let g:ColorV_view_name=0
-<
-------------------------------------------------------------------------------
+==============================================================================
 FUNCTIONS                                           *colorv-functions*
 
     Global Functions that could be used by your scripts.~
+    
                                                     *colorv#rgb2hsv()*
-    colorv#rgb2hsv(rgb)             Convert RGB to HSV.
+    colorv#rgb2hsv({rgb})             Convert RGB to HSV.
                                     " input [r,g,b] 0~255 num
                                     "return [H,S,V] 0~360 0~100 num
                                                     *colorv#hsv2rgb()*
-    colorv#hsv2rgb(hsv)             Convert HSV to RGB.
+    colorv#hsv2rgb({hsv})             Convert HSV to RGB.
                                     " input [h,s,v] 0~360 0~100 num
                                     "return [R,G,B] 0~255  num
 
                                                     *colorv#rgb2hex()*
-    colorv#rgb2hex(rgb)             Convert RGB to HEX.
+    colorv#rgb2hex({rgb})             Convert RGB to HEX.
                                     " input [r,g,b]  0~255  num/str
                                     "return ffffff         str
 
@@ -583,45 +620,49 @@ FUNCTIONS                                           *colorv-functions*
                                     :echo "0xffffff"+1
 
                                                     *colorv#hex2rgb()*
-    colorv#hex2rgb(hex)             Convert HEX to RGB.
+    colorv#hex2rgb({hex})             Convert HEX to RGB.
                                     " input ffffff          num/str
                                     "return [r,g,b] 0~255  str
 
                                                     *colorv#hex2hsv()*
-    colorv#hex2hsv(hex)             Convert HEX to HSV.
+    colorv#hex2hsv({hex})             Convert HEX to HSV.
                                     " input ffffff          num/str
                                     "return [h,s,v] 0~360 0~100 num
                                                     *colorv#hsv2hex()*
-    colorv#hsv2hex(hsv)             Convert HSV to HEX.
+    colorv#hsv2hex({hsv})             Convert HSV to HEX.
                                     " input [h,s,v] 0~360 0~100 num
                                     "return ffffff         str
 
                                                     *colorv#hex2hls()*
-    colorv#hex2hls(hex)             Convert HEX to HLS.
+    colorv#hex2hls({hex})             Convert HEX to HLS.
                                     " input ffffff          num/str
                                     "return [h,l,s] 0~360 0~100 num
                                                     *colorv#hls2hex()*
-    colorv#hls2hex(hsl)             Convert HLS to HEX.
+    colorv#hls2hex({hsl})             Convert HLS to HEX.
                                     " input [h,l,s] 0~360 0~100 num
                                     "return ffffff         str
 
-    And there are functions which were rarely use.
-        colorv#hex2yiq() (y:0~100,i:-100~100,q:-100~100)
-        colorv#yiq2hex()
-        colorv#rgb2cmyk() (c:0~1,m:0~1,y:0~1,k:0~1)
-        colorv#cmyk2rgb()
+    And there are calculator functions which were rarely use.
+        colorv#hex2yiq({hex}) (y:0~100,i:-100~100,q:-100~100)
+        colorv#yiq2hex({yiq})
+        colorv#rgb2cmyk({rgb}) (c:0~1,m:0~1,y:0~1,k:0~1)
+        colorv#cmyk2rgb({cmyk})
+------------------------------------------------------------------------------
+                                                    *colorv#hex2term()*
+    colorv#hex2term({hex}[,{mode}]) Output colornumber (0~256)
+                                    for highlighting in vim 
+                                    {mode} can be 8/16 or "CHECK" 
                                     
                                                     *colorv#gen_list()*
     colorv#gen_list({hex}[,{type}[,{num}[,{step}]]])             
                                     Generate hex list by color.
                                     "input  {hex}[,{type}[,{num}[,{step}]]]
                                     "return ["ffffff","ffffff",...]
+                                    {hex} '000000'~'ffffff'
+                                    {type} 'Hue','Value','Monochromatic'...
+                                    {nums} Generated color numbers
+                                    {step} the step between each color. 
                                     See details in |colorv-generate|.
-==============================================================================
-DEPENDENCIES                                        *colorv-dependencies*
-
-    - Vim 7.0 or higher.
-    - GTK Eyedropper: Requires +python and pygtk2.0.
 ==============================================================================
 DEVELOPER                                             *colorv-developer*
 
@@ -644,32 +685,15 @@ DEVELOPER                                             *colorv-developer*
 
     Special Thanks to the Vim Author and it's developers:
         Bram Moolenaar <Bram@vim.org>...
-==============================================================================
-LICENSE                                             *colorv-license*
+------------------------------------------------------------------------------
+DEPENDENCIES                                        *colorv-dependencies*
 
-    Copyright 2010-2011 Rykka Krn. All rights reserved.
-    MIT license  {{{
-    Permission is hereby granted, free of charge, to any person obtaining
-    a copy of this software and associated documentation files (the
-    "Software"), to deal in the Software without restriction, including
-    without limitation the rights to use, copy, modify, merge, publish,
-    distribute, sublicense, and/or sell copies of the Software, and to
-    permit persons to whom the Software is furnished to do so, subject to
-    the following conditions:
-    The above copyright notice and this permission notice shall be included
-    in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-    }}}
+    - Vim 7.0 or higher.
+    - pyGTK ColorPicker: Requires +python and pygtk2.0.
 ==============================================================================
 CHANGELOG                                           *colorv-changelog* 
-" 2.5.0 10-times faster 
+" 2.5.0 Faster and More
+" DONE: 110825  8/16 terminal ColorV window supportted
 " DONE: 110824  hls colorspace added
 " DONE: 110824  draw history_copied_pallette in max mode
 " DONE: 110824  history_copied_list cache supported
@@ -679,6 +703,7 @@ CHANGELOG                                           *colorv-changelog*
 " DONE: 110820  use YIQ instead of YUV
 
 " 2.4.0 yuv yiq colorspace list gen
+" DONE: 110818  terminal supported 
 " DONE: 110817  remove the arrow selector method. use highlight instead
 " DONE: 110815  YUV colorspace added
 " DONE: 110815  YUV list gen supported
@@ -908,5 +933,28 @@ CHANGELOG                                           *colorv-changelog*
 " DONE: 110509  draw_block /draw_multi_Block
 " DONE: 110509  draw hue line
 
-------------------------------------------------------------------------------
+==============================================================================
+LICENSE                                             *colorv-license*
+
+    Copyright 2010-2011 Rykka Krn. All rights reserved.
+    MIT license  {{{
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    }}}
+==============================================================================
 vim:tw=78:ft=help:
