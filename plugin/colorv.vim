@@ -32,15 +32,11 @@ command! -nargs=0  ColorVpreviewblock call colorv#preview("B")
 command! -nargs=0  ColorVpreviewline call colorv#preview_line()
 command! -nargs=+  ColorVTimer call colorv#timer(<f-args>)
 
-
-if has('python')
 command! -nargs=0  ColorVdropper call colorv#dropper()
-endif
 
 if !hasmapto(':ColorV<CR>')
   silent! nmap <unique> <silent> <Leader>cv :ColorV<CR>
 endif
-
 if !hasmapto(':ColorVmin<CR>')
   silent! nmap <unique> <silent> <Leader>cm :ColorVmin<CR>
 endif
@@ -53,11 +49,11 @@ if !hasmapto(':ColorVword<CR>')
 endif
 
 if !hasmapto(':ColorVchange<CR>')
-  silent! nmap <unique> <silent> <Leader>cgg :ColorVchange<CR>
+  silent! nmap <unique> <silent> <Leader>ce :ColorVchange<CR>
 endif
 
 if !hasmapto(':ColorVchangeALl<CR>')
-  silent! nmap <unique> <silent> <Leader>cga :ColorVchangeAll<CR>
+  silent! nmap <unique> <silent> <Leader>ca :ColorVchangeAll<CR>
 endif
 
 if !hasmapto(':ColorVchange2 HEX<CR>')
@@ -83,10 +79,10 @@ if !hasmapto(':ColorVchange2 #<CR>')
   silent! nmap <unique> <silent> <Leader>c2s :ColorVchange2 NS6<CR>
 endif
 
-if !hasmapto(':ColorVdropper<CR>') && has('python')
+if !hasmapto(':ColorVdropper<CR>')
   silent! nmap <unique> <silent> <Leader>cd :ColorVdropper<CR>
 endif
-if !hasmapto(':ColorVquit<CR>') && has('python')
+if !hasmapto(':ColorVquit<CR>') 
   silent! nmap <unique> <silent> <Leader>cq :ColorVquit<CR>
 endif
 
@@ -95,52 +91,51 @@ if !hasmapto(':ColorVlist<CR>')
 endif
 
 if !hasmapto(':ColorVwordgenerate Hue<CR>')
-  silent! nmap <unique> <silent> <Leader>cnh :ColorVwordgen Hue<CR>
+  silent! nmap <unique> <silent> <Leader>cgh :ColorVwordgen Hue<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Saturation<CR>')
-  silent! nmap <unique> <silent> <Leader>cns :ColorVwordgen Saturation<CR>
+  silent! nmap <unique> <silent> <Leader>cgs :ColorVwordgen Saturation<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Value<CR>')
-  silent! nmap <unique> <silent> <Leader>cnv :ColorVwordgen Value<CR>
+  silent! nmap <unique> <silent> <Leader>cgv :ColorVwordgen Value<CR>
 endif
 
 if !hasmapto(':ColorVwordgenerate Analogous<CR>')
-  silent! nmap <unique> <silent> <Leader>cna :ColorVwordgen Analogous<CR>
+  silent! nmap <unique> <silent> <Leader>cga :ColorVwordgen Analogous<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Square<CR>')
-  silent! nmap <unique> <silent> <Leader>cnq :ColorVwordgen Square<CR>
+  silent! nmap <unique> <silent> <Leader>cgq :ColorVwordgen Square<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Neutral<CR>')
-  silent! nmap <unique> <silent> <Leader>cnn :ColorVwordgen Neutral<CR>
+  silent! nmap <unique> <silent> <Leader>cgn :ColorVwordgen Neutral<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Clash<CR>')
-  silent! nmap <unique> <silent> <Leader>cnc :ColorVwordgen Clash<CR>
+  silent! nmap <unique> <silent> <Leader>cgc :ColorVwordgen Clash<CR>
 endif
 
 if !hasmapto(':ColorVwordgenerate Split-Complementary<CR>')
-  silent! nmap <unique> <silent> <Leader>cnp :ColorVwordgen Split-Complementary<CR>
+  silent! nmap <unique> <silent> <Leader>cgp :ColorVwordgen Split-Complementary<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Monochromatic<CR>')
-  silent! nmap <unique> <silent> <Leader>cnm :ColorVwordgen Monochromatic<CR>
-  silent! nmap <unique> <silent> <Leader>cn1 :ColorVwordgen Monochromatic<CR>
+  silent! nmap <unique> <silent> <Leader>cgm :ColorVwordgen Monochromatic<CR>
+  silent! nmap <unique> <silent> <Leader>cg1 :ColorVwordgen Monochromatic<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Complementary<CR>')
-  silent! nmap <unique> <silent> <Leader>cn2 :ColorVwordgen Complementary<CR>
+  silent! nmap <unique> <silent> <Leader>cg2 :ColorVwordgen Complementary<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Triadic<CR>')
-  silent! nmap <unique> <silent> <Leader>cnt :ColorVwordgen Triadic<CR>
-  silent! nmap <unique> <silent> <Leader>cn3 :ColorVwordgen Triadic<CR>
+  silent! nmap <unique> <silent> <Leader>cgt :ColorVwordgen Triadic<CR>
+  silent! nmap <unique> <silent> <Leader>cg3 :ColorVwordgen Triadic<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Tetradic<CR>')
-  silent! nmap <unique> <silent> <Leader>cn4 :ColorVwordgen Tetradic<CR>
+  silent! nmap <unique> <silent> <Leader>cg4 :ColorVwordgen Tetradic<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Five-Tone<CR>')
-  silent! nmap <unique> <silent> <Leader>cn5 :ColorVwordgen Five-Tone<CR>
+  silent! nmap <unique> <silent> <Leader>cg5 :ColorVwordgen Five-Tone<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Six-Tone<CR>')
-  silent! nmap <unique> <silent> <Leader>cn6 :ColorVwordgen Six-Tone<CR>
+  silent! nmap <unique> <silent> <Leader>cg6 :ColorVwordgen Six-Tone<CR>
 endif
-
 if !hasmapto(':ColorVpreview<CR>')
   silent! nmap <unique> <silent> <Leader>cpp :ColorVpreview<CR>
 endif
@@ -150,7 +145,6 @@ endif
 if !hasmapto(':ColorVpreviewblock<CR>')
   silent! nmap <unique> <silent> <Leader>cpb :ColorVpreviewblock<CR>
 endif
-
 if !hasmapto(':ColorVpreviewclear<CR>')
   silent! nmap <unique> <silent> <Leader>cpc :ColorVclear<CR>
 endif
