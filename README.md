@@ -12,9 +12,9 @@
         <leader>cm   min mode:Less Space.
         <leader>cx   max mode:More Info.
 
->       **NOTE** Mapping may not exists if it is defined by other plugins.  
+>       NOTE: Mapping may not exists if it is defined by other plugins.  
  
->       Then you should define it in your vimrc.
+>       Then you should redefine it in your vimrc.
 
 * Open colorname list window, where you can get W3C standard colornames.
  
@@ -27,20 +27,20 @@
         Put your cursor on the word 'rgb(33,44,155)' and press <leader>cw.
         You will see a ColorV is opend with the color of it.
 
-* Easily change word under cursor with visually chosing color.
+* Easily change word under cursor with visually choosing color.
  
         <leader>ce
         Put your cursor on the word 'orangered' and press <leader>cgg.
-        After chosing a color (e.g. yellow),
+        After choosing a color (e.g. yellow),
         close the window by pressing "q". 
         You will see the word is changed to 'Yellow'.
         And you can try with 'rgb(33,44,155)' 'hsl(50,30%,47%)' .
 
-* Generate 'Monochromatic' colorscheme List (and more) with cursor.
+* Generate 'Monochromatic' (and more) colorscheme List with cursor.
  
         <leader>cgm
 
-   *  Copy the color in the ColorV window quickly.
+*  Copy the color in the ColorV window quickly.
 
         cc/<Ctrl-C>/yy
 
@@ -84,11 +84,9 @@
 
   **NOTE** 
 
->   If you have previous version of ColorV.
-
->   You'd better delete your it.
- 
->   because the file name have changed to 'colorv.vim'
+    If you have previous version of ColorV.
+    You'd better delete it.
+    because the file name have changed to 'colorv.vim'
  
 #INSTALL:#
     
@@ -141,11 +139,11 @@
 ##VIMRC EXAMPLE##
     
     "remap the ColorVchange command 
-    nmap <silent> <leader>cgg :ColorVchange<CR>
+    nmap <silent> <leader>cr :ColorVchange<CR>
 
     "use HLS colorspace instead of HSV
     let g:ColorV_win_space="hls"  
     "use YIQ colorspace for generating color list
     let g:ColorV_gen_space="yiq" 
-    "Stop coloring colornames 'black/white'
+    "Stop coloring colornames like 'Black','Navy','white'
     let g:ColorV_view_name=0
