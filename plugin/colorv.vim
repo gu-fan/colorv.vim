@@ -12,39 +12,6 @@ if v:version < 700
 endif
 
 
-"debug 
-if !exists("g:ColorV_debug")
-    let g:ColorV_debug=0
-endif
-"debug vim func
-if !exists('g:ColorV_no_python')
-    let g:ColorV_no_python=0
-endif
-if !exists('g:ColorV_cache_File')
-let g:ColorV_cache_File = expand('$HOME') . '/.vim_ColorV_cache'
-endif
-if !exists('g:ColorV_load_cache')
-let g:ColorV_load_cache=1
-endif
-if !exists('g:ColorV_word_mini')
-    let g:ColorV_word_mini=1
-endif
-if !exists('g:ColorV_win_pos')
-    let g:ColorV_win_pos="bot"
-endif
-if !exists('g:ColorV_view_name')
-    let g:ColorV_view_name=1
-endif
-if !exists('g:ColorV_view_block')
-    let g:ColorV_view_block=0
-endif
-if !exists('g:ColorV_win_space')
-    let g:ColorV_win_space="hsv"
-endif
-if !exists('g:ColorV_gen_space')
-    let g:ColorV_gen_space="yiq"
-endif
-
 
 command! -nargs=*  ColorV call colorv#win("",<q-args>)
 command! -nargs=*  ColorVmid call colorv#win("",<q-args>)
