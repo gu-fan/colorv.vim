@@ -79,9 +79,9 @@ NEWS IN 2.5                                         *colorv-news-2.5*
     Now it's 10+times Faster than before.
     (GUI runtime <0.07s, TERM runtime <0.10s)
 + More Modes~
-    Add max mode '<leader>cx'  
+    Max mode Added '<leader>cx'  
     It shows more info (RGB/HSV/HLS/YIQ)
-    And it shows the copied color history, which is cached on your disk.
+    And it shows the copied color history, which is restored as VimEnter.
 + HLS Space~
     Add 'HLS' colorspace for pallete showing.
     You can use it by set "g:ColorV_win_space" to "hls"
