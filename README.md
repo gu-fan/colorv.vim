@@ -85,9 +85,9 @@ With this you can deal with colors easily.
 
   **NOTE** 
 
-    If you have previous version of ColorV.
-    You'd better delete it.
-    because the file name have changed to 'colorv.vim'
+>   If you have previous version of ColorV.
+>   You'd better delete it.
+>   because the file name have changed to 'colorv.vim'
  
 #INSTALL:#
     
@@ -139,12 +139,12 @@ With this you can deal with colors easily.
 
 ##VIMRC EXAMPLE##
     
-    "remap the ColorVchange command 
-    nmap <silent> <leader>cr :ColorVchange<CR>
+>   "remap the ColorVchange command 
+>   nmap <silent> <leader>cr :ColorVchange<CR>
 
-    "use HLS colorspace instead of HSV
-    let g:ColorV_win_space="hls"  
-    "use YIQ colorspace for generating color list
-    let g:ColorV_gen_space="yiq" 
-    "Stop coloring colornames like 'Black','Navy','white'
-    let g:ColorV_view_name=0
+>   "use HLS colorspace instead of HSV
+>   let g:ColorV_win_space="hls"  
+>   "use YIQ colorspace for generating color list
+>   let g:ColorV_gen_space="yiq" 
+>   "Stop coloring colornames like 'Black','Navy','white'
+>   let g:ColorV_view_name=0
