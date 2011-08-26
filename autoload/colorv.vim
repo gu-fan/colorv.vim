@@ -3390,7 +3390,7 @@ function! s:copy(...) "{{{
         call s:echo("Copied to Clipboard(reg\"):".l:cliptext)
         let @" = l:cliptext
     elseif exists("a:2") && a:2=="+"
-        call s:echo("Copied to Clipboard(reg+"):".l:cliptext)
+        call s:echo("Copied to Clipboard(reg+):".l:cliptext)
         let @+ = l:cliptext
     else
         call s:echo("Copied to Clipboard(reg\"):".l:cliptext)
