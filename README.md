@@ -133,4 +133,5 @@ With this you can deal with colors easily.
       let g:ColorV_gen_space="yiq" 
       "Stop coloring colornames like 'Black','Navy','white'
       let g:ColorV_view_name=0
+
       ```
