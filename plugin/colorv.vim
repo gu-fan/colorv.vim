@@ -14,7 +14,7 @@ endif
 
 
 command! -nargs=*  ColorV call colorv#win("",<q-args>)
-command! -nargs=*  ColorVmid call colorv#win("",<q-args>)
+command! -nargs=*  ColorVmid call colorv#win("mid",<q-args>)
 command! -nargs=*  ColorVmin call colorv#win("min",<q-args>)
 command! -nargs=*  ColorVmax call colorv#win("max",<q-args>)
 command! -nargs=0  ColorVquit call colorv#exit()
@@ -39,11 +39,16 @@ command! -nargs=0  ColorVdropper call colorv#dropper()
 if !hasmapto(':ColorV<CR>')
   silent! nmap <unique> <silent> <Leader>cv :ColorV<CR>
 endif
+if !hasmapto(':ColorVmid<CR>')
+  silent! nmap <unique> <silent> <Leader>c2 :ColorVmid<CR>
+endif
 if !hasmapto(':ColorVmin<CR>')
   silent! nmap <unique> <silent> <Leader>cm :ColorVmin<CR>
+  silent! nmap <unique> <silent> <Leader>c1 :ColorVmin<CR>
 endif
 if !hasmapto(':ColorVmax<CR>')
   silent! nmap <unique> <silent> <Leader>cx :ColorVmax<CR>
+  silent! nmap <unique> <silent> <Leader>c3 :ColorVmax<CR>
 endif
 
 if !hasmapto(':ColorVword<CR>')
