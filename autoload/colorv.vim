@@ -82,7 +82,7 @@ let s:his_set_list=exists("s:his_set_list")
 
 let [s:max_h,s:mid_h,s:min_h]=[9,6,3]
 
-let [s:pal_W,s:pal_H]=[20,6]
+let [s:pal_W,s:pal_H]=[20,5]
 let [s:poff_x,s:poff_y]=[0,1]
 " let s:pal_clr_list=[]
 " let s:valline_list=[]
@@ -2063,19 +2063,22 @@ function! colorv#win(...) "{{{
     endif
     if exists("a:1") && a:1== "min" 
     	let s:mode="min"
-    	let s:pal_H=s:min_h-1
     elseif  exists("a:1") && a:1== "max"
     	let s:mode="max" 
-    	let s:pal_H=s:max_h-1
     elseif  exists("a:1") && a:1== "mid"
     	let s:mode="mid" 
-    	let s:pal_H=s:mid_h-1
     else
     	if !exists("s:mode")
     	    let s:mode="mid"
-            let s:pal_H=s:mid_h-1
         endif
     endif 
+    if s:mode=="min"
+    	let s:pal_H=s:min_h-1
+    elseif s:mode=="max"
+    	let s:pal_H=s:max_h-1
+    else
+    	let s:pal_H=s:mid_h-1
+    endif
     "}}}
     "_funcs "{{{
     if exists("a:3") && a:3==1 && exists("a:4") 
