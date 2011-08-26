@@ -48,7 +48,7 @@ With this you can deal with colors easily.
  
         <leader>ce
 
-        Put your cursor on the word 'rgb(33,44,155)' and press <leader>cgg.
+        Put your cursor on the word 'rgb(33,44,155)' and press <leader>ce.
         Then choose a color and Close the window by pressing "q". 
         You will see the word is changed with the choosed color.
         Also you can try with 'cadetblue' 'hsl(50,30%,47%)'...
