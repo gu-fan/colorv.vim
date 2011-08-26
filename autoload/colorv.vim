@@ -3454,6 +3454,11 @@ function! s:changing() "{{{
                     let to_str=s:hex2txt(to_hex,to_fmt)
                 endif
                 let to_str=substitute(to_str,'\~','','g')
+                if empty(to_str)
+                    call s:error("You have choose a color with no 
+                                \W3C colorname. Stopped.")
+                    return
+                endif
             else
                 call s:error("Don't know what to change to.")
                 let s:ColorV.change_word=0

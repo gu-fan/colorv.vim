@@ -725,6 +725,7 @@ DEPENDENCIES                                        *colorv-dependencies*
 CHANGELOG                                           *colorv-changelog* 
 
 " 2.5.0 Faster and More~
+" DONE: 110826  Stop change colorname if no relating colorname for to-color.
 " DONE: 110826  preview highlight effect with buffers not clash.
 " DONE: 110825  8/16 terminal ColorV window supportted
 "FIXED: 110825  Missing '*' sometimes. 
