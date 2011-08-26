@@ -123,7 +123,8 @@ With this you can deal with colors easily.
 
 ##VIMRC EXAMPLE##
 
-      ```vim
+
+     ```vim
       "remap the ColorVchange command 
       nmap <silent> <leader>cr :ColorVchange<CR>
      
@@ -134,4 +135,4 @@ With this you can deal with colors easily.
       "Stop coloring colornames like 'Black','Navy','white'
       let g:ColorV_view_name=0
 
-      ```
+     ```
