@@ -124,15 +124,14 @@ With this you can deal with colors easily.
 ##VIMRC EXAMPLE##
 
 
-     ```vim
-      "remap the ColorVchange command 
-      nmap <silent> <leader>cr :ColorVchange<CR>
-     
-      "use HLS colorspace instead of HSV
-      let g:ColorV_win_space="hls"  
-      "use YIQ colorspace for generating color list
-      let g:ColorV_gen_space="yiq" 
-      "Stop coloring colornames like 'Black','Navy','white'
-      let g:ColorV_view_name=0
+```vim
+"remap the ColorVchange command 
+nmap <silent> <leader>cr :ColorVchange<CR>
 
-     ```
+"use HLS colorspace instead of HSV
+let g:ColorV_win_space="hls"  
+"use YIQ colorspace for generating color list
+let g:ColorV_gen_space="yiq" 
+"Stop coloring colornames like 'Black','Navy','white'
+let g:ColorV_view_name=0
+```
