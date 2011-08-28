@@ -358,6 +358,7 @@ let s:term_dict = {
 "}}}
 "CORE: "{{{
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 function! s:py_core_load() "{{{
     if exists("s:py_core_load")
     	return
@@ -2571,7 +2572,11 @@ function! s:error(msg) "{{{
     echohl Normal
 endfunction "}}}
 function! s:echo(msg) "{{{
-        exe "echo \"[Note] ".escape(a:msg,'"')."\""
+    try 
+        exe "echo \"[Note] ".escape(a:msg,'\"')."\""
+    catch /^Vim\%((\a\+)\)\=:E488/
+        call s:debug("Trailing character.")  
+    endtry
 endfunction "}}}
 function! s:debug(msg) "{{{
     if g:ColorV_debug!=1
@@ -3390,7 +3395,7 @@ function! s:copy(...) "{{{
         call s:echo("Copied to Clipboard(reg\"):".l:cliptext)
         let @" = l:cliptext
     elseif exists("a:2") && a:2=="+"
-        call s:echo("Copied to Clipboard(reg+"):".l:cliptext)
+        call s:echo("Copied to Clipboard(reg+):".l:cliptext)
         let @+ = l:cliptext
     else
         call s:echo("Copied to Clipboard(reg\"):".l:cliptext)
@@ -3824,8 +3829,12 @@ function! colorv#yiq_list_gen(hex,...) "{{{
     elseif type==?"Luma"
         "y+
         for i in range(nums)
-            let y{i} = y+step*i
-            let y{i} = y{i} > 100 ?  100 : y{i} < 0 ? 0 : y{i}
+            if i==0
+                let y0=y+step
+            else
+                let y{i}=y{i-1}+step
+                let y{i} = y{i} >=100 ? 1 : y{i} <= 0 ? 100 : y{i}
+            endif
             let hex=colorv#yiq2hex([y{i},i,q])
             call add(hex_list,hex)
         endfor
@@ -3833,15 +3842,23 @@ function! colorv#yiq_list_gen(hex,...) "{{{
         "v+
         " let v{i}= v+step*i<=100 ? v+step*i : 100
         for i in range(nums)
-            let y{i} = y+step*i
-            let y{i} = y{i} > 100 ?  100 : y{i} < 0 ? 0 : y{i}
+            if i==0
+                let y0=y+step
+            else
+                let y{i}=y{i-1}+step
+                let y{i} = y{i} >=100 ? 1 : y{i} <= 0 ? 100 : y{i}
+            endif
             let hex=colorv#yiq2hex([y{i},i,q])
             call add(hex_list,hex)
         endfor
     elseif type=="Saturation"
         for i in range(nums)
-            let s{i}=s+step*i
-            let s{i} = s{i} >=100 ? 100 : s{i} <= 0 ? 0 : s{i}
+            if i==0
+                let s0=s+step
+            else
+                let s{i}=s{i-1}+step
+                let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
+            endif
             let hex{i}=colorv#hsv2hex([h,s{i},v])
             let [y{i},i{i},q{i}]=colorv#hex2yiq(hex{i})
             let hex{i} = colorv#yiq2hex([y,i{i},q{i}])
@@ -3973,23 +3990,37 @@ function! colorv#list_gen(hex,...) "{{{
         elseif type=="Saturation"
             "s+
             " let s{i}= s+step*i<=100 ? s+step*i : 100
-            let s{i}=s+step*i
-            let s{i} = s{i} >=100 ? 100 : s{i} <= 0 ? 0 : s{i}
+            if i==0
+                let s0=s+step
+            else
+                let s{i}=s{i-1}+step
+                let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
+            endif
             let hex{i}=colorv#hsv2hex([h,s{i},v])
         elseif type=="Value"
             "v+
             " let v{i}= v+step*i<=100 ? v+step*i : 100
-            let v{i}=v+step*i
-            let v{i} = v{i} >=100 ? 100 : v{i} <= 0 ? 0 : v{i}
+            if i==0
+                let v0=v+step
+            else
+                let v{i}=v{i-1}+step
+                let v{i} = v{i} >=100 ? 1 : v{i} <= 0 ? 100 : v{i}
+            endif
             let hex{i}=colorv#hsv2hex([h,s,v{i}])
         elseif type=="Monochromatic"
             "s+step v+step
             " let v{i}= v+step*i<=100 ? v+step*i : 100
             " let s{i}= s+step*i<=100 ? s+step*i : 100
-            let s{i}=s+step*i
-            let v{i}=v+step*i
-            let s{i} = s{i} >=100 ? 100 : s{i} <= 0 ? 0 : s{i}
-            let v{i} = v{i} >=100 ? 100 : v{i} <= 0 ? 0 : v{i}
+            let step=step>0 ? 5 : step<0 ? -5 : 0
+            if i==0
+                let s0=s+step
+                let v0=v+step
+            else
+                let s{i}=s{i-1}+step
+                let v{i}=v{i-1}+step
+                let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
+                let v{i} = v{i} >=100 ? 1 : v{i} <= 0 ? 100 : v{i}
+            endif
             let hex{i}=colorv#hsv2hex([h,s{i},v{i}])
         elseif type=="Analogous"
             "h+30
@@ -4110,6 +4141,7 @@ endfunction "}}}
 " PREV: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#prev_txt(txt) "{{{
+    if !exists("s:line_dict")|let s:line_dict={}|endif
     let hex_list=s:txt2hex(a:txt)
     let bufnr=bufnr('%')
     for prv_item in hex_list
@@ -4175,7 +4207,14 @@ function! colorv#preview_line(...) "{{{
     if exists("a:1") && a:1 =~ "B"
         let s:ColorV_view_block=1
     endif
-    let line=getline('.')
+    if exists("a:1") && a:1 =~ "B"
+        let s:ColorV_view_block=1
+    endif
+    if exists("a:2") && a:2 >0  && a:2 <= line('$')
+    	let line = getline(a:2)
+    else
+        let line=getline('.')
+    endif
     call colorv#prev_txt(line)
     let s:ColorV_view_name=g:ColorV_view_name
     let s:ColorV_view_block=g:ColorV_view_block
