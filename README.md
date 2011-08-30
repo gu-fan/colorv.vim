@@ -1,9 +1,18 @@
 
 #INTRO:#
 
-**ColorV** is a color tool for Vim.
+**ColorV** is a vim plugin for dealing with colors.
  
-With this you can deal with colors easily.
+With this you can:
+
+        Choose colors 
+        Get color infos
+        Change color-texts
+        Generate color lists
+        Preview color-texts in buffers
+        ...
+        
+        (color-text: e.g.:yellow/rgb(255,255,0)/#ff3300)
     
 ###A Quick Start###
 
@@ -120,7 +129,10 @@ With this you can deal with colors easily.
 >  Extract to $VIMFILE folder. ("~/.vim" for linux. "$HOME/vimfiles" for windows)
 
 >  Generate helptags. `:helptags ~/.vim/doc`
-
+ 
+>       If you got bugs or have suggestions.
+>       Post it at https://github.com/rykka/ColorV . 
+ 
 ##VIMRC EXAMPLE##
 
 

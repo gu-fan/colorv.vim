@@ -32,12 +32,24 @@
 ==============================================================================
 INTRO                                               *colorv-intro*
 
-    *ColorV* is a color tool for Vim.
-    With this you can deal with colors easily.
+    *ColorV* is a vim plugin for dealing with colors.
+    With this you can:
+        Choose colors 
+        Get color infos
+        Change color-texts
+        Generate color lists
+        Preview color-texts in buffers
+        ...
+        
+    (color-text: e.g.:yellow/rgb(255,255,0)/#ff3300)
+
     
+------------------------------------------------------------------------------
+QUICKSTART                                               *colorv-quickstart*
+
     A Quick Start~
 
-    Open ColorV window to select colors. 
+    Open ColorV window to choose colors. 
         <leader>cv      ColorV with previous mode.
         <leader>cm/c1   min mode:Less Space.
         <leader>c2      mid mode:Normal.
@@ -127,6 +139,8 @@ INSTALL                                             *colorv-install*
     ("~/.vim" for linux. "$HOME/vimfiles" for windows)
     Generate helptags. `:helptags ~/.vim/doc`
  
+        If you got bugs or have suggestions.
+        Post it at https://github.com/rykka/ColorV . 
 ==============================================================================
 USAGE                                               *colorv-usage*
 
@@ -723,6 +737,8 @@ DEPENDENCIES                                        *colorv-dependencies*
     - pyGTK ColorPicker: Requires +python and pygtk2.0.
 ==============================================================================
 CHANGELOG                                           *colorv-changelog* 
+
+
 
 " 2.5.0 Faster and More~
 " DONE: 110826  Stop change colorname if no relating colorname for to-color.
