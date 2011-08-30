@@ -1243,8 +1243,8 @@ def draw_palette(H,he,wi,*off): #{{{
             
             hi_grp="".join(["cv_pal_",hex])
             # raise Exception(hex)
-            # hi_cmd="call s:hi_color(\""+hi_grp+"\",\""+hex+"\",\""+hex+"\")"
-            hi_cmd="".join(["call s:hi_color('",hi_grp,"','",hex,"','",hex,"')"])
+            # hi_cmd="call colorv#hi_color(\""+hi_grp+"\",\""+hex+"\",\""+hex+"\")"
+            hi_cmd="".join(["call colorv#hi_color('",hi_grp,"','",hex,"','",hex,"')"])
             cmd_list.append(hi_cmd)
             # pos_ptn="\\%"+str(line+y_off)+"l\\%"+str(col+x_off)+"c"
             pos_ptn="".join(["\\%",str(line+y_off),"l\\%",str(col+x_off),"c"])
@@ -1284,7 +1284,7 @@ def draw_hueline(l,*stats): #{{{
         hi_grp="cv_hue_"+str(x)
         hex=rgb2hex(hsv2rgb([H,S,V]))
         hueline_list.append(hex)
-        hi_cmd="call s:hi_color(\""+hi_grp+"\",\""+hex+"\",\""+hex+"\")"
+        hi_cmd="call colorv#hi_color(\""+hi_grp+"\",\""+hex+"\",\""+hex+"\")"
         cmd_list.append(hi_cmd)
         pos_ptn="\\%"+str(l)+"l\\%"+str(x+1+poff_x)+"c"
         match_cmd="let s:hsv_dict['"+hi_grp+"']=matchadd('"+hi_grp+"','"+pos_ptn+"')"
@@ -1361,7 +1361,7 @@ function! s:draw_palette(h,l,c,...) "{{{
                 let hex=colorv#hsv2hex([h,s,v])
             endif
             let hi_grp="cv_pal_".hex
-            call s:hi_color(hi_grp,hex,hex)
+            call colorv#hi_color(hi_grp,hex,hex)
             let pos_ptn="\\%".(line+h_off)."l\\%".(col+w_off)."c"
             call add(s:pal_clr_list,hex)
             
@@ -1398,7 +1398,7 @@ function! s:draw_multi_block(rectangle,hex_list) "{{{
     for idx in range(len(block_clr_list))
         let hex=block_clr_list[idx]
         let hi_grp="cv_blk".block_clr_list[idx]
-        call s:hi_color(hi_grp,hex,hex)
+        call colorv#hi_color(hi_grp,hex,hex)
         
         let Block_ptn="\\%>".(x+w*idx-1)."c\\%<".(x+w*(idx+1)).
                     \"c\\%>".(y-1)."l\\%<".(y+h)."l"
@@ -1465,7 +1465,7 @@ function! s:draw_hueline(l,...) "{{{
         let hi_grp="cv_hue_".x 
         let hex=colorv#hsv2hex([h,s,v])
         " exec "hi ".hi_grp." guifg=#".hex." guibg=#".hex
-        call s:hi_color(hi_grp,hex,hex)
+        call colorv#hi_color(hi_grp,hex,hex)
         let pos="\\%".l."l\\%".(x+1+s:poff_x)."c"
 
         if !exists("s:hsv_dict")|let s:hsv_dict={}|endif
@@ -1498,7 +1498,7 @@ function! s:draw_satline(l,...) "{{{
             let hex=colorv#hsv2hex([h,s,v])
         " endif
         " exec "hi ".hi_grp." guifg=#".hex." guibg=#".hex
-        call s:hi_color(hi_grp,hex,hex)
+        call colorv#hi_color(hi_grp,hex,hex)
         
         let pos="\\%".l."l\\%".(x+1+s:poff_x)."c"
 
@@ -1538,7 +1538,7 @@ function! s:draw_valline(l,...) "{{{
         else
             let hex=colorv#hsv2hex([h,s,v])
         endif
-        call s:hi_color(hi_grp,hex,hex)
+        call colorv#hi_color(hi_grp,hex,hex)
         
         let pos="\\%".l."l\\%".(col+s:poff_x)."c"
 
@@ -1553,7 +1553,7 @@ function! s:draw_valline(l,...) "{{{
     endwhile
 endfunction "}}}
 
-function! s:hi_color(hl_grp,hl_fg,hl_bg,...) "{{{
+function! colorv#hi_color(hl_grp,hl_fg,hl_bg,...) "{{{
     let [hl_grp,hl_fg,hl_bg]=[a:hl_grp,a:hl_fg,a:hl_bg]
     if has("gui_running")
         let hl_fg = hl_fg=~ '^\x\{6}$' ? "#".hl_fg : hl_fg
@@ -1690,7 +1690,7 @@ function! s:hi_misc() "{{{
         let bg=s:pal_clr_list[idx]
     endif
     let fg= s:rlt_clr(bg)
-    call s:hi_color("cv_star",fg,bg,"Bold")
+    call colorv#hi_color("cv_star",fg,bg,"Bold")
     let star_ptn='\%<'.(s:pal_H+1+s:poff_y).'l\%<'.
                 \(s:pal_W+1+s:poff_x).'c\*'
     let s:misc_dict["cv_star"]=matchadd("cv_star",star_ptn,40)
@@ -1698,7 +1698,7 @@ function! s:hi_misc() "{{{
         let [l,c]=s:get_bar_pos()
         let bg= s:satline_list[c-1]
         let fg= s:rlt_clr(bg)
-        call s:hi_color("cv_bar",fg,bg,"Bold")
+        call colorv#hi_color("cv_bar",fg,bg,"Bold")
         let bar_ptn='\%2l\%<'.
                     \(s:pal_W+1+s:poff_x).'c+'
         let s:misc_dict["cv_bar"]=matchadd("cv_bar",bar_ptn,20)
@@ -1984,12 +1984,12 @@ function! s:clear_hsvmatch() "{{{
     let s:hsv_dict={}
 endfunction "}}}
 function! s:clear_prevmatch() "{{{
-    if !exists("s:line_dict")|let s:line_dict={}|endif
-    for [key,var] in items(s:line_dict)
+    if !exists("s:prev_dict")|let s:prev_dict={}|endif
+    for [key,var] in items(s:prev_dict)
         try
             call matchdelete(var)
             exe "hi clear ".key
-            call remove(s:line_dict,key)
+            call remove(s:prev_dict,key)
         catch /^Vim\%((\a\+)\)\=:E803/
             call s:debug("E803:ID not found")
             continue
@@ -1998,7 +1998,7 @@ function! s:clear_prevmatch() "{{{
             continue
         endtry
     endfor
-    let s:line_dict={}
+    let s:prev_dict={}
 endfunction "}}}
 "}}}
 "WINS: "{{{1
@@ -2600,26 +2600,49 @@ function! s:approx2(hex1,hex2,...) "{{{
 
 endfunction "}}}
 function! s:rlt_clr(hex) "{{{
-    let hex=s:fmt_hex(a:hex)
-    let [y,i,q]=colorv#hex2yiq(hex)
-    if y>=35 && y < 50
-    	let y = 80
-    elseif y >=50 && y < 65
-        let y = 20
+    if has("python") && g:ColorV_no_python!=1
+    	call s:py_core_load()
+python << EOF
+y,i,q=rgb2yiq(hex2rgb(vim.eval("a:hex")))
+if y>=35 and y < 50:
+    y = 80
+elif y >=50 and y < 65:
+    y = 20
+else:
+    y = 100-y
+
+if i >0: 
+    i = i-10
+else:
+    i+=10
+if q >0: 
+    q = q -10
+else:
+    q+=10
+vim.command("return '"+rgb2hex(yiq2rgb([y,i,q]))+"'")
+EOF
     else
-    	let y = 100-y
+        let hex=s:fmt_hex(a:hex)
+        let [y,i,q]=colorv#hex2yiq(hex)
+        if y>=35 && y < 50
+            let y = 80
+        elseif y >=50 && y < 65
+            let y = 20
+        else
+            let y = 100-y
+        endif
+        if i >0 
+            let  i = i-10
+        else
+            let i+=10
+        endif
+        if q >0 
+            let  q = q -10
+        else
+            let q+=10
+        endif
+        return colorv#yiq2hex([y,i,q])
     endif
-    if i >0 
-    	let  i = i-10
-    else
-    	let i+=10
-    endif
-    if q >0 
-    	let  q = q -10
-    else
-    	let q+=10
-    endif
-    return colorv#yiq2hex([y,i,q])
 endfunction "}}}
 function! s:opz_clr(hex) "{{{
     let hex=s:fmt_hex(a:hex)
@@ -2635,6 +2658,10 @@ function! s:opz_clr(hex) "{{{
 endfunction "}}}
 
 function! colorv#timer(func,...) "{{{
+if !exists("*".a:func)
+    echom "[TIMER]: ".a:func." does not exists. stopped"
+    return
+endif
 if exists("a:1") 
     let farg=a:1
 else
@@ -2655,6 +2682,7 @@ else
     let o_t=strftime("%j")*86400+strftime("%H")*3600
                 \+strftime("%M")*60+strftime("%S")
 endif
+
 
 for i in range(num)
     silent!  let rtn=call(a:func,farg)
@@ -4140,9 +4168,269 @@ endfunction "}}}
 "}}}
 " PREV: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! s:py_prev_load() "{{{2
+    if exists("s:py_prev_load")
+    	return
+    endif
+    let s:py_prev_load=1
+    call s:py_core_load()
+python << EOF
+import re
+fmt={}
+fmt['RGB']=re.compile(r'''
+        (?<!\w)rgb\(                    #wordbegin
+        \s*(?P<R>\d{1,3})               #group2 R
+        ,\s*(?P<G>\d{1,3})              #group3 G
+        ,\s*(?P<B>\d{1,3})              #group4 B
+        \\)(?!\w)                        #wordend
+        (?ix)                           #[iLmsux] i:igone x:verbose
+                      ''')
+fmt['RGBA']=re.compile(r'''
+        (?<!\w)rgba\(                   #wordbegin
+        \s*(?P<R>\d{1,3})               #group2 R
+        ,\s*(?P<G>\d{1,3})              #group3 G
+        ,\s*(?P<B>\d{1,3})              #group4 B
+        ,\s*(?P<A>\d{1,3}(?:\.\d*)?)%?
+        \\)(?!\w)                        #wordend
+        (?ix)                           #[iLmsux] i:igone x:verbose
+                      ''')
+fmt['RGBX']=re.compile(r'''
+        (?<!\w)rgb(a)?\(                #wordbegin
+        \s*(?P<R>\d{1,3})               #group2 R
+        ,\s*(?P<G>\d{1,3})              #group3 G
+        ,\s*(?P<B>\d{1,3})              #group4 B
+        (?(1),\s*(?P<A>\d{1,3}(?:\.\d*)?)%?)
+                                        #group5 A exists if 'a' exists
+        \\)(?!\w)                        #wordend
+        (?ix)                           #[iLmsux] i:igone x:verbose
+                      ''')
+fmt['RGBP']=re.compile(r'''
+        (?<!\w)rgb\(                    #wordbegin
+        \s*(?P<R>\d{1,3})%              #group2 R
+        ,\s*(?P<G>\d{1,3})%             #group3 G
+        ,\s*(?P<B>\d{1,3})%             #group4 B
+        \\)(?!\w)                        #wordend
+        (?ix)                           #[iLmsux] i:igone x:verbose
+                        ''')
+fmt['RGBAP']=re.compile(r'''
+        (?<!\w)rgba\(                   #wordbegin
+        \s*(?P<R>\d{1,3})%              #group2 R
+        ,\s*(?P<G>\d{1,3})%             #group3 G
+        ,\s*(?P<B>\d{1,3})%             #group4 B
+        ,\s* (?P<A>\d{1,3} (?:\.\d*)?) %?
+        \\)(?!\w)                        #wordend
+        (?ix)                           #[iLmsux] i:igone x:verbose
+                        ''')
+
+fmt['HSL']=re.compile(r'''
+        (?<!\w)hsl\(                    #wordbegin
+        \s*(?P<H>\d{1,3})               #group2 H
+        ,\s*(?P<S>\d{1,3})%             #group3 S
+        ,\s*(?P<L>\d{1,3})%             #group4 L
+        \\)(?!\w)                        #wordend
+        (?ix)                           #[iLmsux] i:igone x:verbose
+                        ''')
+fmt['HSLA']=re.compile(r'''
+        (?<!\w)hsla\(                   #wordbegin
+        \s*(?P<H>\d{1,3})               #group2 H
+        ,\s*(?P<S>\d{1,3})%             #group3 S
+        ,\s*(?P<L>\d{1,3})%             #group4 L
+        ,\s* (?P<A>\d{1,3} (?:\.\d*)?) %?
+        \\)(?!\w)                        #wordend
+        (?ix)                           #[iLmsux] i:igone x:verbose
+                        ''')
+fmt['HSV']=re.compile(r'''
+        (?<!\w)hsv\(                    #wordbegin
+        \s*(?P<H>\d{1,3})               #group2 H
+        ,\s*(?P<S>\d{1,3})              #group3 S
+        ,\s*(?P<V>\d{1,3})              #group4 L
+        \\)(?!\w)                        #wordend
+        (?ix)                           #[iLmsux] i:igone x:verbose
+                        ''')
+fmt['HSVA']=re.compile(r'''
+        (?<!\w)hsva\(                   #wordbegin
+        \s*(?P<H>\d{1,3})               #group2 H
+        ,\s*(?P<S>\d{1,3})              #group3 S
+        ,\s*(?P<V>\d{1,3})              #group4 L
+        ,\s* (?P<A>\d{1,3} (?:\.\d*)?) %?
+        \\)(?!\w)                        #wordend
+        (?ix)                           #[iLmsux] i:igone x:verbose
+                        ''')
+# (?<![0-9a-fA-F]|0[xX]) is wrong!
+# (?<![0-9a-fA-F])|(?<!0[xX]) is wrong
+# use (?<!([\w#]))              
+fmt['HEX']=re.compile(r'''
+        (?<!([\w#]))                    #no preceding [0~z] # 0x
+        (?P<HEX>[0-9a-fA-F]{6})         #group HEX
+        (?!\w)                 #no following [0~z]
+        (?ix) 
+                        ''')
+fmt['HEX0']=re.compile(r'''
+        0x                              # 0xffffff 
+        (?P<HEX>[0-9a-fA-F]{6})         #group HEX
+        (?!\w)                 #no following [0~f]
+        (?ix) 
+                        ''')
+fmt['NS6']=re.compile(r'''
+        [#]                             # #ffffff
+        (?P<HEX>[0-9a-fA-F]{6})         #group HEX
+        (?!\w)                 #no following [0~f]
+        (?ix) 
+                        ''')
+fmt['NS3']=re.compile(r'''
+        [#]                             # #ffffff
+        (?P<HEX>[0-9a-fA-F]{3})         #group HEX
+        (?!\w)                 #no following [0~f]
+        (?ix) 
+                        ''')
+
+
+#X11 Standard
+clrnX11=[['Gray', 'BEBEBE'], ['Green', '00FF00']
+            , ['Maroon', 'B03060'], ['Purple', 'A020F0']]
+#W3C Standard
+clrnW3C=[['Gray', '808080'], ['Green', '008000']
+            , ['Maroon', '800000'], ['Purple', '800080']]
+clrn=[
+  ['AliceBlue'           , 'f0f8ff'], ['AntiqueWhite'        , 'faebd7']
+, ['Aqua'                , '00ffff'], ['Aquamarine'          , '7fffd4']
+, ['Azure'               , 'f0ffff'], ['Beige'               , 'f5f5dc']
+, ['Bisque'              , 'ffe4c4'], ['Black'               , '000000']
+, ['BlanchedAlmond'      , 'ffebcd'], ['Blue'                , '0000ff']
+, ['BlueViolet'          , '8a2be2'], ['Brown'               , 'a52a2a']
+, ['BurlyWood'           , 'deb887'], ['CadetBlue'           , '5f9ea0']
+, ['Chartreuse'          , '7fff00'], ['Chocolate'           , 'd2691e']
+, ['Coral'               , 'ff7f50'], ['CornflowerBlue'      , '6495ed']
+, ['Cornsilk'            , 'fff8dc'], ['Crimson'             , 'dc143c']
+, ['Cyan'                , '00ffff'], ['DarkBlue'            , '00008b']
+, ['DarkCyan'            , '008b8b'], ['DarkGoldenRod'       , 'b8860b']
+, ['DarkGray'            , 'a9a9a9'], ['DarkGreen'           , '006400']
+, ['DarkKhaki'           , 'bdb76b'], ['DarkMagenta'         , '8b008b']
+, ['DarkOliveGreen'      , '556b2f'], ['Darkorange'          , 'ff8c00']
+, ['DarkOrchid'          , '9932cc'], ['DarkRed'             , '8b0000']
+, ['DarkSalmon'          , 'e9967a'], ['DarkSeaGreen'        , '8fbc8f']
+, ['DarkSlateBlue'       , '483d8b'], ['DarkSlateGray'       , '2f4f4f']
+, ['DarkTurquoise'       , '00ced1'], ['DarkViolet'          , '9400d3']
+, ['DeepPink'            , 'ff1493'], ['DeepSkyBlue'         , '00bfff']
+, ['DimGray'             , '696969'], ['DodgerBlue'          , '1e90ff']
+, ['FireBrick'           , 'b22222'], ['FloralWhite'         , 'fffaf0']
+, ['ForestGreen'         , '228b22'], ['Fuchsia'             , 'ff00ff']
+, ['Gainsboro'           , 'dcdcdc'], ['GhostWhite'          , 'f8f8ff']
+, ['Gold'                , 'ffd700'], ['GoldenRod'           , 'daa520']
+, ['GreenYellow'         , 'adff2f'], ['HoneyDew'            , 'f0fff0']
+, ['HotPink'             , 'ff69b4'], ['IndianRed'           , 'cd5c5c']
+, ['Indigo'              , '4b0082'], ['Ivory'               , 'fffff0']
+, ['Khaki'               , 'f0e68c'], ['Lavender'            , 'e6e6fa']
+, ['LavenderBlush'       , 'fff0f5'], ['LawnGreen'           , '7cfc00']
+, ['LemonChiffon'        , 'fffacd'], ['LightBlue'           , 'add8e6']
+, ['LightCoral'          , 'f08080'], ['LightCyan'           , 'e0ffff']
+, ['LightGoldenRodYellow', 'fafad2'], ['LightGrey'           , 'd3d3d3']
+, ['LightGreen'          , '90ee90'], ['LightPink'           , 'ffb6c1']
+, ['LightSalmon'         , 'ffa07a'], ['LightSeaGreen'       , '20b2aa']
+, ['LightSkyBlue'        , '87cefa'], ['LightSlateGray'      , '778899']
+, ['LightSteelBlue'      , 'b0c4de'], ['LightYellow'         , 'ffffe0']
+, ['Lime'                , '00ff00'], ['LimeGreen'           , '32cd32']
+, ['Linen'               , 'faf0e6'], ['Magenta'             , 'ff00ff']
+, ['MediumAquaMarine'    , '66cdaa']
+, ['MediumBlue'          , '0000cd'], ['MediumOrchid'        , 'ba55d3']
+, ['MediumPurple'        , '9370d8'], ['MediumSeaGreen'      , '3cb371']
+, ['MediumSlateBlue'     , '7b68ee'], ['MediumSpringGreen'   , '00fa9a']
+, ['MediumTurquoise'     , '48d1cc'], ['MediumVioletRed'     , 'c71585']
+, ['MidnightBlue'        , '191970'], ['MintCream'           , 'f5fffa']
+, ['MistyRose'           , 'ffe4e1'], ['Moccasin'            , 'ffe4b5']
+, ['NavajoWhite'         , 'ffdead'], ['Navy'                , '000080']
+, ['OldLace'             , 'fdf5e6'], ['Olive'               , '808000']
+, ['OliveDrab'           , '6b8e23'], ['Orange'              , 'ffa500']
+, ['OrangeRed'           , 'ff4500'], ['Orchid'              , 'da70d6']
+, ['PaleGoldenRod'       , 'eee8aa'], ['PaleGreen'           , '98fb98']
+, ['PaleTurquoise'       , 'afeeee'], ['PaleVioletRed'       , 'd87093']
+, ['PapayaWhip'          , 'ffefd5'], ['PeachPuff'           , 'ffdab9']
+, ['Peru'                , 'cd853f'], ['Pink'                , 'ffc0cb']
+, ['Plum'                , 'dda0dd'], ['PowderBlue'          , 'b0e0e6']
+, ['Red'                 , 'ff0000']
+, ['RosyBrown'           , 'bc8f8f'], ['RoyalBlue'           , '4169e1']
+, ['SaddleBrown'         , '8b4513'], ['Salmon'              , 'fa8072']
+, ['SandyBrown'          , 'f4a460'], ['SeaGreen'            , '2e8b57']
+, ['SeaShell'            , 'fff5ee'], ['Sienna'              , 'a0522d']
+, ['Silver'              , 'c0c0c0'], ['SkyBlue'             , '87ceeb']
+, ['SlateBlue'           , '6a5acd'], ['SlateGray'           , '708090']
+, ['Snow'                , 'fffafa'], ['SpringGreen'         , '00ff7f']
+, ['SteelBlue'           , '4682b4'], ['Tan'                 , 'd2b48c']
+, ['Teal'                , '008080'], ['Thistle'             , 'd8bfd8']
+, ['Tomato'              , 'ff6347'], ['Turquoise'           , '40e0d0']
+, ['Violet'              , 'ee82ee'], ['Wheat'               , 'f5deb3']
+, ['White'               , 'ffffff'], ['WhiteSmoke'          , 'f5f5f5']
+, ['Yellow'              , 'ffff00'], ['YellowGreen'         , '9acd32']
+]
+NAME_txt=r'\bGray\b|\bGreen\b|\bMaroon\b|\bPurple\b'
+for [nam,hex] in clrn:
+    NAME_txt=r"|".join([NAME_txt,r'\b'+nam+r'\b'])
+
+fmt['NAME']=re.compile(NAME_txt,re.I|re.X)
+def get_iterlist(sequence):
+    for elem in sequence:
+    	yield elem
+def name2hex(name,*rule):
+    if len(name):
+        if len(rule) and rule[0]=="X11":
+            lst=clrn+clrnX11
+        else:
+            lst=clrn+clrnW3C
+        for [nam,clr] in lst:
+            # ignore the case
+            if name.lower()==nam.lower():  
+                return clr
+    return 0
+def txt2hex(txt):
+    hex_list=[]
+    for key,var in fmt.iteritems():
+    	m=var.finditer(txt)
+        r_list=list(get_iterlist(m))
+        if len(r_list)>0:
+            for x in r_list:
+                if key=="HEX" or key=="NS6" or key=="HEX0":
+                    hx=x.group('HEX')
+                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
+                elif key=="NS3":
+                    hx3=x.group('HEX')
+                    hx=hx3[0]*2+hx3[1]*2+hx3[2]*2
+                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
+                elif key=="RGBA" or key=="RGB":
+                    hx=rgb2hex([x.group('R'),x.group('G'),x.group('B')])
+                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
+                elif key=="RGBP" or key=="RGBAP":
+                    r,g,b=int(x.group('R')),int(x.group('G')),int(x.group('B'))
+                    hx=rgb2hex([r*2.55,g*2.55,b*2.55])
+                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
+                elif key=="HSL" or key=="HSLA" :
+                    h,s,l=int(x.group('H')),int(x.group('S')),int(x.group('L'))
+                    hx=rgb2hex(hls2rgb([h,l,s]))
+                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
+                elif key=="HSV" or key=="HSVA" :
+                    h,s,v=int(x.group('H')),int(x.group('S')),int(x.group('V'))
+                    hx=rgb2hex(hls2rgb([h,l,s]))
+                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
+                elif key=="NAME":
+                    hx=name2hex(x.group())
+                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
+    return hex_list
+
+EOF
+endfunction "}}}
+function! s:p_txt2hex(txt) "{{{
+call s:py_prev_load()
+python << EOF
+r=txt2hex(vim.eval("a:txt"))
+vim.command("return "+str(r))
+EOF
+endfunction "}}}
 function! colorv#prev_txt(txt) "{{{
-    if !exists("s:line_dict")|let s:line_dict={}|endif
-    let hex_list=s:txt2hex(a:txt)
+    if !exists("s:prev_dict")|let s:prev_dict={}|endif
+    if has("python") && g:ColorV_no_python!=1
+        let hex_list=s:p_txt2hex(a:txt)
+    else
+        let hex_list=s:txt2hex(a:txt)
+    endif
     let bufnr=bufnr('%')
     for prv_item in hex_list
         if prv_item[4]=="NAME"
@@ -4166,36 +4454,55 @@ function! colorv#prev_txt(txt) "{{{
             let hi_fg=s:rlt_clr(prv_item[0])
         endif
         try 
-            call s:hi_color(hi_grp,hi_fg,prv_item[0])
-            let s:line_dict[hi_grp]= matchadd(hi_grp,hi_ptn)
+            " DONE: 110831  stop matchadd duplicated word. 
+            " XXX: not all word being hilighted: because same hex may be
+            " differe ptn
+            " use ptn group instead.
+            let hi_ptn_a=substitute(hi_ptn,'\W',"_","g")
+            if !exists("s:prev_dict['".hi_ptn_a."']")
+                call colorv#hi_color(hi_grp,hi_fg,prv_item[0])
+                let s:prev_dict[hi_ptn_a]= matchadd(hi_grp,hi_ptn)
+                " let s:prev_ptn_dict[hi_ptn]=1
+            endif
         catch /^Vim\%((\a\+)\)\=:E254/
-            call s:debug("E254")
+            call s:debug("E254:Unknow colorname")
         endtry
     endfor
 endfunction "}}}
 function! colorv#preview(...) "{{{
 "parse each line with color format text
 "then highlight the color text
-    if !exists("a:1") || a:1 !~ "C"
-        call s:clear_prevmatch()
-    endif
-    let s:ColorV_view_name=g:ColorV_view_name
-    let s:ColorV_view_block=g:ColorV_view_block
+    call s:clear_prevmatch()
     if exists("a:1") && a:1 =~ "N"
     	let s:ColorV_view_name=0
+    else
+    	let s:ColorV_view_name=g:ColorV_view_name
     endif
     if exists("a:1") && a:1 =~ "B"
         let s:ColorV_view_block=1
+    else
+        let s:ColorV_view_block=g:ColorV_view_block
     endif
-    let file_lines=getline(1,line('$'))
-    for i in range(len(file_lines))
-        let line=file_lines[i]
-        call colorv#prev_txt(line)
-    endfor
+    if has("python") && g:ColorV_no_python!=1
+python << EOF
+lines=vim.current.buffer
+for line in lines:
+    vim.command("call colorv#prev_txt(\""+line+"\")")
+EOF
+    else
+        let file_lines=getline(1,line('$'))
+        for i in range(len(file_lines))
+            let line=file_lines[i]
+            call colorv#prev_txt(line)
+        endfor
+    endif
+
+
     let s:ColorV_view_block=g:ColorV_view_block
     let s:ColorV_view_name=g:ColorV_view_name
 endfunction "}}}
 function! colorv#preview_line(...) "{{{
+    "if not clear then prev line in a previewed file will change nothing.
     if !exists("a:1") || a:1 !~ "C"
         call s:clear_prevmatch()
     endif
