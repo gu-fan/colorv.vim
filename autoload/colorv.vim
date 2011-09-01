@@ -22,7 +22,7 @@ let g:ColorV_loaded = 1
 let g:ColorV={}
 let g:ColorV.name="_ColorV_"
 let g:ColorV.listname="_ColorV-List_"
-let g:ColorV.ver="2.5.0.0"
+let g:ColorV.ver="2.5.0.3"
 
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={'R':255,'G':0,'B':0}
@@ -992,24 +992,15 @@ def hex2term8(hex1): #{{{
     return best_match #}}}
 def hex2term_d6(hex1): #{{{
     '''calculate the term clr index'''
+    #The disadvantage is there is a colorful-line in low lightness colors.
     r1,g1,b1 = hex2rgb(hex1)
     m1=0
-    if   r1 <= 4   : n1,m1=0,1
-    elif r1 <= 47  : n1=0
-    elif r1 <= 91  : n1=1
-    elif r1 <= 96  : n1,m1=1,2
+    if r1 <= 47    : n1=0
     elif r1 <= 115 : n1=1
-    elif r1 <= 131 : n1=2
-    elif r1 <= 136 : n1,m1=2,3
     elif r1 <= 155 : n1=2
-    elif r1 <= 171 : n1=3
-    elif r1 <= 176 : n1,m1=3,4
     elif r1 <= 195 : n1=3
-    elif r1 <= 211 : n1=4
-    elif r1 <= 216 : n1,m1=4,5
     elif r1 <= 235 : n1=4
-    elif r1 <= 244 : n1=5
-    elif r1 <= 255 : n1,m1=5,6
+    else:            n1=5
     if   g1 <= 47  : n2=0 
     elif g1 <= 115 : n2=1
     elif g1 <= 155 : n2=2
@@ -1022,18 +1013,18 @@ def hex2term_d6(hex1): #{{{
     elif b1 <= 195 : n3=3
     elif b1 <= 235 : n3=4
     else:            n3=5
-    if   n1==n2==n3 and m1==1:
-    	return 16
-    elif n1==n2==n3 and m1==2:
+    if   n1==n2==n3 and 91<=r1<=96:
     	return 59
-    elif n1==n2==n3 and m1==3:
+    elif n1==n2==n3 and 131<=r1<=136:
     	return 102
-    elif n1==n2==n3 and m1==4:
+    elif n1==n2==n3 and 171<=r1<=176:
     	return 145
-    elif n1==n2==n3 and m1==5:
+    elif n1==n2==n3 and 211<=r1<=216:
     	return 188
-    elif n1==n2==n3 and m1==6:
+    elif n1==n2==n3 and 244<=r1:
     	return 231
+    elif n1==n2==n3 and r1<=4:
+    	return 16
     elif n1==n2==n3:
     	return (r1-5)/10+232
     else:
@@ -1062,12 +1053,12 @@ def hex2term_d4(hex1): #{{{
     else: n3,m3=5,24
     # for c in range(n1,n1)+range(232+n3*3,232+m3):
     # for c in range(n1-l1,n1+m1)+range(232+n3*3,232+m3):
-    for c in [n1+n2+n3]+range(232+n3*3,232+m3):
-    #for c in range(16,256):
+    # for c in [n1+n2+n3]+range(232+n3*3,232+m3):
+    for c in range(16,256):
         r2,g2,b2 = hex2rgb(tmclr_dict[c])
         dr,dg,db=abs(r1-r2),abs(g1-g2),abs(b1-b2)
         if r2==g2==b2:
-            d=dr+dg+db+50
+            d=dr+dg+db+35
         else:
             d=dr+dg+db
         if d < smallest_distance:
@@ -1121,7 +1112,7 @@ endfunction "}}}
 function! s:p3_hex2term(hex) "{{{
     call s:py_term_load()
 python <<EOF
-vim.command("return "+str(hex2term_d6(vim.eval("a:hex"))))
+vim.command("return "+str(hex2term_d4(vim.eval("a:hex"))))
 EOF
 endfunction "}}}
 
@@ -1242,11 +1233,8 @@ def draw_palette(H,he,wi,*off): #{{{
             pal_clr_list.append(hex)
             
             hi_grp="".join(["cv_pal_",hex])
-            # raise Exception(hex)
-            # hi_cmd="call colorv#hi_color(\""+hi_grp+"\",\""+hex+"\",\""+hex+"\")"
             hi_cmd="".join(["call colorv#hi_color('",hi_grp,"','",hex,"','",hex,"')"])
             cmd_list.append(hi_cmd)
-            # pos_ptn="\\%"+str(line+y_off)+"l\\%"+str(col+x_off)+"c"
             pos_ptn="".join(["\\%",str(line+y_off),"l\\%",str(col+x_off),"c"])
             match_cmd="".join(["let s:pallet_dict['",hi_grp,"']=matchadd('",hi_grp,"','",pos_ptn,"')"])
             cmd_list.append(match_cmd)
@@ -4008,6 +3996,7 @@ function! colorv#list_gen(hex,...) "{{{
     let type=exists("a:1") && !empty(a:1) ? a:1 : s:gen_def_type
     let nums=exists("a:2") && !empty(a:2) ? a:2 : s:gen_def_nums 
     let step=exists("a:3") && !empty(a:3) ? a:3 : s:gen_def_step
+    let circle=exists("a:4") && !empty(a:4) ? a:34: 1
     let [h,s,v]=colorv#hex2hsv(hex)
     let hex_list=[]
     for i in range(nums)
@@ -4017,37 +4006,46 @@ function! colorv#list_gen(hex,...) "{{{
             let hex{i}=colorv#hsv2hex([h{i},s,v])
         elseif type=="Saturation"
             "s+
-            " let s{i}= s+step*i<=100 ? s+step*i : 100
             if i==0
-                let s0=s+step
+                let s0=s
             else
                 let s{i}=s{i-1}+step
-                let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
+                if cirle==1
+                    let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
+                else
+                    let s{i} = s{i} >=100 ? 100 : s{i} <= 0 ? 1 : s{i}
+                endif
             endif
             let hex{i}=colorv#hsv2hex([h,s{i},v])
         elseif type=="Value"
             "v+
-            " let v{i}= v+step*i<=100 ? v+step*i : 100
             if i==0
-                let v0=v+step
+                let v0=v
             else
                 let v{i}=v{i-1}+step
-                let v{i} = v{i} >=100 ? 1 : v{i} <= 0 ? 100 : v{i}
+                if cirle==1
+                    let v{i} = v{i} >=100 ? 1 : v{i} <= 0 ? 100 : v{i}
+                else
+                    let v{i} = v{i} >=100 ? 100 : v{i} <= 0 ? 1 : v{i}
+                endif
             endif
             let hex{i}=colorv#hsv2hex([h,s,v{i}])
         elseif type=="Monochromatic"
             "s+step v+step
-            " let v{i}= v+step*i<=100 ? v+step*i : 100
-            " let s{i}= s+step*i<=100 ? s+step*i : 100
             let step=step>0 ? 5 : step<0 ? -5 : 0
             if i==0
-                let s0=s+step
-                let v0=v+step
+                let s0=s
+                let v0=v
             else
                 let s{i}=s{i-1}+step
                 let v{i}=v{i-1}+step
-                let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
-                let v{i} = v{i} >=100 ? 1 : v{i} <= 0 ? 100 : v{i}
+                if cirle==1
+                    let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
+                    let v{i} = v{i} >=100 ? 1 : v{i} <= 0 ? 100 : v{i}
+                else
+                    let s{i} = s{i} >=100 ? 100 : s{i} <= 0 ? 1 : s{i}
+                    let v{i} = v{i} >=100 ? 100 : v{i} <= 0 ? 1 : v{i}
+                endif
             endif
             let hex{i}=colorv#hsv2hex([h,s{i},v{i}])
         elseif type=="Analogous"
@@ -4484,6 +4482,7 @@ function! colorv#preview(...) "{{{
         let s:ColorV_view_block=g:ColorV_view_block
     endif
     if has("python") && g:ColorV_no_python!=1
+    	call s:py_prev_load()
 python << EOF
 lines=vim.current.buffer
 for line in lines:
