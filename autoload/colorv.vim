@@ -416,22 +416,21 @@ endfunction "}}}
 function! colorv#rgb2hsv(rgb)  "{{{
 " in [r,g,b] 0~255
 " out [H,S,V] 0~360 0~100
+    let [r,g,b]=[s:float(a:rgb[0]),s:float(a:rgb[1]),s:float(a:rgb[2])]
+    if r>255||g>255||b>255
+    	call s:error("rgb2hsv():RGB out of boundary.".string(a:rgb))
+        let r= r>255 ? 255 : r
+        let g= g>255 ? 255 : g
+        let b= b>255 ? 255 : b
+    endif
 if has("python") && g:ColorV_no_python!=1
     call s:py_core_load()
-    let [r,g,b]=a:rgb
 python << EOF
 rgb=[float(vim.eval("r")),float(vim.eval("g")),float(vim.eval("b"))]
 h,s,v=rgb2hsv(rgb)
 vim.command("return "+str([h,s,v]))
 EOF
 else
-    let [r,g,b]=[s:float(a:rgb[0]),s:float(a:rgb[1]),s:float(a:rgb[2])]
-    if r>255||g>255||b>255
-    	call s:error("rgb2hsv():RGB out of boundary.".string(a:rgb))
-        let r=s:fmod(r,256.0)
-        let g=s:fmod(g,256.0)
-        let b=s:fmod(b,256.0)
-    endif
     let [r,g,b]=[r/255.0,g/255.0,b/255.0]
     let max=s:fmax([r,g,b])
     let min=s:fmin([r,g,b])
@@ -451,22 +450,6 @@ endfunction "}}}
 function! colorv#hsv2rgb(hsv) "{{{
 " in [h,s,v] 0~360 0~100
 " out [R,G,B] 0~255      "Follow info from wikipedia"
-if has("python") && g:ColorV_no_python!=1
-    call s:py_core_load()
-    let [h,s,v]=a:hsv
-    if h>=360
-        let h=s:fmod(h,360.0)
-    elseif h<0
-        let h=360-s:fmod(abs(h),360.0)
-    endif
-    let s = s>100 ? 100 : s < 0 ? 0 : s
-    let v = v>100 ? 100 : v < 0 ? 0 : v
-python << EOF
-hsv=[float(vim.eval("h")),float(vim.eval("s")),float(vim.eval("v"))]
-r,g,b=hsv2rgb(hsv)
-vim.command("return "+str([r,g,b]))
-EOF
-else
     let [h,s,v]=[s:float(a:hsv[0]),s:float(a:hsv[1]),s:float(a:hsv[2])]
     let s = s>100 ? 100 : s < 0 ? 0 : s
     let v = v>100 ? 100 : v < 0 ? 0 : v
@@ -475,6 +458,14 @@ else
     elseif h<0
         let h=360-s:fmod(abs(h),360.0)
     endif
+if has("python") && g:ColorV_no_python!=1
+    call s:py_core_load()
+python << EOF
+hsv=[float(vim.eval("h")),float(vim.eval("s")),float(vim.eval("v"))]
+r,g,b=hsv2rgb(hsv)
+vim.command("return "+str([r,g,b]))
+EOF
+else
     let v=v*2.55
     if s==0
     	let [R,G,B]=[v,v,v]
@@ -520,9 +511,9 @@ function! colorv#rgb2hex(rgb)   "{{{
     let [r,g,b]=[s:number(a:rgb[0]),s:number(a:rgb[1]),s:number(a:rgb[2])]
     if r>255||g>255||b>255
     	call s:error("rgb2hex():RGB out of boundary.".string(a:rgb))
-        let r=s:fmod(r,256.0)
-        let g=s:fmod(g,256.0)
-        let b=s:fmod(b,256.0)
+        let r= r>255 ? 255 : r
+        let g= g>255 ? 255 : g
+        let b= b>255 ? 255 : b
     endif
     let hex=printf("%06x",r*0x10000+g*0x100+b*0x1)
     let hex=substitute(hex,'\l','\u\0','g')
@@ -537,22 +528,21 @@ function! colorv#hex2rgb(hex) "{{{
 endfunction "}}}
 
 function! colorv#rgb2hls(rgb) "{{{
+    let [r,g,b]=[s:float(a:rgb[0]),s:float(a:rgb[1]),s:float(a:rgb[2])]
+    if r>255||g>255||b>255
+    	call s:error("rgb2hls():RGB out of boundary.".string(a:rgb))
+        let r= r>255 ? 255 : r
+        let g= g>255 ? 255 : g
+        let b= b>255 ? 255 : b
+    endif
 if has("python") && g:ColorV_no_python!=1
     call s:py_core_load()
-    let [r,g,b]=a:rgb
 python << EOF
 rgb=[float(vim.eval("r")),float(vim.eval("g")),float(vim.eval("b"))]
 h,l,s=rgb2hls(rgb)
 vim.command("return "+str([h,l,s]))
 EOF
 else
-    let [r,g,b]=[s:float(a:rgb[0]),s:float(a:rgb[1]),s:float(a:rgb[2])]
-    if r>255||g>255||b>255
-    	call s:error("rgb2hls():RGB out of boundary.".string(a:rgb))
-        let r=s:fmod(r,256.0)
-        let g=s:fmod(g,256.0)
-        let b=s:fmod(b,256.0)
-    endif
     let [r,g,b]=[r/255.0,g/255.0,b/255.0]
     let max=s:fmax([r,g,b])
     let min=s:fmin([r,g,b])
@@ -577,22 +567,6 @@ else
 endif
 endfunction "}}}
 function! colorv#hls2rgb(hls) "{{{
-if has("python") && g:ColorV_no_python!=1
-    call s:py_core_load()
-    let [h,l,s]=a:hls
-    if h>=360
-        let h=s:fmod(h,360.0)
-    elseif h<0
-        let h=360-s:fmod(abs(h),360.0)
-    endif
-    let s = s>100 ? 100 : s < 0 ? 0 : s
-    let l = l>100 ? 100 : l < 0 ? 0 : l
-python << EOF
-hls=[float(vim.eval("h")),float(vim.eval("l")),float(vim.eval("s"))]
-r,g,b=hls2rgb(hls)
-vim.command("return "+str([r,g,b]))
-EOF
-else
     let [h,l,s]=[s:float(a:hls[0]),s:float(a:hls[1]),s:float(a:hls[2])]
     let s = s>100 ? 100 : s < 0 ? 0 : s
     let l = l>100 ? 100 : l < 0 ? 0 : l
@@ -601,6 +575,14 @@ else
     elseif h<0
         let h=360-s:fmod(abs(h),360.0)
     endif
+if has("python") && g:ColorV_no_python!=1
+    call s:py_core_load()
+python << EOF
+hls=[float(vim.eval("h")),float(vim.eval("l")),float(vim.eval("s"))]
+r,g,b=hls2rgb(hls)
+vim.command("return "+str([r,g,b]))
+EOF
+else
     let [s,l]=[s/100.0,l/100.0]
     if s==0
     	let [r,g,b]=[l,l,l]
@@ -649,17 +631,17 @@ endfunction "}}}
 
 "YUV color space (PAL)
 function! colorv#rgb2yuv(rgb) "{{{
-    let [R,G,B]=s:float(a:rgb)
-    if R>255||G>255||B>255
+    let [r,g,b]=s:float(a:rgb)
+    if r>255||g>255||b>255
     	call s:error("rgb2yuv():RGB out of boundary.".string(a:rgb))
-        let R=s:fmod(R,256.0)
-        let G=s:fmod(G,256.0)
-        let B=s:fmod(B,256.0)
+        let r= r>255 ? 255 : r
+        let g= g>255 ? 255 : g
+        let b= b>255 ? 255 : b
     endif
-    let [R,G,B]=[R/255.0,G/255.0,B/255.0]
-    let Y=0.299*R+0.587*G+0.114*B
-    let U=-0.147*R-0.289*G+0.436*B
-    let V=0.615*R-0.515*G-0.100*B
+    let [r,g,b]=[r/255.0,g/255.0,b/255.0]
+    let Y=0.299*r+0.587*g+0.114*b
+    let U=-0.147*r-0.289*g+0.436*b
+    let V=0.615*r-0.515*g-0.100*b
     " return [Y*100,U*100,V*100]
     return [float2nr(round(Y*100)),float2nr(round(U*100)),
                 \float2nr(round(V*100))]
@@ -668,9 +650,9 @@ function! colorv#yuv2rgb(yuv) "{{{
     let [Y,U,V]=s:float(a:yuv)
     let [Y,U,V]=[Y/100.0,U/100.0,V/100.0]
     if Y>100||U>100||V>100 || Y<-100||U<-100||V<-100
-        let Y=s:fmod(Y,100.0)
-        let U=s:fmod(U,100.0)
-        let V=s:fmod(V,100.0)
+        let Y= Y>100 ? 100 : Y<0 ? 0 : Y
+        let U= U>100 ? 100 : U<-100 ? -100 : U
+        let V= V>100 ? 100 : V<-100 ? -100 : V
     endif
     let R = Y + 1.14 *V
     let G = Y - 0.395*U - 0.581*V
@@ -688,66 +670,57 @@ endfunction "}}}
 
 "YIQ color space (NTSC)
 function! colorv#rgb2yiq(rgb) "{{{
+    let [r,g,b]=s:float(a:rgb)
+    if r>255||g>255||b>255
+    	call s:error("rgb2yiq():RGB out of boundary.".string(a:rgb))
+        let r= r>255 ? 255 : r
+        let g= g>255 ? 255 : g
+        let b= b>255 ? 255 : b
+    endif
 if has("python") && g:ColorV_no_python!=1
     call s:py_core_load()
-    let [r,g,b]=a:rgb
 python << EOF
 rgb=[float(vim.eval("r")),float(vim.eval("g")),float(vim.eval("b"))]
 y,i,q=rgb2yiq(rgb)
 vim.command("return "+str([y,i,q]))
 EOF
 else
-    let [R,G,B]=s:float(a:rgb)
-    if R>255||G>255||B>255
-    	call s:error("rgb2yiq():RGB out of boundary.".string(a:rgb))
-        let R=s:fmod(R,256.0)
-        let G=s:fmod(G,256.0)
-        let B=s:fmod(B,256.0)
-    endif
-    let [R,G,B]=[R/255.0,G/255.0,B/255.0]
-    let Y=  0.299 *R + 0.587 *G+ 0.114 *B
-    let I=  0.5957*R +-0.2745*G+-0.3213*B
-    let Q=  0.2115*R +-0.5226*G+ 0.3111*B
+    let [r,g,b]=[r/255.0,g/255.0,b/255.0]
+    let Y=  0.299 *r + 0.587 *g+ 0.114 *b
+    let I=  0.5957*r +-0.2745*g+-0.3213*b
+    let Q=  0.2115*r +-0.5226*g+ 0.3111*b
     " return [Y*100,U*100,V*100]
     return [round(Y*100),round(I*100),round(Q*100)]
 endif
 endfunction "}}}
 function! colorv#yiq2rgb(yiq) "{{{
+    let [y,i,q]=s:float(a:yiq)
+    if y>100||i>100||q>100 ||i<-100||q<-100
+        let y= y>100 ? 100 : y<0 ? 0 : y
+        let i= i>100 ? 100 : i<-100 ? -100 : i
+        let q= q>100 ? 100 : q<-100 ? -100 : q
+    endif
 if has("python") && g:ColorV_no_python!=1
     call s:py_core_load()
-    let [y,i,q]=a:yiq
-    let y= y<0 ? 0 : y
-    if y>100||i>100||q>100 || i<-100||q<-100
-        let y=s:fmod(y,100.0)
-        let i=s:fmod(i,100.0)
-        let q=s:fmod(q,100.0)
-    endif
 python << EOF
 yiq=[float(vim.eval("y")),float(vim.eval("i")),float(vim.eval("q"))]
 r,g,b=yiq2rgb(yiq)
 vim.command("return "+str([r,g,b]))
 EOF
 else
-    let [Y,I,Q]=s:float(a:yiq)
-    if Y>100||I>100||Q>100 ||I<-100||Q<-100
-        let Y=s:fmod(Y,100.0)
-        let I=s:fmod(I,100.0)
-        let Q=s:fmod(Q,100.0)
-    endif
-    let Y=Y<0?0 : Y
-    let [Y,I,Q]=[Y/100.0,I/100.0,Q/100.0]
-    let R = Y + 0.9563*I+ 0.6210*Q
-    let G = Y - 0.2721*I- 0.6474*Q
-    let B = Y - 1.1070*I+ 1.7046*Q
-    if R>1 || G>1 || B>1 || R<0 || G<0 || B<0
-    	call s:error("Invalid RGB for with YIQ".string(a:yiq))
-        let R = R>1 ? 1 : R<0 ? 0 : R
-        let G = G>1 ? 1 : G<0 ? 0 : G
-        let B = B>1 ? 1 : B<0 ? 0 : B
+    let [y,i,q]=[y/100.0,i/100.0,q/100.0]
+    let r = y + 0.9563*i+ 0.6210*q
+    let g = y - 0.2721*i- 0.6474*q
+    let b = y - 1.1070*i+ 1.7046*q
+    if r>1 || g>1 || b>1 || r<0 || g<0 || b<0
+    	" call s:error("Invalid RGB for with YIQ".string(a:yiq))
+        let r = r>1 ? 1 : r<0 ? 0 : r
+        let g = g>1 ? 1 : g<0 ? 0 : g
+        let b = b>1 ? 1 : b<0 ? 0 : b
     endif
     " return [R*255,G*255,B*255]
-    return [float2nr(round(R*255.0)),float2nr(round(G*255.0)),
-                \float2nr(round(B*255.0))]
+    return [float2nr(round(r*255.0)),float2nr(round(g*255.0)),
+                \float2nr(round(b*255.0))]
 endif
 endfunction "}}}
 
@@ -765,9 +738,9 @@ function! colorv#rgb2lab(rgb) "{{{
     let [r,g,b]=[s:float(a:rgb[0]),s:float(a:rgb[1]),s:float(a:rgb[2])] 
     if r>255||g>255||b>255
             call s:error("rgb2lab():RGB out of boundary.".string(a:rgb))
-            let r=s:fmod(r,256.0)
-            let g=s:fmod(g,256.0)
-            let b=s:fmod(b,256.0)
+            let r= r>255 ? 255 : r
+            let g= g>255 ? 255 : g
+            let b= b>255 ? 255 : b
     " 	return -1
     endif
     
@@ -3831,6 +3804,7 @@ function! colorv#yiq_list_gen(hex,...) "{{{
     let type=exists("a:1") && !empty(a:1) ? a:1 : s:gen_def_type
     let nums=exists("a:2") && !empty(a:2) ? a:2 : s:gen_def_nums 
     let step=exists("a:3") && !empty(a:3) ? a:3 : s:gen_def_step
+    let circle=exists("a:4") && !empty(a:4) ? a:4 : 1
     let [y,i,q]=colorv#rgb2yiq(colorv#hex2rgb(hex))
     let [h,s,v]=colorv#hex2hsv(hex)
     let hex_list=[]
@@ -3846,10 +3820,14 @@ function! colorv#yiq_list_gen(hex,...) "{{{
         "y+
         for i in range(nums)
             if i==0
-                let y0=y+step
+                let y0=y
             else
                 let y{i}=y{i-1}+step
-                let y{i} = y{i} >=100 ? 1 : y{i} <= 0 ? 100 : y{i}
+                if circle==1
+                    let y{i} = y{i} >=100 ? 1 : y{i} <= 0 ? 100 : y{i}
+                else
+                    let y{i} = y{i} >=100 ? 100 : y{i} <= 0 ? 1 : y{i}
+                endif
             endif
             let hex=colorv#yiq2hex([y{i},i,q])
             call add(hex_list,hex)
@@ -3859,10 +3837,14 @@ function! colorv#yiq_list_gen(hex,...) "{{{
         " let v{i}= v+step*i<=100 ? v+step*i : 100
         for i in range(nums)
             if i==0
-                let y0=y+step
+                let y0=y
             else
                 let y{i}=y{i-1}+step
-                let y{i} = y{i} >=100 ? 1 : y{i} <= 0 ? 100 : y{i}
+                if circle==1
+                    let y{i} = y{i} >=100 ? 1 : y{i} <= 0 ? 100 : y{i}
+                else
+                    let y{i} = y{i} >=100 ? 100 : y{i} <= 0 ? 1 : y{i}
+                endif
             endif
             let hex=colorv#yiq2hex([y{i},i,q])
             call add(hex_list,hex)
@@ -3870,10 +3852,14 @@ function! colorv#yiq_list_gen(hex,...) "{{{
     elseif type=="Saturation"
         for i in range(nums)
             if i==0
-                let s0=s+step
+                let s0=s
             else
                 let s{i}=s{i-1}+step
-                let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
+                if circle==1
+                    let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
+                else
+                    let s{i} = s{i} >=100 ? 100 : s{i} <= 0 ? 1 : s{i}
+                endif
             endif
             let hex{i}=colorv#hsv2hex([h,s{i},v])
             let [y{i},i{i},q{i}]=colorv#hex2yiq(hex{i})
@@ -3996,7 +3982,7 @@ function! colorv#list_gen(hex,...) "{{{
     let type=exists("a:1") && !empty(a:1) ? a:1 : s:gen_def_type
     let nums=exists("a:2") && !empty(a:2) ? a:2 : s:gen_def_nums 
     let step=exists("a:3") && !empty(a:3) ? a:3 : s:gen_def_step
-    let circle=exists("a:4") && !empty(a:4) ? a:34: 1
+    let circle=exists("a:4") && !empty(a:4) ? a:4 : 1
     let [h,s,v]=colorv#hex2hsv(hex)
     let hex_list=[]
     for i in range(nums)
@@ -4010,7 +3996,7 @@ function! colorv#list_gen(hex,...) "{{{
                 let s0=s
             else
                 let s{i}=s{i-1}+step
-                if cirle==1
+                if circle==1
                     let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
                 else
                     let s{i} = s{i} >=100 ? 100 : s{i} <= 0 ? 1 : s{i}
@@ -4023,7 +4009,7 @@ function! colorv#list_gen(hex,...) "{{{
                 let v0=v
             else
                 let v{i}=v{i-1}+step
-                if cirle==1
+                if circle==1
                     let v{i} = v{i} >=100 ? 1 : v{i} <= 0 ? 100 : v{i}
                 else
                     let v{i} = v{i} >=100 ? 100 : v{i} <= 0 ? 1 : v{i}
@@ -4039,7 +4025,7 @@ function! colorv#list_gen(hex,...) "{{{
             else
                 let s{i}=s{i-1}+step
                 let v{i}=v{i-1}+step
-                if cirle==1
+                if circle==1
                     let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
                     let v{i} = v{i} >=100 ? 1 : v{i} <= 0 ? 100 : v{i}
                 else
