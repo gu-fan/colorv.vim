@@ -738,11 +738,21 @@ DEPENDENCIES                                        *colorv-dependencies*
 ==============================================================================
 CHANGELOG                                           *colorv-changelog* 
 
-
+" 2.5.1 
+" DONE: 110902  add glance image
+" DONE: 110902  format hex2txt() output with '%3d'.
+" DONE: 110902  add a:4 'circle' option for colorv#gen_list().
+" DONE: 110902  add timer while previewing buffer
+"FIXED: 110902  Change python regxp '\s' and '\\)' to '[ \t]' and '[)]'
+                to fix the matching bug.
+" DONE: 110831  Not matchadd() duplicated word. 
+                Not all word being highlighted: because same hex may be
+                differe ptn. use ptn group as dict name instead.
 
 " 2.5.0 Faster and More~
 " DONE: 110826  Stop change colorname if no relating colorname for to-color.
 " DONE: 110826  preview highlight effect with buffers not clash.
+" DONE: 110825  add colorv#rgb2cmyk() and colorv#cmyk2rgb()
 " DONE: 110825  8/16 terminal ColorV window supportted
 "FIXED: 110825  Missing '*' sometimes. 
                 Cause the position of s:pal_H is changing.
