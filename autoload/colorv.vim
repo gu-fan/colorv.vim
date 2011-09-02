@@ -1134,12 +1134,12 @@ function! s:v3_hex2term(hex) "{{{
     let best_match=0
     let smallest_distance = 10000000
     let [r1,g1,b1] = colorv#hex2rgb(a:hex)
-    if r1 <= 45 | let n1=16 
-    elseif r1 <= 115 | let n1=52
-    elseif r1 <= 155 | let n1= 88
-    elseif r1 <= 195 | let n1=124
-    elseif r1 <= 235 | let n1=160
-    else | let n1=196
+    if r1 <= 45      | let [n1,m1]=[16 ,36]
+    elseif r1 <= 115 | let [n1,m1]=[52 ,36]
+    elseif r1 <= 155 | let [n1,m1]=[88 ,36]
+    elseif r1 <= 195 | let [n1,m1]=[124,36]
+    elseif r1 <= 235 | let [n1,m1]=[160,36]
+    else             | let [n1,m1]=[196,0]
     endif
     if   g1 <= 47  | let n2=0 
     elseif g1 <= 115 | let n2=6
@@ -1148,14 +1148,15 @@ function! s:v3_hex2term(hex) "{{{
     elseif g1 <= 235 | let n2=24
     else| let n2=30
     endif
-    if   b1 <= 47  | let [n3,n4]=[0,6]
-    elseif b1 <= 115 | let [n3,n4]=[1,10]
-    elseif b1 <= 155 | let [n3,n4]=[2,14]
-    elseif b1 <= 195 | let [n3,n4]=[3,18]
-    elseif b1 <= 235 | let [n3,n4]=[4,22]
-    else| let [n3,n4]=[5,24]
+    if   b1 <= 47    | let [n3,m3]=[0,6]
+    elseif b1 <= 115 | let [n3,m3]=[1,10]
+    elseif b1 <= 155 | let [n3,m3]=[2,14]
+    elseif b1 <= 195 | let [n3,m3]=[3,18]
+    elseif b1 <= 235 | let [n3,m3]=[4,22]
+    else| let [n3,m3]=[5,24]
     endif
-    for c in [n1+n2+n3]+range(232+n3*3,231+n4)
+    " for c in range(n1,n1+m1)+range(232+n3*3,231+m3)
+    for c in [n1+n2+n3]+range(232+n3*3,231+m3)
         let [r2,g2,b2] = colorv#hex2rgb(s:term_dict[c])
         let [dr,dg,db]=[abs(r1-r2),abs(g1-g2),abs(b1-b2)]
         if r2==g2 && g2==b2
@@ -1313,7 +1314,7 @@ function! s:draw_palette(h,l,c,...) "{{{
         let v= v==0 ? 1 : v 
         let col =1
         while col<=width
-            let s=100-(col-1)*(100.0/width-1)
+            let s=100-(col-1)*100.0/(width-1)
             let s= s==0 ? 1 : s 
             if s:space=="hls"
                 let hex=colorv#rgb2hex(colorv#hls2rgb([h,s,v]))
@@ -2680,14 +2681,15 @@ function! s:set_in_pos(...) "{{{
     let v= v==0 ? 1 : v
     let S= S==0 ? 1 : S
     let L= L==0 ? 1 : L==100 ? 99 : L
-    "pallet "{{{
+    "pallette "{{{
     if (s:mode=="max" || s:mode=="mid" ) && l > s:poff_y && l<= s:pal_H+s:poff_y && c<= s:pal_W
         let idx=(l-s:poff_y-1)*s:pal_W+c-s:poff_x-1
         let hex=s:pal_clr_list[idx]
+        echoe hex idx
         call s:echo("HEX(Pallet): ".hex)
         call s:draw_win(hex)
     "}}}
-     "{{{
+     "{{{ hsv line
     elseif l==1 &&  c<=s:pal_W 
         "hue line
         let [h1,s1,v1]=colorv#hex2hsv(s:hueline_list[(c-1)])
