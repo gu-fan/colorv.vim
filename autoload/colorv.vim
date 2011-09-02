@@ -711,7 +711,8 @@ else
     let I=  0.5957*r +-0.2745*g+-0.3213*b
     let Q=  0.2115*r +-0.5226*g+ 0.3111*b
     " return [Y*100,U*100,V*100]
-    return [round(Y*100),round(I*100),round(Q*100)]
+    return [float2nr(round(Y*100)),float2nr(round(I*100)),
+                \float2nr(round(Q*100))]
 endif
 endfunction "}}}
 function! colorv#yiq2rgb(yiq) "{{{
