@@ -580,7 +580,7 @@ else
 endif
 endfunction "}}}
 function! colorv#hls2rgb(hls) "{{{
-    let [h,l,s]=[s:float(a:hls[0]),s:float(a:hls[1]),s:float(a:hls[2])]
+    let [h,l,s]=s:float([a:hls[0],a:hls[1],a:hls[2]])
     let s = s>100 ? 100 : s < 0 ? 0 : s
     let l = l>100 ? 100 : l < 0 ? 0 : l
     if h>=360
@@ -596,16 +596,16 @@ r,g,b=hls2rgb(hls)
 vim.command("return "+str([r,g,b]))
 EOF
 else
-    let [s,l]=[s/100.0,l/100.0]
+    let [h,s,l]=[h/360.0,s/100.0,l/100.0]
     if s==0
     	let [r,g,b]=[l,l,l]
     else
     	if l<0.5
-            let var_1= l *(1+s)
+            let var_2= l *(1+s)
         else
-            let var_1= l+s-(s*l)
+            let var_2= (l+s)-(s*l)
         endif
-        let var_2=2*l-var_1
+        let var_1=2*l-var_2
         function! H2rgb(v1,v2,vh) "{{{
             let [v1,v2,vh]=[a:v1,a:v2,a:vh]
             if vh<0
@@ -1036,10 +1036,10 @@ def hex2term_d4(hex1): #{{{
     elif b1 <= 155 : n3,m3=2,14
     elif b1 <= 195 : n3,m3=3,18
     elif b1 <= 235 : n3,m3=4,22
-    else: n3,m3=5,24
+    else:            n3,m3=5,24
     # for c in range(n1,n1)+range(232+n3*3,232+m3):
-    for c in range(n1,n1+m1)+range(232+n3*3,232+m3):
-    # for c in [n1+n2+n3]+range(232+n3*3,232+m3):
+    # for c in range(n1,n1+m1)+range(232+n3*3,232+m3):
+    for c in [n1+n2+n3]+range(232+n3*3,232+m3):
     # for c in range(16,256):
         r2,g2,b2 = hex2rgb(tmclr_dict[c])
         dr,dg,db=abs(r1-r2),abs(g1-g2),abs(b1-b2)
@@ -1134,7 +1134,7 @@ function! s:v3_hex2term(hex) "{{{
     let best_match=0
     let smallest_distance = 10000000
     let [r1,g1,b1] = colorv#hex2rgb(a:hex)
-    if r1 <= 45      | let [n1,m1]=[16 ,36]
+    if r1 <= 47      | let [n1,m1]=[16 ,36]
     elseif r1 <= 115 | let [n1,m1]=[52 ,36]
     elseif r1 <= 155 | let [n1,m1]=[88 ,36]
     elseif r1 <= 195 | let [n1,m1]=[124,36]
@@ -1153,7 +1153,7 @@ function! s:v3_hex2term(hex) "{{{
     elseif b1 <= 155 | let [n3,m3]=[2,14]
     elseif b1 <= 195 | let [n3,m3]=[3,18]
     elseif b1 <= 235 | let [n3,m3]=[4,22]
-    else| let [n3,m3]=[5,24]
+    else             | let [n3,m3]=[5,24]
     endif
     " for c in range(n1,n1+m1)+range(232+n3*3,231+m3)
     for c in [n1+n2+n3]+range(232+n3*3,231+m3)
@@ -1194,7 +1194,7 @@ def draw_palette(H,he,wi,*off): #{{{
     H=fmod(H,360)
     line = 1
     while line <= he:
-        # L is V.
+        # L or V.
         L=100.0-(line-1)*100.0/(he)
         col=1
         while col<=wi:
@@ -1317,7 +1317,7 @@ function! s:draw_palette(h,l,c,...) "{{{
             let s=100-(col-1)*100.0/(width-1)
             let s= s==0 ? 1 : s 
             if s:space=="hls"
-                let hex=colorv#rgb2hex(colorv#hls2rgb([h,s,v]))
+                let hex=colorv#hls2hex([h,s,v])
             else
                 let hex=colorv#hsv2hex([h,s,v])
             endif
@@ -2685,7 +2685,6 @@ function! s:set_in_pos(...) "{{{
     if (s:mode=="max" || s:mode=="mid" ) && l > s:poff_y && l<= s:pal_H+s:poff_y && c<= s:pal_W
         let idx=(l-s:poff_y-1)*s:pal_W+c-s:poff_x-1
         let hex=s:pal_clr_list[idx]
-        echoe hex idx
         call s:echo("HEX(Pallet): ".hex)
         call s:draw_win(hex)
     "}}}
