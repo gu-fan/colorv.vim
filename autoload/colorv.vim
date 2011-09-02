@@ -117,13 +117,14 @@ let s:min_pos=[["Hex:",1,22,10],
             \["N:",1,43,15]
             \]
 let s:tips_list=[
-            \'Choose: Click/Space/Ctrl-K',
-            \'Edit:   2-Click/e/a/<CR>',
-            \'Colorname(W3C): na/ne      (X11):nx',
-            \'Yank(reg"): yy/yr/ys/yn/... (reg+): cc/cr/cs/cn/...',
-            \'Paste: <C-V>/p',
-            \'Help: F1/H                  Tips: ?',
-            \'Quit: q/Q/<C-W>q/<C-W><C-Q>',
+            \'Move:Click/<Tab>/hjkl...',
+            \'Edit:<2-Click>/<2-Space>/Ctrl-K/Ctrl-J/<Enter>/<KEnter>',
+            \'Colorname(W3C):na/ne       (X11):nx',
+            \'Yank(reg"):yy/yr/ys/yn/... (reg+):cc/cr/cs/cn/...',
+            \'Paste:<Ctrl-V>/p',
+            \'Generate:g1/g2/g3/g4/g5/g6/gh/gs/gv',
+            \'Help:<F1>/H                Tips:?',
+            \'Quit:q/Q/<C-W>q/<C-W><C-Q>',
             \]
 
 let s:t='fghDPijmrYFGtudBevwxklyzEIZOJLMnHsaKbcopqNACQRSTUVWX'
@@ -2154,6 +2155,7 @@ function! s:aug_init() "{{{
 endfun
 "}}}
 function! s:map_define() "{{{
+    nmap <silent><buffer> <c-j> :call <SID>set_in_pos()<cr>
     nmap <silent><buffer> <c-k> :call <SID>set_in_pos()<cr>
     nmap <silent><buffer> <CR> :call <SID>set_in_pos()<cr>
     nmap <silent><buffer> <KEnter> :call <SID>set_in_pos()<cr>
@@ -2167,8 +2169,6 @@ function! s:map_define() "{{{
     nmap <silent><buffer> <S-tab> B
 
     "edit
-    nmap <silent><buffer> a :call <SID>edit_at_cursor()<cr>
-    nmap <silent><buffer> i :call <SID>edit_at_cursor()<cr>
     nmap <silent><buffer> = :call <SID>edit_at_cursor(-1,"+")<cr>
     nmap <silent><buffer> + :call <SID>edit_at_cursor(-1,"+")<cr>
     nmap <silent><buffer> - :call <SID>edit_at_cursor(-1,"-")<cr>
