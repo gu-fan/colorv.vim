@@ -1038,9 +1038,9 @@ def hex2term_d4(hex1): #{{{
     elif b1 <= 235 : n3,m3=4,22
     else: n3,m3=5,24
     # for c in range(n1,n1)+range(232+n3*3,232+m3):
-    # for c in range(n1-l1,n1+m1)+range(232+n3*3,232+m3):
+    for c in range(n1,n1+m1)+range(232+n3*3,232+m3):
     # for c in [n1+n2+n3]+range(232+n3*3,232+m3):
-    for c in range(16,256):
+    # for c in range(16,256):
         r2,g2,b2 = hex2rgb(tmclr_dict[c])
         dr,dg,db=abs(r1-r2),abs(g1-g2),abs(b1-b2)
         if r2==g2==b2:
@@ -1157,26 +1157,12 @@ function! s:v3_hex2term(hex) "{{{
     endif
     for c in [n1+n2+n3]+range(232+n3*3,231+n4)
         let [r2,g2,b2] = colorv#hex2rgb(s:term_dict[c])
-        dr,dg,db=abs(r1-r2),abs(g1-g2),abs(b1-b2)
-        if     dr<5 |let dr=0
-        elseif dr<10|let dr=4
-        elseif dr<20|let dr=11
-        elseif dr<30|let dr=20
-        elseif dr<40|let dr=31
+        let [dr,dg,db]=[abs(r1-r2),abs(g1-g2),abs(b1-b2)]
+        if r2==g2 && g2==b2
+            let d=dr+dg+db+35
+        else
+            let d=dr+dg+db
         endif
-        if     dg<5 |let dg=0
-        elseif dg<10|let dg=5
-        elseif dg<20|let dg=13
-        elseif dg<30|let dg=24
-        elseif dg<40|let dg=35
-        endif
-        if     db<5 |let db=0
-        elseif db<10|let db=4
-        elseif db<20|let db=11
-        elseif db<30|let db=20
-        elseif db<40|let db=31
-        endif
-        let d = dr+dg+db
         
     	if d < smallest_distance
     	    let smallest_distance = d
