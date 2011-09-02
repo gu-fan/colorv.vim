@@ -119,10 +119,10 @@ let s:min_pos=[["Hex:",1,22,10],
 let s:tips_list=[
             \'Move:Click/<Tab>/hjkl...',
             \'Edit:<2-Click>/<2-Space>/Ctrl-K/Ctrl-J/<Enter>/<KEnter>',
-            \'Colorname(W3C):na/ne       (X11):nx',
             \'Yank(reg"):yy/yr/ys/yn/... (reg+):cc/cr/cs/cn/...',
             \'Paste:<Ctrl-V>/p',
-            \'Generate:g1/g2/g3/g4/g5/g6/gh/gs/gv',
+            \'Colorname(W3C):na/ne       (X11):nx',
+            \'Colorlist:g1/g2/g3/g4/g5/g6/gh/gs/gv',
             \'Help:<F1>/H                Tips:?',
             \'Quit:q/Q/<C-W>q/<C-W><C-Q>',
             \]
