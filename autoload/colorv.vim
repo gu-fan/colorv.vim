@@ -4515,13 +4515,13 @@ if g:ColorV_load_cache==1 "{{{
         au VIMLEAVEPre * call <SID>write_cache()
     aug END
 endif "}}}
-if g:ColorV_prev_css==1
+if g:ColorV_prev_css==1 "{{{
     aug colorv_auto_prev
         au!
         au! BufWinEnter *.css call colorv#preview("S")
         au! bufwritepost *.css call colorv#preview("S")
     aug END
-endif
+endif "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "}}}
 let &cpo = s:save_cpo
