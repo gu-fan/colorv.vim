@@ -2300,6 +2300,17 @@ function! s:get_win_num(...) "{{{
     endif
 endfunction "}}}
 
+function! colorv#exit_list_win() "{{{
+    if s:is_open("t:ColorVListBufName")
+        if winnr("$") != 1
+            call s:exec(s:get_win_num("t:ColorVListBufName") . " wincmd w")
+            close
+            call s:exec("wincmd p")
+        else
+            close
+        endif
+    endif
+endfunction "}}}
 function! colorv#exit() "{{{
     "close "{{{
     if s:is_open()
@@ -2310,17 +2321,8 @@ function! colorv#exit() "{{{
         else
             close
         endif
-    endif
+    endif "}}} 
     
-    if s:is_open("t:ColorVListBufName")
-        if winnr("$") != 1
-            call s:exec(s:get_win_num("t:ColorVListBufName") . " wincmd w")
-            close
-            call s:exec("wincmd p")
-        else
-            close
-        endif
-    endif "}}}
     "_call "{{{
     if exists("s:exit_call") && s:exit_call ==1 && exists("s:exit_func")
     	if exists("s:exit_arg") 
@@ -3944,10 +3946,10 @@ function! colorv#list_win(...) "{{{
 
     setl ft=ColorV_list 
     
-    nmap <silent><buffer> q :call colorv#exit()<cr>
-    nmap <silent><buffer> Q :call colorv#exit()<cr>
-    nmap <silent><buffer> <c-w>q :call colorv#exit()<cr>
-    nmap <silent><buffer> <c-w><c-q> :call colorv#exit()<cr>
+    nmap <silent><buffer> q :call colorv#exit_list_win()<cr>
+    nmap <silent><buffer> Q :call colorv#exit_list_win()<cr>
+    nmap <silent><buffer> <c-w>q :call colorv#exit_list_win()<cr>
+    nmap <silent><buffer> <c-w><c-q> :call colorv#exit_list_win()<cr>
     nmap <silent><buffer> H :h colorv-colorname<cr>
     nmap <silent><buffer> <F1> :h colorv-colorname<cr>
     " call s:map_define() "}}}
@@ -3968,6 +3970,9 @@ function! colorv#list_and_colorv(...) "{{{
     call colorv#exit()
     call colorv#list_win(list)
     call colorv#win(s:mode)
+    if s:is_open("t:ColorVListBufName")
+        call s:exec(s:get_win_num("t:ColorVListBufName") . " wincmd w")
+    endif
 endfunction "}}}
 function! s:draw_list_buf(list) "{{{
     setl ma
