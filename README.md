@@ -6,7 +6,7 @@ With this you can:
 
         Choose colors 
         Get color infos
-        Change color-texts
+        Edit color-texts
         Generate color lists
         Preview color-texts in buffers
         ...
@@ -106,6 +106,7 @@ With this you can:
 >       Now ColorV works under Terminal(both 8/16/256 colors).   
 >       Set your '&t_Co' option (Default:8), if it supports more colors.
  
++ New in 2.5.1 : auto preview css files.(g:ColorV_prev_css)
 
   **NOTE** 
 

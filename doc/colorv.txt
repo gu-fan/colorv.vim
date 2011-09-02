@@ -36,7 +36,7 @@ INTRO                                               *colorv-intro*
     With this you can:
         Choose colors 
         Get color infos
-        Change color-texts
+        Edit color-texts
         Generate color lists
         Preview color-texts in buffers
         ...
@@ -120,6 +120,9 @@ NEWS IN 2.5                                         *colorv-news-2.5*
 + With Term~
     Now ColorV works under Terminal(both 8/16/256 colors).   
     Set your '&t_Co' option (Default:8), if it supports more colors.
+
++ New in 2.5.1~
+    Auto preview css files.(g:ColorV_prev_css)
 
     NOTE    If you have previous version of ColorV.
             You'd better delete it.
@@ -565,7 +568,7 @@ OPTIONS                                             *colorv-options*
                             colors.
 
                                                 *g:ColorV_prev_css*
-                                                (default=1 if has("python"))
+                                            (if has("python":default=1 ))
     g:ColorV_prev_css       Auto Preview color-text in *.css files.
                             Update view after write file.
 
