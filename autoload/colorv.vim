@@ -1,8 +1,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  Script: ColorV 
 "    File: autoload/ColorV.vim
-" Summary: A Color Viewer and Color Picker for Vim
-"  Author: Rykka.Krin <rykka.krin@gmail.com>
+" Summary: A vim plugin for dealing with colors. 
+"  Author: Rykka.Krin Rykka.Krin(at)gmail.com>
 "    Home: 
 " Version: 2.5.1 
 " Last Update: 2011-09-02
@@ -22,7 +22,7 @@ let g:ColorV_loaded = 1
 let g:ColorV={}
 let g:ColorV.name="_ColorV_"
 let g:ColorV.listname="_ColorV-List_"
-let g:ColorV.ver="2.5.1.0"
+let g:ColorV.ver="2.5.1.1"
 
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={'R':255,'G':0,'B':0}

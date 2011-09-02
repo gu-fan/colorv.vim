@@ -1,8 +1,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  Script: ColorV 
 "    File: plugin/ColorV.vim
-" Summary: A Color Viewer and Color Picker for Vim
-"  Author: Rykka.Krin <rykka.krin@gmail.com>
+" Summary: A vim plugin for dealing with colors. 
+"  Author: Rykka.Krin <Rykka.Krin(at)gmail.com>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim

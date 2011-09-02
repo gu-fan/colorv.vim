@@ -1,4 +1,3 @@
-
 ##INTRO:##
 
 **ColorV** is a vim plugin for dealing with colors.
@@ -85,7 +84,7 @@ With this you can:
         <leader>cd
         (with '+python' compiled and pygtk2.0 included)
 
-###NEW IN 2.5:###
+###NEWS IN 2.5:###
 + **Faster**
 
 >       Core function optimized and rewrited with python.
@@ -113,6 +112,11 @@ With this you can:
 >       If you have previous version of ColorV.
 >       You'd better delete it.
 >       because the file name have changed to 'colorv.vim'
+>
+  **NOTE** 
+ 
+>       If your vim is not compiled with 'python'. 
+>       Then it may be 3~5 times slower. 
  
 ##INSTALL:##
     

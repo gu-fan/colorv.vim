@@ -41,9 +41,9 @@ INTRO                                               *colorv-intro*
         Preview color-texts in buffers
         ...
     (color-text: e.g.,yellow/rgb(255,255,0)/#ff3300)
-        Take a glance: http://i51.tinypic.com/dm4j89.png
 
-    
+    Take a glance: http://i51.tinypic.com/dm4j89.png
+
 ------------------------------------------------------------------------------
 QUICKSTART                                               *colorv-quickstart*
 
@@ -104,6 +104,7 @@ QUICKSTART                                               *colorv-quickstart*
         ('+python' compiled and pygtk2.0 included)
 
     Have further tour. Goto |colorv-usage| section.
+
 ------------------------------------------------------------------------------
 NEWS IN 2.5                                         *colorv-news-2.5*
 + Faster~
@@ -123,6 +124,10 @@ NEWS IN 2.5                                         *colorv-news-2.5*
     NOTE    If you have previous version of ColorV.
             You'd better delete it.
             because the file name have changed.
+
+    NOTE    If your vim is not compiled with 'python'. 
+            Then it may be 3~5 times slower.
+            
 ==============================================================================
 INSTALL                                             *colorv-install*
 
@@ -139,8 +144,8 @@ INSTALL                                             *colorv-install*
     ("~/.vim" for linux. "$HOME/vimfiles" for windows)
     Generate helptags. `:helptags ~/.vim/doc
  
-        If you got bugs or have suggestions.
-        Post it at https://github.com/rykka/ColorV . 
+     NOTE   If you got any bugs or suggestions.
+            Please post it at https://github.com/rykka/ColorV . 
 ==============================================================================
 USAGE                                               *colorv-usage*
 
@@ -558,16 +563,22 @@ OPTIONS                                             *colorv-options*
                                                 (default=0)
     g:ColorV_view_block     Always Previewing color-text with same fg/bg 
                             colors.
+
+                                                *g:ColorV_prev_css*
+                                                (default=1 if has("python"))
+    g:ColorV_prev_css       Auto Preview color-text in *.css files.
+                            Update view after write file.
+
                                                 *g:ColorV_cache_File*
                                             (default='~/.vim_ColorV_cache')
-    g:ColorV_cache_File     The history_copied_list's cache file position.
+    g:ColorV_cache_File     The copied_history_list's cache file position.
 
                                                 *g:ColorV_debug*
                                                 (default=0)
-    g:ColorV_debug          Debug mode with timer.
+    g:ColorV_debug          Debug mode.
                                                 *g:ColorV_no_python*
                                                 (default=0)
-    g:ColorV_no_python      Stop using Python!
+    g:ColorV_no_python      No Python!
 ------------------------------------------------------------------------------
 VIMRC EXAMPLE                                       *colorv-example*
 
@@ -585,6 +596,7 @@ VIMRC EXAMPLE                                       *colorv-example*
     let g:ColorV_gen_space="yiq" 
     "Stop coloring colornames like 'Black','Navy','white'
     let g:ColorV_view_name=0
+
 <                    
 ==============================================================================
 VARIABLES                                           *colorv-variables*
@@ -713,7 +725,7 @@ FUNCTIONS                                           *colorv-functions*
 ==============================================================================
 DEVELOPER                                             *colorv-developer*
 
-    |ColorV| is develped by Rykka Krin |<Rykka.Krin@gmail.com>|.
+    |ColorV| is develped by Rykka Krin |<Rykka.Krin(at)gmail.com>|.
    
     The reason why I wrote this plugin is because the ColorSel.vim
     does not support mouse, And wasn't so easy to choose one desired color.
@@ -741,15 +753,20 @@ DEPENDENCIES                                        *colorv-dependencies*
 CHANGELOG                                           *colorv-changelog* 
 
 " 2.5.1 
+" DONE: 110902  add g:ColorV_prev_css to auto preview *.css files.
+"FIXED: 110902  fix v: colorv#hls2rgb() wrong 'h' input range for calc. 
+"FIXED: 110902  fix v: draw_pallette() wrong 'S' for hex error. 
+"FIXED: 110902  fix v: v3_hex2term() error calculating.
 " DONE: 110902  add glance image
 " DONE: 110902  format hex2txt() output with '%3d'.
-" DONE: 110902  add a:4 'circle' option for colorv#gen_list().
-" DONE: 110902  add timer while previewing buffer
 "FIXED: 110902  Change python regxp '\s' and '\\)' to '[ \t]' and '[)]'
                 to fix the matching bug.
+" DONE: 110901  add a:4 'circle' option for colorv#gen_list().
+" DONE: 110901  add timer while previewing buffer
 " DONE: 110831  Not matchadd() duplicated word. 
                 Not all word being highlighted: because same hex may be
                 differe ptn. use ptn group as dict name instead.
+" DONE: 110830  python version for preview() 
 
 " 2.5.0 Faster and More~
 " DONE: 110826  Stop change colorname if no relating colorname for to-color.
