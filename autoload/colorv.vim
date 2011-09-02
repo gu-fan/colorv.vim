@@ -4,8 +4,8 @@
 " Summary: A Color Viewer and Color Picker for Vim
 "  Author: Rykka.Krin <rykka.krin@gmail.com>
 "    Home: 
-" Version: 2.5.0 
-" Last Update: 2011-08-26
+" Version: 2.5.1 
+" Last Update: 2011-09-02
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -22,7 +22,7 @@ let g:ColorV_loaded = 1
 let g:ColorV={}
 let g:ColorV.name="_ColorV_"
 let g:ColorV.listname="_ColorV-List_"
-let g:ColorV.ver="2.5.0.3"
+let g:ColorV.ver="2.5.1.0"
 
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={'R':255,'G':0,'B':0}
@@ -356,9 +356,8 @@ let s:term_dict = {
             \}
 "}}}
 "}}}
-"CORE: "{{{
+"CORE: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 function! s:py_core_load() "{{{
     if exists("s:py_core_load")
     	return
@@ -3125,241 +3124,6 @@ endfunction "}}}
 "}}}
 "TEXT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! s:txt2hex(txt) "{{{
-    if has("python") && g:ColorV_no_python!=1
-call s:py_text_load()
-python << EOF
-r=txt2hex(vim.eval("a:txt"))
-vim.command("return "+str(r))
-EOF
-    endif
-" input: text
-" return: hexlist [[hex,idx,len,str,fmt],[hex,idx,len,str,fmt],...]
-    let text = a:txt
-    let textorigin = a:txt
-    let old_list=[]
-    
-    "max search depth 
-    "the max number of searched color text  
-    let rnd=0
-    let idx=0
-    let hex_list=[]
-    while rnd<=20
-        for [fmt,pat] in items(s:fmt)
-            if text=~ pat
-                let p_idx{idx}=match(text,pat)
-                let p_str{idx}=matchstr(text,pat)
-                " error with same hex in one line?
-                " it will match the first one
-                let p_oidx{idx}=match(textorigin,p_str{idx})
-                let p_len{idx}=len(p_str{idx})
-                let text=strpart(text,0,p_idx{idx})
-                            \.strpart(text,p_len{idx}+p_idx{idx})
-
-                if fmt=="HEX"
-                    let list=[p_str{idx},p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
-                elseif fmt=="HEX0"
-                    let hex=substitute(p_str{idx},'0x','','')
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
-                elseif fmt=="NS6"
-                    let hex=substitute(p_str{idx},'#','','')
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
-                elseif fmt=="NS3"
-                    let hex=substitute(p_str{idx},'#','','')
-                    let hex=substitute(hex,'.','&&','g')
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
-                elseif fmt=="RGB" || fmt =="RGBA"
-                    let rgb=split(p_str{idx},',')
-                    let r=matchstr(rgb[0],'\d\{1,3}')
-                    let g=matchstr(rgb[1],'\d\{1,3}')
-                    let b=matchstr(rgb[2],'\d\{1,3}')
-                    if r>255 || g >255 || b > 255
-                        call s:error("Input out of boundary")
-                        return
-                    endif
-                    let hex = colorv#rgb2hex([r,g,b])
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                        " call add(clr,fmt)
-                    call add(hex_list,list)
-                elseif fmt=="RGBP" || fmt =="RGBAP"
-                    let rgb=split(p_str{idx},',')
-                    let r=matchstr(rgb[0],'\d\{1,3}')
-                    let g=matchstr(rgb[1],'\d\{1,3}')
-                    let b=matchstr(rgb[2],'\d\{1,3}')
-                    let hex= colorv#rgb2hex([r*2.55,g*2.55,b*2.55])
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
-                elseif fmt=="HSV"
-                    let hsv=split(p_str{idx},',')
-                    let h=matchstr(hsv[0],'\d\{1,3}')
-                    let s=matchstr(hsv[1],'\d\{1,3}')
-                    let v=matchstr(hsv[2],'\d\{1,3}')
-                    let hex= colorv#hsv2hex([h,s,v])
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
-                elseif fmt=="HSL" || fmt =="HSLA"
-                    let hsl=split(p_str{idx},',')
-                    let h=matchstr(hsl[0],'\d\{1,3}')
-                    let s=matchstr(hsl[1],'\d\{1,3}')
-                    let l=matchstr(hsl[2],'\d\{1,3}')
-                    let hex= colorv#hls2hex([h,l,s])
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
-                " "NAME and NAMX format ;not a <cword> here
-                elseif fmt=="NAME"
-                    let hex=s:nam2hex(p_str{idx})
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
-                endif
-                let idx+=1
-            endif
-        endfor
-        if old_list==hex_list        
-            break
-        else
-            let old_list=deepcopy(hex_list,1)
-        endif
-        let rnd+=1
-    endwhile
-
-    "hex_list [[hex,idx,len,str,fmt],...]
-    return hex_list
-endfunction "}}}
-function! s:hex2txt(hex,fmt,...) "{{{
-    
-    let hex=printf("%06x","0x".a:hex)
-    let hex=substitute(hex,'\l','\u\0','g')
-
-    let [r,g,b] = colorv#hex2rgb(hex)
-    let [r,g,b]=[printf("%3d",r),printf("%3d",g),printf("%3d",b)]
-    let [rp,gp,bp] = [float2nr(r/2.55),float2nr(g/2.55),float2nr(b/2.55)]
-    let [rp,gp,bp]=[printf("%3d",rp),printf("%3d",gp),printf("%3d",bp)]
-    let [h,s,v] = colorv#rgb2hsv([r,g,b])
-    let [h,s,v]=[printf("%3d",h),printf("%3d",s),printf("%3d",v)]
-    let [H,L,S] = colorv#rgb2hls([r,g,b])
-    let [H,L,S]=[printf("%3d",H),printf("%3d",L),printf("%3d",S)]
-
-    if a:fmt=="RGB"
-        let text="rgb(".r.",".g.",".b.")"
-    elseif a:fmt=="HSV"
-        let text="hsv(".h.",".s.",".v.")"
-    elseif a:fmt=="HSL"
-        let text="hsl(".H.",".S."%,".L."%)"
-    elseif a:fmt=="HSLA"
-        let text="hsla(".H.",".S."%,".L."%,1.0)"
-    elseif a:fmt=="RGBP"
-        let text="rgb(".rp."%,"
-                    \.gp."%,"
-                    \.bp."%)"
-    elseif a:fmt=="RGBA" 
-        let text="rgba(".r.",".g.",".b.",1.0)"
-    elseif a:fmt=="RGBAP" 
-        let text="rgba(".rp."%,"
-                    \.gp."%,"
-                    \.bp."%,1.0)"
-    elseif a:fmt=="HEX"
-        let text=hex
-    elseif a:fmt=="NS6"
-        let text="#".hex
-    elseif a:fmt=="NS3"
-        let text="#".hex
-    elseif a:fmt=="HEX0"
-        let text="0x".hex
-    elseif a:fmt=="NAME"
-        if exists("a:1") 
-            let text=s:hex2nam(hex,a:1)
-        else
-            let text=s:hex2nam(hex)
-        endif
-    else
-        let text=hex
-    endif
-
-    return text
-endfunction "}}}
-function! s:nam2hex(nam,...) "{{{
-    if empty(a:nam)
-    	return 0
-    endif
-    if exists("a:1") && a:1 == "X11"
-    	let clr_list=s:clrn+s:clrnX11
-    else
-    	let clr_list=s:clrn+s:clrnW3C
-    endif
-    for [nam,clr] in clr_list
-        if a:nam ==? nam   
-            return clr
-            break
-        endif
-    endfor
-    return 0
-endfunction "}}}
-function! s:hex2nam(hex,...) "{{{
-if has("python") && g:ColorV_no_python!=1
-    if exists("a:1") && a:1 == "X11" 
-    	let list="X11"
-    else
-    	let list="W3C"
-    endif
-call s:py_text_load()
-python << EOF
-best_match = 0
-smallest_distance = 10000000
-
-t= int(vim.eval("s:aprx_rate"))
-if vim.eval("list")=="X11":clr_list=clrn+clrnX11
-else:clr_list=clrn+clrnW3C
-r1,g1,b1 = hex2rgb(vim.eval("a:hex"))
-
-for lst in clr_list:
-    r2,g2,b2 = hex2rgb(lst[1])
-    d = abs(r1-r2)+abs(g1-g2)+abs(b1-b2)
-    if d < smallest_distance:
-        smallest_distance = d
-        best_match = lst[0]
-
-if smallest_distance == 0:
-    vim.command("return \""+best_match+"\"")
-elif smallest_distance <= t*5:
-    vim.command("return \""+best_match+"~\"")
-elif smallest_distance <= t*10:
-    vim.command("return \""+best_match+"~~\"")
-else:
-    vim.command("return \"\"")
-
-EOF
-else
-    if exists("a:1") && a:1 == "X11"
-    	let clr_list=s:clrn+s:clrnX11
-    else
-    	let clr_list=s:clrn+s:clrnW3C
-    endif
-    let best_match=0
-    let smallest_distance = 2000000
-    let [r1,g1,b1] = colorv#hex2rgb(a:hex)
-    for lst in clr_list
-        let [r2,g2,b2] = colorv#hex2rgb(lst[1])
-        let d = abs(r1-r2)+abs(g1-g2)+abs(b1-b2)
-    	if d < smallest_distance
-    	    let smallest_distance = d
-    	    let best_match = lst[0]
-        endif
-    endfor
-    if smallest_distance == 0
-    	return best_match
-    elseif smallest_distance <= s:aprx_rate*5
-    	return best_match."~"
-    elseif smallest_distance <= s:aprx_rate*10
-    	return best_match."~~"
-    else
-    	return ""
-    endif
-endif
-endfunction "}}}
 function! s:py_text_load() "{{{
     if exists("s:py_text_load")
     	return
@@ -3611,6 +3375,241 @@ def txt2hex(txt):
     return hex_list
 
 EOF
+endfunction "}}}
+function! s:txt2hex(txt) "{{{
+    if has("python") && g:ColorV_no_python!=1
+call s:py_text_load()
+python << EOF
+r=txt2hex(vim.eval("a:txt"))
+vim.command("return "+str(r))
+EOF
+    endif
+" input: text
+" return: hexlist [[hex,idx,len,str,fmt],[hex,idx,len,str,fmt],...]
+    let text = a:txt
+    let textorigin = a:txt
+    let old_list=[]
+    
+    "max search depth 
+    "the max number of searched color text  
+    let rnd=0
+    let idx=0
+    let hex_list=[]
+    while rnd<=20
+        for [fmt,pat] in items(s:fmt)
+            if text=~ pat
+                let p_idx{idx}=match(text,pat)
+                let p_str{idx}=matchstr(text,pat)
+                " error with same hex in one line?
+                " it will match the first one
+                let p_oidx{idx}=match(textorigin,p_str{idx})
+                let p_len{idx}=len(p_str{idx})
+                let text=strpart(text,0,p_idx{idx})
+                            \.strpart(text,p_len{idx}+p_idx{idx})
+
+                if fmt=="HEX"
+                    let list=[p_str{idx},p_oidx{idx},p_len{idx},p_str{idx},fmt]
+                    call add(hex_list,list)
+                elseif fmt=="HEX0"
+                    let hex=substitute(p_str{idx},'0x','','')
+                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
+                    call add(hex_list,list)
+                elseif fmt=="NS6"
+                    let hex=substitute(p_str{idx},'#','','')
+                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
+                    call add(hex_list,list)
+                elseif fmt=="NS3"
+                    let hex=substitute(p_str{idx},'#','','')
+                    let hex=substitute(hex,'.','&&','g')
+                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
+                    call add(hex_list,list)
+                elseif fmt=="RGB" || fmt =="RGBA"
+                    let rgb=split(p_str{idx},',')
+                    let r=matchstr(rgb[0],'\d\{1,3}')
+                    let g=matchstr(rgb[1],'\d\{1,3}')
+                    let b=matchstr(rgb[2],'\d\{1,3}')
+                    if r>255 || g >255 || b > 255
+                        call s:error("Input out of boundary")
+                        return
+                    endif
+                    let hex = colorv#rgb2hex([r,g,b])
+                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
+                        " call add(clr,fmt)
+                    call add(hex_list,list)
+                elseif fmt=="RGBP" || fmt =="RGBAP"
+                    let rgb=split(p_str{idx},',')
+                    let r=matchstr(rgb[0],'\d\{1,3}')
+                    let g=matchstr(rgb[1],'\d\{1,3}')
+                    let b=matchstr(rgb[2],'\d\{1,3}')
+                    let hex= colorv#rgb2hex([r*2.55,g*2.55,b*2.55])
+                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
+                    call add(hex_list,list)
+                elseif fmt=="HSV"
+                    let hsv=split(p_str{idx},',')
+                    let h=matchstr(hsv[0],'\d\{1,3}')
+                    let s=matchstr(hsv[1],'\d\{1,3}')
+                    let v=matchstr(hsv[2],'\d\{1,3}')
+                    let hex= colorv#hsv2hex([h,s,v])
+                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
+                    call add(hex_list,list)
+                elseif fmt=="HSL" || fmt =="HSLA"
+                    let hsl=split(p_str{idx},',')
+                    let h=matchstr(hsl[0],'\d\{1,3}')
+                    let s=matchstr(hsl[1],'\d\{1,3}')
+                    let l=matchstr(hsl[2],'\d\{1,3}')
+                    let hex= colorv#hls2hex([h,l,s])
+                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
+                    call add(hex_list,list)
+                " "NAME and NAMX format ;not a <cword> here
+                elseif fmt=="NAME"
+                    let hex=s:nam2hex(p_str{idx})
+                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
+                    call add(hex_list,list)
+                endif
+                let idx+=1
+            endif
+        endfor
+        if old_list==hex_list        
+            break
+        else
+            let old_list=deepcopy(hex_list,1)
+        endif
+        let rnd+=1
+    endwhile
+
+    "hex_list [[hex,idx,len,str,fmt],...]
+    return hex_list
+endfunction "}}}
+function! s:hex2txt(hex,fmt,...) "{{{
+    
+    let hex=printf("%06x","0x".a:hex)
+    let hex=substitute(hex,'\l','\u\0','g')
+
+    let [r,g,b] = colorv#hex2rgb(hex)
+    let [r,g,b]=[printf("%3d",r),printf("%3d",g),printf("%3d",b)]
+    let [rp,gp,bp] = [float2nr(r/2.55),float2nr(g/2.55),float2nr(b/2.55)]
+    let [rp,gp,bp]=[printf("%3d",rp),printf("%3d",gp),printf("%3d",bp)]
+    let [h,s,v] = colorv#rgb2hsv([r,g,b])
+    let [h,s,v]=[printf("%3d",h),printf("%3d",s),printf("%3d",v)]
+    let [H,L,S] = colorv#rgb2hls([r,g,b])
+    let [H,L,S]=[printf("%3d",H),printf("%3d",L),printf("%3d",S)]
+
+    if a:fmt=="RGB"
+        let text="rgb(".r.",".g.",".b.")"
+    elseif a:fmt=="HSV"
+        let text="hsv(".h.",".s.",".v.")"
+    elseif a:fmt=="HSL"
+        let text="hsl(".H.",".S."%,".L."%)"
+    elseif a:fmt=="HSLA"
+        let text="hsla(".H.",".S."%,".L."%,1.0)"
+    elseif a:fmt=="RGBP"
+        let text="rgb(".rp."%,"
+                    \.gp."%,"
+                    \.bp."%)"
+    elseif a:fmt=="RGBA" 
+        let text="rgba(".r.",".g.",".b.",1.0)"
+    elseif a:fmt=="RGBAP" 
+        let text="rgba(".rp."%,"
+                    \.gp."%,"
+                    \.bp."%,1.0)"
+    elseif a:fmt=="HEX"
+        let text=hex
+    elseif a:fmt=="NS6"
+        let text="#".hex
+    elseif a:fmt=="NS3"
+        let text="#".hex
+    elseif a:fmt=="HEX0"
+        let text="0x".hex
+    elseif a:fmt=="NAME"
+        if exists("a:1") 
+            let text=s:hex2nam(hex,a:1)
+        else
+            let text=s:hex2nam(hex)
+        endif
+    else
+        let text=hex
+    endif
+
+    return text
+endfunction "}}}
+function! s:nam2hex(nam,...) "{{{
+    if empty(a:nam)
+    	return 0
+    endif
+    if exists("a:1") && a:1 == "X11"
+    	let clr_list=s:clrn+s:clrnX11
+    else
+    	let clr_list=s:clrn+s:clrnW3C
+    endif
+    for [nam,clr] in clr_list
+        if a:nam ==? nam   
+            return clr
+            break
+        endif
+    endfor
+    return 0
+endfunction "}}}
+function! s:hex2nam(hex,...) "{{{
+if has("python") && g:ColorV_no_python!=1
+    if exists("a:1") && a:1 == "X11" 
+    	let list="X11"
+    else
+    	let list="W3C"
+    endif
+call s:py_text_load()
+python << EOF
+best_match = 0
+smallest_distance = 10000000
+
+t= int(vim.eval("s:aprx_rate"))
+if vim.eval("list")=="X11":clr_list=clrn+clrnX11
+else:clr_list=clrn+clrnW3C
+r1,g1,b1 = hex2rgb(vim.eval("a:hex"))
+
+for lst in clr_list:
+    r2,g2,b2 = hex2rgb(lst[1])
+    d = abs(r1-r2)+abs(g1-g2)+abs(b1-b2)
+    if d < smallest_distance:
+        smallest_distance = d
+        best_match = lst[0]
+
+if smallest_distance == 0:
+    vim.command("return \""+best_match+"\"")
+elif smallest_distance <= t*5:
+    vim.command("return \""+best_match+"~\"")
+elif smallest_distance <= t*10:
+    vim.command("return \""+best_match+"~~\"")
+else:
+    vim.command("return \"\"")
+
+EOF
+else
+    if exists("a:1") && a:1 == "X11"
+    	let clr_list=s:clrn+s:clrnX11
+    else
+    	let clr_list=s:clrn+s:clrnW3C
+    endif
+    let best_match=0
+    let smallest_distance = 2000000
+    let [r1,g1,b1] = colorv#hex2rgb(a:hex)
+    for lst in clr_list
+        let [r2,g2,b2] = colorv#hex2rgb(lst[1])
+        let d = abs(r1-r2)+abs(g1-g2)+abs(b1-b2)
+    	if d < smallest_distance
+    	    let smallest_distance = d
+    	    let best_match = lst[0]
+        endif
+    endfor
+    if smallest_distance == 0
+    	return best_match
+    elseif smallest_distance <= s:aprx_rate*5
+    	return best_match."~"
+    elseif smallest_distance <= s:aprx_rate*10
+    	return best_match."~~"
+    else
+    	return ""
+    endif
+endif
 endfunction "}}}
 
 function! s:paste(...) "{{{
@@ -4374,23 +4373,9 @@ function! colorv#list_gen(hex,...) "{{{
 endfunction "}}}
 function! s:winlist_generate(hex,...) "{{{
     let hex=a:hex
-    " let type=exists("a:1") && !empty(a:1) ? a:1 : s:gen_def_type
-    " let nums=exists("a:2") && !empty(a:2) ? a:2 : s:gen_def_nums 
-    " let step=exists("a:3") && !empty(a:3) ? a:3 : s:gen_def_step
-
     let type=exists("a:1") ? a:1 : ""
     let nums=exists("a:2") ? a:2 : ""
     let step=exists("a:3") ? a:3 : ""
-    " if exists("g:ColorV_input_gen_step") && g:ColorV_input_gen_step==1
-    "             \ && (type=="Hue" || type=="Saturation" || type=="value"
-    "             \ || type=="Monochromatic")
-    "     let step=input("Steps for generating ".type." List"
-    "                 \."(Default:".step."):")
-    "     if empty(step) || step !~ '\d'
-    "         let step= s:gen_def_step
-    "         call s:caution("Use Default step:". s:gen_def_step)
-    "     endif
-    " endif
     let genlist=colorv#list_gen(hex,type,nums,step)
 
     let list=[]
@@ -4435,7 +4420,7 @@ function! colorv#prev_txt(txt) "{{{
         else
             let hi_ptn=prv_item[3]
         endif
-        " hi_fffff
+        " cv_prv3_ff0000
         let hi_grp="cv_prv".bufnr."_".prv_item[0]
 
         if exists("s:ColorV_view_block") && s:ColorV_view_block==1
@@ -4444,15 +4429,10 @@ function! colorv#prev_txt(txt) "{{{
             let hi_fg=s:rlt_clr(prv_item[0])
         endif
         try 
-            " DONE: 110831  stop matchadd duplicated word. 
-            " XXX: not all word being hilighted: because same hex may be
-            " differe ptn
-            " use ptn group instead.
             let hi_ptn_a=substitute(hi_ptn,'\W',"_","g")
             if !exists("s:prev_dict['".hi_ptn_a."']")
                 call colorv#hi_color(hi_grp,hi_fg,prv_item[0])
                 let s:prev_dict[hi_ptn_a]= matchadd(hi_grp,hi_ptn)
-                " let s:prev_ptn_dict[hi_ptn]=1
             endif
         catch /^Vim\%((\a\+)\)\=:E254/
             call s:debug("E254:Unknow colorname")
