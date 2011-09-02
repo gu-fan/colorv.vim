@@ -741,11 +741,12 @@ DEVELOPER                                             *colorv-developer*
         Shougo          NeoComplCache. Auto complete plugin that is great.
         David Necas     ColorSel. A RGB/HSV color selector.
         Lilyldjwg       Colorizer. An inline color previewer.
+        Lilyldjwg       gui2term.py. A gui 2 term colorscheme generator.
         Fabien LOISON   color_picker. pygtk scripts.
 
         Vundle/Pathogen/Command-T/...and many other vim plugin authors.
 
-    Special Thanks to the Vim Author and it's developers:
+    Very Thanks to the Vim Author and it's developers:
         Bram Moolenaar <Bram@vim.org>...
 ------------------------------------------------------------------------------
 DEPENDENCIES                                        *colorv-dependencies*
