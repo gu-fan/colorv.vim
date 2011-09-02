@@ -2193,8 +2193,8 @@ function! s:map_define() "{{{
     nmap <silent><buffer> <c-w>q :call colorv#exit()<cr>
     nmap <silent><buffer> <c-w><c-q> :call colorv#exit()<cr>
     nmap <silent><buffer> ? :call <SID>echo_tips()<cr>
-    nmap <silent><buffer> H :h ColorV<cr>
-    nmap <silent><buffer> <F1> :h ColorV<cr>
+    nmap <silent><buffer> H :h colorv-quickstart<cr>
+    nmap <silent><buffer> <F1> :h colorv-quickstart<cr>
 
     "Copy color 
     map <silent><buffer> C :call <SID>copy("","+")<cr>
@@ -2208,6 +2208,7 @@ function! s:map_define() "{{{
     map <silent><buffer> cap :call <SID>copy("RGBAP","+")<cr>
     map <silent><buffer> cn :call <SID>copy("NAME","+")<cr>
     map <silent><buffer> ch :call <SID>copy("HSV","+")<cr>
+    map <silent><buffer> cl :call <SID>copy("HSL","+")<cr>
 
     map <silent><buffer> Y :call <SID>copy()<cr>
     map <silent><buffer> yy :call <SID>copy()<cr>
@@ -2220,6 +2221,7 @@ function! s:map_define() "{{{
     map <silent><buffer> yap :call <SID>copy("RGBAP")<cr>
     map <silent><buffer> yn :call <SID>copy("NAME")<cr>
     map <silent><buffer> yh :call <SID>copy("HSV")<cr>
+    map <silent><buffer> yl :call <SID>copy("HSL")<cr>
     
     "paste color
     map <silent><buffer> <c-v> :call <SID>paste("+")<cr>
@@ -2228,9 +2230,9 @@ function! s:map_define() "{{{
     map <silent><buffer> <middlemouse> :call <SID>paste("+")<cr>
     
     "generator with current color
-    nmap <silent><buffer> gh :call colorv#gen_win(g:ColorV.HEX,"Hue")<cr>
-    nmap <silent><buffer> gs :call colorv#gen_win(g:ColorV.HEX,"Saturation")<cr>
-    nmap <silent><buffer> gv :call colorv#gen_win(g:ColorV.HEX,"Value")<cr>
+    nmap <silent><buffer> gh :call colorv#gen_win(g:ColorV.HEX,"Hue",20,15)<cr>
+    nmap <silent><buffer> gs :call colorv#gen_win(g:ColorV.HEX,"Saturation",20,5,1)<cr>
+    nmap <silent><buffer> gv :call colorv#gen_win(g:ColorV.HEX,"Value",20,5,1)<cr>
     nmap <silent><buffer> ga :call colorv#gen_win(g:ColorV.HEX,"Analogous")<cr>
     nmap <silent><buffer> gq :call colorv#gen_win(g:ColorV.HEX,"Square")<cr>
     nmap <silent><buffer> gn :call colorv#gen_win(g:ColorV.HEX,"Neutral")<cr>
@@ -3994,8 +3996,8 @@ function! colorv#list_win(...) "{{{
     nmap <silent><buffer> Q :call colorv#exit()<cr>
     nmap <silent><buffer> <c-w>q :call colorv#exit()<cr>
     nmap <silent><buffer> <c-w><c-q> :call colorv#exit()<cr>
-    nmap <silent><buffer> H :h colorv-interface-list<cr>
-    nmap <silent><buffer> <F1> :h colorv-interface-list<cr>
+    nmap <silent><buffer> H :h colorv-colorname<cr>
+    nmap <silent><buffer> <F1> :h colorv-colorname<cr>
     " call s:map_define() "}}}
 
     if winnr('$') != 1
