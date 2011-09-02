@@ -50,10 +50,10 @@ QUICKSTART                                               *colorv-quickstart*
     A Quick Start~
 
     Open ColorV window to choose colors. 
-        <leader>cv      ColorV with previous mode.
         <leader>cm/c1   min mode:Less Space.
         <leader>c2      mid mode:Normal.
         <leader>cx/c3   max mode:More Info.
+        <leader>cv      ColorV with previous mode.
 
     NOTE    <leader> is a key can change in vimrc. Default is "\".
             Mappings may not exist if it has been taken by other plugins.  
@@ -273,10 +273,10 @@ COLORINFO                                            *colorv-colorinfo*
     NS3     #fff
     HEX0    0xffffff
     HEX     ffffff
-    RGB     rgb(255,255,255)
+    RGB     rgb(255,255,255)        (css1 standard)
     RGBP    rgb(100%,100%,100%)
-    RGBA    rgba(255,255,255,255)
-    RGBAP   rgba(100%,100%,100%,100%)
+    RGBA    rgba(255,255,255,1.0)   (css2 standard)
+    RGBAP   rgba(100%,100%,100%,1.0) 
     NAME    red/lime/blue (see |colorv-colorname|)
     HSV     hsv(360,100,100)
     HSL     hsl(300,100%,100%)      (css3 standard)
@@ -347,20 +347,20 @@ MAPPINGS                                            *colorv-mappings*
 
                                                     *colorv-mapping-generate*
     Generate color list with current word by matching type.
-    <leader>gh    Hue
-    <leader>gs    Saturation
-    <leader>gv    Value
-    <leader>ga    Analogous
-    <leader>gn    Neutral
-    <leader>gc    Clash
-    <leader>gp    Split-Complementary
-    <leader>gq    Square
-    <leader>g1/m  Monochromatic
-    <leader>g2    Complementary
-    <leader>g3/t  Triadic
-    <leader>g4    Rectangle(Tetradic)
-    <leader>g5    Five-Tone
-    <leader>g6    Six-Tone
+    <leader>cgh    Hue
+    <leader>cgs    Saturation
+    <leader>cgv    Value
+    <leader>cga    Analogous
+    <leader>cgn    Neutral
+    <leader>cgc    Clash
+    <leader>cgp    Split-Complementary
+    <leader>cgq    Square
+    <leader>cg1/m  Monochromatic
+    <leader>cg2    Complementary
+    <leader>cg3/t  Triadic
+    <leader>cg4    Rectangle(Tetradic)
+    <leader>cg5    Five-Tone
+    <leader>cg6    Six-Tone
     See |colorv-generate| for details.
 
                                                     *colorv-mapping-preview*
@@ -395,6 +395,7 @@ MAPPINGS                                            *colorv-mappings*
     yap         Copy RGBAP format 'rgba(100%,100%,100%.100%)' into register"
     yn          Copy NAM format 'white' into register"
     yh          Copy HSV format 'hsv(360,100,100)' into register"
+    yl          Copy HSV format 'hsl(360,100,100)' into register"
 
     C/cc        Copy HEX format 'ffffff' into register+
     cs/c#       Copy NS6 format '#ffffff' into register+
@@ -404,7 +405,8 @@ MAPPINGS                                            *colorv-mappings*
     caa         Copy RGBA format 'rgba(255,255,255,255)' into register+
     cap         Copy RGBAP format 'rgba(100%,100%,100%.100%)' into register+
     cn          Copy NAM format 'white' into register+
-    ch          Copy HSV format 'hsv(360,100,100)' into register+
+    ch          opy HSV format 'hsv(360,100,100)' into register+
+    cl          Copy HSV format 'hsl(360,100,100)' into register+
 
     NOTE    The register" (|quotequote|) is Unnamed register used with 
             the "d", "c", "s", "x" commands or copied with the yank "y" 

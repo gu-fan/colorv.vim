@@ -20,10 +20,10 @@ With this you can:
 
 * Open ColorV window to select colors. 
 
-        <leader>cv      ColorV with previous mode.
         <leader>cm/c1   min mode:Less Space.
         <leader>c2      mid mode:Normal.
         <leader>cx/c3   max mode:More Info.
+        <leader>cv      ColorV with previous mode.
 
   **NOTE** 
 
