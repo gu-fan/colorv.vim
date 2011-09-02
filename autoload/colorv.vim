@@ -64,7 +64,15 @@ endif
 if !exists('g:ColorV_gen_space')
     let g:ColorV_gen_space="yiq"
 endif
-
+if has("python")
+    if !exists('g:ColorV_prev_css') 
+        let g:ColorV_prev_css=1
+    endif
+else
+    if !exists('g:ColorV_prev_css') 
+        let g:ColorV_prev_css=0
+    endif
+endif
 "}}}
 "SVAR: {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -111,11 +119,11 @@ let s:min_pos=[["Hex:",1,22,10],
             \]
 let s:tips_list=[
             \'Choose: Click/Space/Ctrl-K',
-            \'Edit:  2-Click/e/a/<CR>',
+            \'Edit:   2-Click/e/a/<CR>',
             \'Colorname(W3C): na/ne      (X11):nx',
             \'Yank(reg"): yy/yr/ys/yn/... (reg+): cc/cr/cs/cn/...',
             \'Paste: <C-V>/p',
-            \'Help: F1               Tips: ?',
+            \'Help: F1/H                  Tips: ?',
             \'Quit: q/Q/<C-W>q/<C-W><C-Q>',
             \]
 
@@ -1712,14 +1720,14 @@ function! s:draw_text(...) "{{{
         let line[2]=s:line("H:".h."  S:".s."  V:".v,22)
         let line[3]=s:line("H:".H."  L:".L."  S:".S,22)
         let line[4]=s:line("Y ".Y."  I".I."  Q".Q,22)
-        let line[8]=s:line("F1:help Enter:edit cc:copy q:exit M?",22)
+        let line[8]=s:line("H:help Enter:edit cc:copy q:exit  M?",22)
     elseif s:mode=="mid"
         let line[0]=s:line("ColorV ".g:ColorV.ver,3)
         let line[1]=s:line("Hex:".hex,22)
         let line[2]=s:line("R:".r."  G:".g."  B:".b,22)
         let line[3]=s:line("H:".h."  S:".s."  V:".v,22)
         let line[4]=s:line("H:".H."  L:".L."  S:".S,22)
-        let line[5]=s:line("F1:help Enter:edit cc:copy q:exit m?",22)
+        let line[5]=s:line("H:help Enter:edit cc:copy q:exit  m?",22)
     elseif s:mode=="min"
         let line[0]=s:line("ColorV ".g:ColorV.ver,3)
         let line[0]=s:line_sub(line[0],"Hex:".hex,22)
@@ -3777,109 +3785,68 @@ function! colorv#cursor_win(...) "{{{
     let s:ColorV.word_bufname=bufname('%')
     let s:ColorV.word_bufwinnr=bufwinnr('%')
     let s:ColorV.word_pos=getpos('.')
-    let s:ColorV.word_cpos=col('.')
+    let s:ColorV.word_col=col('.')
     let lword= expand('<cWORD>')
     let word= expand('<cword>')
     let line= getline('.')
-    
-    let hex_list=s:txt2hex(word)
-    if !empty(hex_list) "{{{
+    if word !~ '^\s*$'
+        let word_list=s:txt2hex(word)
+    else 
+    	let word_list=0
+    endif
+    if lword !~ '^\s*$'
+        let lword_list=s:txt2hex(lword)
+    else 
+    	let lword_list=0
+    endif
+    if line !~ '^\s*$'
+        let line_list=s:txt2hex(line)
+    else 
+    	let line_list=0
+    endif
+    if !empty(word_list)
         let s:ColorV.is_in="word"
         let pat = word
         let s:ColorV.word_pat=pat
-
+        let hex_list= word_list
         silent normal! b
-        let bgn_idx=col('.')
-        if len(hex_list) >1 "{{{
-            let i=0
-            for [lhex,idx,len,str,fmt] in hex_list
-            	if  s:ColorV.word_cpos > bgn_idx+idx 
-                \ &&  s:ColorV.word_cpos < bgn_idx+idx+len 
-                    let hex=s:fmt_hex(lhex)
-                    let s:ColorV.word_list=hex_list[i]
-                endif
-                let i+=1
-            endfor
-            if !exists("hex")
-                let hex=s:fmt_hex(hex_list[0][0])
-                let s:ColorV.word_list=hex_list[0]
+    elseif !empty(lword_list)
+        let s:ColorV.is_in="lword"
+        let pat = lword
+        let s:ColorV.word_pat=pat
+        let hex_list= lword_list
+        silent normal! B
+    elseif !empty(line_list)
+        let s:ColorV.is_in="line"
+        let pat = line
+        let s:ColorV.word_pat=pat
+        let hex_list= line_list
+        silent normal! 0
+    else
+        let s:ColorV.is_in=""
+        let pat = ""
+        let s:ColorV.word_pat=pat
+        call s:error("Color-text not found under cursor line.")
+        return -1
+    endif
+    let bgn_idx=col('.')
+    if len(hex_list) >1 "{{{
+        let i=0
+        for [lhex,idx,len,str,fmt] in hex_list
+            if  s:ColorV.word_col > bgn_idx+idx 
+            \ &&  s:ColorV.word_col < bgn_idx+idx+len 
+                let hex=s:fmt_hex(lhex)
+                let s:ColorV.word_list=hex_list[i]
             endif
-        else 
+            let i+=1
+        endfor
+        if !exists("hex")
             let hex=s:fmt_hex(hex_list[0][0])
             let s:ColorV.word_list=hex_list[0]
-        endif "}}}
-    else
-    	"avoid [] return? seems no necessary
-    	" unlet hex_list
-        let hex_list=s:txt2hex(lword)
-        if !empty(hex_list) "{{{
-            let s:ColorV.is_in="lword"
-            let pat = lword
-            let s:ColorV.word_pat=pat
-            silent normal! B
-            let bgn_idx=col('.')
-            if len(hex_list) >1 "{{{
-                let i=0
-                
-                for [lhex,idx,len,str,fmt] in hex_list
-                    if  s:ColorV.word_cpos > bgn_idx+idx 
-                    \ &&  s:ColorV.word_cpos < bgn_idx+idx+len 
-                        let hex=s:fmt_hex(lhex)
-                        let s:ColorV.word_list=hex_list[i]
-                    endif
-                    let i+=1
-                endfor
-                if !exists("hex")
-                    let hex=s:fmt_hex(hex_list[0][0])
-                    let s:ColorV.word_list=hex_list[0]
-                    let clr_fmt=hex_list[0][4]
-                endif
-            else 
-                let hex=s:fmt_hex(hex_list[0][0])
-                let s:ColorV.word_list=hex_list[0]
-                let clr_fmt=hex_list[0][4]
-            endif "}}}
-        else
-            let hex_list=s:txt2hex(line)
-            if !empty(hex_list) "{{{
-                let s:ColorV.is_in="line"
-                let pat = line
-                let s:ColorV.word_pat=pat
-                " silent normal! 0
-                " let bgn_idx=col('.')
-                if len(hex_list) >1 "{{{
-                    let i=0
-                    for [lhex,idx,len,str,fmt] in hex_list
-                        if  s:ColorV.word_cpos > idx 
-                        \ &&  s:ColorV.word_cpos < idx+len 
-                            let hex=s:fmt_hex(lhex)
-                            let s:ColorV.word_list=hex_list[i]
-                        endif
-                        let i+=1
-                    endfor
-                    if !exists("hex")
-                        let hex=s:fmt_hex(hex_list[0][0])
-                        let s:ColorV.word_list=hex_list[0]
-                        let clr_fmt=hex_list[0][4]
-                    endif
-                else 
-                    let hex=s:fmt_hex(hex_list[0][0])
-                    let s:ColorV.word_list=hex_list[0]
-                    let clr_fmt=hex_list[0][4]
-                endif "}}}
-            else
-                let s:ColorV.is_in=""
-                let pat = ""
-                let s:ColorV.word_pat=pat
-                call s:error("Color-text not found under cursor line.")
-                " if g:ColorV_cursor_found==1
-                    return -1
-                " else
-                "     let hex=g:ColorV.HEX
-                "     let l:silent=1
-                " endif
-            endif "}}}
-        endif "}}}
+        endif
+    else 
+        let hex=s:fmt_hex(hex_list[0][0])
+        let s:ColorV.word_list=hex_list[0]
     endif "}}}
 
     if exists("a:1") && a:1==1
@@ -3903,8 +3870,6 @@ function! colorv#cursor_win(...) "{{{
         let s:ColorV.change_word=0
     	let s:ColorV.change_all=0
     endif
-        " let s:exit_call=1
-        " let s:exit_func="s:changing"
     
     "change2
     if exists("a:1") && (a:1==2 || a:1==1) && exists("a:2")
@@ -3926,7 +3891,8 @@ function! colorv#cursor_win(...) "{{{
             unlet s:ColorV.change_func
         endif
     endif
-
+    
+    "pass "s:changing" as exit_func to colorv#win()
     call colorv#win(s:mode,hex,1,"s:changing")
     
 endfunction "}}}
@@ -4442,6 +4408,11 @@ function! colorv#preview(...) "{{{
     else
         let s:ColorV_view_block=g:ColorV_view_block
     endif
+    if exists("a:1") && a:1 =~ "S"
+        let silent=1
+    else
+        let silent=0
+    endif
 
 "python timer.
 if has("python") && g:ColorV_no_python!=1
@@ -4462,10 +4433,10 @@ n_t=time.time()
 vim.command("let t_t ="+str(n_t - o_t))
 EOF
 endif
-    if exists("t_t")
+    if exists("t_t") && silent==0
         call s:echo(line('$')." lines processed."
                     \."Takes ". string(t_t) . " sec." )
-    else
+    elseif  silent==0
         call s:echo(line('$')." lines processed")
     endif
 
@@ -4540,6 +4511,13 @@ if g:ColorV_load_cache==1 "{{{
         au VIMLEAVEPre * call <SID>write_cache()
     aug END
 endif "}}}
+if g:ColorV_prev_css==1
+    aug colorv_auto_prev
+        au!
+        au! BufWinEnter *.css call colorv#preview("S")
+        au! bufwritepost *.css call colorv#preview("S")
+    aug END
+endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "}}}
 let &cpo = s:save_cpo
