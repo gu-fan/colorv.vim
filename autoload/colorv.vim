@@ -10,7 +10,6 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-" if !has("gui_running") || v:version < 700 || exists("g:colorV_loaded")
 if version < 700 || exists("g:ColorV_loaded")
     finish
 endif
@@ -62,7 +61,7 @@ if !exists('g:ColorV_win_space')
     let g:ColorV_win_space="hsv"
 endif
 if !exists('g:ColorV_gen_space')
-    let g:ColorV_gen_space="yiq"
+    let g:ColorV_gen_space="hsv"
 endif
 if has("python")
     if !exists('g:ColorV_prev_css') 
