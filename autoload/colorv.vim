@@ -4467,21 +4467,30 @@ function! colorv#preview(...) "{{{
     else
         let s:ColorV_view_block=g:ColorV_view_block
     endif
-"     " error because the string is invaid.
-"     if has("python") && g:ColorV_no_python!=1
-"     	call s:py_prev_load()
-" python << EOF
-" lines=vim.current.buffer
-" for line in lines:
-"     vim.command("call colorv#prev_txt('"+line+"')")
-" EOF
-"     else
-        let file_lines=getline(1,line('$'))
-        for i in range(len(file_lines))
-            let line=file_lines[i]
-            call colorv#prev_txt(line)
-        endfor
-    " endif
+if has("python") && g:ColorV_no_python!=1
+python << EOF
+import time
+import vim
+vim.command("let o_t = "+str(time.time()))
+EOF
+endif
+    let file_lines=getline(1,line('$'))
+    for i in range(len(file_lines))
+        let line=file_lines[i]
+        call colorv#prev_txt(line)
+    endfor
+if has("python") && g:ColorV_no_python!=1
+python << EOF
+vim.command("let n_t = "+str(time.time()))
+vim.command("let t_t = n_t - o_t")
+EOF
+endif
+    if exists("t_t")
+        call s:echo(line('$')." lines processed."
+                    \."Takes ". string(t_t) . " sec." )
+    else
+        call s:echo(line('$')." lines processed")
+    endif
 
 
     let s:ColorV_view_block=g:ColorV_view_block
