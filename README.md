@@ -14,7 +14,7 @@ With this you can:
         
         (color-text: e.g.,yellow/rgb(255,255,0)/#ff3300)
 
-Take a glance: ![Take a glance](http://i51.tinypic.com/dm4j89.png)
+**Take a glance:** ![Take a glance](http://i51.tinypic.com/dm4j89.png)
     
 ###A Quick Start###
 
