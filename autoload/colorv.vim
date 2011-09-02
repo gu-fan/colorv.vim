@@ -4413,7 +4413,7 @@ function! colorv#prev_txt(txt) "{{{
     if has("python") && g:ColorV_no_python!=1
         let hex_list=s:p_txt2hex(a:txt)
     else
-        let hex_list=s:txt2hex(a:txt)
+        let hex_list=s:txt2hetxt)
     endif
     let bufnr=bufnr('%')
     for prv_item in hex_list
@@ -4467,20 +4467,21 @@ function! colorv#preview(...) "{{{
     else
         let s:ColorV_view_block=g:ColorV_view_block
     endif
-    if has("python") && g:ColorV_no_python!=1
-    	call s:py_prev_load()
-python << EOF
-lines=vim.current.buffer
-for line in lines:
-    vim.command("call colorv#prev_txt(\""+line+"\")")
-EOF
-    else
+"     " error because the string is invaid.
+"     if has("python") && g:ColorV_no_python!=1
+"     	call s:py_prev_load()
+" python << EOF
+" lines=vim.current.buffer
+" for line in lines:
+"     vim.command("call colorv#prev_txt('"+line+"')")
+" EOF
+"     else
         let file_lines=getline(1,line('$'))
         for i in range(len(file_lines))
             let line=file_lines[i]
             call colorv#prev_txt(line)
         endfor
-    endif
+    " endif
 
 
     let s:ColorV_view_block=g:ColorV_view_block
