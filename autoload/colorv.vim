@@ -1643,7 +1643,7 @@ function! s:update_global(hex) "{{{
             if s:is_open()
                 call s:exec(s:get_win_num() . " wincmd w")
             else
-                silent! exec splitLocation . ' split'
+                silent! exec spLoc . ' split'
                 silent! exec "buffer " . t:ColorVBufName
             endif
         endif
@@ -1973,11 +1973,12 @@ endfunction "}}}
 "}}}
 "WINS: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! s:open_win() "{{{
-    let splitLocation = g:ColorV_win_pos == "top" ? "topleft " : "botright "
-    let exists_buffer= bufnr("_ColorV_")
+function! s:open_win(name,...) "{{{
+    let spLoc= g:ColorV_win_pos == "top" ? "topleft " : "botright "
+    let spDirc= exists("a:1") && a:1 =="v" ? "v" : ""
+    let exists_buffer= bufnr(a:name)
     if exists_buffer== -1
-        silent! exec splitLocation .' new _ColorV_'
+        silent! exec spLoc .' '.spDirc.'new '. a:name
     else
         let exists_window = bufwinnr(exists_buffer)
         if exists_window != -1
@@ -1985,8 +1986,8 @@ function! s:open_win() "{{{
                 exe exists_window . "wincmd w"
             endif
         else
-            call s:go_buffer_win('_ColorV')
-            exe splitLocation ." split +buffer" . exists_buffer
+            call s:go_buffer_win(a:name)
+            exe spLoc ." ".spDirc."split +buffer" . exists_buffer
         endif
     endif
 endfunction "}}}
@@ -1998,7 +1999,7 @@ function! s:go_buffer_win(name) "{{{
         return 0
     endif
 endfunction "}}}
-function! s:win_setl()
+function! s:win_setl() "{{{
     " local setting "{{{
     setl buftype=nofile
     setl winfixwidth
@@ -2020,9 +2021,9 @@ function! s:win_setl()
         setl cc=
     endif
     call s:map_define() "}}}
-endfunction
+endfunction "}}}
 function! colorv#win(...) "{{{
-    call s:open_win()
+    call s:open_win("_ColorV_")
     " get hex "{{{
     if exists("a:2") 
     	"skip history if no new hex 
@@ -2083,26 +2084,15 @@ function! colorv#win(...) "{{{
     call s:draw_win(hex)
     call s:aug_init()
 endfunction "}}}
-function! s:check_win()
-    let splitLocation = g:ColorV_win_pos == "top" ? "topleft " : "botright "
-    let exists_buffer= bufnr("_ColorV_")
-    let exists_window = bufwinnr(exists_buffer)
-    if exists_window != -1
-        if winnr() != exists_window
-            exe exists_window . "wincmd w"
-        endif
-    else
-        call s:go_buffer_win('_ColorV')
-        exe splitLocation ." split +buffer" . exists_buffer
-    endif
-    if bufnr('%') != bufnr("_ColorV_")
+function! s:check_win(name) "{{{
+    if bufnr('%') != bufnr(a:name)
     	return 0
     else
     	return 1
     endif
-endfunction
+endfunction "}}}
 function! s:draw_win(hex) "{{{
-    if !s:check_win()
+    if !s:check_win('_ColorV_')
         call s:error("Not [ColorV] buffer.")
         return
     endif
@@ -3935,22 +3925,7 @@ endfunction "}}}
 " LIST: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#list_win(...) "{{{
-    let splitLocation = "botright "
-    let exists_buffer= bufnr("_ColorV-List_")
-    if exists_buffer== -1
-        silent! exec splitLocation .' vnew _ColorV-List_'
-    else
-        let exists_window = bufwinnr(exists_buffer)
-        if exists_window != -1
-            if winnr() != exists_window
-                exe exists_window . "wincmd w"
-            endif
-        else
-            call s:go_buffer_win('_ColorV-List_')
-            exe splitLocation ." vsplit +buffer" . exists_buffer
-        endif
-    endif
-
+    call s:open_win("_ColorV-List_","v")
     
     " local setting "{{{
     setl winfixwidth
@@ -3998,8 +3973,8 @@ function! colorv#list_and_colorv(...) "{{{
     call colorv#exit()
     call colorv#list_win(list)
     call colorv#win(s:mode)
-    if s:is_open("t:ColorVListBufName")
-        call s:exec(s:get_win_num("t:ColorVListBufName") . " wincmd w")
+    if s:is_open("_ColorV-List_")
+        call s:exec(s:get_win_num("_ColorV-List_") . " wincmd w")
     endif
 endfunction "}}}
 function! s:draw_list_buf(list) "{{{
