@@ -1,4 +1,4 @@
-*colorv.txt*                ColorV         A Color tool for Vim
+*colorv.txt* *colorv*         ColorV         A Color tool for Vim
  
               _________     ______            ___    __               ~
               __  ____/________  /______________ |  / /               ~
@@ -88,7 +88,7 @@ QUICKSTART                                               *colorv-quickstart*
         Also you can try with 'cadetblue' 'hsl(50,30%,47%)'...
     
     Generate 'Monochromatic' (and more) colorscheme List with color-text.
-        <leader>cgm
+        <leader>cg1 or g1 in ColorV window
 
     Copy the color in the ColorV window directly.
         cc/<Ctrl-C>/yy
@@ -134,12 +134,13 @@ NEWS IN 2.5                                         *colorv-news-2.5*
 ==============================================================================
 INSTALL                                             *colorv-install*
 
-1.Using [Vundle.vim](https://github.com/gmarik/vundle) (Recommend):~
-    Add this line to your vimrc  `Bundle 'Rykka/ColorV'` 
+1.Using [Vundle.vim](Recommend):~
+    https://github.com/gmarik/vundle
+    After install. Add this line to your vimrc  `Bundle 'Rykka/ColorV'` 
     Run `:BundleInstall` to install.
-    And update ColorV eaisly by `:BundleInstall!`
+    And update ColorV easily by `:BundleInstall!`
  
-2.Using [ColorV on Vim.org](http://www.vim.org/scripts/script.php?script_id=3597)~
+2.Using [ColorV on Vim.org]~
  
     http://www.vim.org/scripts/script.php?script_id=3597
     Download the latest version of tar.gz file, 
@@ -148,7 +149,7 @@ INSTALL                                             *colorv-install*
     Generate helptags. `:helptags ~/.vim/doc
  
      NOTE   If you got any bugs or suggestions.
-            Please post it at https://github.com/rykka/ColorV . 
+            Please post it at https://github.com/Rykka/ColorV . 
 ==============================================================================
 USAGE                                               *colorv-usage*
 
@@ -234,6 +235,8 @@ USAGE                                               *colorv-usage*
 
     <leader>cpb to preview in current file with  text-blocking.
     This is much clearer.
+
+    See |g:ColorV_prev_css| to auto preview "*.css" files.
      
 ==============================================================================
 COLORINFO                                            *colorv-colorinfo*
@@ -570,7 +573,7 @@ OPTIONS                                             *colorv-options*
                                                 *g:ColorV_prev_css*
                                             (if has("python":default=1 ))
     g:ColorV_prev_css       Auto Preview color-text in *.css files.
-                            Update view after write file.
+                            Auto update view after write file.
 
                                                 *g:ColorV_cache_File*
                                             (default='~/.vim_ColorV_cache')
@@ -767,7 +770,7 @@ CHANGELOG                                           *colorv-changelog*
                 to fix the matching bug.
 " DONE: 110901  add a:4 'circle' option for colorv#gen_list().
 " DONE: 110901  add timer while previewing buffer
-" DONE: 110831  Not matchadd() duplicated word. 
+" DONE: 110831  Not to matchadd() duplicated word. 
                 Not all word being highlighted: because same hex may be
                 differe ptn. use ptn group as dict name instead.
 " DONE: 110830  python version for preview() 

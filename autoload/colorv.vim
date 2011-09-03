@@ -1,6 +1,6 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  Script: ColorV 
-"    File: autoload/ColorV.vim
+"    File: autoload/colorv.vim
 " Summary: A vim plugin for dealing with colors. 
 "  Author: Rykka.Krin Rykka.Krin(at)gmail.com>
 "    Home: 
@@ -3864,13 +3864,17 @@ function! colorv#cursor_win(...) "{{{
         let nums=exists("a:3") ? a:3 : ""
         let step=exists("a:4") ? a:4 : ""
         call s:echo("Will Generate color list with [".pat."].")
-        let list=s:winlist_generate(hex,type,nums,step)
-        call colorv#list_win(list)
+        " let list=s:winlist_generate(hex,type,nums,step)
+        " call colorv#list_win(list)
+        call colorv#gen_win(hex,type,nums,step)
+        return
     elseif exists("a:1") && a:1==4
         let s:ColorV.change_word=1
     else
         let s:ColorV.change_word=0
     	let s:ColorV.change_all=0
+        call colorv#win(s:mode,hex)
+        return
     endif
     
     "change2
@@ -4029,7 +4033,7 @@ function! colorv#yiq_list_gen(hex,...) "{{{
     let type=exists("a:1") && !empty(a:1) ? a:1 : s:gen_def_type
     let nums=exists("a:2") && !empty(a:2) ? a:2 : s:gen_def_nums 
     let step=exists("a:3") && !empty(a:3) ? a:3 : s:gen_def_step
-    let circle=exists("a:4") && !empty(a:4) ? a:4 : 1
+    let circle=exists("a:4") ? a:4 : 1
     let [y,i,q]=colorv#rgb2yiq(colorv#hex2rgb(hex))
     let [h,s,v]=colorv#hex2hsv(hex)
     let hex_list=[]
@@ -4207,7 +4211,7 @@ function! colorv#list_gen(hex,...) "{{{
     let type=exists("a:1") && !empty(a:1) ? a:1 : s:gen_def_type
     let nums=exists("a:2") && !empty(a:2) ? a:2 : s:gen_def_nums 
     let step=exists("a:3") && !empty(a:3) ? a:3 : s:gen_def_step
-    let circle=exists("a:4") && !empty(a:4) ? a:4 : 1
+    let circle=exists("a:4") ? a:4 : 1
     let [h,s,v]=colorv#hex2hsv(hex)
     let hex_list=[]
     for i in range(nums)
@@ -4358,7 +4362,12 @@ function! colorv#gen_win(hex,...) "{{{
     else
         let list=s:winlist_generate(hex,type,nums,step)
     endif
+    call colorv#exit()
     call colorv#list_win(list)
+    call colorv#win(s:mode)
+    if s:is_open("t:ColorVListBufName")
+        call s:exec(s:get_win_num("t:ColorVListBufName") . " wincmd w")
+    endif
 endfunction "}}}
 "}}}
 " PREV: "{{{1

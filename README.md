@@ -65,7 +65,7 @@ With this you can:
 
 * Generate 'Monochromatic' (and more) colorscheme List with color-text.
  
-        <leader>cgm
+        <leader>cg1 or g1 in ColorV window
 
 * Copy the color in the ColorV window directly.
 
@@ -127,7 +127,7 @@ With this you can:
 
 >  Run `:BundleInstall` to install.
 
->  And update ColorV eaisly by `:BundleInstall!`
+>  And update ColorV easily by `:BundleInstall!`
 
   * Using [ColorV on Vim.org](http://www.vim.org/scripts/script.php?script_id=3597) 
 
@@ -137,8 +137,8 @@ With this you can:
 
 >  Generate helptags. `:helptags ~/.vim/doc`
  
->       If you got bugs or have suggestions.
->       Post it at https://github.com/rykka/ColorV . 
+>       If you got any bugs or  suggestions. 
+>       Please post it at https://github.com/Rykka/ColorV . 
  
 ###VIMRC EXAMPLE###
 

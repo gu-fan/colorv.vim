@@ -1,6 +1,6 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  Script: ColorV 
-"    File: plugin/ColorV.vim
+"    File: plugin/colorv.vim
 " Summary: A vim plugin for dealing with colors. 
 "  Author: Rykka.Krin <Rykka.Krin(at)gmail.com>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -98,13 +98,13 @@ if !hasmapto(':ColorVlist<CR>')
 endif
 
 if !hasmapto(':ColorVwordgenerate Hue<CR>')
-  silent! nmap <unique> <silent> <Leader>cgh :ColorVwordgen Hue<CR>
+  silent! nmap <unique> <silent> <Leader>cgh :ColorVwordgen Hue 20 15<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Saturation<CR>')
-  silent! nmap <unique> <silent> <Leader>cgs :ColorVwordgen Saturation<CR>
+  silent! nmap <unique> <silent> <Leader>cgs :ColorVwordgen Saturation 20 5 1<CR>
 endif
 if !hasmapto(':ColorVwordgenerate Value<CR>')
-  silent! nmap <unique> <silent> <Leader>cgv :ColorVwordgen Value<CR>
+  silent! nmap <unique> <silent> <Leader>cgv :ColorVwordgen Value 20 5 1<CR>
 endif
 
 if !hasmapto(':ColorVwordgenerate Analogous<CR>')
