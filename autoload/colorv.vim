@@ -2000,7 +2000,7 @@ function! s:go_buffer_win(name) "{{{
     endif
 endfunction "}}}
 function! s:win_setl() "{{{
-    " local setting "{{{
+    " local setting
     setl buftype=nofile
     setl winfixwidth
     setl nocursorline nocursorcolumn
