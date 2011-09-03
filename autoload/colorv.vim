@@ -2016,14 +2016,15 @@ function! s:win_setl() "{{{
     setl tw=0
     setl foldcolumn=0
     setl sidescrolloff=0
-    setl ft=ColorV
     if v:version >= 703
         setl cc=
     endif
-    call s:map_define() "}}}
 endfunction "}}}
 function! colorv#win(...) "{{{
     call s:open_win("_ColorV_")
+    call s:win_setl()
+    setl ft=ColorV
+    call s:map_define() "}}}
     " get hex "{{{
     if exists("a:2") 
     	"skip history if no new hex 
@@ -3928,25 +3929,7 @@ function! colorv#list_win(...) "{{{
     call s:open_win("_ColorV-List_","v")
     
     " local setting "{{{
-    setl winfixwidth
-    setl nocursorline nocursorcolumn
-    setl tw=0
-    setl buftype=nofile
-    setl bufhidden=delete
-    setl nolist
-    setl noswapfile
-    setl nobuflisted
-    setl nowrap
-    setl nofoldenable
-    setl nomodeline
-    setl nonumber
-    setl noea
-    setl foldcolumn=0
-    setl sidescrolloff=0
-    if v:version >= 703
-        setl cc=
-    endif
-
+    call s:win_setl()
     setl ft=ColorV_list 
     
     nmap <silent><buffer> q :call colorv#exit_list_win()<cr>
@@ -3956,7 +3939,6 @@ function! colorv#list_win(...) "{{{
     nmap <silent><buffer> H :h colorv-colorname<cr>
     nmap <silent><buffer> <F1> :h colorv-colorname<cr>
     " call s:map_define() "}}}
-
     if winnr('$') != 1
         execute 'vertical resize' 29
         redraw
@@ -4530,11 +4512,11 @@ if g:ColorV_prev_css==1 "{{{
         au! bufwritepost *.css call colorv#preview("S")
     aug END
 endif "}}}
-augroup ColorVnew "{{{
-    autocmd!
-    autocmd BufNewFile _ColorV_ call s:win_setl()
-    autocmd BufNewFile _ColorV-List_ call s:win_setl()
-augroup END "}}}
+" augroup ColorVnew "{{{
+"     autocmd!
+"     autocmd BufNewFile _ColorV_ call s:win_setl()
+"     autocmd BufNewFile _ColorV-List_ call s:win_setl()
+" augroup END "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "}}}
 let &cpo = s:save_cpo
