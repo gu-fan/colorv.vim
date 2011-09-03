@@ -1980,7 +1980,7 @@ function! colorv#win(...) "{{{
     if !exists('t:ColorVBufName')
         let t:ColorVBufName = g:ColorV.name
         silent! exec splitLocation .' new'
-        silent! exec "edit ~/" . t:ColorVBufName
+        silent! exec "edit " . t:ColorVBufName
     else
     	if s:is_open()
             call s:exec(s:get_win_num() . " wincmd w")
@@ -2071,7 +2071,7 @@ function! colorv#win(...) "{{{
     call s:aug_init()
 endfunction "}}}
 function! s:draw_win(hex) "{{{
-    if expand('%') != g:ColorV.name
+    if expand('%') !~ '^'.g:ColorV.name.'$'
         call s:error("Not [ColorV] buffer.")
         return
     endif
