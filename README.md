@@ -17,7 +17,7 @@ With this you can:
 
 **in Terminal(256):** ![Terminal](http://i56.tinypic.com/kb4tch.png)
 
-**Where to Start:**  '<leader>cv' or :ColorV
+**Where to Start:**  `<leader>cv` or :ColorV
     
 ###Quick Start###
 
@@ -31,7 +31,7 @@ With this you can:
   **NOTE** 
 
 >       <leader> is a key can change in vimrc. Default is "\".
->       Mappings may not exist if it has been used by other plugins.
+>       Mappings may not exist if it has been used.
 >       Then you should redefine it in your vimrc.
 
 * Choose a color in ColorV window.
