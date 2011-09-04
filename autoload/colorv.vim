@@ -376,6 +376,9 @@ from math import fmod
 import math
 import vim
 import colorsys
+def number(x):
+    return int(round(float(x)))
+    
 #{{{ rgb hex
 def hex2rgb(hex): 
     if hex.startswith("#"): hex = hex[1:]
@@ -384,7 +387,15 @@ def hex2rgb(hex):
     rgb = [(hex >> 16) & 0xff, (hex >> 8) & 0xff, hex & 0xff ]
     return  rgb 
 def rgb2hex(rgb):
-    return '%02X%02X%02X' % (rgb[0],rgb[1],rgb[2])
+    r,g,b=number(rgb[0]),number(rgb[1]),number(rgb[2])
+    if r>255 or g>255 or b>255 or r<0 or g<0 or b<0:
+        r=(r,255)[r>255]
+        r=(r,0)[r<0]
+        g=(g,255)[g>255]
+        g=(g,0)[g<0]
+        b=(b,255)[b>255]
+        b=(b,0)[b<0]
+    return '%02X%02X%02X' % (r,g,b)
 #}}}
 #{{{ hsv
 def rgb2hsv(rgb): 
