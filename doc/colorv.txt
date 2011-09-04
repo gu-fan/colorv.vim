@@ -123,10 +123,8 @@ NEWS IN 2.5                                         *colorv-news-2.5*
 
 + New in 2.5.1~
     Auto preview css files.(g:ColorV_prev_css)
-
-    NOTE    If you have previous version of ColorV.
-            You'd better delete it.
-            because the file name have changed.
++ New in 2.5.2~
+    Fix some bugs on mac/windows/terminal.
             
 ==============================================================================
 INSTALL                                             *colorv-install*
@@ -145,27 +143,31 @@ INSTALL                                             *colorv-install*
     ("~/.vim" for linux. "$HOME/vimfiles" for windows)
     Generate helptags. `:helptags ~/.vim/doc
  
-    NOTE   If your vim is not compiled with 'python'. 
-           Or you OS have not install python.
-           Then it may be 3~5 times slower.
-           Get python 2.7 at http://www.python.org/
+    NOTE   You can always get the latest version at
+           https://github.com/Rykka/ColorV
+           And you can report bugs and suggestions there.
 
 ------------------------------------------------------------------------------
 TROUBLESHOOTING                                 *colorv-Troubleshooting*
 
+    NOTE   If your vim is not compiled with 'python'. 
+           Or you OS have no python installed.
+           Then it may be 3~5 times slower.
+
     NOTE   If ColorV got bugs. 
-           First get the latest ColorV version
+           First get the latest ColorV version.
            https://github.com/Rykka/ColorV
+
            Check if your vim version >=7.3
             ':ve'
            Check if your python version =2.7
             ':py import sys'
             ':py print sys.version'
 
-    NOTE   If ColorV still got bugs with python. 
-           use 'let g:ColorV_no_python=1' in your vimrc.
+    NOTE   If ColorV still got bugs. 
+           use 'let g:ColorV_no_python=1'.
 
-    NOTE   If you got any bugs or suggestions.
+    NOTE   If you still got bugs.
            Please report it at https://github.com/Rykka/ColorV . 
 ==============================================================================
 USAGE                                               *colorv-usage*
@@ -772,10 +774,14 @@ DEVELOPER                                             *colorv-developer*
 DEPENDENCIES                                        *colorv-dependencies*
 
     - Vim 7.0 or higher.
-    - python 2.7 for the best. Other version may have bugs.
+    - python 2.7 for the best. Other versions may have bugs.
     - pyGTK ColorPicker: Requires +python and pygtk2.0.
 ==============================================================================
 CHANGELOG                                           *colorv-changelog* 
+" 2.5.2
+"FIXED: 110904  wrong method of check buffers. 
+"FIXED: 110904  optimize rgb2hex(). fix 0-length error for Mac vim.
+"FIXED: 110904  new method of open_win(). fix errors on windows and terminal
 
 " 2.5.1 
 " DONE: 110902  add g:ColorV_prev_css to auto preview *.css files.

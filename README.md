@@ -107,13 +107,8 @@ With this you can:
 >       Set your '&t_Co' option (Default:8), if it supports more colors.
  
 + New in 2.5.1 : auto preview css files.(g:ColorV_prev_css)
++ New in 2.5.2 : fix some bugs on mac/windows/terminal.
 
-  **NOTE** 
-
->       If you have previous version of ColorV.
->       You'd better delete it.
->       because the file name have changed to 'colorv.vim'
- 
 ##INSTALL:##
     
   * Using [Vundle.vim](https://github.com/gmarik/vundle) (Recommend): 
@@ -132,16 +127,11 @@ With this you can:
 
 >  Generate helptags. `:helptags ~/.vim/doc`
  
-  **NOTE** 
+  **NOTE**  
 
->       If you got any bugs or suggestions. 
->       Please report it at https://github.com/Rykka/ColorV . 
- 
-  **NOTE** 
- 
->       If your vim is not compiled with 'python'. 
->       Or you OS have not install python.
->       Then it may be 3~5 times slower. 
+>       You can always get the latest version at
+>       https://github.com/Rykka/ColorV
+>       And you can report bugs and suggestions there.
  
 ###VIMRC EXAMPLE###
 
