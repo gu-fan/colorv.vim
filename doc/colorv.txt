@@ -43,20 +43,22 @@ INTRO                                               *colorv-intro*
     (color-text: e.g.,yellow/rgb(255,255,0)/#ff3300)
 
     Take a glance: http://i55.tinypic.com/2jg7yu0.jpg
-    in Terminal: http://i56.tinypic.com/kb4tch.png
+    in Terminal(256): http://i56.tinypic.com/kb4tch.png
+
+    Where to Start:  '<leader>cv' or :ColorV
 ------------------------------------------------------------------------------
 QUICKSTART                                               *colorv-quickstart*
 
-    A Quick Start~
+    Quick Start~
 
     Open ColorV window to choose colors. 
-        <leader>c1/cm   min mode:Less Space.
-        <leader>c2      mid mode:Normal.
-        <leader>c3/cx   max mode:More Info.
-        <leader>cv      ColorV with previous mode.
+        <leader>c1/cm  or :ColorVmin    min mode:Less Space.
+        <leader>c2     or :ColorVmid    mid mode:Normal.
+        <leader>c3/cx  or :ColorVmax    max mode:More Info.
+        <leader>cv     or :ColorV       ColorV with previous mode.
 
     NOTE    <leader> is a key can change in vimrc. Default is "\".
-            Mappings may not exist if it has been taken by other plugins.  
+            Mappings may not exist if it has been taken.  
             Then you should redefine it in your vimrc.
 
     Choose a color in ColorV window.
@@ -124,7 +126,7 @@ NEWS IN 2.5                                         *colorv-news-2.5*
 + New in 2.5.1~
     Auto preview css files.(g:ColorV_prev_css)
 + New in 2.5.2~
-    Fix some bugs on mac/windows/terminal.
+    Fix some bugs in mac/windows/terminal.
             
 ==============================================================================
 INSTALL                                             *colorv-install*
@@ -261,7 +263,9 @@ USAGE                                               *colorv-usage*
     <leader>cpb to preview in current file with  text-blocking.
     This is much clearer.
 
-    See |g:ColorV_prev_css| to auto preview "*.css" files.
+    <leader>cpc to clear all previewed colors.
+
+    Set |g:ColorV_prev_css| to auto preview "*.css" files.
      
 ==============================================================================
 COLORINFO                                            *colorv-colorinfo*
@@ -785,6 +789,7 @@ DEPENDENCIES                                        *colorv-dependencies*
 ==============================================================================
 CHANGELOG                                           *colorv-changelog* 
 " 2.5.2
+"FIXED: 110904  add force number cast in p: rgb2hex() to fix errors. 
 "FIXED: 110904  wrong method of check buffers. 
 "FIXED: 110904  optimize rgb2hex(). fix 0-length error for Mac vim.
 "FIXED: 110904  new method of open_win(). fix errors on windows and terminal

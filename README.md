@@ -15,17 +15,18 @@ With this you can:
 
 **Take a glance:** ![Take a glance](http://i55.tinypic.com/2jg7yu0.jpg)
 
-**in Terminal:** ![Terminal](http://i56.tinypic.com/kb4tch.png)
+**in Terminal(256):** ![Terminal](http://i56.tinypic.com/kb4tch.png)
 
+**Where to Start:**  '<leader>cv' or :ColorV
     
-###A Quick Start###
+###Quick Start###
 
 * Open ColorV window to select colors. 
 
-        <leader>c1/cm   min mode:Less Space.
-        <leader>c2      mid mode:Normal.
-        <leader>c3/cx   max mode:More Info.
-        <leader>cv      ColorV with previous mode.
+        <leader>c1/cm  or :ColorVmin    min mode:Less Space.
+        <leader>c2     or :ColorVmid    mid mode:Normal.
+        <leader>c3/cx  or :ColorVmax    max mode:More Info.
+        <leader>cv     or :ColorV       ColorV with previous mode.
 
   **NOTE** 
 
