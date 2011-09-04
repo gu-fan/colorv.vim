@@ -384,22 +384,7 @@ def hex2rgb(hex):
     rgb = [(hex >> 16) & 0xff, (hex >> 8) & 0xff, hex & 0xff ]
     return  rgb 
 def rgb2hex(rgb):
-    r,g,b=rgb[0],rgb[1],rgb[2]
-    if isinstance(r,str):
-        r=int(float(r))
-    if isinstance(r,float):
-        r=int(r)
-    if isinstance(g,str):
-        g=int(float(g))
-    if isinstance(g,float):
-        g=int(g)
-    if isinstance(b,str):
-        b=int(float(b))
-    if isinstance(b,float):
-        b=int(b)
-
-    return '{:06X}'.format(( (r & 0xff) << 16) \
-            + ((g & 0xff) << 8) + (b & 0xff)) 
+    return '%02X%02X%02X' % (rgb[0],rgb[1],rgb[2])
 #}}}
 #{{{ hsv
 def rgb2hsv(rgb): 
@@ -530,16 +515,13 @@ function! colorv#rgb2hex(rgb)   "{{{
 " in [r,g,b] num/str
 " out ffffff
     let [r,g,b]=[s:number(a:rgb[0]),s:number(a:rgb[1]),s:number(a:rgb[2])]
-    if r>255||g>255||b>255
+    if r>255||g>255||b>255||r<0 || g<0 || b<0
     	call s:error("rgb2hex():RGB out of boundary.".string(a:rgb))
-        let r= r>255 ? 255 : r
-        let g= g>255 ? 255 : g
-        let b= b>255 ? 255 : b
+        let r= r>255 ? 255 : r<0 ? 0 : r
+        let g= g>255 ? 255 : g<0 ? 0 : g
+        let b= b>255 ? 255 : b<0 ? 0 : b
     endif
-    let hex=printf("%06x",r*0x10000+g*0x100+b*0x1)
-    let hex=substitute(hex,'\l','\u\0','g')
-    
-   return hex
+   return printf("%02X%02X%02X",r,g,b)
 endfunction "}}}
 function! colorv#hex2rgb(hex) "{{{
 " in ffffff
@@ -1406,14 +1388,6 @@ function! s:draw_hueline(l,...) "{{{
     endif
     call  s:clear_hsvmatch()
 
-   " if exists("g:ColorV_dynamic_hue") && g:ColorV_dynamic_hue==1
-   "      let h=g:ColorV.HSV.H
-   "      let step=exists("a:2") ? a:2 : 6
-   "  else 
-   "      let h=0
-   "      let step=exists("a:2") ? a:2 : exists("a:1") ? 
-   "              \( a:1 != 0 ? (360/a:1) : 20 ) : 20
-   "  endif
     if g:ColorV.HSV.S==0
         let h=!exists("s:prv_H") ? 0 : s:prv_H
     else
@@ -1462,12 +1436,7 @@ function! s:draw_satline(l,...) "{{{
     while x < width
         
         let hi_grp="cv_sat_".x 
-        " if s:space=="hls"
-        "     let hex=colorv#rgb2hex(colorv#hls2rgb([h,s,v]))
-        " else
-            let hex=colorv#hsv2hex([h,s,v])
-        " endif
-        " exec "hi ".hi_grp." guifg=#".hex." guibg=#".hex
+        let hex=colorv#hsv2hex([h,s,v])
         call colorv#hi_color(hi_grp,hex,hex)
         
         let pos="\\%".l."l\\%".(x+1+s:poff_x)."c"
@@ -1851,8 +1820,8 @@ function! s:get_star_pos() "{{{
     return [l,c]
 endfunction "}}}
 function! s:clear_text() "{{{
-    if expand('%') !=g:ColorV.name
-        call s:warning("Not [ColorV] buffer")
+    if !s:check_win('_ColorV_')
+        call s:error("Not [ColorV] buffer.")
         return
     endif
     let cur=getpos('.')
@@ -1975,19 +1944,20 @@ endfunction "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:open_win(name,...) "{{{
     let spLoc= g:ColorV_win_pos == "top" ? "topleft " : "botright "
+    let spSize= exists("a:1") && a:1 =="v" ? 29 :s:pal_H+1
     let spDirc= exists("a:1") && a:1 =="v" ? "v" : ""
     let exists_buffer= bufnr(a:name)
     if exists_buffer== -1
-        silent! exec spLoc .' '.spDirc.'new '. a:name
+        silent! exec spLoc .' '.spSize.spDirc.'new '. a:name
     else
         let exists_window = bufwinnr(exists_buffer)
         if exists_window != -1
             if winnr() != exists_window
-                exe exists_window . "wincmd w"
+                silent! exe exists_window . "wincmd w"
             endif
         else
             call s:go_buffer_win(a:name)
-            exe spLoc ." ".spDirc."split +buffer" . exists_buffer
+            silent! exe spLoc ." ".spSize.spDirc."split +buffer" . exists_buffer
         endif
     endif
 endfunction "}}}
@@ -2024,7 +1994,7 @@ function! colorv#win(...) "{{{
     call s:open_win("_ColorV_")
     call s:win_setl()
     setl ft=ColorV
-    call s:map_define() "}}}
+    call s:map_define() 
     " get hex "{{{
     if exists("a:2") 
     	"skip history if no new hex 
@@ -3923,7 +3893,7 @@ function! colorv#clear_all() "{{{
     " call clearmatches()
 endfunction "}}}
 "}}}
-" LIST: "{{{1
+"LIST: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#list_win(...) "{{{
     call s:open_win("_ColorV-List_","v")
@@ -4177,8 +4147,8 @@ function! colorv#yiq_winlist_gen(hex,...) "{{{
 endfunction "}}}
 
 function! s:clear_list_text() "{{{
-    if expand('%') !=g:ColorV.listname
-        call s:warning("Not [ColorV List] buffer")
+    if !s:check_win('_ColorV-List_')
+        call s:error("Not [ColorV-List] buffer.")
         return
     endif
     let cur=getpos('.')
@@ -4350,7 +4320,7 @@ function! colorv#gen_win(hex,...) "{{{
     endif
 endfunction "}}}
 "}}}
-" PREV: "{{{1
+"PREV: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#prev_txt(txt) "{{{
     if !exists("s:prev_dict")|let s:prev_dict={}|endif
@@ -4463,7 +4433,7 @@ function! colorv#preview_line(...) "{{{
     let s:ColorV_view_block=g:ColorV_view_block
 endfunction "}}}
 "}}}
-" INIT: "{{{1
+"INIT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:write_cache() "{{{
     let CacheStringList = []
