@@ -148,9 +148,25 @@ INSTALL                                             *colorv-install*
     NOTE   If your vim is not compiled with 'python'. 
            Or you OS have not install python.
            Then it may be 3~5 times slower.
+           Get python 2.7 at http://www.python.org/
+
+------------------------------------------------------------------------------
+TROUBLESHOOTING                                 *colorv-Troubleshooting*
+
+    NOTE   If ColorV got bugs. 
+           First get the latest ColorV version
+           https://github.com/Rykka/ColorV
+           Check if your vim version >=7.3
+            ':ve'
+           Check if your python version =2.7
+            ':py import sys'
+            ':py print sys.version'
+
+    NOTE   If ColorV still got bugs with python. 
+           use 'let g:ColorV_no_python=1' in your vimrc.
 
     NOTE   If you got any bugs or suggestions.
-           Please post it at https://github.com/Rykka/ColorV . 
+           Please report it at https://github.com/Rykka/ColorV . 
 ==============================================================================
 USAGE                                               *colorv-usage*
 
@@ -756,6 +772,7 @@ DEVELOPER                                             *colorv-developer*
 DEPENDENCIES                                        *colorv-dependencies*
 
     - Vim 7.0 or higher.
+    - python 2.7 for the best. Other version may have bugs.
     - pyGTK ColorPicker: Requires +python and pygtk2.0.
 ==============================================================================
 CHANGELOG                                           *colorv-changelog* 

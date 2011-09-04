@@ -134,8 +134,8 @@ With this you can:
  
   **NOTE** 
 
->       If you got any bugs or  suggestions. 
->       Please post it at https://github.com/Rykka/ColorV . 
+>       If you got any bugs or suggestions. 
+>       Please report it at https://github.com/Rykka/ColorV . 
  
   **NOTE** 
  
