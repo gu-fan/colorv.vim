@@ -131,7 +131,8 @@ With this you can:
 
 >       You can always get the latest version at
 >       https://github.com/Rykka/ColorV
->       And you can report bugs and suggestions there.
+>       And you can report bugs and suggestions at
+>       https://github.com/Rykka/ColorV/issues
  
 ###VIMRC EXAMPLE###
 

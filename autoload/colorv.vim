@@ -4,8 +4,8 @@
 " Summary: A vim plugin for dealing with colors. 
 "  Author: Rykka.Krin Rykka.Krin(at)gmail.com>
 "    Home: 
-" Version: 2.5.1 
-" Last Update: 2011-09-02
+" Version: 2.5.2 
+" Last Update: 2011-09-04
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -21,7 +21,7 @@ let g:ColorV_loaded = 1
 let g:ColorV={}
 let g:ColorV.name="_ColorV_"
 let g:ColorV.listname="_ColorV-List_"
-let g:ColorV.ver="2.5.1.1"
+let g:ColorV.ver="2.5.2.2"
 
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={'R':255,'G':0,'B':0}
@@ -4149,11 +4149,10 @@ endfunction "}}}
 function! s:clear_list_text() "{{{
     if !s:check_win('_ColorV-List_')
         call s:error("Not [ColorV-List] buffer.")
-        return
+        return [0,0,0,0]
     endif
     let cur=getpos('.')
-    " silent! normal! ggVG"_x
-    silent %delete _
+    silent! %delete _
     return cur
 endfunction "}}}
 function! colorv#list_gen(hex,...) "{{{
@@ -4319,7 +4318,7 @@ function! colorv#gen_win(hex,...) "{{{
         call s:exec(s:get_win_num("t:ColorVListBufName") . " wincmd w")
     endif
 endfunction "}}}
-"}}}
+"1}}}
 "PREV: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#prev_txt(txt) "{{{
@@ -4482,11 +4481,6 @@ if g:ColorV_prev_css==1 "{{{
         au! bufwritepost *.css call colorv#preview("S")
     aug END
 endif "}}}
-" augroup ColorVnew "{{{
-"     autocmd!
-"     autocmd BufNewFile _ColorV_ call s:win_setl()
-"     autocmd BufNewFile _ColorV-List_ call s:win_setl()
-" augroup END "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "}}}
 let &cpo = s:save_cpo

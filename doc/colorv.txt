@@ -144,8 +144,9 @@ INSTALL                                             *colorv-install*
     Generate helptags. `:helptags ~/.vim/doc
  
     NOTE   You can always get the latest version at
-           https://github.com/Rykka/ColorV
-           And you can report bugs and suggestions there.
+           https://github.com/Rykka/ColorV/
+           And you can report bugs and suggestions at
+           https://github.com/Rykka/ColorV/issues
 
 ------------------------------------------------------------------------------
 TROUBLESHOOTING                                 *colorv-Troubleshooting*
@@ -165,10 +166,10 @@ TROUBLESHOOTING                                 *colorv-Troubleshooting*
             ':py print sys.version'
 
     NOTE   If ColorV still got bugs. 
-           use 'let g:ColorV_no_python=1'.
+           use 'let g:ColorV_no_python=1' to stop using python.
 
     NOTE   If you still got bugs.
-           Please report it at https://github.com/Rykka/ColorV . 
+           Please report it at https://github.com/Rykka/ColorV/issues . 
 ==============================================================================
 USAGE                                               *colorv-usage*
 
