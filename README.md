@@ -107,17 +107,22 @@ With this you can:
 >       Set your '&t_Co' option (Default:8), if it supports more colors.
  
 + New in 2.5.1 : auto preview css files.(g:ColorV_prev_css)
-+ New in 2.5.2 : fix some bugs on mac/windows/terminal.
++ New in 2.5.2 : fix some bugs in mac/windows/terminal.
 
 ##INSTALL:##
     
   * Using [Vundle.vim](https://github.com/gmarik/vundle) (Recommend): 
   
->  Add this line to your vimrc  `Bundle 'Rykka/ColorV'` 
+>   After git and vundle installed. 
+ 
+>   Add this line to your vimrc  
+>   `Bundle 'Rykka/ColorV'` 
 
->  Run `:BundleInstall` to install.
+>   Install it by 
+>   `:BundleInstall`
 
->  And update ColorV easily by `:BundleInstall!`
+>   And Update it simply by
+>   `:BundleInstall!`
 
   * Using [ColorV on Vim.org](http://www.vim.org/scripts/script.php?script_id=3597) 
 
