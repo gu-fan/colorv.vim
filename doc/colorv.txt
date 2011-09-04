@@ -43,7 +43,7 @@ INTRO                                               *colorv-intro*
     (color-text: e.g.,yellow/rgb(255,255,0)/#ff3300)
 
     Take a glance: http://i54.tinypic.com/2vi5h04.png
-
+    in Terminal: http://i56.tinypic.com/kb4tch.png
 ------------------------------------------------------------------------------
 QUICKSTART                                               *colorv-quickstart*
 

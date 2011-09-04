@@ -14,6 +14,8 @@ With this you can:
         (color-text: e.g.,yellow/rgb(255,255,0)/#ff3300)
 
 **Take a glance:** ![Take a glance](http://i54.tinypic.com/2vi5h04.png)
+**in Terminal:** ![Terminal](http://i56.tinypic.com/kb4tch.png)
+
     
 ###A Quick Start###
 
@@ -106,8 +108,8 @@ With this you can:
 >       Now ColorV works under Terminal(both 8/16/256 colors).   
 >       Set your '&t_Co' option (Default:8), if it supports more colors.
  
-+ New in 2.5.1 : auto preview css files.(g:ColorV_prev_css)
-+ New in 2.5.2 : fix some bugs in mac/windows/terminal.
++ New in 2.5.1 : Auto preview css files.(g:ColorV_prev_css)
++ New in 2.5.2 : Fix some bugs in mac/windows/terminal.
 
 ##INSTALL:##
     
