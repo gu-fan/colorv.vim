@@ -1942,54 +1942,6 @@ endfunction "}}}
 "}}}
 "WINS: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! s:open_win(name,...) "{{{
-    let spLoc= g:ColorV_win_pos == "top" ? "topleft " : "botright "
-    let spSize= exists("a:1") && a:1 =="v" ? 29 :s:pal_H+1
-    let spDirc= exists("a:1") && a:1 =="v" ? "v" : ""
-    let exists_buffer= bufnr(a:name)
-    if exists_buffer== -1
-        silent! exec spLoc .' '.spSize.spDirc.'new '. a:name
-    else
-        let exists_window = bufwinnr(exists_buffer)
-        if exists_window != -1
-            if winnr() != exists_window
-                silent! exe exists_window . "wincmd w"
-            endif
-        else
-            call s:go_buffer_win(a:name)
-            silent! exe spLoc ." ".spSize.spDirc."split +buffer" . exists_buffer
-        endif
-    endif
-endfunction "}}}
-function! s:go_buffer_win(name) "{{{
-    if bufwinnr(bufnr(a:name)) != -1
-        exe bufwinnr(bufnr(a:name)) . "wincmd w"
-        return 1
-    else
-        return 0
-    endif
-endfunction "}}}
-function! s:win_setl() "{{{
-    " local setting
-    setl buftype=nofile
-    setl winfixwidth
-    setl nocursorline nocursorcolumn
-    setl bufhidden=delete
-    setl nolist
-    setl noswapfile
-    setl nobuflisted
-    setl nowrap
-    setl nofoldenable
-    setl nomodeline
-    setl nonumber
-    setl noea
-    setl tw=0
-    setl foldcolumn=0
-    setl sidescrolloff=0
-    if v:version >= 703
-        setl cc=
-    endif
-endfunction "}}}
 function! colorv#win(...) "{{{
     call s:open_win("_ColorV_")
     call s:win_setl()
@@ -2054,6 +2006,54 @@ function! colorv#win(...) "{{{
     "}}}
     call s:draw_win(hex)
     call s:aug_init()
+endfunction "}}}
+function! s:open_win(name,...) "{{{
+    let spLoc= g:ColorV_win_pos == "top" ? "topleft " : "botright "
+    let spSize= exists("a:1") && a:1 =="v" ? 29 :s:pal_H+1
+    let spDirc= exists("a:1") && a:1 =="v" ? "v" : ""
+    let exists_buffer= bufnr(a:name)
+    if exists_buffer== -1
+        silent! exec spLoc .' '.spSize.spDirc.'new '. a:name
+    else
+        let exists_window = bufwinnr(exists_buffer)
+        if exists_window != -1
+            if winnr() != exists_window
+                silent! exe exists_window . "wincmd w"
+            endif
+        else
+            call s:go_buffer_win(a:name)
+            silent! exe spLoc ." ".spSize.spDirc."split +buffer" . exists_buffer
+        endif
+    endif
+endfunction "}}}
+function! s:go_buffer_win(name) "{{{
+    if bufwinnr(bufnr(a:name)) != -1
+        exe bufwinnr(bufnr(a:name)) . "wincmd w"
+        return 1
+    else
+        return 0
+    endif
+endfunction "}}}
+function! s:win_setl() "{{{
+    " local setting
+    setl buftype=nofile
+    setl winfixwidth
+    setl nocursorline nocursorcolumn
+    setl bufhidden=delete
+    setl nolist
+    setl noswapfile
+    setl nobuflisted
+    setl nowrap
+    setl nofoldenable
+    setl nomodeline
+    setl nonumber
+    setl noea
+    setl tw=0
+    setl foldcolumn=0
+    setl sidescrolloff=0
+    if v:version >= 703
+        setl cc=
+    endif
 endfunction "}}}
 function! s:check_win(name) "{{{
     if bufnr('%') != bufnr(a:name)
@@ -4398,10 +4398,10 @@ vim.command("let t_t ="+str(n_t - o_t))
 EOF
 endif
     if exists("t_t") && silent==0
-        call s:echo(line('$')." lines processed."
+        call s:echo(line('$')." lines previewed."
                     \."Takes ". string(t_t) . " sec." )
     elseif  silent==0
-        call s:echo(line('$')." lines processed")
+        call s:echo(line('$')." lines previewed")
     endif
 
 
