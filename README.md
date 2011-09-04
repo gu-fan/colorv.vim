@@ -13,7 +13,7 @@ With this you can:
         
         (color-text: e.g.,yellow/rgb(255,255,0)/#ff3300)
 
-**Take a glance:** ![Take a glance](http://i54.tinypic.com/2vi5h04.png)
+**Take a glance:** ![Take a glance](http://i55.tinypic.com/2jg7yu0.jpg)
 **in Terminal:** ![Terminal](http://i56.tinypic.com/kb4tch.png)
 
     
