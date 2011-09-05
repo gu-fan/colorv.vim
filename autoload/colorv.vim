@@ -21,7 +21,7 @@ let g:ColorV_loaded = 1
 let g:ColorV={}
 let g:ColorV.name="_ColorV_"
 let g:ColorV.listname="_ColorV-List_"
-let g:ColorV.ver="2.5.2.2"
+let g:ColorV.ver="2.5.2.3"
 
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={'R':255,'G':0,'B':0}
@@ -2362,9 +2362,9 @@ color_dlg.colorsel.set_current_color(c_set)
 if color_dlg.run() == gtk.RESPONSE_OK:
     clr = color_dlg.colorsel.get_current_color()
     c_hex = rgb2hex([clr.red/257,clr.green/257,clr.blue/257])
+    vim.command("ColorV "+c_hex)
     
 color_dlg.destroy()
-vim.command("ColorV "+c_hex)
 EOF
 endfunction "}}}
 
