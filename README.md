@@ -8,6 +8,7 @@ With this you can:
         Get color infos
         Edit color-texts
         Generate color lists
+        Save your copied colors
         Preview color-texts in buffers
         ...
         
@@ -15,7 +16,7 @@ With this you can:
 
 **Take a glance:** ![Take a glance](http://i55.tinypic.com/2jg7yu0.jpg)
 
-**in Terminal(256):** ![Terminal](http://i56.tinypic.com/kb4tch.png)
+**Terminal(256):** ![Terminal](http://i56.tinypic.com/kb4tch.png)
 
 **Where to Start:**  `<leader>cv` or `:ColorV`
     
