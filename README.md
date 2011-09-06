@@ -143,6 +143,8 @@ With this you can:
 >       And you can report bugs and suggestions at
 >       https://github.com/Rykka/ColorV/issues
  
+>       If you got troubles, check ':h colorv-troubleshooting' first.
+>
 ###VIMRC EXAMPLE###
 
 

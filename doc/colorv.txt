@@ -155,14 +155,15 @@ INSTALL                                             *colorv-install*
            And you can report bugs and suggestions at
            https://github.com/Rykka/ColorV/issues
 
+    NOTE   If you got troubles, check ':h colorv-troubleshooting' first.
 ------------------------------------------------------------------------------
-TROUBLESHOOTING                                 *colorv-Troubleshooting*
+TROUBLESHOOTING                                 *colorv-troubleshooting*
 
-    NOTE   If your vim is not compiled with 'python'. 
-           Or you OS have no python installed.
+    NOTE   If your vim is not compiled with 'python' (python2.x) 
+           Or you OS have no python2.x installed.
            Then it may be 3~5 times slower.
 
-    NOTE   If ColorV got bugs. 
+    NOTE   If it got bugs. 
            First get the latest ColorV version.
            https://github.com/Rykka/ColorV
 
@@ -172,10 +173,10 @@ TROUBLESHOOTING                                 *colorv-Troubleshooting*
             ':py import sys'
             ':py print sys.version'
 
-    NOTE   If ColorV still got bugs. 
+    NOTE   If ColorV still got bugs with python. 
            use 'let g:ColorV_no_python=1' to stop using python.
 
-    NOTE   If you still got bugs.
+    NOTE   If you can't solve the trouble.
            Please report it at https://github.com/Rykka/ColorV/issues . 
 ==============================================================================
 USAGE                                               *colorv-usage*
@@ -405,14 +406,14 @@ MAPPINGS                                            *colorv-mappings*
 
                                                     *colorv-mapping-preview*
     <leader>cpp    Preview all color text in current 'file' with highlighting 
-                   colors.
+                   colors. |:ColorVpreview|
     <leader>cpl    Preview all color text in current 'line' with highlighting
-                   colors.
+                   colors. |:ColorVpreviewline|
     <leader>cpb    Preview all color text in current 'file' with highlighting
-                   colors.
+                   colors. |:ColorVpreviewblock|
                    (Block showing color text, which will be clearer for
                    checking colors.)
-    <leader>cpc    clear preview highlighting.
+    <leader>cpc    clear preview highlighting. |:ColorVclear|
     Set |g:ColorV_view_name| and |g:ColorV_view_block| to change it's behavior. 
 
 ------------------------------------------------------------------------------
@@ -791,7 +792,7 @@ CHANGELOG                                           *colorv-changelog*
 " 2.5.2
 "FIXED: 110904  add force number cast in p: rgb2hex() to fix errors. 
 "FIXED: 110904  wrong method of check buffers. 
-"FIXED: 110904  optimize rgb2hex(). fix 0-length error for Mac vim.
+"FIXED: 110904  optimize p: rgb2hex(). fix 0-length error for Mac vim.
 "FIXED: 110904  new method of open_win(). fix errors on windows and terminal
 
 " 2.5.1 
