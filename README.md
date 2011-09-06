@@ -10,6 +10,7 @@ With this you can:
         Generate color lists
         Save your copied colors
         Preview color-texts in buffers
+        Pick colors on screen(python2.7 and pygtk2 module needed.)
         ...
         
         (color-text: e.g.,yellow/rgb(255,255,0)/#ff3300)
