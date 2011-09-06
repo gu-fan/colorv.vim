@@ -11,8 +11,6 @@ if v:version < 700
     finish
 endif
 
-
-
 command! -nargs=*  ColorV call colorv#win("",<q-args>)
 command! -nargs=*  ColorVmid call colorv#win("mid",<q-args>)
 command! -nargs=*  ColorVmin call colorv#win("min",<q-args>)
