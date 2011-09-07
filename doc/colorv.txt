@@ -42,7 +42,7 @@ INTRO                                               *colorv-intro*
         Preview color-texts in buffers
         Pick colors on screen(python2.7 and pygtk2 module needed.)
         ...
-    (color-text: e.g.,yellow/rgb(255,255,0)/#ff3300)
+    (color-text: e.g. yellow,rgb(255,255,0),#ff3300)
 
     Take a glance: http://i55.tinypic.com/2jg7yu0.jpg
     Terminal(256): http://i56.tinypic.com/kb4tch.png
@@ -234,10 +234,10 @@ USAGE                                               *colorv-usage*
 
     And you can set the word auto changed with the chosen color after
     close the ColorV window .
-    Using <leader>ce or with command |:ColorVchange|
+    Using <leader>ce or with command |:ColorVsub|
 
     And More, you can change all the same color word in current buffer with it.
-    Using <leader>ca or with command |:ColorVchangeAll|
+    Using <leader>ca or with command |:ColorVsuball|
 
 
                                                     *colorv-usage-eyedropper*
@@ -257,7 +257,7 @@ USAGE                                               *colorv-usage*
 
                                                     *colorv-usage-preview*
     Preview color text in current buffer:~
-    <leader>cpp or command |:ColorVpreview|. 
+    <leader>cpp or command |:ColorVview|. 
     This may take some while if it's a large file.
 
     <leader>cpl to preview in current line. 
@@ -303,7 +303,7 @@ COLORINFO                                            *colorv-colorinfo*
     
     Note
     By default, As the vim highlighting uses the X11 colornames.
-    when using |:ColorVchange| in '*.vim' files, 
+    when using |:ColorVsub| in '*.vim' files, 
     ColorV will automatically use X11 color names. 
     But the name showing in ColorV window is always W3C color name.
     You can entering X11 name by 'nx' and W3C name by 'ne'.
@@ -354,8 +354,19 @@ COLORINFO                                            *colorv-colorinfo*
 MAPPINGS                                            *colorv-mappings*
     
     Global Mappins.~
+    
+    All global mappings start with '<leader>c' , 
+    you can change it with |g:ColorV_global_leader|
+    For example, you can set it to '<leader>f',
+    then you can open ColorV window by '<leader>fv'
+    Further more, you can redefine each mapping with each command.
+    
+    And if you don't want any global mappings at all.
+    set |g:ColorV_no_global_map| to 1
+
     NOTE  If other plugins have alredy taken the mapping. 
           It doesn't exists. Then you should redfine it In your vimrc.
+
 
                                                     *colorv-mapping-global*
 
@@ -370,10 +381,10 @@ MAPPINGS                                            *colorv-mappings*
                     Redefine it with :ColorVword<CR>
 
     <leader>ce      Open ColorV window with cursor word and change it later.
-                    Redefine it with :ColorVchange<CR>
+                    Redefine it with :ColorVsub<CR>
 
     <leader>ca      Open ColorV normal with cursor word and change all later.
-                    Redefine it with :ColorVchangeALL<CR>
+                    Redefine it with :ColorVsubALL<CR>
 
     <leader>c2x     Change cursor word to HEX format later.
     <leader>c2r     Change cursor word to RGB format later.
@@ -408,11 +419,11 @@ MAPPINGS                                            *colorv-mappings*
 
                                                     *colorv-mapping-preview*
     <leader>cpp    Preview all color text in current 'file' with highlighting 
-                   colors. |:ColorVpreview|
+                   colors. |:ColorVview|
     <leader>cpl    Preview all color text in current 'line' with highlighting
-                   colors. |:ColorVpreviewline|
+                   colors. |:ColorVviewline|
     <leader>cpb    Preview all color text in current 'file' with highlighting
-                   colors. |:ColorVpreviewblock|
+                   colors. |:ColorVviewblock|
                    (Block showing color text, which will be clearer for
                    checking colors.)
     <leader>cpc    clear preview highlighting. |:ColorVclear|
@@ -533,16 +544,16 @@ COMMANDS                                            *colorv-commands*
                                                     *:ColorVword*
     |:ColorVword|     Open the ColorV window with word under cursor.
                     the word could be in |colorv-color-text| .
-                                                    *:ColorVchange*
-    |:ColorVchange|     Open the ColorV window with word under cursor. And
+                                                    *:ColorVsub*
+    |:ColorVsub|     Open the ColorV window with word under cursor. And
 will change the color-text after closing the ColorV window.
 
-                                                    *:ColorVchangeAll*
-    |:ColorVchangeAll|  Open the ColorV window with word under cursor. And
+                                                    *:ColorVsuball*
+    |:ColorVsuball|  Open the ColorV window with word under cursor. And
 will change all color-text in current buf after closing the ColorV window.
     
-                                                    *:ColorVchange2*
-    |:ColorVchange2| {args}
+                                                    *:ColorVsub2*
+    |:ColorVsub2| {args}
                       Open the ColorV window with word under cursor. And
                       Change to the format later.
                       {args}: (NAME\HEX\RGB\0x\RGBA...) 
@@ -555,17 +566,9 @@ will change all color-text in current buf after closing the ColorV window.
                                                     *:ColorVclear*
     |:ColorVclear|      In case that you mess up other buffers with ColorV.
                       Use this.
-                                                    *:ColorVgenerate*
-    |:ColorVgenerate|   Generate colors with input.
-                      :ColorVgenerate {hex}[, {type}, {nums}, {step}]
-                      {hex} '000000'~'ffffff'
-                      {type} 'Hue','Value','Monochromatic'...
-                      {nums} Generated color numbers
-                      {step} the step between each color. 
-                      See |colorv-generate| for details.
 
                                                     *:ColoVpreview*
-    |:ColorVpreview|    preview color texts in current buffer.
+    |:ColorVview|       preview color texts in current buffer.
 
                                                     *:ColorVquit*
     |:ColorVquit|       Quit ColorV
@@ -611,6 +614,15 @@ OPTIONS                                             *colorv-options*
                                             (default='~/.vim_ColorV_cache')
     g:ColorV_cache_File     The copied_history_list's cache file position.
 
+
+                                                *g:ColorV_global_leader*
+                                                (default='<leader>c')
+    g:ColorV_global_leader  The leader for your gloabl mapping.
+
+                                                *g:ColorV_no_global_map*
+                                                (default=0)
+    g:ColorV_no_global_map  No global mapping will be defined.
+
                                                 *g:ColorV_debug*
                                                 (default=0)
     g:ColorV_debug          Debug mode.
@@ -625,8 +637,8 @@ VIMRC EXAMPLE                                       *colorv-example*
     vimrc files.
     For example:
 >
-    "remap the ColorVchange command 
-    nmap <silent> <leader>cr :ColorVchange<CR>
+    "remap the ColorVsub command 
+    nmap <silent> <leader>cr :ColorVsub<CR>
 
     "use HLS colorspace instead of HSV
     let g:ColorV_win_space="hls"  
@@ -791,6 +803,8 @@ DEPENDENCIES                                        *colorv-dependencies*
     - pyGTK ColorPicker: Requires +python and pygtk2.0.
 ==============================================================================
 CHANGELOG                                           *colorv-changelog* 
+
+" DONE: 110907  add 'g:ColorV_global_leader' and 'g:ColorV_no_global_map'
 " 2.5.2
 "FIXED: 110904  add force number cast in p: rgb2hex() to fix errors. 
 "FIXED: 110904  wrong method of check buffers. 
@@ -924,12 +938,12 @@ CHANGELOG                                           *colorv-changelog*
 "FIXED: 110611  cursor word will include '#' format.
 " DONE: 110611  add g:ColorV_win_pos 'top/bot'
 "FIXED: 110611  now |:ColorVword| doesnt move cursor into ColorV window.
-"FIXED: 110611  now |:ColorVchange| will move cursor back.
+"FIXED: 110611  now |:ColorVsub| will move cursor back.
 " DONE: 110611  add |:ColorVquit| and <leader>cq
 
 " 1.7.0 change 2
 " DONE: 110609  add mapping c2x c2n c2r c2# c2p
-" DONE: 110609  add command |:ColorVchange2|
+" DONE: 110609  add command |:ColorVsub2|
 " DONE: 110609  add s:tune_colorname() and map nt
 " DONE: 110609  optimize s:set_in_pos() arrow check part
 " DONE: 110609  add flag color for colorname input
