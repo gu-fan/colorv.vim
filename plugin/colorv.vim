@@ -11,6 +11,11 @@ if v:version < 700
     finish
 endif
 
+" Enable maps by default
+if !exists('g:ColorV_do_maps')
+    let g:ColorV_do_maps=1
+endif
+
 command! -nargs=*  ColorV call colorv#win("",<q-args>)
 command! -nargs=*  ColorVmid call colorv#win("mid",<q-args>)
 command! -nargs=*  ColorVmin call colorv#win("min",<q-args>)
@@ -33,6 +38,8 @@ command! -nargs=0  ColorVpreviewline call colorv#preview_line()
 command! -nargs=+  ColorVTimer call colorv#timer(<f-args>)
 
 command! -nargs=0  ColorVdropper call colorv#dropper()
+
+if g:ColorV_do_maps==1
 
 if !hasmapto(':ColorV<CR>')
   silent! nmap <unique> <silent> <Leader>cv :ColorV<CR>
@@ -153,5 +160,8 @@ endif
 if !hasmapto(':ColorVpreviewclear<CR>')
   silent! nmap <unique> <silent> <Leader>cpc :ColorVclear<CR>
 endif
+
+endif " if g:ColorV_do_maps==1
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
