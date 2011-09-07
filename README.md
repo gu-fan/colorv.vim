@@ -151,13 +151,19 @@ With this you can:
 
 
 ```vim
-"remap the ColorVchange command 
-nmap <silent> <leader>cr :ColorVchange<CR>
+" define your own global leader for ColorV insead for '<leader>c'
+"let g:ColorV_global_leader= '<leader>f'
+" define your mapping for change color-text
+nmap <silent> <leader>cr :ColorVsub<CR>
 
-"use HLS colorspace instead of HSV
-let g:ColorV_win_space="hls"  
-"use YIQ colorspace for generating color list
-let g:ColorV_gen_space="yiq" 
-"Stop coloring colornames like 'Black','Navy','white'
-let g:ColorV_view_name=0
+" ColorV window position "bot" or "top"
+"let g:ColorV_win_pos="top"  
+" Use HLS colorspace instead of HSV
+"let g:ColorV_win_space="hls"  
+" Use YIQ colorspace for generating color list
+"let g:ColorV_gen_space="yiq" 
+" Stop coloring colornames like 'Black','Navy','white'
+"let g:ColorV_view_name=0
+" No Auto preview for css files
+"let g:ColorV_prev_css=0
 ```
