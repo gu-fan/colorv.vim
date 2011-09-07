@@ -13,11 +13,11 @@ With this you can:
         Pick colors on screen(python2.7 and pygtk2 module needed.)
         ...
         
-        (color-text: e.g.,yellow/rgb(255,255,0)/#ff3300)
+        (color-text: e.g. yellow,rgb(255,255,0),#ff3300)
 
 **Take a glance:** ![Take a glance](http://i55.tinypic.com/2jg7yu0.jpg)
 
-**Terminal(256):** ![Terminal](http://i56.tinypic.com/kb4tch.png)
+**Terminal(256):** [Terminal](http://i56.tinypic.com/kb4tch.png)
 
 **Where to Start:**  `<leader>cv` or `:ColorV`
     
