@@ -4,8 +4,8 @@
 " Summary: A vim plugin for dealing with colors. 
 "  Author: Rykka.Krin Rykka.Krin(at)gmail.com>
 "    Home: 
-" Version: 2.5.2 
-" Last Update: 2011-09-04
+" Version: 2.5.3 
+" Last Update: 2011-09-08
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -21,7 +21,7 @@ let g:ColorV_loaded = 1
 let g:ColorV={}
 let g:ColorV.name="_ColorV_"
 let g:ColorV.listname="_ColorV-List_"
-let g:ColorV.ver="2.5.2.3"
+let g:ColorV.ver="2.5.3.1"
 
 let g:ColorV.HEX="ff0000"
 let g:ColorV.RGB={'R':255,'G':0,'B':0}
@@ -1609,7 +1609,7 @@ function! s:update_global(hex) "{{{
             call call(s:update_func,[])
         endif
         " BACK to COLORV window
-        if !exists('t:ColorVBufName')
+        if !s:go_buffer_win(g:ColorV.name)
             call s:error("ColorV window.NO update_call")
             if exists("s:update_call") 
                 if exists("s:update_arg") 
@@ -1619,13 +1619,6 @@ function! s:update_global(hex) "{{{
                 unlet s:update_func
             endif
             return -1
-        else
-            if s:is_open()
-                call s:exec(s:get_win_num() . " wincmd w")
-            else
-                silent! exec spLoc . ' split'
-                silent! exec "buffer " . t:ColorVBufName
-            endif
         endif
     endif
 endfunction "}}}
@@ -1954,7 +1947,7 @@ endfunction "}}}
 "WINS: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#win(...) "{{{
-    call s:open_win("_ColorV_")
+    call s:open_win(g:ColorV.name)
     call s:win_setl()
     setl ft=ColorV
     call s:map_define() 
@@ -2282,40 +2275,18 @@ function! s:exec(cmd) "{{{
     exec a:cmd
     let &ei = old_ei
 endfunction "}}}
-function! s:is_open(...) "{{{
-    if exists("a:1")
-        return s:get_win_num(a:1) != -1
-    else
-        return s:get_win_num() != -1
-    endif
-endfunction "}}}
-function! s:get_win_num(...) "{{{
-    if exists("a:1")
-    	if exists(a:1)
-            return bufwinnr(eval(a:1))
-        else
-            return -1
-        endif
-    else
-        if exists("t:ColorVBufName")
-            return bufwinnr(t:ColorVBufName)
-        else
-            return -1
-        endif
-    endif
-endfunction "}}}
 
 function! colorv#exit_list_win() "{{{
-    if s:go_buffer_win('_ColorV-List_')
+    if s:go_buffer_win(g:ColorV.listname)
     	close
     endif
 endfunction "}}}
 function! colorv#exit() "{{{
-    if s:go_buffer_win('_ColorV_')
+    if s:go_buffer_win(g:ColorV.name)
     	close
+    else
+    	return -1
     endif
-
-
 
     "_call "{{{
     if exists("s:exit_call") && s:exit_call ==1 && exists("s:exit_func")
@@ -3907,7 +3878,7 @@ endfunction "}}}
 "LIST: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#list_win(...) "{{{
-    call s:open_win("_ColorV-List_","v")
+    call s:open_win(g:ColorV.listname,"v")
     
     " local setting "{{{
     call s:win_setl()
@@ -3936,9 +3907,7 @@ function! colorv#list_and_colorv(...) "{{{
     call colorv#exit()
     call colorv#list_win(list)
     call colorv#win(s:mode)
-    if s:is_open("_ColorV-List_")
-        call s:exec(s:get_win_num("_ColorV-List_") . " wincmd w")
-    endif
+    call s:go_buffer_win(g:ColorV.listname)
 endfunction "}}}
 function! s:draw_list_buf(list) "{{{
     setl ma
@@ -4325,9 +4294,7 @@ function! colorv#gen_win(hex,...) "{{{
     call colorv#exit()
     call colorv#list_win(list)
     call colorv#win(s:mode)
-    if s:is_open("t:ColorVListBufName")
-        call s:exec(s:get_win_num("t:ColorVListBufName") . " wincmd w")
-    endif
+    call s:go_buffer_win(g:ColorV.listname)
 endfunction "}}}
 "1}}}
 "PREV: "{{{1
