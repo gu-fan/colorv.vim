@@ -80,12 +80,10 @@ let map_dicts=[
             \{'key': 'g6' , 'cmd': ':ColorVlistgen Six-Tone<CR>'},         
             \]
 for i in map_dicts
-    if exists("i['key']")
-        if !hasmapto(i.cmd, 'n')
+    if !hasmapto(i.cmd, 'n')
+        if exists("i['key']")
             silent! exe 'nmap <unique> <silent> '.leader_maps.i['key'].' '.i['cmd'] 
-        endif
-    elseif exists("i['keys']")
-        if !hasmapto(i.cmd, 'n')
+        elseif exists("i['keys']")
             for k in i['keys']
                 silent! exe 'nmap <unique> <silent> '.leader_maps.k.' '.i['cmd'] 
             endfor
