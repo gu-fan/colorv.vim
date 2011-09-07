@@ -47,7 +47,7 @@ let map_dicts=[
             \{'key': 'v' , 'cmd': ':ColorV<CR>'},         
             \{'keys': ['1','m'] , 'cmd': ':ColorVmin<CR>'},         
             \{'key': '2' , 'cmd': ':ColorVmid<CR>'},         
-            \{'keys': ['3','x'] , 'cmd': ':ColorVmin<CR>'},         
+            \{'keys': ['3','x'] , 'cmd': ':ColorVmax<CR>'},         
             \{'key': 'w' , 'cmd': ':ColorVword<CR>'},         
             \{'key': 'e' , 'cmd': ':ColorVsub<CR>'},         
             \{'key': 'd' , 'cmd': ':ColorVdropper<CR>'},         
