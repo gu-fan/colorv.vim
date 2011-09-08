@@ -2,37 +2,25 @@
 "  Script: ColorV 
 "    File: autoload/colorv.vim
 " Summary: A vim plugin for dealing with colors. 
-"  Author: Rykka.Krin Rykka.Krin(at)gmail.com>
-"    Home: 
+"  Author: Rykka.Krin <Rykka.Krin(at)gmail.com>
+"    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.3 
-" Last Update: 2011-09-08
+" Last Update: 2011-09-09
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
 
 if version < 700 || exists("g:ColorV_loaded")
     finish
+else
+    let g:ColorV_loaded = 1
 endif
-let g:ColorV_loaded = 1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "GVAR: "{{{1 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ColorV={}
-let g:ColorV.name="_ColorV_"
-let g:ColorV.listname="_ColorV-List_"
-let g:ColorV.ver="2.5.3.1"
-
-let g:ColorV.HEX="ff0000"
-let g:ColorV.RGB={'R':255,'G':0,'B':0}
-let g:ColorV.HSV={'H':0,'S':100,'V':100}
-let g:ColorV.HLS={'H':0,'L':50,'S':100}
-let g:ColorV.YIQ={'Y':30,'I':60,'Q':21}
-let g:ColorV.rgb=[255,0,0]
-let g:ColorV.hls=[0,50,100]
-let g:ColorV.yiq=[30,60,21]
-let g:ColorV.hsv=[0,100,100]
-let g:ColorV.NAME="Red"
+let g:ColorV.ver="2.5.3.2"
 
 "debug 
 if !exists("g:ColorV_debug")
@@ -72,6 +60,19 @@ else
         let g:ColorV_prev_css=0
     endif
 endif
+
+let g:ColorV.name="_ColorV_"
+let g:ColorV.listname="_ColorV-List_"
+let g:ColorV.HEX="ff0000"
+let g:ColorV.RGB={'R':255,'G':0,'B':0}
+let g:ColorV.HSV={'H':0,'S':100,'V':100}
+let g:ColorV.HLS={'H':0,'L':50,'S':100}
+let g:ColorV.YIQ={'Y':30,'I':60,'Q':21}
+let g:ColorV.rgb=[255,0,0]
+let g:ColorV.hls=[0,50,100]
+let g:ColorV.yiq=[30,60,21]
+let g:ColorV.hsv=[0,100,100]
+let g:ColorV.NAME="Red"
 "}}}
 "SVAR: {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2485,7 +2486,7 @@ function! s:seq_echo(txt_list) "{{{
     let idx=0
     for txt in txt_list
         if s:fmod(s:seq_num,len(txt_list)) == idx
-            echo "[".idx."]" txt
+            call s:echo(idx.": ".txt)
             break
         endif
         let idx+=1
@@ -2495,31 +2496,43 @@ endfunction "}}}
 
 function! s:caution(msg) "{{{
     echohl Modemsg
-    exe "echom \"[Caution] ".escape(a:msg,'"')."\""
+    redraw
+    exe "echon '[Caution]' "
     echohl Normal
+    exe "echon ' ".escape(a:msg,'"')."'"
 endfunction "}}}
 function! s:warning(msg) "{{{
     echohl Warningmsg
-    exe "echo \"[Warning] ".escape(a:msg,'"')."\""
+    redraw
+    exe "echon '[Warning]' "
     echohl Normal
+    exe "echon ' ".escape(a:msg,'"')."'"
 endfunction "}}}
 function! s:error(msg) "{{{
     echohl Errormsg
-    exe "echom \"[Error] ".escape(a:msg,'"')."\""
+    redraw
+    exe "echon '[Error]' "
     echohl Normal
+    exe "echon ' ".escape(a:msg,'"')."'"
 endfunction "}}}
 function! s:echo(msg) "{{{
     try 
-        exe "echo \"[Note] ".escape(a:msg,'\"')."\""
+        echohl Comment
+        redraw
+        exe "echon '[Note]' "
+        echohl Normal
+        exe "echon ' ".escape(a:msg,'"')."'"
     catch /^Vim\%((\a\+)\)\=:E488/
         call s:debug("Trailing character.")  
     endtry
 endfunction "}}}
+
 function! s:debug(msg) "{{{
     if g:ColorV_debug!=1
     	return
     endif
     echohl Errormsg
+    redraw
     echom "[Debug] ".escape(a:msg,'"')
     echohl Normal
 endfunction "}}}

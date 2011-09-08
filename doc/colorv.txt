@@ -1,5 +1,6 @@
 *colorv.txt* *colorv*         ColorV         A Color tool for Vim
  
+
               _________     ______            ___    __               ~
               __  ____/________  /______________ |  / /               ~
               _  /    _  __ \_  /_  __ \_  ___/_ | / /                ~
@@ -38,7 +39,6 @@ INTRO                                               *colorv-intro*
         Get color infos
         Edit color-texts
         Generate color lists
-        Save your copied colors
         Preview color-texts in buffers
         Pick colors on screen(python2.7 and pygtk2 module needed.)
         ...
@@ -134,8 +134,9 @@ NEWS IN 2.5                                         *colorv-news-2.5*
 INSTALL                                             *colorv-install*
 
 1.Using [Vundle.vim](Recommend):~
+
     https://github.com/gmarik/vundle
-    After git and vundle installed. 
+    After it's installed and configured.
     Add this line to your vimrc 
     `Bundle 'Rykka/ColorV'` 
     Install it by 
@@ -147,10 +148,11 @@ INSTALL                                             *colorv-install*
 2.Using [ColorV on Vim.org]~
  
     http://www.vim.org/scripts/script.php?script_id=3597
-    Download the latest version of tar.gz file, 
+    Download the file of latest version, 
     Extract to $VIMFILE folder. 
     ("~/.vim" for linux. "$HOME/vimfiles" for windows)
-    Generate helptags. `:helptags ~/.vim/doc
+    Generate helptags 
+    `:helptags ~/.vim/doc
  
     NOTE   You can always get the latest version at
            https://github.com/Rykka/ColorV/

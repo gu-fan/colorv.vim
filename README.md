@@ -8,7 +8,6 @@ With this you can:
         Get color infos
         Edit color-texts
         Generate color lists
-        Save your copied colors
         Preview color-texts in buffers
         Pick colors on screen(python2.7 and pygtk2 module needed.)
         ...
