@@ -129,6 +129,8 @@ NEWS IN 2.5                                         *colorv-news-2.5*
     Auto preview css files.(g:ColorV_prev_css)
 + New in 2.5.2~
     Fix some bugs in mac/windows/terminal.
++ New in 2.5.3~
+    add |g:ColorV_global_leader| and |g:ColorV_no_global_map|
             
 ==============================================================================
 INSTALL                                             *colorv-install*
@@ -811,8 +813,12 @@ DEPENDENCIES                                        *colorv-dependencies*
     - pyGTK ColorPicker: Requires +python and pygtk2.0.
 ==============================================================================
 CHANGELOG                                           *colorv-changelog* 
-
+" 2.5.3
+"FIXED: 110911  stop using i in global namespace.
+"FIXED: 110911  single color-list window now.
 " DONE: 110907  add 'g:ColorV_global_leader' and 'g:ColorV_no_global_map'
+"FIXED: 110907  rmv useless funcs. put cursor in list when opened.
+ 
 " 2.5.2
 "FIXED: 110904  add force number cast in p: rgb2hex() to fix errors. 
 "FIXED: 110904  wrong method of check buffers. 

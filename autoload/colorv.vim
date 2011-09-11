@@ -4,7 +4,7 @@
 " Summary: A vim plugin for dealing with colors. 
 "  Author: Rykka.Krin <Rykka.Krin(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
-" Version: 2.5.4 
+" Version: 2.5.3 
 " Last Update: 2011-09-11
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
@@ -20,7 +20,7 @@ endif
 "GVAR: "{{{1 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ColorV={}
-let g:ColorV.ver="2.5.4.0"
+let g:ColorV.ver="2.5.3.0"
 
 "debug 
 if !exists("g:ColorV_debug")
