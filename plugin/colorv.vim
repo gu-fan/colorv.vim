@@ -64,6 +64,7 @@ function! colorv#define_global() "{{{
                 \{'key': '2n' , 'cmd': ':ColorVsub2 NAME<CR>'},         
                 \{'key': '2r' , 'cmd': ':ColorVsub2 RGB<CR>'},         
                 \{'key': '2p' , 'cmd': ':ColorVsub2 RGBP<CR>'},         
+                \{'key': '2l' , 'cmd': ':ColorVsub2 HSL<CR>'},         
                 \{'keys': ['2s','2#'] , 'cmd': ':ColorVsub2 NS6<CR>'},         
                 \{'key': '2l' , 'cmd': ':ColorVsub2 HSL<CR>'},         
                 \{'key': 'gh' , 'cmd': ':ColorVlistgen Hue 20 15<CR>'},         

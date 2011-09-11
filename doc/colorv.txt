@@ -818,7 +818,8 @@ CHANGELOG                                           *colorv-changelog*
 "FIXED: 110911  single color-list window now.
 " DONE: 110907  add 'g:ColorV_global_leader' and 'g:ColorV_no_global_map'
 "FIXED: 110907  rmv useless funcs. put cursor in list when opened.
- 
+"FIXED: 110907  changed ColorVchange to ColorVsub
+
 " 2.5.2
 "FIXED: 110904  add force number cast in p: rgb2hex() to fix errors. 
 "FIXED: 110904  wrong method of check buffers. 

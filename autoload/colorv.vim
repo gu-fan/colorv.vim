@@ -3343,7 +3343,7 @@ def txt2hex(txt):
                     hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
                 elif key=="HSV" or key=="HSVA" :
                     h,s,v=int(x.group('H')),int(x.group('S')),int(x.group('V'))
-                    hx=rgb2hex(hls2rgb([h,l,s]))
+                    hx=rgb2hex(hls2rgb([h,s,v]))
                     hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
                 elif key=="NAME":
                     hx=name2hex(x.group())
@@ -3856,7 +3856,7 @@ function! colorv#cursor_win(...) "{{{
     
     "change2
     if exists("a:1") && (a:1==2 || a:1==1) && exists("a:2")
-            \ && a:2=~'RGB\|RGBA\|RGBP\|RGBAP\|HEX\|HEX0\|NAME\|NS6\|HSV'
+            \ && a:2=~'RGB\|RGBA\|RGBP\|RGBAP\|HEX\|HEX0\|NAME\|NS6\|HSV\|HSL'
         let s:ColorV.change2=a:2
     elseif exists("s:ColorV.change2")
         unlet s:ColorV.change2
