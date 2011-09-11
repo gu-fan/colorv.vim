@@ -4,8 +4,8 @@
 " Summary: A vim plugin for dealing with colors. 
 "  Author: Rykka.Krin <Rykka.Krin(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
-" Version: 2.5.3 
-" Last Update: 2011-09-09
+" Version: 2.5.4 
+" Last Update: 2011-09-11
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -20,7 +20,7 @@ endif
 "GVAR: "{{{1 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ColorV={}
-let g:ColorV.ver="2.5.3.2"
+let g:ColorV.ver="2.5.4.0"
 
 "debug 
 if !exists("g:ColorV_debug")
@@ -4304,9 +4304,9 @@ function! colorv#gen_win(hex,...) "{{{
     else
         let list=s:winlist_generate(hex,type,nums,step)
     endif
-    call colorv#exit()
+    " call colorv#exit()
     call colorv#list_win(list)
-    call colorv#win(s:mode)
+    " call colorv#win(s:mode)
     call s:go_buffer_win(g:ColorV.listname)
 endfunction "}}}
 "1}}}
