@@ -182,8 +182,15 @@ TROUBLESHOOTING                                 *colorv-troubleshooting*
     NOTE   If ColorV still got bugs with python. 
            use 'let g:ColorV_no_python=1' to stop using python.
 
+    NOTE   The ArchLinux's gvim is not well compiled with 'gtk' library,
+           To use eyedropper '<leader>cd' in ArchLinux. you should recompile 
+           gvim yourself.
+           Don't forget to link python with python2 before compile.
+           'ln -s python2 python'
+
     NOTE   If you can't solve the trouble.
            Please report it at https://github.com/Rykka/ColorV/issues . 
+
 ==============================================================================
 USAGE                                               *colorv-usage*
 
