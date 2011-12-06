@@ -5,7 +5,7 @@
 "  Author: Rykka.Krin <Rykka.Krin(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.3 
-" Last Update: 2011-09-11
+" Last Update: 2011-12-07
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -2324,8 +2324,14 @@ call s:caution("pyGTK ColorPicker:")
 call s:py_core_load()
 call s:warning("Select a color and press OK to Return to Vim.")
 python << EOF
-import pygtk,gtk
-pygtk.require('2.0')
+try:
+    import gtk
+    import pygtk
+    pygtk.require('2.0')
+except ImportError:
+    vim.command("echo 'Python_Error:Could not find gtk or pygtk module.'")
+    vim.command("return")
+
 
 color_dlg = gtk.ColorSelectionDialog("[ColorV] Pygtk colorpicker")
 c_set = gtk.gdk.color_parse("#"+vim.eval("g:ColorV.HEX"))
