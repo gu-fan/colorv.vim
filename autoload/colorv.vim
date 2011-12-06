@@ -2329,20 +2329,20 @@ try:
     import pygtk
     pygtk.require('2.0')
 except ImportError:
-    vim.command("echo 'Python_Error:Could not find gtk or pygtk module.'")
-    vim.command("return")
+    vim.command("call s:error('Python:Could not find gtk or pygtk module.Stop using dropper.')")
+    gtk=None
 
+if gtk:
+    color_dlg = gtk.ColorSelectionDialog("[ColorV] Pygtk colorpicker")
+    c_set = gtk.gdk.color_parse("#"+vim.eval("g:ColorV.HEX"))
+    color_dlg.colorsel.set_current_color(c_set)
 
-color_dlg = gtk.ColorSelectionDialog("[ColorV] Pygtk colorpicker")
-c_set = gtk.gdk.color_parse("#"+vim.eval("g:ColorV.HEX"))
-color_dlg.colorsel.set_current_color(c_set)
-
-if color_dlg.run() == gtk.RESPONSE_OK:
-    clr = color_dlg.colorsel.get_current_color()
-    c_hex = rgb2hex([clr.red/257,clr.green/257,clr.blue/257])
-    vim.command("ColorV "+c_hex)
-    
-color_dlg.destroy()
+    if color_dlg.run() == gtk.RESPONSE_OK:
+        clr = color_dlg.colorsel.get_current_color()
+        c_hex = rgb2hex([clr.red/257,clr.green/257,clr.blue/257])
+        vim.command("ColorV "+c_hex)
+        
+    color_dlg.destroy()
 EOF
 endfunction "}}}
 
