@@ -2190,8 +2190,8 @@ function! s:map_define() "{{{
     nmap <silent><buffer> <F1> :h colorv-quickstart<cr>
 
     "Copy color 
-    map <silent><buffer> C :call <SID>copy("","+")<cr>
-    map <silent><buffer> cc :call <SID>copy("","+")<cr>
+    map <silent><buffer> C :call <SID>copy("HEX","+")<cr>
+    map <silent><buffer> cc :call <SID>copy("HEX","+")<cr>
     map <silent><buffer> cx :call <SID>copy("HEX0","+")<cr>
     map <silent><buffer> cs :call <SID>copy("NS6","+")<cr>
     map <silent><buffer> c# :call <SID>copy("NS6","+")<cr>
