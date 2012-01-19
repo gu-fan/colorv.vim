@@ -1,16 +1,17 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"  Script: ColorV 
+"  Script: ColorV
 "    File: autoload/colorv.vim
-" Summary: A vim plugin for dealing with colors. 
-"  Author: Rykka.Krin <Rykka.Krin(at)gmail.com>
+" Summary: Colors in Vim.
+"  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
-" Version: 2.5.3 
+" Version: 2.5.4
 " Last Update: 2011-12-07
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
 
-if version < 700 || exists("g:ColorV_loaded")
+" if version < 700 || exists("g:ColorV_loaded")
+if version < 700
     finish
 else
     let g:ColorV_loaded = 1
@@ -2194,7 +2195,7 @@ function! s:map_define() "{{{
     map <silent><buffer> cc :call <SID>copy("HEX","+")<cr>
     map <silent><buffer> cx :call <SID>copy("HEX0","+")<cr>
     map <silent><buffer> cs :call <SID>copy("NS6","+")<cr>
-    map <silent><buffer> c# :call <SID>copy("NS6","+")<cr>
+    map <silent><buffer> c# :call <SID>copy("NS5","+")<cr>
     map <silent><buffer> cr :call <SID>copy("RGB","+")<cr>
     map <silent><buffer> cp :call <SID>copy("RGBP","+")<cr>
     map <silent><buffer> caa :call <SID>copy("RGBA","+")<cr>
@@ -4156,59 +4157,52 @@ function! s:clear_list_text() "{{{
 endfunction "}}}
 function! colorv#list_gen(hex,...) "{{{
     let hex=a:hex
-    let type=exists("a:1") && !empty(a:1) ? a:1 : s:gen_def_type
-    let nums=exists("a:2") && !empty(a:2) ? a:2 : s:gen_def_nums 
-    let step=exists("a:3") && !empty(a:3) ? a:3 : s:gen_def_step
-    let circle=exists("a:4") ? a:4 : 1
-    let [h,s,v]=colorv#hex2hsv(hex)
     let hex_list=[]
-    for i in range(nums)
-    	if type=="Hue" 
-    	    "h+
-            let h{i}=h+step*i
-            let hex{i}=colorv#hsv2hex([h{i},s,v])
+    let type=exists("a:1") && !empty(a:1) ? a:1 : s:gen_def_type
+    let nums=exists("a:2") && !empty(a:2) ? a:2 : s:gen_def_nums
+    let step=exists("a:3") && !empty(a:3) ? a:3 : s:gen_def_step
+
+    " set to 1 .the value will became 0 if exceed max.
+    let circle=exists("a:4") ? a:4 : 1
+
+
+    let [h,s,v] = colorv#hex2hsv(hex)
+    let [h0,s0,v0] = [h,s,v]
+    let hex0 = hex
+    for i in range(1,nums)
+        if type=="Hue" 
+            "h+
+            let h{i} = h + step*i
+            let hex{i} = colorv#hsv2hex([h{i} ,s ,v])
         elseif type=="Saturation"
             "s+
-            if i==0
-                let s0=s
+            let s{i} = s{i-1} + step
+            if ( circle ) 
+                let s{i} = s{i} >= 100 ? 1   : s{i} <= 0 ? 100 : s{i}
             else
-                let s{i}=s{i-1}+step
-                if circle==1
-                    let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
-                else
-                    let s{i} = s{i} >=100 ? 100 : s{i} <= 0 ? 1 : s{i}
-                endif
+                let s{i} = s{i} >= 100 ? 100 : s{i} <= 0 ? 1   : s{i}
             endif
             let hex{i}=colorv#hsv2hex([h,s{i},v])
         elseif type=="Value"
             "v+
-            if i==0
-                let v0=v
+            let v{i} = v{i-1} + step
+            if circle==1
+                let v{i} = v{i} >=100 ? 1 : v{i} <= 0 ? 100 : v{i}
             else
-                let v{i}=v{i-1}+step
-                if circle==1
-                    let v{i} = v{i} >=100 ? 1 : v{i} <= 0 ? 100 : v{i}
-                else
-                    let v{i} = v{i} >=100 ? 100 : v{i} <= 0 ? 1 : v{i}
-                endif
+                let v{i} = v{i} >=100 ? 100 : v{i} <= 0 ? 1 : v{i}
             endif
             let hex{i}=colorv#hsv2hex([h,s,v{i}])
         elseif type=="Monochromatic"
             "s+step v+step
             let step=step>0 ? 5 : step<0 ? -5 : 0
-            if i==0
-                let s0=s
-                let v0=v
+            let s{i}=s{i-1}+step
+            let v{i}=v{i-1}+step
+            if circle==1
+                let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
+                let v{i} = v{i} >=100 ? 1 : v{i} <= 0 ? 100 : v{i}
             else
-                let s{i}=s{i-1}+step
-                let v{i}=v{i-1}+step
-                if circle==1
-                    let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
-                    let v{i} = v{i} >=100 ? 1 : v{i} <= 0 ? 100 : v{i}
-                else
-                    let s{i} = s{i} >=100 ? 100 : s{i} <= 0 ? 1 : s{i}
-                    let v{i} = v{i} >=100 ? 100 : v{i} <= 0 ? 1 : v{i}
-                endif
+                let s{i} = s{i} >=100 ? 100 : s{i} <= 0 ? 1 : s{i}
+                let v{i} = v{i} >=100 ? 100 : v{i} <= 0 ? 1 : v{i}
             endif
             let hex{i}=colorv#hsv2hex([h,s{i},v{i}])
         elseif type=="Analogous"
@@ -4225,11 +4219,7 @@ function! colorv#list_gen(hex,...) "{{{
             let hex{i}=colorv#hsv2hex([h{i},s,v])
         elseif type=="Split-Complementary"
             "h+150,h+60,... 
-            if i==0
-            	let h{i}=h
-            else
-                let h{i}=s:fmod(i,2)==1 ? h{i-1}+150 : h{i-1}+60
-            endif
+            let h{i}=s:fmod(i,2)==1 ? h{i-1}+150 : h{i-1}+60
             let hex{i}=colorv#hsv2hex([h{i},s,v])
         elseif type=="Triadic"
             "h+120
@@ -4237,11 +4227,7 @@ function! colorv#list_gen(hex,...) "{{{
             let hex{i}=colorv#hsv2hex([h{i},s,v])
         elseif type=="Clash"
             "h+90,h+180,...
-            if i==0
-            	let h{i}=h
-            else
-                let h{i}=s:fmod(i,2)==1 ? h{i-1}+90 : h{i-1}+180
-            endif
+            let h{i}=s:fmod(i,2)==1 ? h{i-1}+90 : h{i-1}+180
             let hex{i}=colorv#hsv2hex([h{i},s,v])
         elseif type=="Square"
             "h+90
@@ -4249,31 +4235,19 @@ function! colorv#list_gen(hex,...) "{{{
             let hex{i}=colorv#hsv2hex([h{i},s,v])
         elseif type=="Tetradic" || type=="Rectangle"
             "h+60,h+120,...
-            if i==0
-            	let h{i}=h
-            else
-                let h{i}=s:fmod(i,2)==1 ? h{i-1}+60 : h{i-1}+120
-            endif
+            let h{i}=s:fmod(i,2)==1 ? h{i-1}+60 : h{i-1}+120
             let hex{i}=colorv#hsv2hex([h{i},s,v])
         elseif type=="Five-Tone"
             "h+115,+40,+50,+40,+115
-            if i==0
-            	let h{i}=h
-            else
-                let h{i}=s:fmod(i,5)==1 ? h{i-1}+115 : 
-                        \s:fmod(i,5)==2 ? h{i-1}+40 : 
-                        \s:fmod(i,5)==3 ? h{i-1}+50 : 
-                        \s:fmod(i,5)==4 ? h{i-1}+40 :
-                        \h{i-1}+115
-            endif
+            let h{i}=s:fmod(i,5)==1 ? h{i-1}+115 :
+                    \ s:fmod(i,5)==2 ? h{i-1}+40  :
+                    \ s:fmod(i,5)==3 ? h{i-1}+50  :
+                    \ s:fmod(i,5)==4 ? h{i-1}+40  :
+                    \ h{i-1}+115
             let hex{i}=colorv#hsv2hex([h{i},s,v])
         elseif type=="Six-Tone"
             "h+30,90,...
-            if i==0
-            	let h{i}=h
-            else
-                let h{i}=s:fmod(i,2)==1 ? h{i-1}+30 : h{i-1}+90
-            endif
+            let h{i}=s:fmod(i,2)==1 ? h{i-1}+30 : h{i-1}+90
             let hex{i}=colorv#hsv2hex([h{i},s,v])
         else
             call s:warning("Not Correct color generator Type.")
