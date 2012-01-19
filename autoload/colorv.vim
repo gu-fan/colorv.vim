@@ -148,7 +148,7 @@ let s:fmt.NS3='#\x\{3}\x\@!'
 
 let s:fmt.HSV='hsv(\s*\d\{1,3},\s*\d\{1,3},\s*\d\{1,3})'
 let s:fmt.HSL='hsl(\s*\d\{1,3},\s*\d\{1,3}%,\s*\d\{1,3}%)'
-let s:fmt.HSLA='hsl(\s*\d\{1,3},\s*\d\{1,3}%,\s*\d\{1,3}%,'
+let s:fmt.HSLA='hsla(\s*\d\{1,3},\s*\d\{1,3}%,\s*\d\{1,3}%,'
                 \.'\s*\d\{1,3}\%(\.\d*\)\=%\=)'
 
 
@@ -2444,10 +2444,10 @@ endfunction "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:fmt_hex(hex) "{{{
    let hex=a:hex
-   if hex=~ '#\x\{6}'  || '#\x\{3}'
+   if hex=~ '#'
        let hex=substitute(hex,"#",'','')
    endif
-   if hex=~ '0x\x\{6}' || '0x\x\{3}'
+   if hex=~ '0x'
        let hex=substitute(hex,'0x','','')
    endif
    if hex=~ '\x\@<!\x\{3}\x\@!'
@@ -2457,14 +2457,7 @@ function! s:fmt_hex(hex) "{{{
 endfunction "}}}
 
 function! s:echo_tips() "{{{
-    let txt_list=s:tips_list
-    " if exists("g:ColorV_echo_tips") && g:ColorV_echo_tips ==1
-        call s:seq_echo(txt_list)
-    " elseif exists("g:ColorV_echo_tips") && g:ColorV_echo_tips ==2
-    "     call s:rnd_echo(txt_list)
-    " else
-    "     call s:all_echo(txt_list)
-    " endif
+    call s:seq_echo(s:tips_list)
 endfunction "}}}
 function! s:all_echo(txt_list) "{{{
     let txt_list=a:txt_list
@@ -2506,21 +2499,21 @@ function! s:caution(msg) "{{{
     redraw
     exe "echon '[Caution]' "
     echohl Normal
-    exe "echon ' ".escape(a:msg,'"')."'"
+    echon " ".escape(a:msg,'"')." "
 endfunction "}}}
 function! s:warning(msg) "{{{
     echohl Warningmsg
     redraw
     exe "echon '[Warning]' "
     echohl Normal
-    exe "echon ' ".escape(a:msg,'"')."'"
+    echon " ".escape(a:msg,'"')." "
 endfunction "}}}
 function! s:error(msg) "{{{
     echohl Errormsg
     redraw
     exe "echon '[Error]' "
     echohl Normal
-    exe "echon ' ".escape(a:msg,'"')."'"
+    echon " ".escape(a:msg,'"')." "
 endfunction "}}}
 function! s:echo(msg) "{{{
     try
@@ -2528,7 +2521,7 @@ function! s:echo(msg) "{{{
         redraw
         exe "echon '[Note]' "
         echohl Normal
-        exe "echon ' ".escape(a:msg,'"')."'"
+        exe "echon \" ".escape(a:msg,'"')."\""
     catch /^Vim\%((\a\+)\)\=:E488/
         call s:debug("Trailing character.")
     endtry
@@ -2545,58 +2538,59 @@ function! s:debug(msg) "{{{
 endfunction "}}}
 
 function! s:approx2(hex1,hex2,...) "{{{
+    let t = exists("a:1") ? a:1 : s:aprx_rate*4
     let [r1,g1,b1] = colorv#hex2rgb(a:hex1)
     let [r2,g2,b2] = colorv#hex2rgb(a:hex2)
-    let t=exists("a:1") ? a:1 : s:aprx_rate*4
-    if r2+t>=r1 && r1>=r2-t && g2+t>=g1 && g1>=g2-t
-                \&& b2+t>=b1 && b1>=b2-t
+    if r2+t>=r1 && r1>=r2-t
+            \ && g2+t>=g1 && g1>=g2-t
+            \ && b2+t>=b1 && b1>=b2-t
         return 1
     else
         return 0
     endif
-
 endfunction "}}}
 function! s:rlt_clr(hex) "{{{
     if has("python") && g:ColorV_no_python!=1
         call s:py_core_load()
 python << EOF
 y,i,q=rgb2yiq(hex2rgb(vim.eval("a:hex")))
-if y>=35 and y < 50:
-    y = 80
-elif y >=50 and y < 65:
-    y = 20
+if y >= 30 and y < 50:
+    y = 70
+elif y >= 50 and y < 70:
+    y = 30
 else:
     y = 100-y
 
-if i >0:
-    i = i-10
+if i > 0:
+    i -= 10
 else:
-    i+=10
-if q >0:
-    q = q -10
+    i += 10
+
+if q > 0:
+    q -= 10
 else:
-    q+=10
+    q += 10
 vim.command("return '"+rgb2hex(yiq2rgb([y,i,q]))+"'")
 EOF
     else
         let hex=s:fmt_hex(a:hex)
         let [y,i,q]=colorv#hex2yiq(hex)
-        if y>=35 && y < 50
-            let y = 80
-        elseif y >=50 && y < 65
-            let y = 20
+        if y>=30 && y < 50
+            let y = 70
+        elseif y >=50 && y < 70
+            let y = 30
         else
             let y = 100-y
         endif
         if i >0
-            let  i = i-10
+            let i -= 10
         else
-            let i+=10
+            let i += 10
         endif
         if q >0
-            let  q = q -10
+            let q -= 10
         else
-            let q+=10
+            let q += 10
         endif
         return colorv#yiq2hex([y,i,q])
     endif
@@ -2604,71 +2598,43 @@ endfunction "}}}
 function! s:opz_clr(hex) "{{{
     let hex=s:fmt_hex(a:hex)
     let [y,i,q]=colorv#hex2yiq(hex)
-    if y>=35 && y < 50
-        let y = 80
-    elseif y >=50 && y < 65
-        let y = 20
+    if y>=30 && y < 50
+        let y = 70
+    elseif y >=50 && y < 70
+        let y = 30
     else
         let y = 100-y
     endif
     return colorv#yiq2hex([y,-i,-q])
 endfunction "}}}
 
-function! colorv#timer(func,...) "{{{
-if !exists("*".a:func)
-    call s:debug("[TIMER]: ".a:func." does not exists. stopped")
-    return
-endif
-if exists("a:1")
-    let farg=a:1
-else
-    let farg=[]
-endif
-if exists("a:2")
-    let num=a:2
-else
-    let num=1
-endif
-if has("python") && g:ColorV_no_python!=1
-python << EOF
-import time
-import vim
-vim.command("let o_t = "+str(time.time()))
-EOF
-else
-    let o_t=strftime("%j")*86400+strftime("%H")*3600
-                \+strftime("%M")*60+strftime("%S")
-endif
-
-
-for i in range(num)
-    silent!  let rtn=call(a:func,farg)
-endfor
-
-if has("python") && g:ColorV_no_python!=1
-python << EOF
-vim.command("let n_t = "+str(time.time()))
-EOF
-else
-    let n_t=strftime("%j")*86400+strftime("%H")*3600
-                    \+strftime("%M")*60+strftime("%S")
-endif
-
-echom "[TIMER]:" string(n_t-o_t) "seconds for exec" a:func num "times. "
-
-return rtn
+function! s:time() "{{{
+    if has("python")
+        py import time
+        py import vim
+        py vim.command("return "+str(time.time()))
+    else
+        return localtime()
+    endif
 endfunction "}}}
-function! s:time()
-if has("python") 
-python << EOF
-import time
-import vim
-vim.command("return "+str(time.time()))
-EOF
-else
-    return localtime()
-endif
-endfunction
+function! colorv#timer(func,...) "{{{
+    if !exists("*".a:func)
+        call s:debug("[TIMER]: ".a:func." does not exists. stopped")
+        return
+    endif
+    let farg = exists("a:1") ? a:1 : []
+    let num = exists("a:2") ? a:2 : 1
+
+    let o_t=s:time()
+
+    for i in range(num)
+        silent! let rtn=call(a:func,farg)
+    endfor
+
+    echom "[TIMER]:" string(s:time()-o_t) "seconds for exec" a:func num "times. "
+
+    return rtn
+endfunction "}}}
 "}}}
 "EDIT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -3343,29 +3309,25 @@ def txt2hex(txt):
             for x in r_list:
                 if key=="HEX" or key=="NS6" or key=="HEX0":
                     hx=x.group('HEX')
-                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
                 elif key=="NS3":
                     hx3=x.group('HEX')
                     hx=hx3[0]*2+hx3[1]*2+hx3[2]*2
-                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
                 elif key=="RGBA" or key=="RGB":
                     hx=rgb2hex([x.group('R'),x.group('G'),x.group('B')])
-                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
                 elif key=="RGBP" or key=="RGBAP":
                     r,g,b=int(x.group('R')),int(x.group('G')),int(x.group('B'))
                     hx=rgb2hex([r*2.55,g*2.55,b*2.55])
-                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
                 elif key=="HSL" or key=="HSLA" :
                     h,s,l=int(x.group('H')),int(x.group('S')),int(x.group('L'))
                     hx=rgb2hex(hls2rgb([h,l,s]))
-                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
                 elif key=="HSV" or key=="HSVA" :
                     h,s,v=int(x.group('H')),int(x.group('S')),int(x.group('V'))
                     hx=rgb2hex(hls2rgb([h,s,v]))
-                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
                 elif key=="NAME":
                     hx=name2hex(x.group())
-                    hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
+                else:
+                    continue
+                hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
     return hex_list
 
 EOF
@@ -3373,10 +3335,7 @@ endfunction "}}}
 function! s:txt2hex(txt) "{{{
     if has("python") && g:ColorV_no_python!=1
         call s:py_text_load()
-python << EOF
-r = txt2hex(vim.eval("a:txt"))
-vim.command("return "+str(r))
-EOF
+        py vim.command("return "+str(txt2hex(vim.eval("a:txt"))))
     endif
 " input: text
 " return: hexlist [[hex,idx,len,str,fmt],[hex,idx,len,str,fmt],...]
@@ -3386,80 +3345,67 @@ EOF
 
     "max search depth
     let rnd=0
-    let idx=0
     let hex_list=[]
     while rnd<=20
         for [fmt,pat] in items(s:fmt)
             if text=~ pat
-                let p_idx{idx}=match(text,pat)
-                let p_str{idx}=matchstr(text,pat)
+                let p_idx=match(text,pat)
+                let p_str=matchstr(text,pat)
                 " error with same hex in one line?
                 " it will match the first one
-                let p_oidx{idx}=match(textorigin,p_str{idx})
-                let p_len{idx}=len(p_str{idx})
-                let text=strpart(text,0,p_idx{idx})
-                        \.strpart(text,p_len{idx}+p_idx{idx})
+                let p_oidx=match(textorigin,p_str)
+                let p_len=len(p_str)
+                let text=strpart(text,0,p_idx)
+                        \.strpart(text,p_len+p_idx)
 
                 if fmt=="HEX"
-                    let list=[p_str{idx},p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
                 elseif fmt=="HEX0"
-                    let hex=substitute(p_str{idx},'0x','','')
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
+                    let hex=substitute(p_str,'0x','','')
                 elseif fmt=="NS6"
-                    let hex=substitute(p_str{idx},'#','','')
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
+                    let hex=substitute(p_str,'#','','')
                 elseif fmt=="NS3"
-                    let hex=substitute(p_str{idx},'#','','')
+                    let hex=substitute(p_str,'#','','')
                     let hex=substitute(hex,'.','&&','g')
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
                 elseif fmt=="RGB" || fmt =="RGBA"
-                    let rgb=split(p_str{idx},',')
-                    let r=matchstr(rgb[0],'\d\{1,3}')
-                    let g=matchstr(rgb[1],'\d\{1,3}')
-                    let b=matchstr(rgb[2],'\d\{1,3}')
+                    let n_str=matchstr(p_str,'(\zs.*\ze)')
+                    let [r,g,b]=split(n_str,'\s*,\s*')[0:2]
                     if r>255 || g >255 || b > 255
-                        call s:error("Input out of boundary")
-                        return
+                        call s:error("RGB out of boundary")
+                        continue
                     endif
                     let hex = colorv#rgb2hex([r,g,b])
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                        " call add(clr,fmt)
-                    call add(hex_list,list)
                 elseif fmt=="RGBP" || fmt =="RGBAP"
-                    let rgb=split(p_str{idx},',')
-                    let r=matchstr(rgb[0],'\d\{1,3}')
-                    let g=matchstr(rgb[1],'\d\{1,3}')
-                    let b=matchstr(rgb[2],'\d\{1,3}')
+                    let n_str=matchstr(p_str,'(\zs.*\ze)')
+                    let [r,g,b]=split(n_str,'\s*%\=,\s*')[0:2]
+                    if r > 100 || g >100 || b > 100
+                        call s:error("RGB out of boundary")
+                        continue
+                    endif
                     let hex= colorv#rgb2hex([r*2.55,g*2.55,b*2.55])
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
                 elseif fmt=="HSV"
-                    let hsv=split(p_str{idx},',')
-                    let h=matchstr(hsv[0],'\d\{1,3}')
-                    let s=matchstr(hsv[1],'\d\{1,3}')
-                    let v=matchstr(hsv[2],'\d\{1,3}')
+                    let n_str=matchstr(p_str,'(\zs.*\ze)')
+                    let [h,s,v]=split(n_str,'\s*%\=,\s*')[0:2]
+                    if s > 100 || v >100
+                        call s:error("HSV out of boundary")
+                        continue
+                    endif
                     let hex= colorv#hsv2hex([h,s,v])
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
                 elseif fmt=="HSL" || fmt =="HSLA"
-                    let hsl=split(p_str{idx},',')
-                    let h=matchstr(hsl[0],'\d\{1,3}')
-                    let s=matchstr(hsl[1],'\d\{1,3}')
-                    let l=matchstr(hsl[2],'\d\{1,3}')
+                    let n_str=matchstr(p_str,'(\zs.*\ze)')
+                    let [h,s,l]=split(n_str,'\s*%\=,\s*')[0:2]
+                    if s > 100 || l >100
+                        call s:error("HSL out of boundary")
+                        continue
+                    endif
                     let hex= colorv#hls2hex([h,l,s])
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
-                " "NAME and NAMX format ;not a <cword> here
+                " NAME and NAMX format ;not a <cword> here
                 elseif fmt=="NAME"
-                    let hex=s:nam2hex(p_str{idx})
-                    let list=[hex,p_oidx{idx},p_len{idx},p_str{idx},fmt]
-                    call add(hex_list,list)
+                    let hex=s:nam2hex(p_str)
+                else
+                    continue
                 endif
-                let idx+=1
+                let list=[hex,p_oidx,p_len,p_str,fmt]
+                call add(hex_list,list)
             endif
         endfor
         if old_list==hex_list
@@ -4332,30 +4278,20 @@ function! colorv#preview(...) "{{{
     let cur = line('.')
     let lst = line('$')
     if lst >= 300
-        if cur < 200
-            let begin = 1
-            let end = 200
-        elseif cur > lst-200
-            let begin = lst-200
-            let end = lst
-        else
-            let begin = cur-100
-            let end = cur+100
-        endif
+        let [begin,end] = cur<200 ? [1,200] :
+                    \ cur>lst-200 ? [lst-200,lst] : [cur-100,cur+100]
     else
-        let begin = 1
-        let end = lst
+        let [begin,end] =[1,lst]
     endif
     let file_lines = getline(begin,end)
     for i in range(len(file_lines))
         let line = file_lines[i]
         call colorv#prev_txt(line)
     endfor
-    let total_time = s:time() - o_time
 
     if !silent
         call s:echo( (end-begin)." lines previewed."
-            \."Takes ". total_time . " sec." )
+            \."Takes ". string(s:time() - o_time). " sec." )
     endif
 endfunction "}}}
 function! colorv#preview_line(...) "{{{
@@ -4367,7 +4303,6 @@ function! colorv#preview_line(...) "{{{
         " n-> name b->block c->clear
         let s:view_name = a:1=~"N" ? 0 : a:1=~"n" ? 1 : s:view_name
         let s:view_block = a:1=~"B" ? 0 : a:1=~"b" ? 1 : s:view_block
-        "if not clear then prev line in a previewed file will change nothing.
         if a:1 =~ "c"
             call s:clear_prevmatch()
         endif
