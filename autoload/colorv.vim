@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2011-12-07
+" Last Update: 2012-01-19
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -18,12 +18,12 @@ else
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"GVAR: "{{{1 
+"GVAR: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ColorV={}
 let g:ColorV.ver="2.5.3.0"
 
-"debug 
+"debug
 if !exists("g:ColorV_debug")
     let g:ColorV_debug=0
 endif
@@ -32,10 +32,10 @@ if !exists('g:ColorV_no_python')
     let g:ColorV_no_python=0
 endif
 if !exists('g:ColorV_cache_File')
-let g:ColorV_cache_File = expand('$HOME') . '/.vim_ColorV_cache'
+    let g:ColorV_cache_File = expand('$HOME') . '/.vim_ColorV_cache'
 endif
 if !exists('g:ColorV_load_cache')
-let g:ColorV_load_cache=1
+    let g:ColorV_load_cache=1
 endif
 if !exists('g:ColorV_win_pos')
     let g:ColorV_win_pos="bot"
@@ -53,11 +53,11 @@ if !exists('g:ColorV_gen_space')
     let g:ColorV_gen_space="hsv"
 endif
 if has("python")
-    if !exists('g:ColorV_prev_css') 
+    if !exists('g:ColorV_prev_css')
         let g:ColorV_prev_css=1
     endif
 else
-    if !exists('g:ColorV_prev_css') 
+    if !exists('g:ColorV_prev_css')
         let g:ColorV_prev_css=0
     endif
 endif
@@ -84,7 +84,7 @@ let s:gen_def_nums=20
 let s:gen_def_step=10
 let s:gen_def_type="Hue"
 
-let s:his_cpd_list=exists("s:his_cpd_list") 
+let s:his_cpd_list=exists("s:his_cpd_list")
             \ ? s:his_cpd_list : []
 let s:his_set_list=exists("s:his_set_list")
             \ ? s:his_set_list : ['ff0000']
@@ -143,7 +143,7 @@ let s:fmt.HEX='\%(0x\|#\|\x\)\@<!\x\{6}\x\@!'
 let s:fmt.HEX0='0x\x\{6}\x\@!'
 "number sign 6 #ffffff
 let s:fmt.NS6='#\x\{6}\x\@!'
-"#fff 
+"#fff
 let s:fmt.NS3='#\x\{3}\x\@!'
 
 let s:fmt.HSV='hsv(\s*\d\{1,3},\s*\d\{1,3},\s*\d\{1,3})'
@@ -276,13 +276,13 @@ let s:term8_dict= {
             \14:"00ffff",15:"ffffff"
             \}
 "terminal color 256
-let s:term_dict = { 
+let s:term_dict = {
             \0:  '000000', 1:  '000080', 2:  '008000',
             \3:  '008080', 4:  '800000', 5:  '800080',
             \6:  '808000', 7:  'c0c0c0', 8:  '808080',
             \9:  'ff0000', 10: '00ff00', 11: '00ffff',
             \12: 'ff0000', 13: 'ff00ff', 14: 'ffff00',
-            \15: 'ffffff',           
+            \15: 'ffffff',
             \16: '000000', 17: '00005f', 18: '000087',
             \19: '0000af', 20: '0000d7', 21: '0000ff',
             \22: '005f00', 23: '005f5f', 24: '005f87',
@@ -370,7 +370,7 @@ let s:term_dict = {
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:py_core_load() "{{{
     if exists("s:py_core_load")
-    	return
+        return
     endif
     let s:py_core_load=1
 python << EOF
@@ -380,14 +380,14 @@ import vim
 import colorsys
 def number(x):
     return int(round(float(x)))
-    
+
 #{{{ rgb hex
-def hex2rgb(hex): 
+def hex2rgb(hex):
     if hex.startswith("#"): hex = hex[1:]
     elif hex[0:2].lower() == '0x': hex = hex[2:]
     hex=int("".join(["0X"+hex]),16)
     rgb = [(hex >> 16) & 0xff, (hex >> 8) & 0xff, hex & 0xff ]
-    return  rgb 
+    return  rgb
 def rgb2hex(rgb):
     r,g,b=number(rgb[0]),number(rgb[1]),number(rgb[2])
     if r>255 or g>255 or b>255 or r<0 or g<0 or b<0:
@@ -400,34 +400,34 @@ def rgb2hex(rgb):
     return '%02X%02X%02X' % (r,g,b)
 #}}}
 #{{{ hsv
-def rgb2hsv(rgb): 
+def rgb2hsv(rgb):
     r,g,b=rgb
     h,s,v=colorsys.rgb_to_hsv(r/255.0,g/255.0,b/255.0)
     return [int(round(h*360.0)),int(round(s*100.0)),int(round(v*100.0))]
 def hsv2rgb(hsv):
     h,s,v=hsv
     r,g,b=colorsys.hsv_to_rgb(h/360.0,s/100.0,v/100.0)
-    return [int(round(r*255.0)),int(round(g*255.0)),int(round(b*255.0))] 
+    return [int(round(r*255.0)),int(round(g*255.0)),int(round(b*255.0))]
     #}}}
- #{{{ yiq 
+ #{{{ yiq
 def rgb2yiq(rgb):
     r,g,b=rgb
     y,i,q=colorsys.rgb_to_yiq(r/255.0,g/255.0,b/255.0)
-    return [int(round(y*100.0)),int(round(i*100.0)),int(round(q*100.0))] 
+    return [int(round(y*100.0)),int(round(i*100.0)),int(round(q*100.0))]
 def yiq2rgb(yiq):
     y,i,q=yiq
     r,g,b=colorsys.yiq_to_rgb(y/100.0,i/100.0,q/100.0)
-    return [int(round(r*255.0)),int(round(g*255.0)),int(round(b*255.0))] 
+    return [int(round(r*255.0)),int(round(g*255.0)),int(round(b*255.0))]
     #}}}
 #{{{hls
 def rgb2hls(rgb):
     r,g,b=rgb
     h,l,s=colorsys.rgb_to_hls(r/255.0,g/255.0,b/255.0)
-    return [int(round(h*360.0)),int(round(l*100.0)),int(round(s*100.0))] 
+    return [int(round(h*360.0)),int(round(l*100.0)),int(round(s*100.0))]
 def hls2rgb(hls):
     h,l,s=hls
     r,g,b=colorsys.hls_to_rgb(h/360.0,l/100.0,s/100.0)
-    return [int(round(r*255.0)),int(round(g*255.0)),int(round(b*255.0))] 
+    return [int(round(r*255.0)),int(round(g*255.0)),int(round(b*255.0))]
 #}}}
 EOF
 endfunction "}}}
@@ -437,7 +437,7 @@ function! colorv#rgb2hsv(rgb)  "{{{
 " out [H,S,V] 0~360 0~100
     let [r,g,b]=[s:float(a:rgb[0]),s:float(a:rgb[1]),s:float(a:rgb[2])]
     if r>255||g>255||b>255
-    	call s:error("rgb2hsv():RGB out of boundary.".string(a:rgb))
+        call s:error("rgb2hsv():RGB out of boundary.".string(a:rgb))
         let r= r>255 ? 255 : r
         let g= g>255 ? 255 : g
         let b= b>255 ? 255 : b
@@ -457,7 +457,7 @@ else
 
     let V=max
     let S= V==0 ? 0 : df/max
-    let H = max==min ? 0 : max==r ? 60.0*(g-b)/df : 
+    let H = max==min ? 0 : max==r ? 60.0*(g-b)/df :
           \(max==g ? 120+60.0*(b-r)/df : 240+60.0*(r-g)/df)
     let H=round(H<0?s:fmod(H,360.0)+360:(H>360?s:fmod(H,360.0) : H))
     let H=float2nr(H)
@@ -487,8 +487,8 @@ EOF
 else
     let v=v*2.55
     if s==0
-    	let [R,G,B]=[v,v,v]
-    else 
+        let [R,G,B]=[v,v,v]
+    else
         let s=s/100.0
         let hi=floor(abs(h/60.0))
         let f=h/60.0 - hi
@@ -529,7 +529,7 @@ function! colorv#rgb2hex(rgb)   "{{{
 " out ffffff
     let [r,g,b]=[s:number(a:rgb[0]),s:number(a:rgb[1]),s:number(a:rgb[2])]
     if r>255||g>255||b>255||r<0 || g<0 || b<0
-    	call s:error("rgb2hex():RGB out of boundary.".string(a:rgb))
+        call s:error("rgb2hex():RGB out of boundary.".string(a:rgb))
         let r= r>255 ? 255 : r<0 ? 0 : r
         let g= g>255 ? 255 : g<0 ? 0 : g
         let b= b>255 ? 255 : b<0 ? 0 : b
@@ -546,7 +546,7 @@ endfunction "}}}
 function! colorv#rgb2hls(rgb) "{{{
     let [r,g,b]=[s:float(a:rgb[0]),s:float(a:rgb[1]),s:float(a:rgb[2])]
     if r>255||g>255||b>255
-    	call s:error("rgb2hls():RGB out of boundary.".string(a:rgb))
+        call s:error("rgb2hls():RGB out of boundary.".string(a:rgb))
         let r= r>255 ? 255 : r
         let g= g>255 ? 255 : g
         let b= b>255 ? 255 : b
@@ -566,14 +566,14 @@ else
 
     let L=(max+min)/2.0
     if L==0 || max==min
-    	let S=0
+        let S=0
     elseif L>0 && L<=0.5
         let S= df/(max+min)
     else
-    	let S=df/(2-max-min)
+        let S=df/(2-max-min)
     endif
 
-    let H = max==min ? 0 : max==r ? 60.0*(g-b)/df : 
+    let H = max==min ? 0 : max==r ? 60.0*(g-b)/df :
           \(max==g ? 120+60.0*(b-r)/df : 240+60.0*(r-g)/df)
     let H=round(H<0?s:fmod(H,360.0)+360:(H>360?s:fmod(H,360.0) : H))
     let H=float2nr(H)
@@ -601,9 +601,9 @@ EOF
 else
     let [h,s,l]=[h/360.0,s/100.0,l/100.0]
     if s==0
-    	let [r,g,b]=[l,l,l]
+        let [r,g,b]=[l,l,l]
     else
-    	if l<0.5
+        if l<0.5
             let var_2= l *(1+s)
         else
             let var_2= (l+s)-(s*l)
@@ -612,19 +612,19 @@ else
         function! H2rgb(v1,v2,vh) "{{{
             let [v1,v2,vh]=[a:v1,a:v2,a:vh]
             if vh<0
-            	let vh+=1
+                let vh+=1
             endif
             if vh>1
-            	let vh-=1
+                let vh-=1
             endif
             if 6*vh<1
-            	return v1+(v2-v1)*6*vh
+                return v1+(v2-v1)*6*vh
             endif
             if 2*vh<1
-            	return v2
+                return v2
             endif
             if 3*vh<2
-            	return v1+(v2-v1)*((2.0/3.0)-vh)*6
+                return v1+(v2-v1)*((2.0/3.0)-vh)*6
             endif
             return v1
         endfunction "}}}
@@ -649,7 +649,7 @@ endfunction "}}}
 function! colorv#rgb2yuv(rgb) "{{{
     let [r,g,b]=s:float(a:rgb)
     if r>255||g>255||b>255
-    	call s:error("rgb2yuv():RGB out of boundary.".string(a:rgb))
+        call s:error("rgb2yuv():RGB out of boundary.".string(a:rgb))
         let r= r>255 ? 255 : r
         let g= g>255 ? 255 : g
         let b= b>255 ? 255 : b
@@ -674,7 +674,7 @@ function! colorv#yuv2rgb(yuv) "{{{
     let G = Y - 0.395*U - 0.581*V
     let B = Y + 2.032*U
     if R>1 || G>1 || B>1 || R<0 || G<0 || B<0
-    	call s:error("Invalid RGB for with YUV".string(a:yuv))
+        call s:error("Invalid RGB for with YUV".string(a:yuv))
         let R = R>1 ? 1 : R<0 ? 0 : R
         let G = G>1 ? 1 : G<0 ? 0 : G
         let B = B>1 ? 1 : B<0 ? 0 : B
@@ -688,7 +688,7 @@ endfunction "}}}
 function! colorv#rgb2yiq(rgb) "{{{
     let [r,g,b]=s:float(a:rgb)
     if r>255||g>255||b>255
-    	call s:error("rgb2yiq():RGB out of boundary.".string(a:rgb))
+        call s:error("rgb2yiq():RGB out of boundary.".string(a:rgb))
         let r= r>255 ? 255 : r
         let g= g>255 ? 255 : g
         let b= b>255 ? 255 : b
@@ -730,7 +730,7 @@ else
     let g = y - 0.2721*i- 0.6474*q
     let b = y - 1.1070*i+ 1.7046*q
     if r>1 || g>1 || b>1 || r<0 || g<0 || b<0
-    	" call s:error("Invalid RGB for with YIQ".string(a:yiq))
+        " call s:error("Invalid RGB for with YIQ".string(a:yiq))
         let r = r>1 ? 1 : r<0 ? 0 : r
         let g = g>1 ? 1 : g<0 ? 0 : g
         let b = b>1 ? 1 : b<0 ? 0 : b
@@ -752,27 +752,27 @@ endfunction "}}}
 function! colorv#rgb2lab(rgb) "{{{
 " in [r,g,b]
 " out [L,a,b]
-    let [r,g,b]=[s:float(a:rgb[0]),s:float(a:rgb[1]),s:float(a:rgb[2])] 
+    let [r,g,b]=[s:float(a:rgb[0]),s:float(a:rgb[1]),s:float(a:rgb[2])]
     if r>255||g>255||b>255
             call s:error("rgb2lab():RGB out of boundary.".string(a:rgb))
             let r= r>255 ? 255 : r
             let g= g>255 ? 255 : g
             let b= b>255 ? 255 : b
-    " 	return -1
+    "     return -1
     endif
-    
+
     let [r,g,b]=[r/255.0,g/255.0,b/255.0]
-    if r > 0.04045 
+    if r > 0.04045
       let r = pow(((r + 0.055) / 1.055) , 2.4)
     else
       let r = r / 12.92
     endif
-    if g > 0.04045 
+    if g > 0.04045
       let g = pow(((g + 0.055) / 1.055) , 2.4)
     else
       let g = g / 12.92
     endif
-    if b > 0.04045 
+    if b > 0.04045
       let b = pow(((b + 0.055) / 1.055) , 2.4)
     else
       let b = b / 12.92
@@ -813,7 +813,7 @@ function! colorv#rgb2lab(rgb) "{{{
     let b = 200 * (Y - Z)
 
     return [L, a, b]
-    
+
 endfunction "}}}
 
 "CMYK (Cyan,Magenta,Yellow and Black)
@@ -831,11 +831,11 @@ function! colorv#rgb2cmyk(rgb) "{{{
     if M < vk | let vk =M | endif
     if Y < vk | let vk =Y | endif
     if vk==1
-    	let [C,M,Y]=[0,0,0]
+        let [C,M,Y]=[0,0,0]
     else
-    	let C=(C-vk)/(1.0-vk)
-    	let M=(M-vk)/(1.0-vk)
-    	let Y=(Y-vk)/(1.0-vk)
+        let C=(C-vk)/(1.0-vk)
+        let M=(M-vk)/(1.0-vk)
+        let Y=(Y-vk)/(1.0-vk)
     endif
     let K =vk
     return [C,M,Y,K]
@@ -854,11 +854,11 @@ endfunction "}}}
 "TERMINAL
 function! s:py_term_load() "{{{
     if exists("s:py_term_loaded")
-    	return
+        return
     endif
     let s:py_term_loaded=1
     call s:py_core_load()
- 
+
 python << EOF
 #{{{dicts
 tmclr8_dict = {
@@ -869,13 +869,13 @@ tmclr8_dict = {
                11:"ffff00",12:"0000ff",13:"ff00ff",
                14:"00ffff",15:"ffffff"
 }
-tmclr_dict = { 
+tmclr_dict = {
             0:"000000", 1:"000080", 2:"008000",
             3:"008080", 4:"800000", 5:"800080",
             6:"808000", 7:"c0c0c0", 8:"808080",
             9:"ff0000", 10:"00ff00", 11:"00ffff",
             12:"ff0000", 13:"ff00ff", 14:"ffff00",
-            15:"ffffff",           
+            15:"ffffff",
             16: '000000', 17: '00005f', 18: '000087',
             19: '0000af', 20: '0000d7', 21: '0000ff',
             22: '005f00', 23: '005f5f', 24: '005f87',
@@ -991,7 +991,7 @@ def hex2term_d6(hex1): #{{{
     elif r1 <= 195 : n1=3
     elif r1 <= 235 : n1=4
     else:            n1=5
-    if   g1 <= 47  : n2=0 
+    if   g1 <= 47  : n2=0
     elif g1 <= 115 : n2=1
     elif g1 <= 155 : n2=2
     elif g1 <= 195 : n2=3
@@ -1004,21 +1004,21 @@ def hex2term_d6(hex1): #{{{
     elif b1 <= 235 : n3=4
     else:            n3=5
     if   n1==n2==n3 and 91<=r1<=96:
-    	return 59
+        return 59
     elif n1==n2==n3 and 131<=r1<=136:
-    	return 102
+        return 102
     elif n1==n2==n3 and 171<=r1<=176:
-    	return 145
+        return 145
     elif n1==n2==n3 and 211<=r1<=216:
-    	return 188
+        return 188
     elif n1==n2==n3 and 244<=r1:
-    	return 231
+        return 231
     elif n1==n2==n3 and r1<=4:
-    	return 16
+        return 16
     elif n1==n2==n3:
-    	return (r1-5)/10+232
+        return (r1-5)/10+232
     else:
-    	return 16+n1*36+n2*6+n3 #}}}
+        return 16+n1*36+n2*6+n3 #}}}
 def hex2term_d4(hex1): #{{{
     best_match = 0
     smallest_distance = 10000000
@@ -1029,7 +1029,7 @@ def hex2term_d4(hex1): #{{{
     elif r1 <= 195 : n1,m1=124,36
     elif r1 <= 235 : n1,m1=160,36
     else:            n1,m1=196,0
-    if   g1 <= 47  : n2,m2=0,0 
+    if   g1 <= 47  : n2,m2=0,0
     elif g1 <= 115 : n2,m2=6,24
     elif g1 <= 155 : n2,m2=12,18
     elif g1 <= 195 : n2,m2=18,12
@@ -1054,7 +1054,7 @@ def hex2term_d4(hex1): #{{{
         if d < smallest_distance:
             smallest_distance = d
             best_match = c
-    return best_match 
+    return best_match
     #}}}
 
 EOF
@@ -1064,8 +1064,8 @@ function! colorv#hex2term(hex,...) "{{{
 "return term 256 color
 "vim is much slower than python code.
 "So use python by default.
-    if exists("a:1") 
-    	if (&t_Co<=8 && a:1==#"CHECK") || a:1==8
+    if exists("a:1")
+        if (&t_Co<=8 && a:1==#"CHECK") || a:1==8
             if has("python") && g:ColorV_no_python!=1
                 return s:p_hex2term8(a:hex)
             else
@@ -1113,9 +1113,9 @@ function! s:v_hex2term8(hex) "{{{
     for c in range(16)
         let [r2,g2,b2] = colorv#hex2rgb(s:term8_dict[c])
         let d = abs(r1-r2)+abs(g1-g2)+abs(b1-b2)
-    	if d < smallest_distance
-    	    let smallest_distance = d
-    	    let best_match = c
+        if d < smallest_distance
+            let smallest_distance = d
+            let best_match = c
         endif
     endfor
     return best_match
@@ -1127,9 +1127,9 @@ function! s:v_hex2term16(hex) "{{{
     for c in range(16)
         let [r2,g2,b2] = colorv#hex2rgb(s:term_dict[c])
         let d = abs(r1-r2)+abs(g1-g2)+abs(b1-b2)
-    	if d < smallest_distance
-    	    let smallest_distance = d
-    	    let best_match = c
+        if d < smallest_distance
+            let smallest_distance = d
+            let best_match = c
         endif
     endfor
     return best_match
@@ -1145,7 +1145,7 @@ function! s:v3_hex2term(hex) "{{{
     elseif r1 <= 235 | let [n1,m1]=[160,36]
     else             | let [n1,m1]=[196,0]
     endif
-    if   g1 <= 47  | let n2=0 
+    if   g1 <= 47  | let n2=0
     elseif g1 <= 115 | let n2=6
     elseif g1 <= 155 | let n2=12
     elseif g1 <= 195 | let n2=18
@@ -1168,10 +1168,10 @@ function! s:v3_hex2term(hex) "{{{
         else
             let d=dr+dg+db
         endif
-        
-    	if d < smallest_distance
-    	    let smallest_distance = d
-    	    let best_match = c
+
+        if d < smallest_distance
+            let smallest_distance = d
+            let best_match = c
         endif
     endfor
     return best_match
@@ -1181,7 +1181,7 @@ endfunction "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:py_draw_load() "{{{
     if exists("s:py_draw_loaded")
-    	return
+        return
     endif
     let s:py_draw_loaded=1
     call s:py_core_load()
@@ -1191,7 +1191,7 @@ def draw_palette(H,he,wi,*off): #{{{
     vim.command("call s:clear_palmatch()")
     if len(off)>1: y_off=off[1]
     else:y_off=1
-    if len(off)>0: x_off=off[0]; 
+    if len(off)>0: x_off=off[0];
     else:x_off=0
     pal_clr_list=[]
     cmd_list=[]
@@ -1208,7 +1208,7 @@ def draw_palette(H,he,wi,*off): #{{{
             else:
                 hex=rgb2hex(hsv2rgb([H,S,L]))
             pal_clr_list.append(hex)
-            
+
             hi_grp="".join(["cv_pal_",hex])
             hi_cmd="".join(["call colorv#hi_color('",hi_grp,"','",hex,"','",hex,"')"])
             cmd_list.append(hi_cmd)
@@ -1218,7 +1218,7 @@ def draw_palette(H,he,wi,*off): #{{{
             col+=1
         line+=1
     for cmd in cmd_list:
-    	vim.command(cmd)
+        vim.command(cmd)
     vim.command("".join(["let s:pal_clr_list=",str(pal_clr_list)]))
 #}}}
 def draw_pallete_hex(hex): #{{{
@@ -1231,7 +1231,7 @@ def draw_hueline(l,*stats): #{{{
     vim.command("call  s:clear_hsvmatch()")
     if vim.eval("g:ColorV.HSV.S")=="0":
         vim.command("if !exists('s:prv_H') | let s:prv_H=0 |endif ")
-    	H=float(vim.eval("s:prv_H"))
+        H=float(vim.eval("s:prv_H"))
     else:
         vim.command("let s:prv_H= g:ColorV.HSV.H")
         H=float(vim.eval("g:ColorV.HSV.H"))
@@ -1257,7 +1257,7 @@ def draw_hueline(l,*stats): #{{{
         H+=step
         x+=1
     for cmd in cmd_list:
-    	vim.command(cmd)
+        vim.command(cmd)
     vim.command("let s:hueline_list="+str(hueline_list))
 #}}}
 
@@ -1305,21 +1305,21 @@ function! s:draw_palette(h,l,c,...) "{{{
     let h_off=exists("a:1") ? a:1 : s:poff_y
     let w_off=exists("a:2") ? a:2 : s:poff_x
     if height>100 || width>100 || height<0 || width<0
-    	call s:error("error palette input")
-    	return -1
+        call s:error("error palette input")
+        return -1
     endif
     let h=s:fmod(h,360.0)
-    
+
     let s:pal_clr_list=[]
 
     let line=1
     while line<=height
         let v=100-(line-1)*100.0/height
-        let v= v==0 ? 1 : v 
+        let v= v==0 ? 1 : v
         let col =1
         while col<=width
             let s=100-(col-1)*100.0/(width-1)
-            let s= s==0 ? 1 : s 
+            let s= s==0 ? 1 : s
             if s:space=="hls"
                 let hex=colorv#hls2hex([h,s,v])
             else
@@ -1329,7 +1329,7 @@ function! s:draw_palette(h,l,c,...) "{{{
             call colorv#hi_color(hi_grp,hex,hex)
             let pos_ptn="\\%".(line+h_off)."l\\%".(col+w_off)."c"
             call add(s:pal_clr_list,hex)
-            
+
             " Add hl match to pallet_dict
             if !exists("s:pallet_dict")|let s:pallet_dict={}|endif
             let s:pallet_dict[hi_grp]=matchadd(hi_grp,pos_ptn)
@@ -1342,7 +1342,7 @@ endfunction
 "}}}
 function! s:draw_palette_hex(hex,...) "{{{
     if has("python") && g:ColorV_no_python!=1
-    	call s:p_draw_palette_hex(a:hex)
+        call s:p_draw_palette_hex(a:hex)
     else
         let [h,s,v]=colorv#hex2hsv(a:hex)
         let g:ColorV.HSV.H=h
@@ -1357,14 +1357,14 @@ function! s:draw_palette_hex(hex,...) "{{{
 endfunction "}}}
 function! s:draw_multi_block(rectangle,hex_list) "{{{
 "Input: rectangle[x,y,w,h] hex_list[ffffff,ffffff]
-    let [x,y,w,h]=a:rectangle                  
+    let [x,y,w,h]=a:rectangle
     let block_clr_list=a:hex_list
 
     for idx in range(len(block_clr_list))
         let hex=block_clr_list[idx]
         let hi_grp="cv_blk".block_clr_list[idx]
         call colorv#hi_color(hi_grp,hex,hex)
-        
+
         let Block_ptn="\\%>".(x+w*idx-1)."c\\%<".(x+w*(idx+1)).
                     \"c\\%>".(y-1)."l\\%<".(y+h)."l"
         if !exists("s:block_dict")|let s:block_dict={}|endif
@@ -1372,7 +1372,7 @@ function! s:draw_multi_block(rectangle,hex_list) "{{{
     endfor
 endfunction "}}}
 function! s:draw_history_set(hex) "{{{
-    let hex= strpart(printf("%06x",'0x'.a:hex),0,6) 
+    let hex= strpart(printf("%06x",'0x'.a:hex),0,6)
     let len=len(s:his_set_list)
     let s:his_color2= len >2 ? s:his_set_list[len-3] : 'ffffff'
     let s:his_color1= len >1 ? s:his_set_list[len-2] : 'ffffff'
@@ -1383,10 +1383,10 @@ function! s:draw_history_copy() "{{{
     let len=len(s:his_cpd_list)
     let clr_list=[]
     for i in range(18)
-    	if &background=="light"
-    	    let t="333333"
+        if &background=="light"
+            let t="333333"
         else
-    	    let t="AAAAAA"
+            let t="AAAAAA"
         endif
         let cpd_color= len>i ? s:his_cpd_list[-1-i] : t
         call add(clr_list,cpd_color)
@@ -1419,7 +1419,7 @@ function! s:draw_hueline(l,...) "{{{
     let x=0
     let s:hueline_list=[]
     while x < width
-        let hi_grp="cv_hue_".x 
+        let hi_grp="cv_hue_".x
         let hex=colorv#hsv2hex([h,s,v])
         " exec "hi ".hi_grp." guifg=#".hex." guibg=#".hex
         call colorv#hi_color(hi_grp,hex,hex)
@@ -1442,16 +1442,16 @@ function! s:draw_satline(l,...) "{{{
     let v=100
     let l=a:l
     let width=exists("a:1") ? a:1 : s:pal_W
-    let step=exists("a:2") ? a:2 : exists("a:1") ? 
+    let step=exists("a:2") ? a:2 : exists("a:1") ?
                 \( a:1 != 0 ? (100/a:1) : 5 ) : 5
     let x=0
     let s:satline_list=[]
     while x < width
-        
-        let hi_grp="cv_sat_".x 
+
+        let hi_grp="cv_sat_".x
         let hex=colorv#hsv2hex([h,s,v])
         call colorv#hi_color(hi_grp,hex,hex)
-        
+
         let pos="\\%".l."l\\%".(x+1+s:poff_x)."c"
 
         if !exists("s:hsv_dict")|let s:hsv_dict={}|endif
@@ -1483,15 +1483,15 @@ function! s:draw_valline(l,...) "{{{
     let s:valline_list=[]
     while col <= width
         let v=100.0-(col-1)*step
-        
-        let hi_grp="cv_val_".col 
+
+        let hi_grp="cv_val_".col
         if s:space=="hls"
             let hex=colorv#rgb2hex(colorv#hls2rgb([h,v,s]))
         else
             let hex=colorv#hsv2hex([h,s,v])
         endif
         call colorv#hi_color(hi_grp,hex,hex)
-        
+
         let pos="\\%".l."l\\%".(col+s:poff_x)."c"
 
         let s:hsv_dict[hi_grp]=matchadd(hi_grp,pos)
@@ -1518,15 +1518,15 @@ function! colorv#hi_color(hl_grp,hl_fg,hl_bg,...) "{{{
         let hl_fg = hl_fg=="" ? "" : " guifg=".hl_fg
         let hl_bg = hl_bg=="" ? "" : " guibg=".hl_bg
     else
-    	if hl_fg=~'\x\{6}'
+        if hl_fg=~'\x\{6}'
             let hl_fg=colorv#hex2term(hl_fg,"CHECK")
         endif
-    	if hl_bg=~'\x\{6}'
+        if hl_bg=~'\x\{6}'
             let hl_bg=colorv#hex2term(hl_bg,"CHECK")
         endif
         if exists("a:1")
             if &t_Co==8
-            	if hl_fg >=8
+                if hl_fg >=8
                     let hl_fmt=" cterm=bold,".a:1
                     let hl_fg-=8
                 else
@@ -1539,8 +1539,8 @@ function! colorv#hi_color(hl_grp,hl_fg,hl_bg,...) "{{{
                 let hl_fmt=" cterm=".a:1
             endif
         else
-            if &t_Co==8 
-            	if hl_fg >=8
+            if &t_Co==8
+                if hl_fg >=8
                     let hl_fmt=" cterm=bold"
                     let hl_fg-=8
                 else
@@ -1566,11 +1566,11 @@ function! s:hi_link(from,to) "{{{
     exe "hi link ". a:from . " " . a:to
 endfunction "}}}
 function! s:update_his_set(hex) "{{{
-    let hex= printf("%06x",'0x'.a:hex) 
+    let hex= printf("%06x",'0x'.a:hex)
     " update history_set
-    
+
     if exists("s:skip_his_block") && s:skip_his_block==1
-    	let s:skip_his_block=0
+        let s:skip_his_block=0
     else
         if get(s:his_set_list,-1)!=hex
             call add(s:his_set_list,hex)
@@ -1578,7 +1578,7 @@ function! s:update_his_set(hex) "{{{
     endif
 endfunction "}}}
 function! s:update_global(hex) "{{{
-    let hex= strpart(printf("%06x",'0x'.a:hex),0,6) 
+    let hex= strpart(printf("%06x",'0x'.a:hex),0,6)
     let hex=substitute(hex,'\l','\u\0','g')
     let g:ColorV.HEX=hex
     let [r,g,b]= colorv#hex2rgb(hex)
@@ -1605,7 +1605,7 @@ function! s:update_global(hex) "{{{
     let g:ColorV.yiq=[Y,I,Q]
 
     if exists("s:update_call") && s:update_call ==1 && exists("s:update_func")
-    	if exists("s:update_arg") 
+        if exists("s:update_arg")
             call call(s:update_func,s:update_arg)
         else
             call call(s:update_func,[])
@@ -1613,8 +1613,8 @@ function! s:update_global(hex) "{{{
         " BACK to COLORV window
         if !s:go_buffer_win(g:ColorV.name)
             call s:error("ColorV window.NO update_call")
-            if exists("s:update_call") 
-                if exists("s:update_arg") 
+            if exists("s:update_call")
+                if exists("s:update_arg")
                     unlet s:update_arg
                 endif
                 unlet s:update_call
@@ -1651,7 +1651,7 @@ function! s:hi_misc() "{{{
 
 
     " tip text highlight
-    if s:mode!="min" 
+    if s:mode!="min"
         let tip_ptn='\%'.(s:pal_H+1).'l\%>21c\%<60c'
         let q_ptn='\%'.(s:pal_H+1).'l\%>21c\%<60c[mM?]'
         call s:hi_link("cv_tip","SpecialComment")
@@ -1673,23 +1673,23 @@ function! s:draw_text(...) "{{{
     let [H,L,S]=[printf("%3d",H),printf("%3d",L),printf("%3d",S)]
     let [Y,I,Q]=s:number(g:ColorV.yiq)
     let [Y,I,Q]=[printf("%3d",Y),printf("%4d",I),printf("%4d",Q)]
-    
+
     if s:mode=="max"
-    	let height=s:max_h
+        let height=s:max_h
     elseif s:mode=="min"
         let height=s:min_h
     elseif s:mode=="mid"
         let height=s:mid_h
     endif
-    
-    let line=[] 
+
+    let line=[]
     for i in range(height)
         let m=repeat(' ',s:line_width)
         call add(line,m)
     endfor
 
     "parameters
-    if s:mode=="max"  
+    if s:mode=="max"
         let line[0]=s:line("ColorV ".g:ColorV.ver,3)
         let line[0]=s:line_sub(line[0],"Hex:".hex,22)
         let line[1]=s:line("R:".r."  G:".g."  B:".b,22)
@@ -1715,7 +1715,7 @@ function! s:draw_text(...) "{{{
         endif
         let line[2]=s:line_sub(line[2],"_?",56)
     endif
-    
+
     " colorname
     let nam=g:ColorV.NAME
     if !empty(nam)
@@ -1742,11 +1742,11 @@ function! s:draw_text(...) "{{{
             break
         endif
     endfor
-   
+
 
     "draw star mark(asterisk) at pos
     for i in range(height)
-    	let line[i]=substitute(line[i],'\*',' ','g')
+        let line[i]=substitute(line[i],'\*',' ','g')
     endfor
     let [l,c]=s:get_star_pos()
     let line[l-1]=s:line_sub(line[l-1],"*",c)
@@ -1776,7 +1776,7 @@ function! s:get_bar_pos() "{{{
     if s:mode=="min"
         let l=2
         let w_step=100.0/(s:pal_W-1)
-    	if s:space=="hls"
+        if s:space=="hls"
             let c=float2nr(round((100.0-S)/w_step))+1+s:poff_x
         else
             let c=float2nr(round((100.0-s)/w_step))+1+s:poff_x
@@ -1786,18 +1786,18 @@ function! s:get_bar_pos() "{{{
         endif
         return [l,c]
     endif
-    
+
 endfunction "}}}
 function! s:get_star_pos() "{{{
     let HSV=g:ColorV.HSV
     let HLS=g:ColorV.HLS
     let [h,s,v]=[HSV.H,HSV.S,HSV.V]
     let [H,L,S]=[HLS.H,HLS.L,HLS.S]
-    
+
     if s:mode=="max" || s:mode=="mid"
         let h_step=100.0/(s:pal_H)
         let w_step=100.0/(s:pal_W-1)
-    	if s:space=="HLS"
+        if s:space=="HLS"
             let l=float2nr(round((100.0-S)/h_step))+1+s:poff_y
             let c=float2nr(round((100.0-L)/w_step))+1+s:poff_x
         else
@@ -1810,11 +1810,11 @@ function! s:get_star_pos() "{{{
         if c>=s:pal_W+s:poff_x
             let c= s:pal_W+s:poff_x
         endif
-    
+
     elseif s:mode=="min"
         let l=3
         let w_step=100.0/(s:pal_W-1)
-    	if s:space=="HLS"
+        if s:space=="HLS"
             let c=float2nr(round((100.0-L)/w_step))+1+s:poff_x
         else
             let c=float2nr(round((100.0-v)/w_step))+1+s:poff_x
@@ -1846,13 +1846,13 @@ function! s:line_sub(line,text,pos) "{{{
 "could not use doublewidth text
     let [line,text,pos]=[a:line,a:text,a:pos]
     if len(line) < len(text)+pos
-    	let line = line.repeat(' ',len(text)+pos-len(line))
+        let line = line.repeat(' ',len(text)+pos-len(line))
     endif
     if pos!=1
         let pat='^\(.\{'.(pos-1).'}\)\%(.\{'.len(text).'}\)'
         return substitute(line,pat,'\1'.text,'')
     else
-    	let pat='^\%(.\{'.len(text).'}\)'
+        let pat='^\%(.\{'.len(text).'}\)'
         return substitute(line,pat,text,'')
     endif
 endfunction "}}}
@@ -1952,20 +1952,20 @@ function! colorv#win(...) "{{{
     call s:open_win(g:ColorV.name)
     call s:win_setl()
     setl ft=ColorV
-    call s:map_define() 
-    " get hex "{{{
-    if exists("a:2") 
-    	"skip history if no new hex 
+    call s:map_define()
+    "{{{ get hex
+    if exists("a:2")
+        "skip history if no new hex
         let hex_list=s:txt2hex(a:2)
         if exists("hex_list[0][0]")
             let hex=s:fmt_hex(hex_list[0][0])
-            call s:echo("Use [".hex."]") 
+            call s:echo("Use [".hex."]")
         else
             let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
             let s:skip_his_block=1
-            call s:echo("Use default [".hex."]") 
+            call s:echo("Use default [".hex."]")
         endif
-    else 
+    else
         let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
         let s:skip_his_block=1
     endif "}}}
@@ -1975,37 +1975,37 @@ function! colorv#win(...) "{{{
     else
         let s:space="hsv"
     endif
-    if exists("a:1") && a:1== "min" 
-    	let s:mode="min"
+    if exists("a:1") && a:1== "min"
+        let s:mode="min"
     elseif  exists("a:1") && a:1== "max"
-    	let s:mode="max" 
+        let s:mode="max"
     elseif  exists("a:1") && a:1== "mid"
-    	let s:mode="mid" 
+        let s:mode="mid"
     else
-    	if !exists("s:mode")
-    	    let s:mode="mid"
+        if !exists("s:mode")
+            let s:mode="mid"
         endif
-    endif 
+    endif
     if s:mode=="min"
-    	let s:pal_H=s:min_h-1
+        let s:pal_H=s:min_h-1
     elseif s:mode=="max"
-    	let s:pal_H=s:max_h-1
+        let s:pal_H=s:max_h-1
     else
-    	let s:pal_H=s:mid_h-1
+        let s:pal_H=s:mid_h-1
     endif
     "}}}
     "_funcs "{{{
-    if exists("a:3") && a:3==1 && exists("a:4") 
-    	let s:exit_call =1
-    	let s:exit_func =a:4
-    	if exists("a:5") 
+    if exists("a:3") && a:3==1 && exists("a:4")
+        let s:exit_call =1
+        let s:exit_func =a:4
+        if exists("a:5")
             let s:exit_arg =a:5
         endif
-    " use update should toggle window
-    elseif exists("a:3") && a:3==2 && exists("a:4") 
-    	let s:update_call =1
-    	let s:update_func =a:4
-    	if exists("a:5") 
+        " use update should toggle window
+    elseif exists("a:3") && a:3==2 && exists("a:4")
+        let s:update_call =1
+        let s:update_func =a:4
+        if exists("a:5")
             let s:update_arg =a:5
         endif
     endif
@@ -2063,9 +2063,9 @@ function! s:win_setl() "{{{
 endfunction "}}}
 function! s:check_win(name) "{{{
     if bufnr('%') != bufnr(a:name)
-    	return 0
+        return 0
     else
-    	return 1
+        return 1
     endif
 endfunction "}}}
 function! s:draw_win(hex) "{{{
@@ -2073,73 +2073,73 @@ function! s:draw_win(hex) "{{{
         call s:error("Not [ColorV] buffer.")
         return
     endif
-        
+
     let hex= s:fmt_hex(a:hex)
-    
+
     setl ma
     setl lz
-if g:ColorV_debug==1 "{{{
-    call colorv#timer("s:update_his_set",[hex])
-    call colorv#timer("s:update_global",[hex])
-    call colorv#timer("s:draw_hueline",[1])
-    if s:mode == "min"
-        call colorv#timer("s:draw_satline",[2])
-        call colorv#timer("s:draw_valline",[3])
-        let l:win_h=s:min_h
-    else
-        call colorv#timer("s:clear_blockmatch")
-        if s:mode == "max"
-            call colorv#timer("s:draw_history_copy")
-        endif
-        if g:ColorV.HSV.S==0
-            let prv_hex= !exists("s:prv_hex") ? "ff0000" : s:prv_hex
-            call colorv#timer("s:draw_palette_hex",[prv_hex])
+    if g:ColorV_debug==1 "{{{
+        call colorv#timer("s:update_his_set",[hex])
+        call colorv#timer("s:update_global",[hex])
+        call colorv#timer("s:draw_hueline",[1])
+        if s:mode == "min"
+            call colorv#timer("s:draw_satline",[2])
+            call colorv#timer("s:draw_valline",[3])
+            let l:win_h=s:min_h
         else
-            let s:prv_hex= hex
-            call colorv#timer("s:draw_palette_hex",[hex])
+            call colorv#timer("s:clear_blockmatch")
+            if s:mode == "max"
+                call colorv#timer("s:draw_history_copy")
+            endif
+            if g:ColorV.HSV.S==0
+                let prv_hex= !exists("s:prv_hex") ? "ff0000" : s:prv_hex
+                call colorv#timer("s:draw_palette_hex",[prv_hex])
+            else
+                let s:prv_hex= hex
+                call colorv#timer("s:draw_palette_hex",[hex])
+            endif
+            if s:mode == "max"
+                let l:win_h=s:max_h
+            else
+                let l:win_h=s:mid_h
+            endif
         endif
-        if s:mode == "max"
-            let l:win_h=s:max_h
-        else
-            let l:win_h=s:mid_h
-        endif
-    endif
 
-    call colorv#timer("s:hi_misc")
-    call colorv#timer("s:draw_history_set",[hex])
-    call colorv#timer("s:draw_text") 
-    "}}}
-else "{{{ 
-    call s:update_his_set(hex) 
-    call s:update_global(hex)
-    call s:draw_hueline(1)
-    if s:mode == "min"
-        call s:draw_satline(2)
-        call s:draw_valline(3)
-        let l:win_h=s:min_h
-    else
-        call s:clear_blockmatch()
-        if s:mode == "max"
-            call s:draw_history_copy()
-        endif
-        if g:ColorV.HSV.S==0
-            let prv_hex= !exists("s:prv_hex") ? "ff0000" : s:prv_hex
-            call s:draw_palette_hex(prv_hex)
+        call colorv#timer("s:hi_misc")
+        call colorv#timer("s:draw_history_set",[hex])
+        call colorv#timer("s:draw_text")
+        "}}}
+    else "{{{
+        call s:update_his_set(hex)
+        call s:update_global(hex)
+        call s:draw_hueline(1)
+        if s:mode == "min"
+            call s:draw_satline(2)
+            call s:draw_valline(3)
+            let l:win_h=s:min_h
         else
-            let s:prv_hex= hex
-            call s:draw_palette_hex(hex)
+            call s:clear_blockmatch()
+            if s:mode == "max"
+                call s:draw_history_copy()
+            endif
+            if g:ColorV.HSV.S==0
+                let prv_hex= !exists("s:prv_hex") ? "ff0000" : s:prv_hex
+                call s:draw_palette_hex(prv_hex)
+            else
+                let s:prv_hex= hex
+                call s:draw_palette_hex(hex)
+            endif
+            if s:mode == "max"
+                let l:win_h=s:max_h
+            else
+                let l:win_h=s:mid_h
+            endif
         endif
-        if s:mode == "max"
-            let l:win_h=s:max_h
-        else
-            let l:win_h=s:mid_h
-        endif
-    endif
 
-    call s:hi_misc()
-    call s:draw_history_set(hex)
-    call s:draw_text() 
-endif "}}}
+        call s:hi_misc()
+        call s:draw_history_set(hex)
+        call s:draw_text()
+    endif "}}}
     if winnr('$') != 1
         execute 'resize' l:win_h
         redraw
@@ -2190,7 +2190,7 @@ function! s:map_define() "{{{
     nmap <silent><buffer> H :h colorv-quickstart<cr>
     nmap <silent><buffer> <F1> :h colorv-quickstart<cr>
 
-    "Copy color 
+    "Copy color
     map <silent><buffer> C :call <SID>copy("HEX","+")<cr>
     map <silent><buffer> cc :call <SID>copy("HEX","+")<cr>
     map <silent><buffer> cx :call <SID>copy("HEX0","+")<cr>
@@ -2216,13 +2216,13 @@ function! s:map_define() "{{{
     map <silent><buffer> yn :call <SID>copy("NAME")<cr>
     map <silent><buffer> yh :call <SID>copy("HSV")<cr>
     map <silent><buffer> yl :call <SID>copy("HSL")<cr>
-    
+
     "paste color
     map <silent><buffer> <c-v> :call <SID>paste("+")<cr>
     map <silent><buffer> p :call <SID>paste()<cr>
     map <silent><buffer> P :call <SID>paste()<cr>
     map <silent><buffer> <middlemouse> :call <SID>paste("+")<cr>
-    
+
     "generator with current color
     nmap <silent><buffer> gh :call colorv#gen_win(g:ColorV.HEX,"Hue",20,15)<cr>
     nmap <silent><buffer> gs :call colorv#gen_win(g:ColorV.HEX,"Saturation",20,5,1)<cr>
@@ -2250,11 +2250,11 @@ function! s:on_cursor_moved() "{{{
     let c=col('.')
     let l=line('.')
     if s:mode=="max"
-    	let pos_list = s:max_pos
+        let pos_list = s:max_pos
     elseif s:mode=="min"
-    	let pos_list = s:min_pos
+        let pos_list = s:min_pos
     else
-    	let pos_list = s:mid_pos
+        let pos_list = s:mid_pos
     endif
     for pos in pos_list
         let line=pos[1]
@@ -2280,19 +2280,19 @@ endfunction "}}}
 
 function! colorv#exit_list_win() "{{{
     if s:go_buffer_win(g:ColorV.listname)
-    	close
+        close
     endif
 endfunction "}}}
 function! colorv#exit() "{{{
     if s:go_buffer_win(g:ColorV.name)
-    	close
+        close
     else
-    	return -1
+        return -1
     endif
 
     "_call "{{{
     if exists("s:exit_call") && s:exit_call ==1 && exists("s:exit_func")
-    	if exists("s:exit_arg") 
+        if exists("s:exit_arg")
             call call(s:exit_func,s:exit_arg)
             unlet s:exit_arg
         else
@@ -2301,29 +2301,29 @@ function! colorv#exit() "{{{
         unlet s:exit_call
         unlet s:exit_func
     endif
-    
-    if exists("s:update_call") 
-    	if exists("s:update_arg") 
+
+    if exists("s:update_call")
+        if exists("s:update_arg")
             unlet s:update_arg
         endif
         unlet s:update_call
         unlet s:update_func
     endif
-"}}}
+    "}}}
 endfunction "}}}
 function! colorv#dropper() "{{{
-"terminal error?
-if !has("gui_running")
-    call s:error("pygtk have Error in Terminal. So not Supported.")
-    return
-endif
-if !has("python")
-    call s:error("Only support vim compiled with python.")
-    return
-endif
-call s:caution("pyGTK ColorPicker:")
-call s:py_core_load()
-call s:warning("Select a color and press OK to Return to Vim.")
+    "terminal error?
+    if !has("gui_running")
+        call s:error("pygtk have Error in Terminal. So not Supported.")
+        return
+    endif
+    if !has("python")
+        call s:error("Only support vim compiled with python.")
+        return
+    endif
+    call s:caution("pyGTK ColorPicker:")
+    call s:py_core_load()
+    call s:warning("Select a color and press OK to Return to Vim.")
 python << EOF
 try:
     import gtk
@@ -2342,7 +2342,7 @@ if gtk:
         clr = color_dlg.colorsel.get_current_color()
         c_hex = rgb2hex([clr.red/257,clr.green/257,clr.blue/257])
         vim.command("ColorV "+c_hex)
-        
+
     color_dlg.destroy()
 EOF
 endfunction "}}}
@@ -2353,22 +2353,22 @@ endfunction "}}}
 function! s:fmod(x,y) "{{{
     "no fmod() in 702
     if v:version < 703
-        if a:y == 0 
+        if a:y == 0
             let tmp = 0
         else
             let tmp = a:x - a:y * floor(a:x/a:y)
         endif
             return tmp
-    else 
-    	return fmod(s:float(a:x),s:float(a:y))
+    else
+        return fmod(s:float(a:x),s:float(a:y))
     endif
 
 endfunction "}}}
 function! s:number(x) "{{{
-    if type(a:x) == type([]) 
-    	if !empty(a:x)
-    	    let x=[]
-    	    for i in a:x
+    if type(a:x) == type([])
+        if !empty(a:x)
+            let x=[]
+            for i in a:x
                 let z = s:number(i)
                 call add(x,z)
             endfor
@@ -2382,10 +2382,10 @@ function! s:number(x) "{{{
     endif
 endfunction "}}}
 function! s:float(x) "{{{
-    if type(a:x) == type([]) 
-    	if !empty(a:x)
-    	    let x=[]
-    	    for i in a:x
+    if type(a:x) == type([])
+        if !empty(a:x)
+            let x=[]
+            for i in a:x
                 let z = s:float(i)
                 call add(x,z)
             endfor
@@ -2401,12 +2401,12 @@ endfunction "}}}
 function! s:fmax(list) "{{{
     let list=a:list
     if len(list) == 0
-    	return 0
+        return 0
     endif
     let tmp=list[0]
     for i in list
-    	if i > tmp
-    	    let tmp = i 
+        if i > tmp
+            let tmp = i
         endif
     endfor
     return tmp
@@ -2414,12 +2414,12 @@ endfunction "}}}
 function! s:fmin(list) "{{{
     let list=a:list
     if len(list) == 0
-    	return 0
+        return 0
     endif
     let tmp=list[0]
     for i in list
-    	if i < tmp
-    	    let tmp = i 
+        if i < tmp
+            let tmp = i
         endif
     endfor
     return tmp
@@ -2480,7 +2480,7 @@ function! s:rnd_echo(txt_list) "{{{
     let idx=0
     let rnd=s:random(0,len(txt_list)-1)
     for txt in txt_list
-    	if  rnd == idx
+        if  rnd == idx
             echo "[".idx."]" txt
             break
         endif
@@ -2523,20 +2523,20 @@ function! s:error(msg) "{{{
     exe "echon ' ".escape(a:msg,'"')."'"
 endfunction "}}}
 function! s:echo(msg) "{{{
-    try 
+    try
         echohl Comment
         redraw
         exe "echon '[Note]' "
         echohl Normal
         exe "echon ' ".escape(a:msg,'"')."'"
     catch /^Vim\%((\a\+)\)\=:E488/
-        call s:debug("Trailing character.")  
+        call s:debug("Trailing character.")
     endtry
 endfunction "}}}
 
 function! s:debug(msg) "{{{
     if g:ColorV_debug!=1
-    	return
+        return
     endif
     echohl Errormsg
     redraw
@@ -2550,15 +2550,15 @@ function! s:approx2(hex1,hex2,...) "{{{
     let t=exists("a:1") ? a:1 : s:aprx_rate*4
     if r2+t>=r1 && r1>=r2-t && g2+t>=g1 && g1>=g2-t
                 \&& b2+t>=b1 && b1>=b2-t
-    	return 1
+        return 1
     else
-    	return 0
+        return 0
     endif
 
 endfunction "}}}
 function! s:rlt_clr(hex) "{{{
     if has("python") && g:ColorV_no_python!=1
-    	call s:py_core_load()
+        call s:py_core_load()
 python << EOF
 y,i,q=rgb2yiq(hex2rgb(vim.eval("a:hex")))
 if y>=35 and y < 50:
@@ -2568,11 +2568,11 @@ elif y >=50 and y < 65:
 else:
     y = 100-y
 
-if i >0: 
+if i >0:
     i = i-10
 else:
     i+=10
-if q >0: 
+if q >0:
     q = q -10
 else:
     q+=10
@@ -2588,12 +2588,12 @@ EOF
         else
             let y = 100-y
         endif
-        if i >0 
+        if i >0
             let  i = i-10
         else
             let i+=10
         endif
-        if q >0 
+        if q >0
             let  q = q -10
         else
             let q+=10
@@ -2605,11 +2605,11 @@ function! s:opz_clr(hex) "{{{
     let hex=s:fmt_hex(a:hex)
     let [y,i,q]=colorv#hex2yiq(hex)
     if y>=35 && y < 50
-    	let y = 80
+        let y = 80
     elseif y >=50 && y < 65
         let y = 20
     else
-    	let y = 100-y
+        let y = 100-y
     endif
     return colorv#yiq2hex([y,-i,-q])
 endfunction "}}}
@@ -2619,12 +2619,12 @@ if !exists("*".a:func)
     echom "[TIMER]: ".a:func." does not exists. stopped"
     return
 endif
-if exists("a:1") 
+if exists("a:1")
     let farg=a:1
 else
     let farg=[]
 endif
-if exists("a:2") 
+if exists("a:2")
     let num=a:2
 else
     let num=1
@@ -2665,7 +2665,7 @@ function! s:set_in_pos(...) "{{{
     let l=exists("a:1") ? a:1 : line('.')
     let c=exists("a:1") ? a:1 : col('.')
     let [L,C]=[s:pal_H,s:pal_W]
-    
+
     let clr=g:ColorV
     let hex=clr.HEX
     let [r,g,b]=[clr.RGB.R,clr.RGB.G,clr.RGB.B]
@@ -2683,7 +2683,7 @@ function! s:set_in_pos(...) "{{{
         call s:draw_win(hex)
     "}}}
      "{{{ hsv line
-    elseif l==1 &&  c<=s:pal_W 
+    elseif l==1 &&  c<=s:pal_W
         "hue line
         let [h1,s1,v1]=colorv#hex2hsv(s:hueline_list[(c-1)])
         call s:echo("Hue(Hue Line): ".h1)
@@ -2728,17 +2728,17 @@ function! s:set_in_pos(...) "{{{
     "}}}
     "cpd_history section "{{{
     elseif s:mode=="max" && l==s:his_cpd_rect[1] &&
-                \ c>=s:his_cpd_rect[0] 
-                \ && c<=(s:his_cpd_rect[0]+s:his_cpd_rect[2]*18-1)  
+                \ c>=s:his_cpd_rect[0]
+                \ && c<=(s:his_cpd_rect[0]+s:his_cpd_rect[2]*18-1)
         for i in range(18)
             if c<s:his_cpd_rect[0]+s:his_cpd_rect[2]*(i+1)
-            	" let hex=string(get(s:his_cpd_list,-1-i))
-            	if len(s:his_cpd_list)>i
+                " let hex=string(get(s:his_cpd_list,-1-i))
+                if len(s:his_cpd_list)>i
                     let hex_h=s:his_cpd_list[-1-i]
                 else
                     let hex_h="0"
                 endif
-            	if hex_h!="0"
+                if hex_h!="0"
                     call s:echo("HEX(Copied history ".(i)."): ".hex_h)
                     call s:draw_win(hex_h)
                     return
@@ -2758,22 +2758,22 @@ function! s:set_in_pos(...) "{{{
     "set_history section "{{{
     elseif l<=(s:his_set_rect[3]+s:his_set_rect[1]-1)
                 \ && l>=s:his_set_rect[1] &&
-                \ c>=s:his_set_rect[0] && c<=(s:his_set_rect[0]+s:his_set_rect[2]*3-1)  
+                \ c>=s:his_set_rect[0] && c<=(s:his_set_rect[0]+s:his_set_rect[2]*3-1)
         if c<=(s:his_set_rect[0]+s:his_set_rect[2]*1-1)
             let hex=s:his_color0
             call s:echo("HEX(history 0): ".hex)
         elseif c<=(s:his_set_rect[0]+s:his_set_rect[2]*2-1)
             let hex=s:his_color1
             call s:echo("HEX(history 1): ".hex)
-        elseif c<=(s:his_set_rect[0]+s:his_set_rect[2]*3-1) 
+        elseif c<=(s:his_set_rect[0]+s:his_set_rect[2]*3-1)
             let hex=s:his_color2
             call s:echo("HEX(history 2): ".hex)
         endif
         call s:draw_win(hex)
         return
         "}}}
-    else 
-    	"cursoredit check "{{{
+    else
+        "cursoredit check "{{{
         if s:mode=="max"
             let pos_list = s:max_pos
         elseif s:mode=="min"
@@ -2820,11 +2820,11 @@ function! s:edit_at_cursor(...) "{{{
     let c=col('.')
     let l=line('.')
     if s:mode=="max"
-    	let pos_list = s:max_pos
+        let pos_list = s:max_pos
     elseif s:mode=="min"
-    	let pos_list = s:min_pos
+        let pos_list = s:min_pos
     else
-    	let pos_list = s:mid_pos
+        let pos_list = s:mid_pos
     endif
     let position=-1
     for idx in range(len(pos_list))
@@ -2837,13 +2837,13 @@ function! s:edit_at_cursor(...) "{{{
         endif
     endfor
     if position==0 "{{{
-    	if tune==0
+        if tune==0
             let hex=input("Hex(000000~ffffff,000~fff):",g:ColorV.HEX)
             if hex =~ '^\x\{6}$'
                 "do nothing then
             elseif hex =~ '^\x\{3}$'
                 let hex=substitute(hex,'.','&&','g')
-            else 
+            else
                 let l:error_input=1
             endif
         else
@@ -2854,7 +2854,7 @@ function! s:edit_at_cursor(...) "{{{
             let r=input("RED(0~255):",g:ColorV.RGB.R)
             if r =~ '^\d\{,3}$' && r<256 && r>=0 && r!=""
                 let hex = colorv#rgb2hex([r,g,b])
-            else 
+            else
                 let l:error_input=1
             endif
         else
@@ -2867,7 +2867,7 @@ function! s:edit_at_cursor(...) "{{{
             let g=input("GREEN(0~255):",g:ColorV.RGB.G)
             if g =~ '^\d\{,3}$' && g<256 && g>=0 && g!=""
                 let hex = colorv#rgb2hex([r,g,b])
-            else 
+            else
                 let l:error_input=1
             endif
         else
@@ -2880,7 +2880,7 @@ function! s:edit_at_cursor(...) "{{{
             let b=input("BLUE(0~255):",g:ColorV.RGB.B)
             if b =~ '^\d\{,3}$' && b<256 && b>=0 && b!=""
                 let hex = colorv#rgb2hex([r,g,b])
-            else 
+            else
                 let l:error_input=1
             endif
         else
@@ -2894,7 +2894,7 @@ function! s:edit_at_cursor(...) "{{{
                 let H=input("Hue(0~360):",g:ColorV.HLS.H)
                 if H =~ '^\d\{,3}$' && H<=360 && H>=0 && H!=""
                     let hex = colorv#hls2hex([H,L,S])
-                else 
+                else
                     let l:error_input=1
                 endif
             else
@@ -2907,7 +2907,7 @@ function! s:edit_at_cursor(...) "{{{
                 let h=input("Hue(0~360):",g:ColorV.HSV.H)
                 if h =~ '^\d\{,3}$' && h<=360 && h>=0 && h!=""
                     let hex = colorv#hsv2hex([h,s,v])
-                else 
+                else
                     let l:error_input=1
                 endif
             else
@@ -2919,10 +2919,10 @@ function! s:edit_at_cursor(...) "{{{
     elseif position==5
     if s:mode=="min"  && s:space=="hls"
         if tune==0
-            let L=input("Lightness:(0~100):",g:ColorV.HLS.L) 
+            let L=input("Lightness:(0~100):",g:ColorV.HLS.L)
             if L =~ '^\d\{,3}$' && L<=100 && L>=0 && L!=""
                 let hex = colorv#hls2hex([H,L,S])
-            else 
+            else
                 let l:error_input=1
             endif
         else
@@ -2932,10 +2932,10 @@ function! s:edit_at_cursor(...) "{{{
         endif
     else
         if tune==0
-            let s=input("Saturation(0~100):",g:ColorV.HSV.S) 
+            let s=input("Saturation(0~100):",g:ColorV.HSV.S)
             if s =~ '^\d\{,3}$' && s<=100 && s>=0 && s!=""
                 let hex = colorv#hsv2hex([h,s,v])
-            else 
+            else
                 let l:error_input=1
             endif
         else
@@ -2947,10 +2947,10 @@ function! s:edit_at_cursor(...) "{{{
     elseif position==6
     if s:mode=="min"  && s:space=="hls"
         if tune==0
-            let S=input("Saturation(0~100):",g:ColorV.HLS.S) 
+            let S=input("Saturation(0~100):",g:ColorV.HLS.S)
             if S =~ '^\d\{,3}$' && S<=100 && S>=0 && S!=""
                 let hex = colorv#hls2hex([H,L,S])
-            else 
+            else
                 let l:error_input=1
             endif
         else
@@ -2960,10 +2960,10 @@ function! s:edit_at_cursor(...) "{{{
         endif
     else
         if tune==0
-            let v=input("Value:(0~100):",g:ColorV.HSV.V) 
+            let v=input("Value:(0~100):",g:ColorV.HSV.V)
             if v =~ '^\d\{,3}$' && v<=100 && v>=0 && v!=""
                 let hex = colorv#hsv2hex([h,s,v])
-            else 
+            else
                 let l:error_input=1
             endif
         else
@@ -2977,10 +2977,10 @@ function! s:edit_at_cursor(...) "{{{
         return
     elseif position==11
         if tune==0
-            let y=input("YIQ Luma:(0~100):",g:ColorV.YIQ.Y) 
+            let y=input("YIQ Luma:(0~100):",g:ColorV.YIQ.Y)
             if y =~ '^\d\{,3}$' && y<=100 && y>=0 && y!=""
                 let hex = colorv#yiq2hex([y,i,q])
-            else 
+            else
                 let l:error_input=1
             endif
         else
@@ -2990,10 +2990,10 @@ function! s:edit_at_cursor(...) "{{{
         endif
     elseif position==12
         if tune==0
-            let i=input("YIQ In-phase:(-100~100):",g:ColorV.YIQ.I) 
+            let i=input("YIQ In-phase:(-100~100):",g:ColorV.YIQ.I)
             if i =~ '^-\=\d\{,3}$' && i<=100 && i>=-100 && i!=""
                 let hex = colorv#yiq2hex([y,i,q])
-            else 
+            else
                 let l:error_input=1
             endif
         else
@@ -3003,10 +3003,10 @@ function! s:edit_at_cursor(...) "{{{
         endif
     elseif position==13
         if tune==0
-            let q=input("YIQ quadrature:(-100~100):",g:ColorV.YIQ.Q) 
+            let q=input("YIQ quadrature:(-100~100):",g:ColorV.YIQ.Q)
             if q =~ '^-\=\d\{,3}$' && q<=100 && q>=-100 && q!=""
                 let hex = colorv#yiq2hex([y,i,q])
-            else 
+            else
                 let l:error_input=1
             endif
         else
@@ -3019,7 +3019,7 @@ function! s:edit_at_cursor(...) "{{{
                 let H=input("Hue(0~360):",g:ColorV.HLS.H)
                 if H =~ '^\d\{,3}$' && H<=360 && H>=0 && H!=""
                     let hex = colorv#hls2hex([H,L,S])
-                else 
+                else
                     let l:error_input=1
                 endif
             else
@@ -3029,10 +3029,10 @@ function! s:edit_at_cursor(...) "{{{
             endif
     elseif position==9
         if tune==0
-            let L=input("Lightness:(0~100):",g:ColorV.HLS.L) 
+            let L=input("Lightness:(0~100):",g:ColorV.HLS.L)
             if L =~ '^\d\{,3}$' && L<=100 && L>=0 && L!=""
                 let hex = colorv#hls2hex([H,L,S])
-            else 
+            else
                 let l:error_input=1
             endif
         else
@@ -3042,10 +3042,10 @@ function! s:edit_at_cursor(...) "{{{
         endif
     elseif position==10
         if tune==0
-            let S=input("Saturation(0~100):",g:ColorV.HLS.S) 
+            let S=input("Saturation(0~100):",g:ColorV.HLS.S)
             if S =~ '^\d\{,3}$' && S<=100 && S>=0 && S!=""
                 let hex = colorv#hls2hex([H,L,S])
-            else 
+            else
                 let l:error_input=1
             endif
         else
@@ -3053,13 +3053,13 @@ function! s:edit_at_cursor(...) "{{{
             let S= S<0 ? 0 : S> 100 ? 100 :S
             let hex = colorv#hls2hex([H,L,S])
         endif
-    else 
+    else
             return -1
     setl noma
     endif "}}}
 
     if exists("l:error_input") && l:error_input==1
-    	call s:warning("Error input. Nothing changed.")
+        call s:warning("Error input. Nothing changed.")
         return
     endif
     call s:draw_win(hex)
@@ -3074,7 +3074,7 @@ function! s:input_colorname(...) "{{{
         let text = input("Input color name(W3C:Blue/Lime/Red):",pre_colorname)
         let hex=s:nam2hex(text)
     endif
-    
+
     if !empty(hex)
         call s:draw_win(hex)
     else
@@ -3093,7 +3093,7 @@ function! s:input_colorname(...) "{{{
 endfunction "}}}
 function! s:flag_clr(nam) "{{{
     if empty(a:nam)
-    	return 0
+        return 0
     endif
     let clr_list=s:clrf
     for [c1,c2,c3,flg] in clr_list
@@ -3109,7 +3109,7 @@ endfunction "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:py_text_load() "{{{
     if exists("s:py_text_load")
-    	return
+        return
     endif
     let s:py_text_load=1
     call s:py_core_load()
@@ -3117,7 +3117,7 @@ python << EOF
 import re
 fmt={} #{{{
 # XXX \s is weird that can not be captured sometimes. use [ \t] instead
-# XXX '\( \)' will cause unbalance 
+# XXX '\( \)' will cause unbalance
 # XXX and the \( \\) can not catch the ')' . use [(] and [)] instead
 
 fmt['RGB']=re.compile(r'''
@@ -3201,30 +3201,30 @@ fmt['HSVA']=re.compile(r'''
                         ''')
 # (?<![0-9a-fA-F]|0[xX]) is wrong!
 # (?<![0-9a-fA-F])|(?<!0[xX]) is wrong
-# use (?<!([\w#]))              
+# use (?<!([\w#]))
 fmt['HEX']=re.compile(r'''
         (?<!([\w#]))                    #no preceding [0~z] # 0x
         (?P<HEX>[0-9a-fA-F]{6})         #group HEX
         (?!\w)                 #no following [0~z]
-        (?ix) 
+        (?ix)
                         ''')
 fmt['HEX0']=re.compile(r'''
-        0x                              # 0xffffff 
+        0x                              # 0xffffff
         (?P<HEX>[0-9a-fA-F]{6})         #group HEX
         (?!\w)                 #no following [0~f]
-        (?ix) 
+        (?ix)
                         ''')
 fmt['NS6']=re.compile(r'''
         [#]                             # #ffffff
         (?P<HEX>[0-9a-fA-F]{6})         #group HEX
         (?!\w)                 #no following [0~f]
-        (?ix) 
+        (?ix)
                         ''')
 fmt['NS3']=re.compile(r'''
         [#]                             # #ffffff
         (?P<HEX>[0-9a-fA-F]{3})         #group HEX
         (?!\w)                 #no following [0~f]
-        (?ix) 
+        (?ix)
                         ''')
 
 # clr_lst {{{
@@ -3321,7 +3321,7 @@ def name2hex(name,*rule):
             lst=clrn+clrnW3C
         for [nam,clr] in lst:
             # ignore the case
-            if name.lower()==nam.lower():  
+            if name.lower()==nam.lower():
                 return clr
     return 0
 def txt2hex(txt):
@@ -3361,9 +3361,9 @@ EOF
 endfunction "}}}
 function! s:txt2hex(txt) "{{{
     if has("python") && g:ColorV_no_python!=1
-call s:py_text_load()
+        call s:py_text_load()
 python << EOF
-r=txt2hex(vim.eval("a:txt"))
+r = txt2hex(vim.eval("a:txt"))
 vim.command("return "+str(r))
 EOF
     endif
@@ -3372,9 +3372,8 @@ EOF
     let text = a:txt
     let textorigin = a:txt
     let old_list=[]
-    
-    "max search depth 
-    "the max number of searched color text  
+
+    "max search depth
     let rnd=0
     let idx=0
     let hex_list=[]
@@ -3388,7 +3387,7 @@ EOF
                 let p_oidx{idx}=match(textorigin,p_str{idx})
                 let p_len{idx}=len(p_str{idx})
                 let text=strpart(text,0,p_idx{idx})
-                            \.strpart(text,p_len{idx}+p_idx{idx})
+                        \.strpart(text,p_len{idx}+p_idx{idx})
 
                 if fmt=="HEX"
                     let list=[p_str{idx},p_oidx{idx},p_len{idx},p_str{idx},fmt]
@@ -3452,7 +3451,7 @@ EOF
                 let idx+=1
             endif
         endfor
-        if old_list==hex_list        
+        if old_list==hex_list
             break
         else
             let old_list=deepcopy(hex_list,1)
@@ -3464,7 +3463,7 @@ EOF
     return hex_list
 endfunction "}}}
 function! s:hex2txt(hex,fmt,...) "{{{
-    
+
     let hex=printf("%06x","0x".a:hex)
     let hex=substitute(hex,'\l','\u\0','g')
 
@@ -3489,9 +3488,9 @@ function! s:hex2txt(hex,fmt,...) "{{{
         let text="rgb(".rp."%,"
                     \.gp."%,"
                     \.bp."%)"
-    elseif a:fmt=="RGBA" 
+    elseif a:fmt=="RGBA"
         let text="rgba(".r.",".g.",".b.",1.0)"
-    elseif a:fmt=="RGBAP" 
+    elseif a:fmt=="RGBAP"
         let text="rgba(".rp."%,"
                     \.gp."%,"
                     \.bp."%,1.0)"
@@ -3504,7 +3503,7 @@ function! s:hex2txt(hex,fmt,...) "{{{
     elseif a:fmt=="HEX0"
         let text="0x".hex
     elseif a:fmt=="NAME"
-        if exists("a:1") 
+        if exists("a:1")
             let text=s:hex2nam(hex,a:1)
         else
             let text=s:hex2nam(hex)
@@ -3517,15 +3516,15 @@ function! s:hex2txt(hex,fmt,...) "{{{
 endfunction "}}}
 function! s:nam2hex(nam,...) "{{{
     if empty(a:nam)
-    	return 0
+        return 0
     endif
     if exists("a:1") && a:1 == "X11"
-    	let clr_list=s:clrn+s:clrnX11
+        let clr_list=s:clrn+s:clrnX11
     else
-    	let clr_list=s:clrn+s:clrnW3C
+        let clr_list=s:clrn+s:clrnW3C
     endif
     for [nam,clr] in clr_list
-        if a:nam ==? nam   
+        if a:nam ==? nam
             return clr
             break
         endif
@@ -3534,10 +3533,10 @@ function! s:nam2hex(nam,...) "{{{
 endfunction "}}}
 function! s:hex2nam(hex,...) "{{{
 if has("python") && g:ColorV_no_python!=1
-    if exists("a:1") && a:1 == "X11" 
-    	let list="X11"
+    if exists("a:1") && a:1 == "X11"
+        let list="X11"
     else
-    	let list="W3C"
+        let list="W3C"
     endif
 call s:py_text_load()
 python << EOF
@@ -3568,9 +3567,9 @@ else:
 EOF
 else
     if exists("a:1") && a:1 == "X11"
-    	let clr_list=s:clrn+s:clrnX11
+        let clr_list=s:clrn+s:clrnX11
     else
-    	let clr_list=s:clrn+s:clrnW3C
+        let clr_list=s:clrn+s:clrnW3C
     endif
     let best_match=0
     let smallest_distance = 2000000
@@ -3578,19 +3577,19 @@ else
     for lst in clr_list
         let [r2,g2,b2] = colorv#hex2rgb(lst[1])
         let d = abs(r1-r2)+abs(g1-g2)+abs(b1-b2)
-    	if d < smallest_distance
-    	    let smallest_distance = d
-    	    let best_match = lst[0]
+        if d < smallest_distance
+            let smallest_distance = d
+            let best_match = lst[0]
         endif
     endfor
     if smallest_distance == 0
-    	return best_match
+        return best_match
     elseif smallest_distance <= s:aprx_rate*5
-    	return best_match."~"
+        return best_match."~"
     elseif smallest_distance <= s:aprx_rate*10
-    	return best_match."~~"
+        return best_match."~~"
     else
-    	return ""
+        return ""
     endif
 endif
 endfunction "}}}
@@ -3610,8 +3609,8 @@ function! s:paste(...) "{{{
     if len(hex_list)>0
         let hex=hex_list[0][0]
     else
-    	call s:warning("Could not find color in the text") 
-    	return
+        call s:warning("Could not find color in the text")
+        return
     endif
     call s:echo("Set with first color in clipboard. HEX: [".hex."]")
     call s:draw_win(hex)
@@ -3624,7 +3623,7 @@ function! s:copy(...) "{{{
     if string(get(s:his_cpd_list,-1))!=string(g:ColorV.HEX)
         call add(s:his_cpd_list,g:ColorV.HEX)
         if s:mode=="max"
-            call s:draw_history_copy() 
+            call s:draw_history_copy()
         endif
     endif
 
@@ -3645,9 +3644,9 @@ function! s:changing() "{{{
     if exists("s:ColorV.change_word") && s:ColorV.change_word ==1
         let cur_pos=getpos('.')
         let cur_bufname=bufname('%')
-        
+
         " go to the word_buf if not in it
-        if bufname('%') != s:ColorV.word_bufname 
+        if bufname('%') != s:ColorV.word_bufname
                     \|| bufnr('%') != s:ColorV.word_bufnr
             exe s:ColorV.word_bufwinnr."wincmd w"
         endif
@@ -3659,7 +3658,7 @@ function! s:changing() "{{{
             let word = expand('<cword>')
             let lword = expand('<cWORD>')
             let line = getline('.')
-            
+
             "get the from_pattern "{{{
             if s:ColorV.is_in=="word"
                 silent normal! b
@@ -3679,13 +3678,13 @@ function! s:changing() "{{{
                 let s:ColorV.change_all=0
                 return -1
             endif "}}}
-            
+
             "check if Not the origin word "{{{
             if from_pat!= s:ColorV.word_pat
                 call s:error("Doesn't get the right word to change.")
                 return -1
             endif "}}}
-            
+
             "get the to_str "{{{
             if exists("s:ColorV.word_list[0]")
                 let to_hex=g:ColorV.HEX
@@ -3700,7 +3699,7 @@ function! s:changing() "{{{
                 endif
                 let to_str=substitute(to_str,'\~','','g')
                 if empty(to_str)
-                    call s:error("You have choose a color with no 
+                    call s:error("You have choose a color with no
                                 \W3C colorname. Stopped.")
                     return
                 endif
@@ -3708,18 +3707,18 @@ function! s:changing() "{{{
                 call s:error("Don't know what to change to.")
                 let s:ColorV.change_word=0
                 let s:ColorV.change_all=0
-                return 
+                return
             endif "}}}
-            
+
             let idx=s:ColorV.word_list[1]
             let len=s:ColorV.word_list[2]
             let to_pat=substitute(from_pat,'\%'.(idx+1).'c.\{'.len.'}',to_str,'')
 
             if exists("s:ColorV.change_noma")&& s:ColorV.change_noma ==1
-            	setl ma
+                setl ma
             endif
             if exists("s:ColorV.change_all") && s:ColorV.change_all ==1
-            	try
+                try
                     exec '%s/'.from_pat.'/'.to_pat.'/gc'
                 catch /^Vim\%((\a\+)\)\=:E486/
                     call s:debug(from_pat." to:".to_fmt.to_str.to_pat)
@@ -3728,8 +3727,8 @@ function! s:changing() "{{{
                     call s:error("No change to text.'Modifiable' is off.")
                 endtry
             else
-            	try
-                    "change current line 
+                try
+                    "change current line
                     "  XXX: ptn not found if from_pat=line
                     exec '.s/\%>'.(bgn_idx-1).'c'.from_pat.'/'.to_pat.'/'
                 catch /^Vim\%((\a\+)\)\=:E486/
@@ -3741,8 +3740,8 @@ function! s:changing() "{{{
             endif
 
             if exists("s:ColorV.change_noma") && s:ColorV.change_noma ==1
-            	setl noma
-            	unlet s:ColorV.change_noma
+                setl noma
+                unlet s:ColorV.change_noma
             endif
 
         endif
@@ -3750,7 +3749,7 @@ function! s:changing() "{{{
         let s:ColorV.change_all=0
 
         if exists("s:ColorV.change_func")
-            call call(s:ColorV.change_func,[g:ColorV.HEX]) 
+            call call(s:ColorV.change_func,[g:ColorV.HEX])
             unlet s:ColorV.change_func
         endif
         "Back to origin pos
@@ -3777,18 +3776,18 @@ function! colorv#cursor_win(...) "{{{
     let line= getline('.')
     if word !~ '^\s*$'
         let word_list=s:txt2hex(word)
-    else 
-    	let word_list=0
+    else
+        let word_list=0
     endif
     if lword !~ '^\s*$'
         let lword_list=s:txt2hex(lword)
-    else 
-    	let lword_list=0
+    else
+        let lword_list=0
     endif
     if line !~ '^\s*$'
         let line_list=s:txt2hex(line)
-    else 
-    	let line_list=0
+    else
+        let line_list=0
     endif
     if !empty(word_list)
         let s:ColorV.is_in="word"
@@ -3819,8 +3818,8 @@ function! colorv#cursor_win(...) "{{{
     if len(hex_list) >1 "{{{
         let i=0
         for [lhex,idx,len,str,fmt] in hex_list
-            if  s:ColorV.word_col > bgn_idx+idx 
-            \ &&  s:ColorV.word_col < bgn_idx+idx+len 
+            if  s:ColorV.word_col > bgn_idx+idx
+                        \ &&  s:ColorV.word_col < bgn_idx+idx+len
                 let hex=s:fmt_hex(lhex)
                 let s:ColorV.word_list=hex_list[i]
             endif
@@ -3830,18 +3829,18 @@ function! colorv#cursor_win(...) "{{{
             let hex=s:fmt_hex(hex_list[0][0])
             let s:ColorV.word_list=hex_list[0]
         endif
-    else 
+    else
         let hex=s:fmt_hex(hex_list[0][0])
         let s:ColorV.word_list=hex_list[0]
     endif "}}}
 
     if exists("a:1") && a:1==1
         let s:ColorV.change_word=1
-    	let s:ColorV.change_all=0
-    	call s:caution("Will Change [".pat."] after ColorV closed.")
+        let s:ColorV.change_all=0
+        call s:caution("Will Change [".pat."] after ColorV closed.")
     elseif exists("a:1") && a:1==2
         let s:ColorV.change_word=1
-    	let s:ColorV.change_all=1
+        let s:ColorV.change_all=1
         call s:caution("Will Change ALL [".pat."] after ColorV closed.")
     elseif exists("a:1") && a:1==3
         let type=exists("a:2") ? a:2 : ""
@@ -3856,14 +3855,14 @@ function! colorv#cursor_win(...) "{{{
         let s:ColorV.change_word=1
     else
         let s:ColorV.change_word=0
-    	let s:ColorV.change_all=0
+        let s:ColorV.change_all=0
         call colorv#win(s:mode,hex)
         return
     endif
-    
+
     "change2
     if exists("a:1") && (a:1==2 || a:1==1) && exists("a:2")
-            \ && a:2=~'RGB\|RGBA\|RGBP\|RGBAP\|HEX\|HEX0\|NAME\|NS6\|HSV\|HSL'
+                \ && a:2=~'RGB\|RGBA\|RGBP\|RGBAP\|HEX\|HEX0\|NAME\|NS6\|HSV\|HSL'
         let s:ColorV.change2=a:2
     elseif exists("s:ColorV.change2")
         unlet s:ColorV.change2
@@ -3874,17 +3873,17 @@ function! colorv#cursor_win(...) "{{{
         let s:ColorV.change_noma=1
         let s:ColorV.change_func=a:2
     else
-    	if exists("s:ColorV.change_noma")
+        if exists("s:ColorV.change_noma")
             unlet s:ColorV.change_noma
         endif
-    	if exists("s:ColorV.change_func")
+        if exists("s:ColorV.change_func")
             unlet s:ColorV.change_func
         endif
     endif
-    
+
     "pass "s:changing" as exit_func to colorv#win()
     call colorv#win(s:mode,hex,1,"s:changing")
-    
+
 endfunction "}}}
 function! colorv#clear_all() "{{{
     call s:clear_blockmatch()
@@ -3899,11 +3898,11 @@ endfunction "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#list_win(...) "{{{
     call s:open_win(g:ColorV.listname,"v")
-    
+
     " local setting "{{{
     call s:win_setl()
-    setl ft=ColorV_list 
-    
+    setl ft=ColorV_list
+
     nmap <silent><buffer> q :call colorv#exit_list_win()<cr>
     nmap <silent><buffer> Q :call colorv#exit_list_win()<cr>
     nmap <silent><buffer> <c-w>q :call colorv#exit_list_win()<cr>
@@ -3916,7 +3915,7 @@ function! colorv#list_win(...) "{{{
         redraw
     endif
 
-    let list=exists("a:1") && !empty(a:1) ? a:1 : 
+    let list=exists("a:1") && !empty(a:1) ? a:1 :
                 \ [['Color Name List','=======']]+ s:clrn
                 \+[['W3C_Standard','=======']]+s:clrnW3C
                 \+[['X11_Standard','=======']]+s:clrnX11
@@ -3950,23 +3949,23 @@ function! s:draw_list_text(list) "{{{
 endfunction "}}}
 
 function! s:circle_coord_gen(x,y,num) "{{{
-" in    x,y,num
-" out   [[x0,y0],[x1,y1]..]
+    " in    x,y,num
+    " out   [[x0,y0],[x1,y1]..]
     let circle_list = []
     let [x,y,num]= s:float([a:x,a:y,a:num])
     let radus = sqrt(pow(x,2)+pow(y,2))
     let radan = atan(y/x)
-    if y>0 && x>0 
-    	let radan = radan
-    elseif y<0 && x>0 
-    	let radan = radan + 3.14159*2
-    elseif y<0 && x<0 
-    	let radan = radan + 3.14159
-    elseif y>0 && x<0 
-    	let radan = radan + 3.14159
+    if y>0 && x>0
+        let radan = radan
+    elseif y<0 && x>0
+        let radan = radan + 3.14159*2
+    elseif y<0 && x<0
+        let radan = radan + 3.14159
+    elseif y>0 && x<0
+        let radan = radan + 3.14159
     endif
     for i in range(a:num)
-    	let radian{i} =radan+2*3.14159/num*i
+        let radian{i} =radan+2*3.14159/num*i
         let nx{i} = cos(radian{i})*radus
         let ny{i} = sin(radian{i})*radus
         call add(circle_list,[nx{i},ny{i}])
@@ -3982,7 +3981,7 @@ function! colorv#yiq_list_gen(hex,...) "{{{
     let hex=a:hex
     let hex_list=[]
     let type=exists("a:1") && !empty(a:1) ? a:1 : s:gen_def_type
-    let nums=exists("a:2") && !empty(a:2) ? a:2 : s:gen_def_nums 
+    let nums=exists("a:2") && !empty(a:2) ? a:2 : s:gen_def_nums
     let step=exists("a:3") && !empty(a:3) ? a:3 : s:gen_def_step
     let circle=exists("a:4") ? a:4 : 1
     let [y,i,q] = colorv#rgb2yiq(colorv#hex2rgb(hex))
@@ -4238,8 +4237,8 @@ function! s:winlist_generate(hex,...) "{{{
     call add(list,[type.' List','======='])
     let i=0
     for hex in genlist
-    	call add(list,[type.i,hex])
-    	let i+=1
+        call add(list,[type.i,hex])
+        let i+=1
     endfor
 
     return list
@@ -4263,54 +4262,60 @@ endfunction "}}}
 "PREV: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#prev_txt(txt) "{{{
-    if !exists("s:prev_dict")|let s:prev_dict={}|endif
-    let hex_list=s:txt2hex(a:txt)
+    if !exists("s:prev_dict") | let s:prev_dict={} | endif
     let bufnr=bufnr('%')
-    for prv_item in hex_list
-        if prv_item[4]=="NAME"
-            if exists("s:ColorV_view_name") && s:ColorV_view_name==1
-                let hi_ptn='\<'.prv_item[3].'\>'
-            else
-            	continue
-            endif
-        elseif prv_item[4]=="NS6" || prv_item[4]=="NS3" 
-           \|| prv_item[4]=="HEX" || prv_item[4]=="HEX0"
-            let hi_ptn=prv_item[3].'\x\@!'
-        else
-            let hi_ptn=prv_item[3]
-        endif
-        " cv_prv3_ff0000
-        let hi_grp="cv_prv".bufnr."_".prv_item[0]
 
-        if exists("s:ColorV_view_block") && s:ColorV_view_block==1
-            let hi_fg=prv_item[0]
+    let view_name  = exists("s:view_name")  && s:view_name==1 ? 1 : 0
+    let view_block = exists("s:view_block") && s:view_block==1 ? 1 : 0
+
+    let hex_list=s:txt2hex(a:txt)
+
+    for prv_item in hex_list
+        let [hex,idx,len,str,fmt] = prv_item
+        if fmt == "NAME"
+            if view_name == 1
+                let hi_ptn='\<'.str.'\>'
+            else
+                continue
+            endif
+        elseif fmt =~ 'NS6\|NS3\|HEX\|HEX0'
+            let hi_ptn = str.'\x\@!'
         else
-            let hi_fg=s:rlt_clr(prv_item[0])
+            let hi_ptn = str
         endif
-        try 
+
+        " cv_prv3_ff0000_NS6
+        let hi_grp="cv_prv".bufnr."_".hex."_".fmt
+        let hi_fg = view_block==1 ? hex : s:rlt_clr(hex)
+
+        " if does not exists in dict. then hi and add.
+        " if exists , not hi it again.
+        try
             let hi_ptn_a=substitute(hi_ptn,'\W',"_","g")
             if !exists("s:prev_dict['".hi_ptn_a."']")
-                call colorv#hi_color(hi_grp,hi_fg,prv_item[0])
+                call colorv#hi_color(hi_grp,hi_fg,hex)
                 let s:prev_dict[hi_ptn_a]= matchadd(hi_grp,hi_ptn)
             endif
         catch /^Vim\%((\a\+)\)\=:E254/
-            call s:debug("E254:Unknow colorname")
+            call s:debug("E254: Could not hi color:".str)
+            continue
         endtry
+
     endfor
 endfunction "}}}
 function! colorv#preview(...) "{{{
 "parse each line with color format text
 "then highlight the color text
-    call s:clear_prevmatch()
+    " call s:clear_prevmatch()
     if exists("a:1") && a:1 =~ "N"
-    	let s:ColorV_view_name=0
+        let s:view_name=0
     else
-    	let s:ColorV_view_name=g:ColorV_view_name
+        let s:view_name=g:ColorV_view_name
     endif
     if exists("a:1") && a:1 =~ "B"
-        let s:ColorV_view_block=1
+        let s:view_block=1
     else
-        let s:ColorV_view_block=g:ColorV_view_block
+        let s:view_block=g:ColorV_view_block
     endif
     if exists("a:1") && a:1 =~ "S"
         let silent=1
@@ -4325,10 +4330,25 @@ import time
 import vim
 o_t=time.time()
 EOF
+else
+    let o_t = localtime()
 endif
-    let file_lines=getline(1,line('$'))
+    if line('$') >= 1000
+        let cur = line('.')
+        if cur > 200
+            let begin = cur-200
+            let end = cur+200
+        else
+            let begin = 1
+            let end = 400
+        endif
+    else
+        let begin = 1
+        let end = line('$')
+    endif
+    let file_lines=getline(begin,end)
     for i in range(len(file_lines))
-        let line=file_lines[i]
+        let line = file_lines[i]
         call colorv#prev_txt(line)
     endfor
 if has("python") && g:ColorV_no_python!=1
@@ -4336,17 +4356,20 @@ python << EOF
 n_t=time.time()
 vim.command("let t_t ="+str(n_t - o_t))
 EOF
+else
+    let n_t = localtime()
+    let t_t = n_t-o_t
 endif
     if exists("t_t") && silent==0
-        call s:echo(line('$')." lines previewed."
+        call s:echo((end-begin)." lines previewed."
                     \."Takes ". string(t_t) . " sec." )
     elseif  silent==0
-        call s:echo(line('$')." lines previewed")
+        call s:echo((end-begin)." lines previewed")
     endif
 
 
-    let s:ColorV_view_block=g:ColorV_view_block
-    let s:ColorV_view_name=g:ColorV_view_name
+    let s:view_block=g:ColorV_view_block
+    let s:view_name=g:ColorV_view_name
 endfunction "}}}
 function! colorv#preview_line(...) "{{{
     "if not clear then prev line in a previewed file will change nothing.
@@ -4354,23 +4377,23 @@ function! colorv#preview_line(...) "{{{
         call s:clear_prevmatch()
     endif
     if exists("a:1") && a:1 =~ "N"
-    	let s:ColorV_view_name=0
+        let s:view_name=0
     else
-    	let s:ColorV_view_name=g:ColorV_view_name
+        let s:view_name=g:ColorV_view_name
     endif
     if exists("a:1") && a:1 =~ "B"
-        let s:ColorV_view_block=1
+        let s:view_block=1
     else
-        let s:ColorV_view_block=g:ColorV_view_block
+        let s:view_block=g:ColorV_view_block
     endif
     if exists("a:2") && a:2 >0  && a:2 <= line('$')
-    	let line = getline(a:2)
+        let line = getline(a:2)
     else
         let line=getline('.')
     endif
     call colorv#prev_txt(line)
-    let s:ColorV_view_name=g:ColorV_view_name
-    let s:ColorV_view_block=g:ColorV_view_block
+    let s:view_name=g:ColorV_view_name
+    let s:view_block=g:ColorV_view_block
 endfunction "}}}
 "}}}
 "INIT: "{{{1
@@ -4379,13 +4402,13 @@ function! s:write_cache() "{{{
     let CacheStringList = []
     let file = g:ColorV_cache_File
     if len(s:his_cpd_list) < 18
-    	let list = deepcopy(s:his_cpd_list[0:-1])
+        let list = deepcopy(s:his_cpd_list[0:-1])
     else
-    	let list = deepcopy(s:his_cpd_list[-18:-1])
+        let list = deepcopy(s:his_cpd_list[-18:-1])
     endif
     let his_txt="HISTORY_COPY\t"
     for hex in list
-    	let his_txt .= " ".hex
+        let his_txt .= " ".hex
     endfor
     call add(CacheStringList,his_txt)
     call writefile(CacheStringList,file)
@@ -4393,12 +4416,12 @@ endfunction "}}}
 function! s:load_cache() "{{{
     let file = g:ColorV_cache_File
     if !filereadable(file)
-    	call s:error("Could NOT read cache file. Stopped.")
+        call s:error("Could NOT read cache file. Stopped.")
     else
         let CacheStringList = readfile(file)
         for i in CacheStringList
-            if i =~ 'HISTORY_COPY' 
-            	let txt=matchstr(i,'HISTORY_COPY\s*\zs.*\ze$')
+            if i =~ 'HISTORY_COPY'
+                let txt=matchstr(i,'HISTORY_COPY\s*\zs.*\ze$')
                 let his_list = split(txt,'\s')
             endif
         endfor
@@ -4406,7 +4429,7 @@ function! s:load_cache() "{{{
             let s:his_cpd_list=deepcopy(his_list)
         endif
     endif
-    
+
 endfunction "}}}
 if g:ColorV_load_cache==1 "{{{
     call <SID>load_cache()
