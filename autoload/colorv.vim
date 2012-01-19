@@ -2616,7 +2616,7 @@ endfunction "}}}
 
 function! colorv#timer(func,...) "{{{
 if !exists("*".a:func)
-    echom "[TIMER]: ".a:func." does not exists. stopped"
+    call s:debug("[TIMER]: ".a:func." does not exists. stopped")
     return
 endif
 if exists("a:1")
@@ -2658,6 +2658,17 @@ echom "[TIMER]:" string(n_t-o_t) "seconds for exec" a:func num "times. "
 
 return rtn
 endfunction "}}}
+function! s:time()
+if has("python") 
+python << EOF
+import time
+import vim
+vim.command("return "+str(time.time()))
+EOF
+else
+    return localtime()
+endif
+endfunction
 "}}}
 "EDIT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -4304,96 +4315,72 @@ function! colorv#prev_txt(txt) "{{{
     endfor
 endfunction "}}}
 function! colorv#preview(...) "{{{
-"parse each line with color format text
-"then highlight the color text
-    " call s:clear_prevmatch()
-    if exists("a:1") && a:1 =~ "N"
-        let s:view_name=0
-    else
-        let s:view_name=g:ColorV_view_name
-    endif
-    if exists("a:1") && a:1 =~ "B"
-        let s:view_block=1
-    else
-        let s:view_block=g:ColorV_view_block
-    endif
-    if exists("a:1") && a:1 =~ "S"
-        let silent=1
-    else
-        let silent=0
+
+    let s:view_name=g:ColorV_view_name
+    let s:view_block=g:ColorV_view_block
+    let silent=0
+    if exists("a:1")
+        " N-> noname B->noblock S->nosilence
+        " n-> name_ b->block s->silence
+        let s:view_name = a:1=~"N" ? 0 : a:1=~"n" ? 1 : s:view_name
+        let s:view_block = a:1=~"B" ? 0 : a:1=~"b" ? 1 : s:view_block
+        let silent = a:1=~"S" ? 0 : a:1=~"s" ? 1 : silent
     endif
 
-"python timer.
-if has("python") && g:ColorV_no_python!=1
-python << EOF
-import time
-import vim
-o_t=time.time()
-EOF
-else
-    let o_t = localtime()
-endif
-    if line('$') >= 1000
-        let cur = line('.')
-        if cur > 200
-            let begin = cur-200
-            let end = cur+200
-        else
+    let o_time = s:time()
+    " if file > 300 line, preview 200 line around cursor.
+    let cur = line('.')
+    let lst = line('$')
+    if lst >= 300
+        if cur < 200
             let begin = 1
-            let end = 400
+            let end = 200
+        elseif cur > lst-200
+            let begin = lst-200
+            let end = lst
+        else
+            let begin = cur-100
+            let end = cur+100
         endif
     else
         let begin = 1
-        let end = line('$')
+        let end = lst
     endif
-    let file_lines=getline(begin,end)
+    let file_lines = getline(begin,end)
     for i in range(len(file_lines))
         let line = file_lines[i]
         call colorv#prev_txt(line)
     endfor
-if has("python") && g:ColorV_no_python!=1
-python << EOF
-n_t=time.time()
-vim.command("let t_t ="+str(n_t - o_t))
-EOF
-else
-    let n_t = localtime()
-    let t_t = n_t-o_t
-endif
-    if exists("t_t") && silent==0
-        call s:echo((end-begin)." lines previewed."
-                    \."Takes ". string(t_t) . " sec." )
-    elseif  silent==0
-        call s:echo((end-begin)." lines previewed")
+    let total_time = s:time() - o_time
+
+    if !silent
+        call s:echo( (end-begin)." lines previewed."
+            \."Takes ". total_time . " sec." )
     endif
-
-
-    let s:view_block=g:ColorV_view_block
-    let s:view_name=g:ColorV_view_name
 endfunction "}}}
 function! colorv#preview_line(...) "{{{
-    "if not clear then prev line in a previewed file will change nothing.
-    if !exists("a:1") || a:1 !~ "C"
-        call s:clear_prevmatch()
-    endif
-    if exists("a:1") && a:1 =~ "N"
-        let s:view_name=0
-    else
-        let s:view_name=g:ColorV_view_name
-    endif
-    if exists("a:1") && a:1 =~ "B"
-        let s:view_block=1
-    else
-        let s:view_block=g:ColorV_view_block
-    endif
-    if exists("a:2") && a:2 >0  && a:2 <= line('$')
-        let line = getline(a:2)
-    else
-        let line=getline('.')
-    endif
-    call colorv#prev_txt(line)
+
     let s:view_name=g:ColorV_view_name
     let s:view_block=g:ColorV_view_block
+    if exists("a:1")
+        " N-> noname B->noblock C->noclear
+        " n-> name b->block c->clear
+        let s:view_name = a:1=~"N" ? 0 : a:1=~"n" ? 1 : s:view_name
+        let s:view_block = a:1=~"B" ? 0 : a:1=~"b" ? 1 : s:view_block
+        "if not clear then prev line in a previewed file will change nothing.
+        if a:1 =~ "c"
+            call s:clear_prevmatch()
+        endif
+    endif
+
+    " a:2 the line num to parse
+    if exists("a:2") && a:2 > 0  && a:2 <= line('$')
+        let line = getline(a:2)
+    else
+        let line = getline('.')
+    endif
+
+    call colorv#prev_txt(line)
 endfunction "}}}
 "}}}
 "INIT: "{{{1
@@ -4441,8 +4428,8 @@ endif "}}}
 if g:ColorV_prev_css==1 "{{{
     aug colorv_auto_prev
         au!
-        au! BufWinEnter *.css call colorv#preview("S")
-        au! bufwritepost *.css call colorv#preview("S")
+        au! BufWinEnter *.css call colorv#preview("s")
+        au! bufwritepost *.css call colorv#preview("s")
     aug END
 endif "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
