@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2012-01-19
+" Last Update: 2012-01-20
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -2172,6 +2172,8 @@ function! s:map_define() "{{{
     nmap <silent><buffer> = :call <SID>edit_at_cursor(-1,"+")<cr>
     nmap <silent><buffer> + :call <SID>edit_at_cursor(-1,"+")<cr>
     nmap <silent><buffer> - :call <SID>edit_at_cursor(-1,"-")<cr>
+    nmap <silent><buffer> <ScrollWheelUp> :call <SID>edit_at_cursor(-1,"+")<cr>
+    nmap <silent><buffer> <ScrollWheelDown> :call <SID>edit_at_cursor(-1,"-")<cr>
     " nmap <silent><buffer> _ :call <SID>edit_at_cursor(-1,"-")<cr>
 
     "edit name
@@ -3886,13 +3888,13 @@ function! colorv#list_and_colorv(...) "{{{
     call s:go_buffer_win(g:ColorV.listname)
 endfunction "}}}
 function! s:draw_list_buf(list) "{{{
-    setl ma
     let list=a:list
+    setl ma
     call s:clear_list_text()
     call s:draw_list_text(list)
-    "preview without highlight colorname
-    call colorv#preview("N")
     setl noma
+    "preview without highlight colorname
+    call colorv#preview("Nc")
 endfunction "}}}
 function! s:draw_list_text(list) "{{{
     let list=a:list
@@ -4222,8 +4224,8 @@ function! colorv#prev_txt(txt) "{{{
     if !exists("s:prev_dict") | let s:prev_dict={} | endif
     let bufnr=bufnr('%')
 
-    let view_name  = exists("s:view_name")  && s:view_name==1 ? 1 : 0
-    let view_block = exists("s:view_block") && s:view_block==1 ? 1 : 0
+    let view_name  = exists("b:view_name")  && b:view_name==1 ? 1 : 0
+    let view_block = exists("b:view_block") && b:view_block==1 ? 1 : 0
 
     let hex_list=s:txt2hex(a:txt)
 
@@ -4262,15 +4264,18 @@ function! colorv#prev_txt(txt) "{{{
 endfunction "}}}
 function! colorv#preview(...) "{{{
 
-    let s:view_name=g:ColorV_view_name
-    let s:view_block=g:ColorV_view_block
+    let b:view_name=g:ColorV_view_name
+    let b:view_block=g:ColorV_view_block
     let silent=0
     if exists("a:1")
         " N-> noname B->noblock S->nosilence
         " n-> name_ b->block s->silence
-        let s:view_name = a:1=~"N" ? 0 : a:1=~"n" ? 1 : s:view_name
-        let s:view_block = a:1=~"B" ? 0 : a:1=~"b" ? 1 : s:view_block
-        let silent = a:1=~"S" ? 0 : a:1=~"s" ? 1 : silent
+        let b:view_name = a:1=~#"N" ? 0 : a:1=~#"n" ? 1 : b:view_name
+        let b:view_block = a:1=~#"B" ? 0 : a:1=~#"b" ? 1 : b:view_block
+        let silent = a:1=~#"S" ? 0 : a:1=~#"s" ? 1 : silent
+        if a:1 =~# "c"
+            call s:clear_prevmatch()
+        endif
     endif
 
     let o_time = s:time()
@@ -4296,14 +4301,14 @@ function! colorv#preview(...) "{{{
 endfunction "}}}
 function! colorv#preview_line(...) "{{{
 
-    let s:view_name=g:ColorV_view_name
-    let s:view_block=g:ColorV_view_block
+    let b:view_name=g:ColorV_view_name
+    let b:view_block=g:ColorV_view_block
     if exists("a:1")
         " N-> noname B->noblock C->noclear
         " n-> name b->block c->clear
-        let s:view_name = a:1=~"N" ? 0 : a:1=~"n" ? 1 : s:view_name
-        let s:view_block = a:1=~"B" ? 0 : a:1=~"b" ? 1 : s:view_block
-        if a:1 =~ "c"
+        let b:view_name = a:1=~#"N" ? 0 : a:1=~#"n" ? 1 : b:view_name
+        let b:view_block = a:1=~#"B" ? 0 : a:1=~#"b" ? 1 : b:view_block
+        if a:1 =~# "c"
             call s:clear_prevmatch()
         endif
     endif
@@ -4353,18 +4358,17 @@ function! s:load_cache() "{{{
     endif
 
 endfunction "}}}
+
 if g:ColorV_load_cache==1 "{{{
     call <SID>load_cache()
     aug colorv_cache
-        au!
-        au VIMLEAVEPre * call <SID>write_cache()
+        au! VIMLEAVEPre * call <SID>write_cache()
     aug END
 endif "}}}
 if g:ColorV_prev_css==1 "{{{
     aug colorv_auto_prev
-        au!
-        au! BufWinEnter *.css call colorv#preview("s")
-        au! bufwritepost *.css call colorv#preview("s")
+        au!  BufWinEnter *.css call colorv#preview()
+        au!  bufwritepost *.css call colorv#preview()
     aug END
 endif "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
