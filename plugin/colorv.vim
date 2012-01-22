@@ -1,9 +1,9 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  Script: ColorV 
 "    File: plugin/colorv.vim
-" Summary: A vim plugin for dealing with colors. 
-"  Author: Rykka.Krin <Rykka.Krin(at)gmail.com>
-" Last Update: 2012-01-19
+" Summary: A Color tool in Vim
+"  Author: Rykka10 <Rykka10(at)gmail.com>
+" Last Update: 2012-01-22
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -28,8 +28,8 @@ command! -nargs=0  ColorVlist call colorv#list_win()
 command! -nargs=+  ColorVlistgen call colorv#cursor_win(3,<f-args>)
 
 command! -nargs=0  ColorVview call colorv#preview()
-command! -nargs=0  ColorVviewblock call colorv#preview("b")
-command! -nargs=0  ColorVviewline call colorv#preview_line()
+command! -nargs=0  ColorVviewblock call colorv#preview("bc")
+command! -nargs=0  ColorVviewline call colorv#preview_line("c")
 
 command! -nargs=0  ColorVdropper call colorv#dropper()
 
@@ -63,11 +63,12 @@ function! colorv#define_global() "{{{
                 \{'key': '2h' , 'cmd': ':ColorVsub2 HSV<CR>'},         
                 \{'key': '2n' , 'cmd': ':ColorVsub2 NAME<CR>'},         
                 \{'key': '2r' , 'cmd': ':ColorVsub2 RGB<CR>'},         
+                \{'key': '2m' , 'cmd': ':ColorVsub2 CMYK<CR>'},         
                 \{'key': '2p' , 'cmd': ':ColorVsub2 RGBP<CR>'},         
                 \{'key': '2l' , 'cmd': ':ColorVsub2 HSL<CR>'},         
                 \{'keys': ['2s','2#'] , 'cmd': ':ColorVsub2 NS6<CR>'},         
                 \{'key': '2l' , 'cmd': ':ColorVsub2 HSL<CR>'},         
-                \{'key': 'gh' , 'cmd': ':ColorVlistgen Hue 20 15<CR>'},         
+                \{'keys': ['g1', 'gh'] , 'cmd': ':ColorVlistgen Hue 20 15<CR>'},         
                 \{'key': 'gs' , 'cmd': ':ColorVlistgen Saturation 20 15<CR>'},         
                 \{'key': 'gv' , 'cmd': ':ColorVlistgen Value 20 5 1<CR>'},         
                 \{'key': 'ga' , 'cmd': ':ColorVlistgen Analogous<CR>'},         
@@ -75,7 +76,7 @@ function! colorv#define_global() "{{{
                 \{'key': 'gn' , 'cmd': ':ColorVlistgen Neutral<CR>'},         
                 \{'key': 'gc' , 'cmd': ':ColorVlistgen Clash<CR>'},         
                 \{'key': 'gp' , 'cmd': ':ColorVlistgen Split-Complementary<CR>'},         
-                \{'keys': ['g1','gm'] , 'cmd': ':ColorVlistgen Monochromatic<CR>'},         
+                \{'key': 'gm' , 'cmd': ':ColorVlistgen Monochromatic<CR>'},         
                 \{'key': 'g2' , 'cmd': ':ColorVlistgen Complementary<CR>'},         
                 \{'key': 'g3' , 'cmd': ':ColorVlistgen Triadic<CR>'},         
                 \{'key': 'g4' , 'cmd': ':ColorVlistgen Tetradic<CR>'},         
