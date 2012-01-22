@@ -7,3 +7,7 @@
 
     To Start: 
         :ColorV
+
+    Screenshot: http://rykka.is-programmer.com/posts/31819
+
+    Post issues at https://github.com/Rykka/ColorV/issues 
