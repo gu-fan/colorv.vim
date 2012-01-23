@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2012-01-22
+" Last Update: 2012-01-23
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -850,8 +850,8 @@ function! colorv#hex2term(hex,...) "{{{
             elseif (&t_Co<=16 && a:1=="CHECK") || a:1==16
                 py vim.command("return "+str(hex2term16(vim.eval("a:hex"))))
             endif
-            py vim.command("return "+str(hex2term(vim.eval("a:hex"))))
         endif
+            py vim.command("return "+str(hex2term(vim.eval("a:hex"))))
     else
         if exists("a:1")
             if (&t_Co<=8 && a:1==#"CHECK") || a:1==8
@@ -859,8 +859,8 @@ function! colorv#hex2term(hex,...) "{{{
             elseif (&t_Co<=16 && a:1=="CHECK") || a:1==16
                 return s:v_hex2term16(a:hex)
             endif
-            return s:hex2term(a:hex)
         endif
+            return s:hex2term(a:hex)
     endif
 endfunction "}}}
 
