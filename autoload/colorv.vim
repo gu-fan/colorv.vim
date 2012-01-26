@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2012-01-23
+" Last Update: 2012-01-26
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -137,7 +137,8 @@ let s:hlp_d = {
 let s:tips_list=[
             \'Move:Click/<Tab>/hjkl...',
             \'Edit:<2-Click>/<2-Space>/Ctrl-K/Ctrl-J/<Enter>/<KEnter>',
-            \'Yank(reg"): yy:HEX yr:RGB yl:HSL ym:CMYK ...  Copy(reg+) cc:...',
+            \'Yank(reg"): yy:HEX yr:RGB yl:HSL ym:CMYK ',
+            \'Copy(reg+): cy:HEX cr:RGB cl:HSL cm:CMYK ',
             \'Paste:<Ctrl-V>/p (Show pasted color in ColorV window)',
             \'Colorname(W3C):na/ne       (X11):nx',
             \'Colorlist: g1:Hue/g2/g3/g4/g5/g6/gh/gs/gv...',
