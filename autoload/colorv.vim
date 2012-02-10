@@ -5,17 +5,13 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2012-01-26
+" Last Update: 2012-02-10
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
-
-if version < 700
-    finish
-else
-    let g:ColorV_loaded = 1
+if version < 700 | finish
+else             | let g:ColorV_loaded = 1
 endif
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "GVAR: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -73,7 +69,6 @@ let g:ColorV.hls=[0,50,100]
 let g:ColorV.yiq=[30,60,21]
 let g:ColorV.hsv=[0,100,100]
 let g:ColorV.NAME="Red"
-"}}}
 "SVAR: {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:ColorV={}
@@ -316,7 +311,6 @@ if !exists("s:hsv_dict") |let s:hsv_dict={} |endif
 if !exists("s:prev_dict")|let s:prev_dict={}|endif
 if !exists("s:pal_dict") |let s:pal_dict={} |endif
 "}}}
-"}}}
 "CORE: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:py_core_load() "{{{
@@ -427,11 +421,11 @@ function! colorv#rgb2hex(rgb)   "{{{
     let r= r>255 ? 255 : r<0 ? 0 : r
     let g= g>255 ? 255 : g<0 ? 0 : g
     let b= b>255 ? 255 : b<0 ? 0 : b
-   return printf("%02X%02X%02X",r,g,b)
+    return printf("%02X%02X%02X",r,g,b)
 endfunction "}}}
 function! colorv#hex2rgb(hex) "{{{
-   let hex=s:fmt_hex(a:hex)
-   return [str2nr(hex[0:1],16),str2nr(hex[2:3],16),str2nr(hex[4:5],16)]
+    let hex=s:fmt_hex(a:hex)
+    return [str2nr(hex[0:1],16),str2nr(hex[2:3],16),str2nr(hex[4:5],16)]
 endfunction "}}}
 
 function! colorv#rgb2hsv(rgb)  "{{{
@@ -452,7 +446,7 @@ function! colorv#rgb2hsv(rgb)  "{{{
         let V=max
         let S= V==0 ? 0 : df/max
         let H = max==min ? 0 : max==r ? 60.0*(g-b)/df :
-            \(max==g ? 120+60.0*(b-r)/df : 240+60.0*(r-g)/df)
+                    \(max==g ? 120+60.0*(b-r)/df : 240+60.0*(r-g)/df)
         let H=round(H<0?s:fmod(H,360.0)+360:(H>=360?s:fmod(H,360.0) : H))
         return s:number([H,round(S*100),round(V*100)])
     endif
@@ -752,7 +746,7 @@ function! colorv#cmyk2rgb(cmyk) "{{{
     return s:number([round((1-C)*255),round((1-M)*255),round((1-Y)*255)])
 endfunction "}}}
 
-"TERMINAL
+"Terminal
 function! s:py_term_load() "{{{
     if exists("s:py_term_loaded")
         return
@@ -931,7 +925,6 @@ function! s:v_hex2term16(hex) "{{{
     return best_match
 endfunction "}}}
 
-"}}}
 "DRAW: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:py_draw_load() "{{{
@@ -1529,7 +1522,6 @@ function! s:clear_match(c) "{{{
     let s:{a:c}_dict={}
 endfunction "}}}
 
-"}}}
 "WINS: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#win(...) "{{{
@@ -1938,7 +1930,6 @@ if gtk:
 EOF
 endfunction "}}}
 
-"}}}
 "MATH: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:fmod(x,y) "{{{
@@ -2063,7 +2054,6 @@ function! s:random(min,max) "{{{
     let s:seed=s:fmod((20907*s:seed+17343),104530)
     return s:fmod(s:seed,a:max-a:min+1)+a:min
 endfunction "}}}
-"1}}}
 "HELP: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:matchadd(grp,ptn,...) "{{{
@@ -2307,7 +2297,6 @@ function! colorv#timer(func,...) "{{{
 
     return rtn
 endfunction "}}}
-"}}}
 "EDIT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:set_in_pos() "{{{
@@ -2560,7 +2549,6 @@ function! s:flag_clr(nam) "{{{
     endfor
     return 0
 endfunction "}}}
-"}}}
 "TEXT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:py_text_load() "{{{
@@ -3313,13 +3301,12 @@ function! colorv#clear_all() "{{{
     call s:clear_match("prev")
     call clearmatches()
 endfunction "}}}
-"}}}
 "LIST: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#list_win(...) "{{{
     call s:open_win(g:ColorV.listname,"v")
 
-    " local setting "{{{
+    " local setting 
     call s:win_setl()
     setl ft=ColorV_list
 
@@ -3672,7 +3659,6 @@ function! colorv#gen_win(hex,...) "{{{
     " call colorv#win(s:mode)
     call s:go_buffer_win(g:ColorV.listname)
 endfunction "}}}
-"1}}}
 "PREV: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#prev_txt(txt) "{{{
@@ -3750,7 +3736,7 @@ function! colorv#preview(...) "{{{
 
     if !silent
         call s:echo( (end-begin)." lines previewed."
-            \."Takes ". string(s:time() - o_time). " sec." )
+                    \."Takes ". string(s:time() - o_time). " sec." )
     endif
 endfunction "}}}
 function! colorv#preview_line(...) "{{{
@@ -3776,7 +3762,6 @@ function! colorv#preview_line(...) "{{{
 
     call colorv#prev_txt(line)
 endfunction "}}}
-"}}}
 "INIT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:write_cache() "{{{
@@ -3825,7 +3810,7 @@ if g:ColorV_prev_css==1 "{{{
     aug END
 endif "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"}}}
+"}}}1
 let &cpo = s:save_cpo
 unlet s:save_cpo
 " vim:tw=78:fdm=marker:
