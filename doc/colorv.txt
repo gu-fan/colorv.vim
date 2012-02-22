@@ -366,7 +366,7 @@ COLORINFO                                            *colorv-colorinfo*
     Same S and V in HSV and HLS colors space don't result same lumination.
     e.g:
     Blue(0000ff) and Yellow(ffff00) both '100' in S and V
-    but the lumination differs obviously.
+    but their lumination differs obviously.
     Their Y(luma) in YIQ colorspace are '89'(yellow) and '11'(blue)
 
     See YIQ http://en.wikipedia.org/wiki/YIQ
@@ -510,7 +510,7 @@ MAPPINGS                                            *colorv-mappings*
     caa         Copy RGBA format 'rgba(255,255,255,255)' into register+
     cap         Copy RGBAP format 'rgba(100%,100%,100%.100%)' into register+
     cn          Copy NAM format 'white' into register+
-    ch          opy HSV format 'hsv(360,100,100)' into register+
+    ch          Copy HSV format 'hsv(360,100,100)' into register+
     cl          Copy HSV format 'hsl(360,100,100)' into register+
     cm          Copy CMYK format 'cmyk(1.00,1.00,1.001.00)' into register+
 
@@ -871,8 +871,8 @@ DEVELOPER                                             *colorv-developer*
 DEPENDENCIES                                        *colorv-dependencies*
 
     - Vim 7.0 or higher.
-    - python 2.7 for the best. Other versions may have bugs.
     - pyGTK ColorPicker: Requires +python and pygtk2.0.
+    - python 2.7 for the best. Other versions may have bugs.
 ==============================================================================
 CHANGELOG                                           *colorv-changelog* 
 
