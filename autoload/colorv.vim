@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2012-02-10
+" Last Update: 2012-02-22
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -1223,7 +1223,6 @@ function! s:hi_link(from,to) "{{{
 endfunction "}}}
 function! s:update_his_set(hex) "{{{
     let hex= s:fmt_hex(a:hex)
-    " update history_set
 
     if exists("s:skip_his_block") && s:skip_his_block==1
         let s:skip_his_block=0
@@ -1618,20 +1617,13 @@ function! s:go_buffer_win(name) "{{{
 endfunction "}}}
 function! s:win_setl() "{{{
     " local setting
-    setl buftype=nofile
-    setl winfixwidth
-    setl nocursorline nocursorcolumn
-    setl bufhidden=delete
-    setl nolist
+    setl buftype=nofile bufhidden=delete nobuflisted
     setl noswapfile
-    setl nobuflisted
-    setl nowrap
-    setl nofoldenable
-    setl nomodeline
-    setl nonumber
-    setl noea
-    setl tw=0
-    setl foldcolumn=0
+    setl winfixwidth noea
+    setl nocursorline nocursorcolumn
+    setl nolist nowrap
+    setl nofoldenable nonumber foldcolumn=0
+    setl tw=0 nomodeline
     setl sidescrolloff=0
     if v:version >= 703
         setl cc=
@@ -1652,8 +1644,7 @@ function! s:draw_win(hex) "{{{
 
     let hex= s:fmt_hex(a:hex)
 
-    setl ma
-    setl lz
+    setl ma lz
     if g:ColorV_debug==1 "{{{
         call colorv#timer("s:update_his_set",[hex])
         call colorv#timer("s:update_global",[hex])
@@ -1732,11 +1723,10 @@ function! s:draw_win(hex) "{{{
         execute 'resize' l:win_h
         redraw
     endif
-    setl nolz
-    setl noma
+    setl nolz noma
 endfunction "}}}
 function! s:aug_init() "{{{
-    aug colorV_hide
+    aug colorv#cursor
         au!
         autocmd CursorMoved,CursorMovedI <buffer>  call s:on_cursor_moved()
     aug END
@@ -2392,19 +2382,24 @@ function! s:set_in_pos() "{{{
             setl ma
             call s:draw_text()
             setl noma
+            call s:echo("generating color space is 'hsv'")
         elseif char =~ 'H'
             let g:ColorV_gen_space = "yiq"
             setl ma
             call s:draw_text()
             setl noma
+            call s:echo("generating color space is 'yiq'")
         elseif char =~ 'V'
             let g:ColorV_win_space = "hls"
             call colorv#win()
+            call s:echo("pallette color space is 'hls'")
         elseif char =~ 'L'
             let g:ColorV_win_space = "hsv"
             call colorv#win()
+            call s:echo("pallette color space is 'hsv'")
         elseif char =~ '[Mm-]'
             call s:mode_toggle()
+            call s:echo("window mode is ".s:mode)
         endif "}}}
     "set_history section "{{{
     elseif l<=(rs_h+rs_y-1)  && l>=rs_y &&  c>=rs_x && c<=(rs_x+rs_w*3-1)
@@ -3799,14 +3794,14 @@ endfunction "}}}
 
 if g:ColorV_load_cache==1 "{{{
     call <SID>load_cache()
-    aug colorv_cache
+    aug colorv#cache
         au! VIMLEAVEPre * call <SID>write_cache()
     aug END
 endif "}}}
 if g:ColorV_prev_css==1 "{{{
-    aug colorv_auto_prev
+    aug colorv#auto_prev
         au!  BufWinEnter *.css call colorv#preview()
-        au!  bufwritepost *.css call colorv#preview()
+        au!  BufWritePost *.css call colorv#preview()
     aug END
 endif "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
