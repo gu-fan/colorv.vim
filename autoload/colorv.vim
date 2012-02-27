@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2012-02-22
+" Last Update: 2012-02-27
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -136,6 +136,7 @@ let s:tips_list=[
             \'Copy(reg+): cy:HEX cr:RGB cl:HSL cm:CMYK ',
             \'Paste:<Ctrl-V>/p (Show pasted color in ColorV window)',
             \'Colorname(W3C):na/ne       (X11):nx',
+            \'ColornameList: :ColorVList (<leader>cl)',
             \'Colorlist: g1:Hue/g2/g3/g4/g5/g6/gh/gs/gv...',
             \'Preview Buffer: :ColorVview (<leader>cpp) ',
             \'Edit color in Buffer: :ColorVsub (<leader>ce) ',
