@@ -168,7 +168,7 @@ let s:fmt.HSLA='hsla(\s*\d\{1,3},\s*\d\{1,3}%,\s*\d\{1,3}%,'
                 \.'\s*\d\{1,3}\%(\.\d*\)\=%\=)'
 let s:fmt.CMYK='cmyk(\s*\d\.\d*,\s*\d\.\d*,\s*\d\.\d*,'
                 \.'\s*\d\.\d*)'
-
+let s:fmt.glRGBA='glColor\du\=[bsifd](\d\%(\.\d*\)\=,\s*\d\%(\.\d*\)\=,\s*\d\%(\.\d*\)\=,\d\%(\.\d*\)\=)'
 let s:a='Uryyb'
 let s:t='fghDPijmrYFGtudBevwxklyzEIZOJLMnHsaKbcopqNACQRSTUVWX'
 let s:e='stuQCvwzeLSTghqOrijkxylmRVMBWYZaUfnXopbcdANPDEFGHIJK'
@@ -2561,118 +2561,117 @@ fmt={} #{{{
 # XXX and the \( \\) can not catch the ')' . use [(] and [)] instead
 
 fmt['RGB']=re.compile(r'''
-        (?<!\w)rgb[(]                    #wordbegin
-        [ \t]*(?P<R>\d{1,3})               #group2 R
-        ,[ \t]*(?P<G>\d{1,3})              #group3 G
-        ,[ \t]*(?P<B>\d{1,3})              #group4 B
-        [)](?!\w)                        #wordend
-        (?ix)                           #[iLmsux] i:igone x:verbose
+        (?<!\w)rgb[(]                            # wordbegin
+        [ \t]*(?P<R>\d{1,3}),                    # group2 R
+        [ \t]*(?P<G>\d{1,3}),                    # group3 G
+        [ \t]*(?P<B>\d{1,3})                     # group4 B
+        [)](?!\w)                                # wordend
+        (?ix)                                    # [iLmsux] i:igone x:verbose
                       ''')
 fmt['RGBA']=re.compile(r'''
-        (?<!\w)rgba[(]                   #wordbegin
-        [ \t]*(?P<R>\d{1,3})               #group2 R
-        ,[ \t]*(?P<G>\d{1,3})              #group3 G
-        ,[ \t]*(?P<B>\d{1,3})              #group4 B
-        ,[ \t]*(?P<A>\d{1,3}(?:\.\d*)?)%?
-        [)](?!\w)                        #wordend
-        (?ix)                           #[iLmsux] i:igone x:verbose
+        (?<!\w)rgba[(]
+        [ \t]*(?P<R>\d{1,3}),                    # group2 R
+        [ \t]*(?P<G>\d{1,3}),                    # group3 G
+        [ \t]*(?P<B>\d{1,3}),                    # group4 B
+        [ \t]*(?P<A>\d{1,3}(?:\.\d*)?)%?
+        [)](?!\w)
+        (?ix)
                       ''')
-fmt['RGBX']=re.compile(r'''
-        (?<!\w)rgb(a)?[(]                #wordbegin
-        [ \t]*(?P<R>\d{1,3})               #group2 R
-        ,[ \t]*(?P<G>\d{1,3})              #group3 G
-        ,[ \t]*(?P<B>\d{1,3})              #group4 B
-        (?(1),[ \t]*(?P<A>\d{1,3}(?:\.\d*)?)%?)
-                                        #group5 A exists if 'a' exists
-        [)](?!\w)                        #wordend
-        (?ix)                           #[iLmsux] i:igone x:verbose
+fmt['glRGBA']=re.compile(r'''
+        (?<!\w)glColor\du?[bsifd][(]
+        [ \t]*(?P<R>\d(?:\.\d*)?),               # group2 R
+        [ \t]*(?P<G>\d(?:\.\d*)?),               # group3 G
+        [ \t]*(?P<B>\d(?:\.\d*)?),               # group4 B
+        [ \t]*(?P<A>\d(?:\.\d*)?)
+        [)](?!\w)
+        (?ix)
                       ''')
 fmt['RGBP']=re.compile(r'''
-        (?<!\w)rgb[(]                    #wordbegin
-        [ \t]*(?P<R>\d{1,3})%              #group2 R
-        ,[ \t]*(?P<G>\d{1,3})%             #group3 G
-        ,[ \t]*(?P<B>\d{1,3})%             #group4 B
-        [)](?!\w)                        #wordend
-        (?ix)                           #[iLmsux] i:igone x:verbose
+        (?<!\w)rgb[(]
+        [ \t]*(?P<R>\d{1,3})%,                   # group2 R
+        [ \t]*(?P<G>\d{1,3})%,                   # group3 G
+        [ \t]*(?P<B>\d{1,3})%                    # group4 B
+        [)](?!\w)
+        (?ix)
                         ''')
 fmt['RGBAP']=re.compile(r'''
-        (?<!\w)rgba[(]                   #wordbegin
-        [ \t]*(?P<R>\d{1,3})%              #group2 R
-        ,[ \t]*(?P<G>\d{1,3})%             #group3 G
-        ,[ \t]*(?P<B>\d{1,3})%             #group4 B
-        ,[ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
-        [)](?!\w)                        #wordend
-        (?ix)                           #[iLmsux] i:igone x:verbose
+        (?<!\w)rgba[(]
+        [ \t]*(?P<R>\d{1,3})%,                   # group2 R
+        [ \t]*(?P<G>\d{1,3})%,                   # group3 G
+        [ \t]*(?P<B>\d{1,3})%,                   # group4 B
+        [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
+        [)](?!\w)
+        (?ix)
                         ''')
 
 fmt['HSL']=re.compile(r'''
-        (?<!\w)hsl[(]                    #wordbegin
-        [ \t]*(?P<H>\d{1,3})               #group2 H
-        ,[ \t]*(?P<S>\d{1,3})%             #group3 S
-        ,[ \t]*(?P<L>\d{1,3})%             #group4 L
-        [)](?!\w)                        #wordend
-        (?ix)                           #[iLmsux] i:igone x:verbose
+        (?<!\w)hsl[(]
+        [ \t]*(?P<H>\d{1,3}),                    # group2 H
+        [ \t]*(?P<S>\d{1,3})%,                   # group3 S
+        [ \t]*(?P<L>\d{1,3})%                    # group4 L
+        [)](?!\w)
+        (?ix)
                         ''')
 fmt['HSLA']=re.compile(r'''
-        (?<!\w)hsla[(]                   #wordbegin
-        [ \t]*(?P<H>\d{1,3})               #group2 H
-        ,[ \t]*(?P<S>\d{1,3})%             #group3 S
-        ,[ \t]*(?P<L>\d{1,3})%             #group4 L
-        ,[ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
-        [)](?!\w)                        #wordend
-        (?ix)                           #[iLmsux] i:igone x:verbose
+        (?<!\w)hsla[(]
+        [ \t]*(?P<H>\d{1,3}),                    # group2 H
+        [ \t]*(?P<S>\d{1,3})%,                   # group3 S
+        [ \t]*(?P<L>\d{1,3})%,                   # group4 L
+        [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
+        [)](?!\w)
+        (?ix)
                         ''')
 fmt['CMYK']=re.compile(r'''
-        (?<!\w)cmyk[(]                   #wordbegin
-        [ \t]*(?P<C>\d\.\d*)        #group2 C
-        ,[ \t]*(?P<M>\d\.\d*)       #group3 M
-        ,[ \t]*(?P<Y>\d\.\d*)       #group4 Y
-        ,[ \t]* (?P<K>\d\.\d*)      #group4 K
-        [)](?!\w)                        #wordend
-        (?ix)                           #[iLmsux] i:igone x:verbose
+        (?<!\w)cmyk[(]
+        [ \t]*(?P<C>\d\.\d*),                    # group2 C
+        [ \t]*(?P<M>\d\.\d*),                    # group3 M
+        [ \t]*(?P<Y>\d\.\d*),                    # group4 Y
+        [ \t]* (?P<K>\d\.\d*)                    # group4 K
+        [)](?!\w)
+        (?ix)
                         ''')
 fmt['HSV']=re.compile(r'''
-        (?<!\w)hsv[(]                    #wordbegin
-        [ \t]*(?P<H>\d{1,3})               #group2 H
-        ,[ \t]*(?P<S>\d{1,3})              #group3 S
-        ,[ \t]*(?P<V>\d{1,3})              #group4 L
-        [)](?!\w)                        #wordend
-        (?ix)                           #[iLmsux] i:igone x:verbose
+        (?<!\w)hsv[(]
+        [ \t]*(?P<H>\d{1,3}),                    # group2 H
+        [ \t]*(?P<S>\d{1,3}),                    # group3 S
+        [ \t]*(?P<V>\d{1,3})                     # group4 L
+        [)](?!\w)
+        (?ix)
                         ''')
 fmt['HSVA']=re.compile(r'''
-        (?<!\w)hsva[(]                   #wordbegin
-        [ \t]*(?P<H>\d{1,3})               #group2 H
-        ,[ \t]*(?P<S>\d{1,3})              #group3 S
-        ,[ \t]*(?P<V>\d{1,3})              #group4 L
-        ,[ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
-        [)](?!\w)                        #wordend
-        (?ix)                           #[iLmsux] i:igone x:verbose
+        (?<!\w)hsva[(]
+        [ \t]*(?P<H>\d{1,3}),                    # group2 H
+        [ \t]*(?P<S>\d{1,3}),                    # group3 S
+        [ \t]*(?P<V>\d{1,3}),                    # group4 L
+        [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
+        [)](?!\w)
+        (?ix)
                         ''')
-# (?<![0-9a-fA-F]|0[xX]) is wrong!
-# (?<![0-9a-fA-F])|(?<!0[xX]) is wrong
-# use (?<!([\w#]))
+# NOTE (?<![0-9a-fA-F]|0[xX]) is wrong!
+#      (?<![0-9a-fA-F])|(?<!0[xX]) is wrong
+#      use (?<!([\w#]))
 fmt['HEX']=re.compile(r'''
         (?<!([\w#]))                    #no preceding [0~z] # 0x
         (?P<HEX>[0-9a-fA-F]{6})         #group HEX
-        (?!\w)                 #no following [0~z]
+        (?!\w)                          #no following [0~z]
         (?ix)
                         ''')
 fmt['HEX0']=re.compile(r'''
         0x                              # 0xffffff
-        (?P<HEX>[0-9a-fA-F]{6})         #group HEX
-        (?!\w)                 #no following [0~f]
+        (?P<HEX>[0-9a-fA-F]{6})         
+        (?!\w)                          
         (?ix)
                         ''')
 fmt['NS6']=re.compile(r'''
         [#]                             # #ffffff
-        (?P<HEX>[0-9a-fA-F]{6})         #group HEX
-        (?!\w)                 #no following [0~f]
+        (?P<HEX>[0-9a-fA-F]{6})         
+        (?!\w)                          
         (?ix)
                         ''')
 fmt['NS3']=re.compile(r'''
         [#]                             # #ffffff
-        (?P<HEX>[0-9a-fA-F]{3})         #group HEX
-        (?!\w)                 #no following [0~f]
+        (?P<HEX>[0-9a-fA-F]{3})         
+        (?!\w)                          
         (?ix)
                         ''')
 
@@ -2761,8 +2760,8 @@ for [nam,hex] in clrn:
 
 fmt['NAME']=re.compile(NAME_txt,re.I|re.X)
 
-                        #}}}
-def name2hex(name,*rule):
+#}}}
+def name2hex(name,*rule): #{{{
     if len(name):
         if len(rule) and rule[0]=="X11":
             lst=clrn+clrnX11
@@ -2772,8 +2771,8 @@ def name2hex(name,*rule):
             # ignore the case
             if name.lower()==nam.lower():
                 return clr
-    return 0
-def txt2hex(txt):
+    return 0 #}}}
+def txt2hex(txt): #{{{
     hex_list=[]
     for key,var in fmt.iteritems():
         r_list=list(var.finditer(txt))
@@ -2789,6 +2788,11 @@ def txt2hex(txt):
                 elif key=="RGBP" or key=="RGBAP":
                     r,g,b=int(x.group('R')),int(x.group('G')),int(x.group('B'))
                     hx=rgb2hex([r*2.55,g*2.55,b*2.55])
+                elif key=="glRGBA":
+                    r,g,b=[float(x.group('R')),
+                            float(x.group('G')),
+                            float(x.group('B'))]
+                    hx=rgb2hex([r*255,g*255,b*255])
                 elif key=="HSL" or key=="HSLA" :
                     h,s,l=int(x.group('H')),int(x.group('S')),int(x.group('L'))
                     hx=rgb2hex(hls2rgb([h,l,s]))
@@ -2804,8 +2808,7 @@ def txt2hex(txt):
                 else:
                     continue
                 hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
-    return hex_list
-
+    return hex_list #}}}
 def hex2nam(hex,lst="W3C"): #{{{
     best_match = 0
     smallest_distance = 10000000
@@ -2888,6 +2891,15 @@ function! s:txt2hex(txt) "{{{
                         continue
                     endif
                     let hex= colorv#rgb2hex([r*2.55,g*2.55,b*2.55])
+                elseif fmt=="glRGBA"
+                    let n_str=matchstr(p_str,'(\zs.*\ze)')
+                    let [r,g,b]=split(n_str,'\s*%\=,\s*')[0:2]
+                    let [r,g,b]=s:float([r,g,b])
+                    if r > 1 || g >1 || b > 1
+                        call s:error("RGB out of boundary")
+                        continue
+                    endif
+                    let hex= colorv#rgb2hex([r*255,g*255,b*255])
                 elseif fmt=="NAME"
                     let hex=s:nam2hex(p_str)
                 elseif fmt=="CMYK"
@@ -2922,6 +2934,7 @@ function! s:hex2txt(hex,fmt,...) "{{{
     let hex = s:fmt_hex(a:hex)
     let [r,g,b]= s:printf("%3d",colorv#hex2rgb(hex))
     let [rp,gp,bp]= s:printf("%3d",s:number([r/2.55,g/2.55,b/2.55]))
+    let [rf,gf,bf]= s:printf("%.2f",s:float([r/255.0,g/255.0,b/255.0]))
     let [h,s,v] = s:printf("%3d",colorv#rgb2hsv([r,g,b]))
     let [H,L,S]= s:printf("%3d",colorv#rgb2hls([r,g,b]))
 
@@ -2937,6 +2950,8 @@ function! s:hex2txt(hex,fmt,...) "{{{
         let text="rgb(".rp."%,".gp."%,".bp."%)"
     elseif a:fmt=="RGBA"
         let text="rgba(".r.",".g.",".b.",1.0)"
+    elseif a:fmt=="glRGBA"
+        let text="glColor4f(".rf.",".gf.",".bf.",1.0)"
     elseif a:fmt=="RGBAP"
         let text="rgba(".rp."%,".gp."%,".bp."%,1.0)"
     elseif a:fmt=="HEX"
