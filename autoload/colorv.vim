@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2012-02-27
+" Last Update: 2012-03-02
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -3104,6 +3104,7 @@ function! s:changing() "{{{
                 return -1
             endif "}}}
 
+
             "get the to_str "{{{
             if exists("s:ColorV.word_list[0]")
                 let to_hex=g:ColorV.HEX
@@ -3132,7 +3133,10 @@ function! s:changing() "{{{
             let idx=s:ColorV.word_list[1]
             let len=s:ColorV.word_list[2]
             let to_pat=substitute(from_pat,'\%'.(idx+1).'c.\{'.len.'}',to_str,'')
-
+            let from_pat = escape(from_pat,'[]*/~.$\')
+            let to_pat = escape(to_pat,'&/~.$\')
+            call s:debug(from_pat." to_pat:".to_pat." to_fmt:"
+                        \.to_fmt." to_str:".to_str)
             if exists("s:ColorV.change_noma")&& s:ColorV.change_noma ==1
                 setl ma
             endif
@@ -3145,7 +3149,6 @@ function! s:changing() "{{{
             try
                 exec e_txt
             catch /^Vim\%((\a\+)\)\=:E486/
-                call s:debug(from_pat." to:".to_fmt.to_str.to_pat)
                 call s:error("E486: Pattern not found.")
             catch /^Vim\%((\a\+)\)\=:E/
                 call s:error(v:exception)
