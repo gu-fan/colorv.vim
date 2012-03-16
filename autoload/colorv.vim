@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2012-03-02
+" Last Update: 2012-03-16
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -2152,28 +2152,28 @@ endfunction "}}}
 function! s:caution(msg) "{{{
     echohl Modemsg
     redraw
-    exe "echon '[Caution]' "
+    exe "echon '[ColorV Caution]' "
     echohl Normal
     echon " ".escape(a:msg,'"')." "
 endfunction "}}}
 function! s:warning(msg) "{{{
     echohl Warningmsg
     redraw
-    exe "echon '[Warning]' "
+    exe "echon '[ColorV Warning]' "
     echohl Normal
     echon " ".escape(a:msg,'"')." "
 endfunction "}}}
 function! s:error(msg) "{{{
     echohl Errormsg
     redraw
-    echom "[Error] ".escape(a:msg,'"')
+    echom "[ColorV Error] ".escape(a:msg,'"')
     echohl Normal
 endfunction "}}}
 function! s:echo(msg) "{{{
     try
         echohl Comment
         redraw
-        exe "echon '[Note]' "
+        exe "echon '[ColorV Note]' "
         echohl Normal
         exe "echon \" ".escape(a:msg,'"')."\""
     catch /^Vim\%((\a\+)\)\=:E488/
@@ -3780,6 +3780,10 @@ endfunction "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:write_cache() "{{{
     let CacheStringList = []
+    if !filewritable(file)
+        call s:warning("Could NOT write cache. No history-cache support.")
+        return
+    endif
     let file = g:ColorV_cache_File
     if len(s:his_cpd_list) < 18
         let list = deepcopy(s:his_cpd_list[0:-1])
@@ -3796,33 +3800,35 @@ endfunction "}}}
 function! s:load_cache() "{{{
     let file = g:ColorV_cache_File
     if !filereadable(file)
-        call s:error("Could NOT read cache file. Stopped.")
-    else
-        let CacheStringList = readfile(file)
-        for i in CacheStringList
-            if i =~ 'HISTORY_COPY'
-                let txt=matchstr(i,'HISTORY_COPY\s*\zs.*\ze$')
-                let his_list = split(txt,'\s')
-            endif
-        endfor
-        if exists("his_list") && !empty(his_list)
-            let s:his_cpd_list=deepcopy(his_list)
+        call s:warning("Could NOT read cache. No history-cache support.")
+        return
+    endif
+    let CacheStringList = readfile(file)
+    for i in CacheStringList
+        if i =~ 'HISTORY_COPY'
+            let txt=matchstr(i,'HISTORY_COPY\s*\zs.*\ze$')
+            let his_list = split(txt,'\s')
         endif
+    endfor
+    if exists("his_list") && !empty(his_list)
+        let s:his_cpd_list=deepcopy(his_list)
     endif
 endfunction "}}}
-
-if g:ColorV_load_cache==1 "{{{
-    call <SID>load_cache()
-    aug colorv#cache
-        au! VIMLEAVEPre * call <SID>write_cache()
-    aug END
-endif "}}}
-if g:ColorV_prev_css==1 "{{{
-    aug colorv#auto_prev
-        au!  BufWinEnter *.css call colorv#preview()
-        au!  BufWritePost *.css call colorv#preview()
-    aug END
-endif "}}}
+function! colorv#init()
+    if g:ColorV_load_cache==1 "{{{
+        call <SID>load_cache()
+        aug colorv#cache
+            au! VIMLEAVEPre * call <SID>write_cache()
+        aug END
+    endif "}}}
+    if g:ColorV_prev_css==1 "{{{
+        aug colorv#auto_prev
+            au!  BufWinEnter *.css call colorv#preview()
+            au!  BufWritePost *.css call colorv#preview()
+        aug END
+    endif "}}}
+endfunction
+call colorv#init()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "}}}1
 let &cpo = s:save_cpo

@@ -342,6 +342,7 @@ COLORINFO                                            *colorv-colorinfo*
     HSL     hsl(300,100%,100%)      (css3 standard)
     HSLA    hsl(300,100%,100%,1.0)  (css3 standard)
     CMYK    cmyk(1.00,1.00,1.00,1.00) 
+    glRGBA  glColor4f(1.00,1.00,1.00,1.00) (openGL color format)
 
     You can also define your own color formats with |colorv-var-colors|.
 ------------------------------------------------------------------------------
@@ -875,6 +876,7 @@ DEPENDENCIES                                        *colorv-dependencies*
     - python 2.7 for the best. Other versions may have bugs.
 ==============================================================================
 CHANGELOG                                           *colorv-changelog* 
+
 
 " 2.5.4 Spring Festival~
 " DONE: 120120  add cmyk format.
