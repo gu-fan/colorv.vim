@@ -73,7 +73,7 @@ let g:ColorV.NAME="Red"
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:ColorV={}
 if !exists("s:mode")|let s:mode="mid"|endif
-"{{{ misc
+" misc "{{{ 
 let s:gen_def_nums=20
 let s:gen_def_step=10
 let s:gen_def_type="Hue"
@@ -285,7 +285,7 @@ for [nam,hex] in s:clrnW3C+s:clrn
 endfor
 let s:fmt.NAME =substitute(s:fmt.NAME,'\\|$','','')
 "}}}
-"{{{ term colorlist
+" term colorlist "{{{ 
 let s:term8_dict= {
             \0:"000000",1:"800000",2:"008000",
             \3:"808000",4:"000080",5:"800080",
@@ -355,7 +355,7 @@ def hsv2rgb(hsv):
     r,g,b=colorsys.hsv_to_rgb(h/360.0,s/100.0,v/100.0)
     return [int(round(r*255.0)),int(round(g*255.0)),int(round(b*255.0))]
     #}}}
- #{{{ yiq
+#{{{ yiq
 def rgb2yiq(rgb):
     r,g,b=rgb
     y,i,q=colorsys.rgb_to_yiq(r/255.0,g/255.0,b/255.0)
@@ -365,7 +365,7 @@ def yiq2rgb(yiq):
     r,g,b=colorsys.yiq_to_rgb(y/100.0,i/100.0,q/100.0)
     return [int(round(r*255.0)),int(round(g*255.0)),int(round(b*255.0))]
     #}}}
-#{{{hls
+#{{{ hls
 def rgb2hls(rgb):
     r,g,b=rgb
     h,l,s=colorsys.rgb_to_hls(r/255.0,g/255.0,b/255.0)
@@ -376,7 +376,7 @@ def hls2rgb(hls):
     return [int(round(r*255.0)),int(round(g*255.0)),int(round(b*255.0))]
 #}}}
     
-#{{{hls
+#{{{ hls
 def rgb2hls(rgb):
     r,g,b=rgb
     h,l,s=colorsys.rgb_to_hls(r/255.0,g/255.0,b/255.0)
@@ -387,7 +387,7 @@ def hls2rgb(hls):
     return [int(round(r*255.0)),int(round(g*255.0)),int(round(b*255.0))]
 #}}}
 
-#{{{
+#{{{ cmyk
 def rgb2cmyk(rgb):
     r,g,b = rgb
     [R,G,B]=[r/255.0,g/255.0,b/255.0]
@@ -2005,6 +2005,7 @@ function! s:float(x) "{{{
     endif
 endfunction "}}}
 function! s:fmax(list) "{{{
+    "XXX:could use max()?
     let list=a:list
     if len(list) == 0
         return 0
@@ -2037,11 +2038,12 @@ function! s:radians(degree) "{{{
     return a:degree / 180 * 3.1415926
 endfunction "}}}
 function! s:random(min,max) "{{{
-    let init= str2nr(strftime("%S%m"))*9+
-             \str2nr(strftime("%Y"))*3+
-             \str2nr(strftime("%M%S"))*5+
-             \str2nr(strftime("%H%d"))*1+19
-    let s:seed=exists("s:seed") ? s:seed : init
+    if !exists("s:seed")
+        let s:seed = str2nr(strftime("%S%m"))*9+
+                \str2nr(strftime("%Y"))*3+
+                \str2nr(strftime("%M%S"))*5+
+                \str2nr(strftime("%H%d"))*1+19
+    endif
     let s:seed=s:fmod((20907*s:seed+17343),104530)
     return s:fmod(s:seed,a:max-a:min+1)+a:min
 endfunction "}}}
@@ -3780,11 +3782,11 @@ endfunction "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:write_cache() "{{{
     let CacheStringList = []
+    let file = g:ColorV_cache_File
     if !filewritable(file)
         call s:warning("Could NOT write cache. No history-cache support.")
         return
     endif
-    let file = g:ColorV_cache_File
     if len(s:his_cpd_list) < 18
         let list = deepcopy(s:his_cpd_list[0:-1])
     else
@@ -3814,7 +3816,7 @@ function! s:load_cache() "{{{
         let s:his_cpd_list=deepcopy(his_list)
     endif
 endfunction "}}}
-function! colorv#init()
+function! colorv#init() "{{{
     if g:ColorV_load_cache==1 "{{{
         call <SID>load_cache()
         aug colorv#cache
@@ -3827,7 +3829,7 @@ function! colorv#init()
             au!  BufWritePost *.css call colorv#preview()
         aug END
     endif "}}}
-endfunction
+endfunction "}}}
 call colorv#init()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "}}}1
