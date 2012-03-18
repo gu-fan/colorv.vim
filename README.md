@@ -2,12 +2,11 @@
 
    *ColorV* is a Color tool in Vim.
 
-    With it you can:
-        Choose, Change, Show, Preview, Generate, Pickup, Cache ... colors.
+    With it you can easily:
+        View, Edit, Preview, Generate, Pick, Cache ... Colors.
 
     To Start: 
         :ColorV
 
     Screenshot: http://rykka.is-programmer.com/posts/31819
-
-    Post issues at https://github.com/Rykka/ColorV/issues 
+    Post issues: https://github.com/Rykka/ColorV/issues 
