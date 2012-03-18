@@ -1,7 +1,7 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  Script: ColorV
 "    File: autoload/colorv.vim
-" Summary: A Color tool in Vim.
+" Summary: A vim plugin that makes handling colors easier
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4

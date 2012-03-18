@@ -1,9 +1,9 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  Script: ColorV 
 "    File: plugin/colorv.vim
-" Summary: A Color tool in Vim
+" Summary: A vim plugin that makes handling colors easier
 "  Author: Rykka10 <Rykka10(at)gmail.com>
-" Last Update: 2012-01-22
+" Last Update: 2012-03-18
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim

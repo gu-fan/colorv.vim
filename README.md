@@ -1,6 +1,6 @@
 ##INTRO:##
 
-   *ColorV* is a Color tool in Vim.
+   *ColorV* is a vim plugin that makes handling colors easier.
 
     With it you can easily:
         View, Edit, Preview, Generate, Pick, Cache ... Colors.

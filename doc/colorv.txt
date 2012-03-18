@@ -1,5 +1,5 @@
-*colorv.txt* *colorv*         ColorV         A Color tool in Vim
- 
+*colorv.txt* *colorv*         ColorV         Makes handling colors easier. 
+
 
               _________     ______            ___    __               ~
               __  ____/________  /______________ |  / /               ~
@@ -33,7 +33,7 @@
 ==============================================================================
 INTRO                                               *colorv-intro*
 
-    *ColorV* is a Color tool in Vim.
+    *ColorV* ia vim plugin that makes handling colors easier.
 
     With it you can easily:
         View, Edit, Preview, Generate, Pick, Cache ... Colors.
