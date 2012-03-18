@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2012-03-16
+" Last Update: 2012-03-18
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -2188,7 +2188,7 @@ function! s:debug(msg) "{{{
         return
     endif
     echohl Errormsg
-    echom "[Debug] ".escape(a:msg,'"')
+    echom "[ColorV Debug] ".escape(a:msg,'"')
     echohl Normal
 endfunction "}}}
 
@@ -3780,13 +3780,9 @@ function! colorv#preview_line(...) "{{{
 endfunction "}}}
 "INIT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! s:write_cache() "{{{
+function! colorv#write_cache() "{{{
     let CacheStringList = []
     let file = g:ColorV_cache_File
-    if !filewritable(file)
-        call s:warning("Could NOT write cache. No history-cache support.")
-        return
-    endif
     if len(s:his_cpd_list) < 18
         let list = deepcopy(s:his_cpd_list[0:-1])
     else
@@ -3797,15 +3793,21 @@ function! s:write_cache() "{{{
         let his_txt .= " ".hex
     endfor
     call add(CacheStringList,his_txt)
-    call writefile(CacheStringList,file)
+    try
+        call writefile(CacheStringList,file)
+    catch /^Vim\%((\a\+)\)\=:E/
+        call s:error("Could not caching-scheme. ".v:exception)
+        return -1
+    endtry
 endfunction "}}}
-function! s:load_cache() "{{{
+function! colorv#load_cache() "{{{
     let file = g:ColorV_cache_File
-    if !filereadable(file)
-        call s:warning("Could NOT read cache. No history-cache support.")
-        return
-    endif
-    let CacheStringList = readfile(file)
+    try
+        let CacheStringList = readfile(file)
+    catch /^Vim\%((\a\+)\)\=:E/
+        call s:debug("Could not load cache. ".v:exception)
+        return -1
+    endtry
     for i in CacheStringList
         if i =~ 'HISTORY_COPY'
             let txt=matchstr(i,'HISTORY_COPY\s*\zs.*\ze$')
@@ -3818,9 +3820,9 @@ function! s:load_cache() "{{{
 endfunction "}}}
 function! colorv#init() "{{{
     if g:ColorV_load_cache==1 "{{{
-        call <SID>load_cache()
+        call colorv#load_cache()
         aug colorv#cache
-            au! VIMLEAVEPre * call <SID>write_cache()
+            au! VIMLEAVEPre * call colorv#write_cache()
         aug END
     endif "}}}
     if g:ColorV_prev_css==1 "{{{
