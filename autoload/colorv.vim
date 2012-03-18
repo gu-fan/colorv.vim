@@ -3076,12 +3076,12 @@ function! s:copy(...) "{{{
     endif
 endfunction "}}}
 
-function! s:changing() "{{{
+function! s:change_ctext() "{{{
     if exists("s:ColorV.change_word") && s:ColorV.change_word ==1
         let cur_pos=getpos('.')
         let cur_bufname=bufname('%')
 
-        " go to the word_buf if not in it
+        " go to  word_buf and pos if NOT there
         if bufname('%') != s:ColorV.word_bufname
                     \|| bufnr('%') != s:ColorV.word_bufnr
             exe s:ColorV.word_bufwinnr."wincmd w"
@@ -3095,7 +3095,7 @@ function! s:changing() "{{{
             let lword = expand('<cWORD>')
             let line = getline('.')
 
-            "get the from_pattern "{{{
+            "get from_pattern "{{{
             if s:ColorV.is_in=="word"
                 silent normal! b
                 let bgn_idx=col('.')
@@ -3115,14 +3115,13 @@ function! s:changing() "{{{
                 return -1
             endif "}}}
 
-            "check if Not the origin word "{{{
+            "check if NOT origin word "{{{
             if from_pat!= s:ColorV.word_pat
                 call s:error("Doesn't get the right word to change.")
                 return -1
             endif "}}}
 
-
-            "get the to_str "{{{
+            "get to_str "{{{
             if exists("s:ColorV.word_list[0]")
                 let to_hex=g:ColorV.HEX
                 let to_fmt=s:ColorV.word_list[4]
@@ -3305,8 +3304,8 @@ function! colorv#cursor_win(...) "{{{
         endif
     endif
 
-    "pass "s:changing" as exit_func to colorv#win()
-    call colorv#win(s:mode,hex,1,"s:changing")
+    "pass "s:change_ctext" as exit_func to colorv#win()
+    call colorv#win(s:mode,hex,1,"s:change_ctext")
 
 endfunction "}}}
 function! colorv#clear_all() "{{{
@@ -3832,9 +3831,10 @@ function! colorv#init() "{{{
         aug END
     endif "}}}
 endfunction "}}}
+"}}}1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call colorv#init()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"}}}1
 let &cpo = s:save_cpo
 unlet s:save_cpo
 " vim:tw=78:fdm=marker:
