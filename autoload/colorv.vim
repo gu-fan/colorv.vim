@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2012-03-18
+" Last Update: 2012-03-19
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -18,11 +18,9 @@ endif
 let g:ColorV={}
 let g:ColorV.ver="2.5.4"
 
-"debug
 if !exists("g:ColorV_debug")
     let g:ColorV_debug=0
 endif
-"debug vim func
 if !exists('g:ColorV_no_python')
     let g:ColorV_no_python=0
 endif
@@ -35,11 +33,11 @@ endif
 if !exists('g:ColorV_win_pos')
     let g:ColorV_win_pos="bot"
 endif
-if !exists('g:ColorV_view_name')
-    let g:ColorV_view_name=1
+if !exists('g:ColorV_preview_name')
+    let g:ColorV_preview_name=1
 endif
-if !exists('g:ColorV_view_block')
-    let g:ColorV_view_block=0
+if !exists('g:ColorV_preview_homo')
+    let g:ColorV_preview_homo=0
 endif
 if !exists('g:ColorV_win_space')
     let g:ColorV_win_space="hsv"
@@ -47,33 +45,29 @@ endif
 if !exists('g:ColorV_gen_space')
     let g:ColorV_gen_space="hsv"
 endif
-if has("python")
-    if !exists('g:ColorV_prev_css')
-        let g:ColorV_prev_css=1
-    endif
-else
-    if !exists('g:ColorV_prev_css')
-        let g:ColorV_prev_css=0
-    endif
+if !exists('g:ColorV_preview_ftype')
+    let g:ColorV_preview_ftype='css,javascript'
 endif
-
+if !exists('g:ColorV_max_preview')
+    let g:ColorV_max_preview=200
+endif
 let g:ColorV.name="_ColorV_"
 let g:ColorV.listname="_ColorV-List_"
 let g:ColorV.HEX="ff0000"
-let g:ColorV.RGB={'R':255,'G':0,'B':0}
-let g:ColorV.HSV={'H':0,'S':100,'V':100}
-let g:ColorV.HLS={'H':0,'L':50,'S':100}
-let g:ColorV.YIQ={'Y':30,'I':60,'Q':21}
-let g:ColorV.rgb=[255,0,0]
-let g:ColorV.hls=[0,50,100]
-let g:ColorV.yiq=[30,60,21]
-let g:ColorV.hsv=[0,100,100]
+let g:ColorV.RGB={'R':255 , 'G':0   , 'B':0   }
+let g:ColorV.HSV={'H':0   , 'S':100 , 'V':100 }
+let g:ColorV.HLS={'H':0   , 'L':50  , 'S':100 }
+let g:ColorV.YIQ={'Y':30  , 'I':60  , 'Q':21  }
+let g:ColorV.rgb=[255 , 0   , 0   ]
+let g:ColorV.hls=[0   , 50  , 100 ]
+let g:ColorV.yiq=[30  , 60  , 21  ]
+let g:ColorV.hsv=[0   , 100 , 100 ]
 let g:ColorV.NAME="Red"
 "SVAR: {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:ColorV={}
 if !exists("s:mode")|let s:mode="mid"|endif
-" misc "{{{ 
+" pos "{{{
 let s:gen_def_nums=20
 let s:gen_def_step=10
 let s:gen_def_type="Hue"
@@ -97,11 +91,11 @@ let s:max_pos=[["Hex:",1,22,10],
             \["H:",4,22,5],["L:",4,29,5],["S:",4,36,5],
             \["Y ",5,22,5],["I ",5,29,5],["Q ",5,36,5],
             \]
-let s:mid_pos=[["Hex:",2,22,10],
+let s:mid_pos=[["Hex:",1,22,10],
             \["R:",3,22,5],["G:",3,29,5],["B:",3,36,5],
             \["H:",4,22,5],["S:",4,29,5],["V:",4,36,5],
             \["N:",1,43,15],
-            \["H ",5,22,5],["L ",5,29,5],["S ",5,36,5],
+            \["H:",5,22,5],["L:",5,29,5],["S:",5,36,5],
             \]
 let s:min_pos=[["Hex:",1,22,10],
             \["R:",2,22,5],["G:",2,29,5],["B:",2,36,5],
@@ -113,36 +107,36 @@ let s:min_pos=[["Hex:",1,22,10],
 let s:stat_pos = 53
 let s:tip_pos = 22
 "}}}
-" hlp txt "{{{
+" txt "{{{
 let s:hlp_d = {
-            \"r":["RED",0,255],
-            \"g":["GREEN",0,255],
-            \"b":["Blue",0,255],
-            \"H":["[HLS]Hue",0,360],
-            \"L":["[HLS]Lightness",0,100],
-            \"S":["[HLS]Saturation",0,100],
-            \"h":["[HSV]Hue",0,360],
-            \"s":["[HSV]Saturation",0,100],
-            \"v":["[HSV]Value",0,100],
-            \"Y":["[YIQ]Luma",0,100],
-            \"I":["[YIQ]I-Channel",-60,60],
-            \"Q":["[YIQ]Q-Channel",-52,52],
+            \"r":["[RGB]RED"        , 0   , 255] ,
+            \"g":["[RGB]GREEN"      , 0   , 255] ,
+            \"b":["[RGB]Blue"       , 0   , 255] ,
+            \"H":["[HLS]Hue"        , 0   , 360] ,
+            \"L":["[HLS]Lightness"  , 0   , 100] ,
+            \"S":["[HLS]Saturation" , 0   , 100] ,
+            \"h":["[HSV]Hue"        , 0   , 360] ,
+            \"s":["[HSV]Saturation" , 0   , 100] ,
+            \"v":["[HSV]Value"      , 0   , 100] ,
+            \"Y":["[YIQ]Luma"       , 0   , 100] ,
+            \"I":["[YIQ]I-Channel"  , -60 , 60 ]  ,
+            \"Q":["[YIQ]Q-Channel"  , -52 , 52 ]  ,
             \}
 
 let s:tips_list=[
             \'Move:Click/<Tab>/hjkl...',
-            \'Edit:<2-Click>/<2-Space>/Ctrl-K/Ctrl-J/<Enter>/<KEnter>',
+            \'Edit:<2-Click>/<2-Space>/Ctrl-K/<Enter>/<KEnter>',
             \'Yank(reg"): yy:HEX yr:RGB yl:HSL ym:CMYK ',
             \'Copy(reg+): cy:HEX cr:RGB cl:HSL cm:CMYK ',
-            \'Paste:<Ctrl-V>/p (Show pasted color in ColorV window)',
-            \'Colorname(W3C):na/ne       (X11):nx',
-            \'ColornameList: :ColorVList (<leader>cl)',
-            \'Colorlist: g1:Hue/g2/g3/g4/g5/g6/gh/gs/gv...',
-            \'Preview Buffer: :ColorVview (<leader>cpp) ',
-            \'Edit color in Buffer: :ColorVsub (<leader>ce) ',
-            \'Dropper: :ColorVdropper (<leader>cd, pygtk2 needed) ',
-            \'Help:<F1>/H                ',
-            \'Quit:q/Q/<C-W>q/<C-W><C-Q>',
+            \'Paste:<Ctrl-V>/p (Paste color and show)',
+            \'ColorNameEdit(W3C):na/ne       (X11):nx',
+            \'ColorNameList:nn (:ColorVName  <leader>cn)',
+            \'ColorList: l1:Hue/l2/l3/l4/l5/l6/lh/ls/lv...',
+            \'View color-text: :ColorVView (<leader>cw) ',
+            \'Edit color-text: :ColorVEdit (<leader>ce) ',
+            \'Preview in file: :ColorVPreview (<leader>cpp) ',
+            \'Pickup in screen: :ColorVDropper (<leader>cd) ',
+            \'Help:<F1>/H       Quit:q/Q/<C-W>q/<C-W><C-Q>',
             \]
 "}}}
 " fmt "{{{
@@ -285,7 +279,7 @@ for [nam,hex] in s:clrnW3C+s:clrn
 endfor
 let s:fmt.NAME =substitute(s:fmt.NAME,'\\|$','','')
 "}}}
-" term colorlist "{{{ 
+" term clr "{{{
 let s:term8_dict= {
             \0:"000000",1:"800000",2:"008000",
             \3:"808000",4:"000080",5:"800080",
@@ -305,7 +299,7 @@ let s:term_dict = {
            \}
 
 "}}}
-" for match dict "{{{
+" match dic "{{{
 if !exists("s:misc_dict")|let s:misc_dict={}|endif
 if !exists("s:rect_dict")|let s:rect_dict={}|endif
 if !exists("s:hsv_dict") |let s:hsv_dict={} |endif
@@ -1330,7 +1324,7 @@ function! s:draw_text(...) "{{{
     endfor
 
     " para and help, stat:
-    let help_txt = "?:tips yy:yank g1:list H:help  "
+    let help_txt = "?:tips yy:yank l1:list H:help  "
     
     let stat_g = g:ColorV_gen_space==?"hsv" ? "H" : "Y"
     let stat_w = g:ColorV_win_space==?"hsv" ? "V" : "L"
@@ -1347,7 +1341,8 @@ function! s:draw_text(...) "{{{
         let line[8]=s:line_sub(line[8],stat_txt,s:stat_pos)
     elseif s:mode=="mid"
         let line[0]=s:line("ColorV ".g:ColorV.ver,3)
-        let line[1]=s:line("Hex:".hex,22)
+        " let line[1]=s:line("Hex:".hex,22)
+        let line[0]=s:line_sub(line[0],"Hex:".hex,22)
         let line[2]=s:line("R:".r."  G:".g."  B:".b,22)
         let line[3]=s:line("H:".h."  S:".s."  V:".v,22)
         let line[4]=s:line("H:".H."  L:".L."  S:".S,22)
@@ -1735,7 +1730,7 @@ endfun
 "}}}
 function! s:map_define() "{{{
 
-    let t = ["<C-j>","<C-k>","<CR>","<KEnter>","<Space>"
+    let t = ["<C-k>","<CR>","<KEnter>","<Space>"
                 \,"<Space><Space>","<2-Leftmouse>","<3-Leftmouse>"]
 
     let m_txt = "nmap <silent><buffer> "
@@ -1751,12 +1746,13 @@ function! s:map_define() "{{{
     "edit
     nmap <silent><buffer> = :call <SID>edit_at_cursor("+")<cr>
     nmap <silent><buffer> + :call <SID>edit_at_cursor("+")<cr>
-    nmap <silent><buffer> <ScrollWheelUp> :call <SID>edit_at_cursor("+")<cr>
     nmap <silent><buffer> - :call <SID>edit_at_cursor("-")<cr>
     nmap <silent><buffer> _ :call <SID>edit_at_cursor("-")<cr>
+    nmap <silent><buffer> <ScrollWheelUp> :call <SID>edit_at_cursor("+")<cr>
     nmap <silent><buffer> <ScrollWheelDown> :call <SID>edit_at_cursor("-")<cr>
 
     "edit name
+    nmap <silent><buffer> nn :call colorv#list_win()<cr>
     nmap <silent><buffer> na :call <SID>input_colorname()<cr>
     nmap <silent><buffer> ne :call <SID>input_colorname()<cr>
     nmap <silent><buffer> nx :call <SID>input_colorname("X11")<cr>
@@ -1773,33 +1769,33 @@ function! s:map_define() "{{{
     nmap <silent><buffer> <F1> :h colorv-quickstart<cr>
 
     "Copy color
-    map <silent><buffer> C :call <SID>copy("HEX","+")<cr>
-    map <silent><buffer> cc :call <SID>copy("HEX","+")<cr>
-    map <silent><buffer> cx :call <SID>copy("HEX0","+")<cr>
-    map <silent><buffer> cs :call <SID>copy("NS6","+")<cr>
-    map <silent><buffer> c# :call <SID>copy("NS5","+")<cr>
-    map <silent><buffer> cr :call <SID>copy("RGB","+")<cr>
-    map <silent><buffer> cp :call <SID>copy("RGBP","+")<cr>
+    map <silent><buffer> C   :call <SID>copy("HEX","+")<cr>
+    map <silent><buffer> cc  :call <SID>copy("HEX","+")<cr>
+    map <silent><buffer> cx  :call <SID>copy("HEX0","+")<cr>
+    map <silent><buffer> cs  :call <SID>copy("NS6","+")<cr>
+    map <silent><buffer> c#  :call <SID>copy("NS5","+")<cr>
+    map <silent><buffer> cr  :call <SID>copy("RGB","+")<cr>
+    map <silent><buffer> cp  :call <SID>copy("RGBP","+")<cr>
     map <silent><buffer> caa :call <SID>copy("RGBA","+")<cr>
     map <silent><buffer> cap :call <SID>copy("RGBAP","+")<cr>
-    map <silent><buffer> cn :call <SID>copy("NAME","+")<cr>
-    map <silent><buffer> ch :call <SID>copy("HSV","+")<cr>
-    map <silent><buffer> cl :call <SID>copy("HSL","+")<cr>
-    map <silent><buffer> cm :call <SID>copy("CMYK","+")<cr>
+    map <silent><buffer> cn  :call <SID>copy("NAME","+")<cr>
+    map <silent><buffer> ch  :call <SID>copy("HSV","+")<cr>
+    map <silent><buffer> cl  :call <SID>copy("HSL","+")<cr>
+    map <silent><buffer> cm  :call <SID>copy("CMYK","+")<cr>
 
-    map <silent><buffer> Y :call <SID>copy()<cr>
-    map <silent><buffer> yy :call <SID>copy()<cr>
-    map <silent><buffer> yx :call <SID>copy("HEX0")<cr>
-    map <silent><buffer> ys :call <SID>copy("NS6")<cr>
-    map <silent><buffer> y# :call <SID>copy("NS6")<cr>
-    map <silent><buffer> yr :call <SID>copy("RGB")<cr>
-    map <silent><buffer> yp :call <SID>copy("RGBP")<cr>
+    map <silent><buffer> Y   :call <SID>copy()<cr>
+    map <silent><buffer> yy  :call <SID>copy()<cr>
+    map <silent><buffer> yx  :call <SID>copy("HEX0")<cr>
+    map <silent><buffer> ys  :call <SID>copy("NS6")<cr>
+    map <silent><buffer> y#  :call <SID>copy("NS6")<cr>
+    map <silent><buffer> yr  :call <SID>copy("RGB")<cr>
+    map <silent><buffer> yp  :call <SID>copy("RGBP")<cr>
     map <silent><buffer> yaa :call <SID>copy("RGBA")<cr>
     map <silent><buffer> yap :call <SID>copy("RGBAP")<cr>
-    map <silent><buffer> yn :call <SID>copy("NAME")<cr>
-    map <silent><buffer> yh :call <SID>copy("HSV")<cr>
-    map <silent><buffer> yl :call <SID>copy("HSL")<cr>
-    map <silent><buffer> ym :call <SID>copy("CMYK")<cr>
+    map <silent><buffer> yn  :call <SID>copy("NAME")<cr>
+    map <silent><buffer> yh  :call <SID>copy("HSV")<cr>
+    map <silent><buffer> yl  :call <SID>copy("HSL")<cr>
+    map <silent><buffer> ym  :call <SID>copy("CMYK")<cr>
 
     "paste color
     map <silent><buffer> <c-v> :call <SID>paste("+")<cr>
@@ -1808,22 +1804,22 @@ function! s:map_define() "{{{
     map <silent><buffer> <middlemouse> :call <SID>paste("+")<cr>
 
     "generator with current color
-    nmap <silent><buffer> gh :call colorv#gen_win(g:ColorV.HEX,"Hue",20,15)<cr>
-    nmap <silent><buffer> g1 :call colorv#gen_win(g:ColorV.HEX,"Hue",20,15)<cr>
-    nmap <silent><buffer> gs :call colorv#gen_win(g:ColorV.HEX,"Saturation",20,5,1)<cr>
-    nmap <silent><buffer> gv :call colorv#gen_win(g:ColorV.HEX,"Value",20,5,1)<cr>
-    nmap <silent><buffer> ga :call colorv#gen_win(g:ColorV.HEX,"Analogous")<cr>
-    nmap <silent><buffer> gq :call colorv#gen_win(g:ColorV.HEX,"Square")<cr>
-    nmap <silent><buffer> gn :call colorv#gen_win(g:ColorV.HEX,"Neutral")<cr>
-    nmap <silent><buffer> gc :call colorv#gen_win(g:ColorV.HEX,"Clash")<cr>
-    nmap <silent><buffer> gp :call colorv#gen_win(g:ColorV.HEX,"Split-Complementary")<cr>
-    nmap <silent><buffer> gm :call colorv#gen_win(g:ColorV.HEX,"Monochromatic")<cr>
-    nmap <silent><buffer> g2 :call colorv#gen_win(g:ColorV.HEX,"Complementary")<cr>
-    nmap <silent><buffer> gt :call colorv#gen_win(g:ColorV.HEX,"Triadic")<cr>
-    nmap <silent><buffer> g3 :call colorv#gen_win(g:ColorV.HEX,"Triadic")<cr>
-    nmap <silent><buffer> g4 :call colorv#gen_win(g:ColorV.HEX,"Tetradic")<cr>
-    nmap <silent><buffer> g5 :call colorv#gen_win(g:ColorV.HEX,"Five-Tone")<cr>
-    nmap <silent><buffer> g6 :call colorv#gen_win(g:ColorV.HEX,"Six-Tone")<cr>
+    nmap <silent><buffer> lh :call colorv#gen_win(g:ColorV.HEX,"Hue",20,15)<cr>
+    nmap <silent><buffer> l1 :call colorv#gen_win(g:ColorV.HEX,"Hue",20,15)<cr>
+    nmap <silent><buffer> ls :call colorv#gen_win(g:ColorV.HEX,"Saturation",20,5,1)<cr>
+    nmap <silent><buffer> lv :call colorv#gen_win(g:ColorV.HEX,"Value",20,5,1)<cr>
+    nmap <silent><buffer> la :call colorv#gen_win(g:ColorV.HEX,"Analogous")<cr>
+    nmap <silent><buffer> lq :call colorv#gen_win(g:ColorV.HEX,"Square")<cr>
+    nmap <silent><buffer> ln :call colorv#gen_win(g:ColorV.HEX,"Neutral")<cr>
+    nmap <silent><buffer> lc :call colorv#gen_win(g:ColorV.HEX,"Clash")<cr>
+    nmap <silent><buffer> lp :call colorv#gen_win(g:ColorV.HEX,"Split-Complementary")<cr>
+    nmap <silent><buffer> lm :call colorv#gen_win(g:ColorV.HEX,"Monochromatic")<cr>
+    nmap <silent><buffer> l2 :call colorv#gen_win(g:ColorV.HEX,"Complementary")<cr>
+    nmap <silent><buffer> lt :call colorv#gen_win(g:ColorV.HEX,"Triadic")<cr>
+    nmap <silent><buffer> l3 :call colorv#gen_win(g:ColorV.HEX,"Triadic")<cr>
+    nmap <silent><buffer> l4 :call colorv#gen_win(g:ColorV.HEX,"Tetradic")<cr>
+    nmap <silent><buffer> l5 :call colorv#gen_win(g:ColorV.HEX,"Five-Tone")<cr>
+    nmap <silent><buffer> l6 :call colorv#gen_win(g:ColorV.HEX,"Six-Tone")<cr>
 
     "easy moving
     noremap <silent><buffer>j gj
@@ -2307,13 +2303,12 @@ function! s:set_in_pos() "{{{
     let [rs_x,rs_y,rs_w,rs_h]=s:his_set_rect
     let [rc_x,rc_y,rc_w,rc_h]=s:his_cpd_rect
 
-    "pallette "{{{
+    "pallette "{{{3
     if (s:mode=="max" || s:mode=="mid" ) && l > s:poff_y && l<= s:pal_H+s:poff_y && c<= s:pal_W
         let hex=s:pal_clr_list[l-s:poff_y-1][c-s:poff_x-1]
         call s:echo("HEX(Pallet): ".hex)
         call s:draw_win(hex)
-    "}}}
-     "{{{ hsv line
+    "hsv line "{{{3
     elseif l==1 &&  c<=s:pal_W
         "hue line
         let [h1,s1,v1]=colorv#hex2hsv(s:hueline_list[(c-1)])
@@ -2344,9 +2339,7 @@ function! s:set_in_pos() "{{{
         exe e_txt
         call s:draw_win(hex)
         return
-        
-    "}}}
-    "cpd_history section "{{{
+    "his_line "{{{3
     elseif s:mode=="max" && l==rc_y &&  c>=rc_x  && c<=(rc_x+rc_w*18-1)
         for i in range(18)
             if c<rc_x+rc_w*(i+1)
@@ -2365,7 +2358,7 @@ function! s:set_in_pos() "{{{
                 endif
             endif
         endfor
-    "}}}
+    "tip_line "{{{3
     elseif s:mode != "min" && l==s:pal_H+1 && c < s:stat_pos && c>=s:tip_pos
         if 22 <= c && c <= 27
             call s:echo_tips()
@@ -2377,7 +2370,7 @@ function! s:set_in_pos() "{{{
             h colorv-usage
         endif
 
-    " STAT control "{{{
+    "ctr_stat "{{{3
     elseif l==s:pal_H+1 && c >= s:stat_pos
         let char = getline(l)[c-1]
         if char =~ "Y"
@@ -2403,8 +2396,8 @@ function! s:set_in_pos() "{{{
         elseif char =~ '[Mm-]'
             call s:mode_toggle()
             call s:echo("window mode is ".s:mode)
-        endif "}}}
-    "set_history section "{{{
+        endif 
+    "his_pal "{{{3
     elseif l<=(rs_h+rs_y-1)  && l>=rs_y &&  c>=rs_x && c<=(rs_x+rs_w*3-1)
         for i in range(3)
             if c<=(rs_x+rs_w*(1+i)-1)
@@ -2415,9 +2408,8 @@ function! s:set_in_pos() "{{{
         endfor
         call s:draw_win(hex)
         return
-        "}}}
     else
-        "cursoredit check "{{{
+    "cur_chk "{{{3
         let pos_list = s:mode=="max" ? s:max_pos :
                 \ s:mode=="min" ? s:min_pos : s:mid_pos
         for [name,y,x,width] in pos_list
@@ -2427,9 +2419,9 @@ function! s:set_in_pos() "{{{
             endif
         endfor
 
-        call s:warning("Not Proper Position.")
+        call s:warning("Not Valid Position.")
         return -1
-    endif "}}}
+    endif "}}}3
 
 endfunction "}}}
 function! s:mode_toggle() "{{{
@@ -3680,7 +3672,7 @@ function! colorv#prev_txt(txt) "{{{
     let bufnr=bufnr('%')
 
     let view_name  = exists("b:view_name")  && b:view_name==1 ? 1 : 0
-    let view_block = exists("b:view_block") && b:view_block==1 ? 1 : 0
+    let view_homo = exists("b:view_homo") && b:view_homo==1 ? 1 : 0
 
     let hex_list=s:txt2hex(a:txt)
 
@@ -3700,7 +3692,7 @@ function! colorv#prev_txt(txt) "{{{
 
         " cv_prv3_ff0000_NS6
         let hi_grp="cv_prv".bufnr."_".hex."_".fmt
-        let hi_fg = view_block==1 ? hex : s:rlt_clr(hex)
+        let hi_fg = view_homo==1 ? hex : s:rlt_clr(hex)
 
         " if does not exists in dict. then hi and add.
         " if exists , not hi it again.
@@ -3719,14 +3711,14 @@ function! colorv#prev_txt(txt) "{{{
 endfunction "}}}
 function! colorv#preview(...) "{{{
 
-    let b:view_name=g:ColorV_view_name
-    let b:view_block=g:ColorV_view_block
+    let b:view_name=g:ColorV_preview_name
+    let b:view_homo=g:ColorV_preview_homo
     let silent=0
     if exists("a:1")
-        " N-> noname B->noblock S->nosilence
-        " n-> name_ b->block s->silence
+        " n-> name_ b->homo s->silence
+        " N-> noname B->nohomo S->nosilence
         let b:view_name = a:1=~#"N" ? 0 : a:1=~#"n" ? 1 : b:view_name
-        let b:view_block = a:1=~#"B" ? 0 : a:1=~#"b" ? 1 : b:view_block
+        let b:view_homo = a:1=~#"B" ? 0 : a:1=~#"b" ? 1 : b:view_homo
         let silent = a:1=~#"S" ? 0 : a:1=~#"s" ? 1 : silent
         if a:1 =~# "c"
             call s:clear_match("prev")
@@ -3737,9 +3729,10 @@ function! colorv#preview(...) "{{{
     " if file > 300 line, preview 200 line around cursor.
     let cur = line('.')
     let lst = line('$')
-    if lst >= 300
-        let [begin,end] = cur<200 ? [1,200] :
-                    \ cur>lst-200 ? [lst-200,lst] : [cur-100,cur+100]
+    let mprv = g:ColorV_max_preview
+    if lst >= mprv*3/2
+        let [begin,end] = cur<mprv ? [1,mprv] :
+                    \ cur>lst-mprv ? [lst-mprv,lst] : [cur-mprv/2,cur+mprv/2]
     else
         let [begin,end] =[1,lst]
     endif
@@ -3756,13 +3749,13 @@ function! colorv#preview(...) "{{{
 endfunction "}}}
 function! colorv#preview_line(...) "{{{
 
-    let b:view_name=g:ColorV_view_name
-    let b:view_block=g:ColorV_view_block
+    let b:view_name=g:ColorV_preview_name
+    let b:view_homo=g:ColorV_preview_homo
     if exists("a:1")
-        " N-> noname B->noblock C->noclear
-        " n-> name b->block c->clear
+        " n-> name b->homo c->clear
+        " N-> noname B->nohomo C->noclear
         let b:view_name = a:1=~#"N" ? 0 : a:1=~#"n" ? 1 : b:view_name
-        let b:view_block = a:1=~#"B" ? 0 : a:1=~#"b" ? 1 : b:view_block
+        let b:view_homo = a:1=~#"B" ? 0 : a:1=~#"b" ? 1 : b:view_homo
         if a:1 =~# "c"
             call s:clear_match("prev")
         endif
@@ -3777,6 +3770,13 @@ function! colorv#preview_line(...) "{{{
 
     call colorv#prev_txt(line)
 endfunction "}}}
+function! colorv#prev_aug() "{{{
+    aug colorv#prev_aug
+        au!  BufWinEnter  <buffer> call colorv#preview()
+        au!  BufWritePost <buffer> call colorv#preview()
+    aug END
+endfunction "}}}
+"}}}1
 "INIT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#write_cache() "{{{
@@ -3824,14 +3824,14 @@ function! colorv#init() "{{{
             au! VIMLEAVEPre * call colorv#write_cache()
         aug END
     endif "}}}
-    if g:ColorV_prev_css==1 "{{{
-        aug colorv#auto_prev
-            au!  BufWinEnter *.css call colorv#preview()
-            au!  BufWritePost *.css call colorv#preview()
-        aug END
-    endif "}}}
+
+    aug colorv#preview_ftpye "{{{
+        for file in  split(g:ColorV_preview_ftype, '\s*,\s*')
+                exec "au!  FileType ".file." call colorv#prev_aug()"
+        endfor
+    aug END "}}}
+
 endfunction "}}}
-"}}}1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 call colorv#init()
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
