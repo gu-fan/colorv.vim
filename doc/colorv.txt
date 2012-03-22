@@ -309,20 +309,20 @@ COLORINFO                                            *colorv-colorinfo*
     The formats of color-text.~
     It is used when coping/pasting/reading color-texts.
     There are following formats currently:
-    HEX     FFFFFF                  (uppercase only)
-    NS6     #ffffff                 (short for Number Sign 6)
+    HEX     FFFFFF                          (uppercase only)
+    NS6     #ffffff                         (short for Number Sign 6)
     NS3     #fff
     HEX0    0xffffff
-    RGB     rgb(255,255,255)        (css1 standard)
-    RGBP    rgb(100%,100%,100%)
-    RGBA    rgba(255,255,255,1.0)   (css2 standard)
+    RGB     rgb(255,255,255)                (css1 standard)
+    RGBA    rgba(255,255,255,1.0)           (css2 standard)
+    HSL     hsl(300,100%,100%)              (css3 standard)
+    HSLA    hsla(300,100%,100%,1.0)         (css3 standard)
+    glRGBA  glColor4f(1.00,1.00,1.00,1.00)  (openGL color format)
+    RGBP    rgb(100%, 98%, 98%)             
     RGBAP   rgba(100%,100%,100%,1.0) 
     HSV     hsv(360,100,100)
-    HSL     hsl(300,100%,100%)      (css3 standard)
-    HSLA    hsl(300,100%,100%,1.0)  (css3 standard)
     CMYK    cmyk(1.00,1.00,1.00,1.00) 
-    glRGBA  glColor4f(1.00,1.00,1.00,1.00) (openGL color format)
-    NAME    red/lime/blue           (see |colorv-colorname|)
+    NAME    red/lime/blue                   (see |colorv-colorname|)
 
 ------------------------------------------------------------------------------
                                                       *colorv-generate*

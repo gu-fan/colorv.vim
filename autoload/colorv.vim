@@ -1534,7 +1534,7 @@ function! colorv#win(...) "{{{
         else
             let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "FF0000"
             let s:skip_his_block=1
-            call s:echo("Use default [".hex."]")
+            call s:echo("Use [".hex."]")
         endif
     else
         let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "FF0000"
@@ -2855,27 +2855,31 @@ endfunction "}}}
 function! s:hex2txt(hex,fmt,...) "{{{
 
     let hex = s:fmt_hex(a:hex)
-    let [r ,g ,b ] = s:printf("%3d",colorv#hex2rgb(hex))
-    let [rp,gp,bp] = s:printf("%3d",s:number([r/2.55,g/2.55,b/2.55]))
-    let [rf,gf,bf] = s:printf("%.2f",s:float([r/255.0,g/255.0,b/255.0]))
-    let [h ,s ,v ] = s:printf("%3d",colorv#rgb2hsv([r,g,b]))
-    let [H ,L ,S ] = s:printf("%3d",colorv#rgb2hls([r,g,b]))
+    " NOTE: ' 255'/2 = 0 . so use str and nr separately
+    let [r ,g ,b ] = colorv#hex2rgb(hex)
+    let [rs,gs,bs] = s:printf("%3d",[r,g,b])
 
     if a:fmt=="RGB"
-        let text="rgb(".r.",".g.",".b.")"
+        let text="rgb(".rs.",".gs.",".bs.")"
+    elseif a:fmt=="RGBA"
+        let text="rgba(".rs.",".gs.",".bs.",1.0)"
     elseif a:fmt=="HSV"
+        let [h ,s ,v ] = s:printf("%3d",colorv#rgb2hsv([r,g,b]))
         let text="hsv(".h.",".s.",".v.")"
     elseif a:fmt=="HSL"
+        let [H ,L ,S ] = s:printf("%3d",colorv#rgb2hls([r,g,b]))
         let text="hsl(".H.",".S."%,".L."%)"
     elseif a:fmt=="HSLA"
+        let [H ,L ,S ] = s:printf("%3d",colorv#rgb2hls([r,g,b]))
         let text="hsla(".H.",".S."%,".L."%,1.0)"
     elseif a:fmt=="RGBP"
+        let [rp,gp,bp] = s:printf("%3d",s:number([r/2.55,g/2.55,b/2.55]))
         let text="rgb(".rp."%,".gp."%,".bp."%)"
-    elseif a:fmt=="RGBA"
-        let text="rgba(".r.",".g.",".b.",1.0)"
     elseif a:fmt=="glRGBA"
+        let [rf,gf,bf] = s:printf("%.2f",[r/255.0,g/255.0,b/255.0])
         let text="glColor4f(".rf.",".gf.",".bf.",1.0)"
     elseif a:fmt=="RGBAP"
+        let [rp,gp,bp] = s:printf("%3d",s:number([r/2.55,g/2.55,b/2.55]))
         let text="rgba(".rp."%,".gp."%,".bp."%,1.0)"
     elseif a:fmt=="HEX"
         let text=hex
@@ -3183,16 +3187,16 @@ function! colorv#cursor_win(...) "{{{
     if exists("a:1") && a:1==1
         let s:ColorV.change_word=1
         let s:ColorV.change_all=0
-        call s:caution("Will Change [".pat."] after ColorV closed.")
+        " call s:caution("Will Change [".pat."] after ColorV closed.")
     elseif exists("a:1") && a:1==2
         let s:ColorV.change_word=1
         let s:ColorV.change_all=1
-        call s:caution("Will Change ALL [".pat."] after ColorV closed.")
+        " call s:caution("Will Change ALL [".pat."] after ColorV closed.")
     elseif exists("a:1") && a:1==3
         let type=exists("a:2") ? a:2 : ""
         let nums=exists("a:3") ? a:3 : ""
         let step=exists("a:4") ? a:4 : ""
-        call s:echo("Will Generate color list with [".pat."].")
+        " call s:echo("Will Generate color list with [".pat."].")
         call colorv#gen_win(hex,type,nums,step)
         return
     elseif exists("a:1") && a:1==4
