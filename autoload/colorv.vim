@@ -292,10 +292,10 @@ let s:term8_dict= {
 let s:term_dict = {
             \0:  '000000', 1:  '000080', 2:  '008000',
             \3:  '008080', 4:  '800000', 5:  '800080',
-            \6:  '808000', 7:  'c0c0c0', 8:  '808080',
-            \9:  'ff0000', 10: '00ff00', 11: '00ffff',
-            \12: 'ff0000', 13: 'ff00ff', 14: 'ffff00',
-            \15: 'ffffff',
+            \6:  '808000', 7:  'C0C0C0', 8:  '808080',
+            \9:  'FF0000', 10: '00FF00', 11: '00FFFF',
+            \12: 'FF0000', 13: 'FF00FF', 14: 'FFFF00',
+            \15: 'FFFFFF',
            \}
 
 "}}}
@@ -1524,7 +1524,7 @@ function! colorv#win(...) "{{{
     call s:win_setl()
     setl ft=ColorV
     call s:map_define()
-    "{{{ get hex
+    " get hex "{{{ 
     if exists("a:2")
         "skip history if no new hex
         let hex_list=s:txt2hex(a:2)
@@ -1532,15 +1532,15 @@ function! colorv#win(...) "{{{
             let hex=s:fmt_hex(hex_list[0][0])
             call s:echo("Use [".hex."]")
         else
-            let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
+            let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "FF0000"
             let s:skip_his_block=1
             call s:echo("Use default [".hex."]")
         endif
     else
-        let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "ff0000"
+        let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "FF0000"
         let s:skip_his_block=1
     endif "}}}
-    " init mode"{{{
+    " init mode "{{{
     if g:ColorV_win_space==?"hls" || g:ColorV_win_space==?"hsl"
         let s:space="hls"
     else
@@ -2628,7 +2628,7 @@ fmt['HSV']=re.compile(r'''
         (?<!\w)hsv[(]
         [ \t]*(?P<H>\d{1,3}),                    # group2 H
         [ \t]*(?P<S>\d{1,3}),                    # group3 S
-        [ \t]*(?P<V>\d{1,3})                     # group4 L
+        [ \t]*(?P<V>\d{1,3})                     # group4 V
         [)](?!\w)
         (?ix)
                         ''')
@@ -2636,7 +2636,7 @@ fmt['HSVA']=re.compile(r'''
         (?<!\w)hsva[(]
         [ \t]*(?P<H>\d{1,3}),                    # group2 H
         [ \t]*(?P<S>\d{1,3}),                    # group3 S
-        [ \t]*(?P<V>\d{1,3}),                    # group4 L
+        [ \t]*(?P<V>\d{1,3}),                    # group4 V
         [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
         [)](?!\w)
         (?ix)
@@ -2724,7 +2724,7 @@ def txt2hex(txt): #{{{
                     hx=rgb2hex(cmyk2rgb([c,m,y,k]))
                 elif key=="HSV" or key=="HSVA" :
                     h,s,v=int(x.group('H')),int(x.group('S')),int(x.group('V'))
-                    hx=rgb2hex(hls2rgb([h,s,v]))
+                    hx=rgb2hex(hsv2rgb([h,s,v]))
                 elif key=="NAME":
                     hx=nam2hex(x.group())
                 else:
