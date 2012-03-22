@@ -305,6 +305,7 @@ COLORINFO                                            *colorv-colorinfo*
     You can entering X11 name by 'nx' and W3C name by 'ne'.
 ------------------------------------------------------------------------------
                                                     *colorv-color-text*
+                                                    *colorv-formats*
     The formats of color-text.~
     It is used when coping/pasting/reading color-texts.
     There are following formats currently:
@@ -405,7 +406,7 @@ MAPPINGS                                            *colorv-mappings*
                     Redefine it with :ColorVMin<CR>
 
     <leader>cw      Open ColorV window with cursor word <cWORD>.
-                    the word could be the pattern of |colorv-color-text| .
+                    the word could be the pattern of |colorv-formats| .
                     Redefine it with :ColorVView<CR>
 
     <leader>ce      Open ColorV window with cursor word and change it later.
