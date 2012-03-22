@@ -72,7 +72,7 @@ QUICKSTART                                               *colorv-quickstart*
     Open ColorV window with color-text under cursor to get it's info.~
         <leader>cw
 
-        Color-Text: #ff9744 rgb(33,44,155) OrangeRed 'cadetblue'
+        Color-Text: FF00CC #ff9744 rgb(33,44,155) OrangeRed 'cadetblue'
 
         Put your cursor on the word 'rgb(33,44,155)' and press <leader>cw.
         ColorV is opend with it's color.
@@ -276,7 +276,9 @@ COLORINFO                                            *colorv-colorinfo*
     This section is the information about colors.~
                                                      *colorv-colorname*
     The colorname are the the name of the colors, like 'red', 'green', 
-    'blue', 'OrangeRed', 'cornsilk' 
+    'blue', 'OrangeRed', 'cornsilk'.
+    Note Exclude name with '_' or '-'.
+         For example 'white-space' , 'black-sheep'
 
     ColorV contains two types of names: X11 and W3C. 
     They have few difference.
@@ -284,20 +286,14 @@ COLORINFO                                            *colorv-colorinfo*
           The W3C standard is mostly used in HTML/CSS and browsers.
     
     There are several color names that have the same Hex.
-        Aqua            #00ffff
-        Cyan            #00ffff
-        Magenta         #ff00ff
-        Fuchsia         #ff00ff
+        Aqua      Cyan            #00FFFF
+        Magenta   Fuchsia         #FF00FF
 
     There are several clashes between X11 and W3C colornames.
-        Gray    (X11)	#BEBEBE
-        Gray    (W3C) 	#7F7F7F
-        Green   (X11) 	#00FF00
-        Green   (W3C) 	#007F00
-        Maroon  (X11) 	#B03060
-        Maroon  (W3C) 	#7F0000
-        Purple  (X11) 	#A020F0
-        Purple  (W3C) 	#7F007F
+        Gray    (X11)	#BEBEBE (W3C) 	#7F7F7F
+        Green   (X11) 	#00FF00 (W3C) 	#007F00
+        Maroon  (X11) 	#B03060 (W3C) 	#7F0000
+        Purple  (X11) 	#A020F0 (W3C) 	#7F007F
     You can get the name table from
     http://en.wikipedia.org/wiki/X11_color_names
     
@@ -312,22 +308,21 @@ COLORINFO                                            *colorv-colorinfo*
     The formats of color-text.~
     It is used when coping/pasting/reading color-texts.
     There are following formats currently:
-    NS6     #ffffff     (short for Number Sign 6)
+    HEX     FFFFFF                  (uppercase only)
+    NS6     #ffffff                 (short for Number Sign 6)
     NS3     #fff
     HEX0    0xffffff
-    HEX     ffffff
     RGB     rgb(255,255,255)        (css1 standard)
     RGBP    rgb(100%,100%,100%)
     RGBA    rgba(255,255,255,1.0)   (css2 standard)
     RGBAP   rgba(100%,100%,100%,1.0) 
-    NAME    red/lime/blue (see |colorv-colorname|)
     HSV     hsv(360,100,100)
     HSL     hsl(300,100%,100%)      (css3 standard)
     HSLA    hsl(300,100%,100%,1.0)  (css3 standard)
     CMYK    cmyk(1.00,1.00,1.00,1.00) 
     glRGBA  glColor4f(1.00,1.00,1.00,1.00) (openGL color format)
+    NAME    red/lime/blue           (see |colorv-colorname|)
 
-    You can also define your own color formats with |colorv-var-colors|.
 ------------------------------------------------------------------------------
                                                       *colorv-generate*
     Types for generating color list.~
@@ -349,16 +344,16 @@ COLORINFO                                            *colorv-colorinfo*
     NOTE
     Same S and V in HSV and HLS colors space don't result same lumination.
     e.g:
-    Blue(0000ff) and Yellow(ffff00) both '100' in S and V
+    Blue(0000FF) and Yellow(FFFF00) both '100' in S and V
     but their lumination differs obviously.
-    Their Y(luma) in YIQ colorspace are '89'(yellow) and '11'(blue)
+    Their Y(luma) in YIQ colorspace are '89'(Yellow) and '11'(Blue)
 
     See YIQ http://en.wikipedia.org/wiki/YIQ
     With |g:ColorV_gen_space| set to 'yiq'. 
     You could get colors with same 'Lumination'. 
     The disadvantage is generated colors 'Hue' Scope decreased.
     
-    Below is ColorV list generate in "Hue" on BLue and Yellow.
+    Below is ColorV list generate in "Hue" on Blue and Yellow.
     Using :ColorVview (<leader>cpp) to have a clear view.
         HSV                YIQ (Blue)          YIQ (Yellow)
         #4000FF            #2C00EB             #D3FF14 
@@ -475,7 +470,7 @@ display.
 
                                                     *colorv-mapping-copy*
 
-    Y/yy        Copy HEX format 'ffffff' into register"
+    Y/yy        Copy HEX format 'FFFFFF' into register"
     ys/y#       Copy NS6 format '#ffffff' into register"
     yx          Copy HEX0 plain '0xffffff' into register"
     yr          Copy RGB format 'rgb(255,255,255)' into register"
@@ -487,7 +482,7 @@ display.
     yl          Copy HSV format 'hsl(360,100,100)' into register"
     ym          Copy CMYK format 'cmyk(1.00,1.00,1.001.00)' into register"
 
-    C/cc        Copy HEX format 'ffffff' into register+
+    C/cc        Copy HEX format 'FFFFFF' into register+
     cs/c#       Copy NS6 format '#ffffff' into register+
     cx          Copy HEX0 plain '0xffffff' into register+
     cr          Copy RGB format 'rgb(255,255,255)' into register+

@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2012-03-19
+" Last Update: 2012-03-22
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -147,8 +147,8 @@ let s:fmt.RGBA='rgba(\s*\d\{1,3},\s*\d\{1,3},\s*\d\{1,3}\,'
 let s:fmt.RGBP='rgb(\s*\d\{1,3}%,\s*\d\{1,3}%,\s*\d\{1,3}%)'
 let s:fmt.RGBAP='rgba(\s*\d\{1,3}%,\s*\d\{1,3}%,\s*\d\{1,3}%,'
             \.'\s*\d\{1,3}\%(\.\d*\)\=%\=)'
-"ffffff
-let s:fmt.HEX='\%(0x\|#\|\x\)\@<!\x\{6}\x\@!'
+"FFFFFF . uppercase only
+let s:fmt.HEX='\%(\w\|#\)\@<![0-9A-F]\{6}\C\w\@!'
 "0xffffff
 let s:fmt.HEX0='0x\x\{6}\x\@!'
 "number sign 6 #ffffff
@@ -178,75 +178,75 @@ let s:clrnW3C=[['Gray', '808080'], ['Green', '008000']
             \, ['Maroon', '800000'], ['Purple', '800080']]
 
 let s:clrn=[
-\  ['AliceBlue'           , 'f0f8ff'], ['AntiqueWhite'        , 'faebd7']
-\, ['Aqua'                , '00ffff'], ['Aquamarine'          , '7fffd4']
-\, ['Azure'               , 'f0ffff'], ['Beige'               , 'f5f5dc']
-\, ['Bisque'              , 'ffe4c4'], ['Black'               , '000000']
-\, ['BlanchedAlmond'      , 'ffebcd'], ['Blue'                , '0000ff']
-\, ['BlueViolet'          , '8a2be2'], ['Brown'               , 'a52a2a']
-\, ['BurlyWood'           , 'deb887'], ['CadetBlue'           , '5f9ea0']
-\, ['Chartreuse'          , '7fff00'], ['Chocolate'           , 'd2691e']
-\, ['Coral'               , 'ff7f50'], ['CornflowerBlue'      , '6495ed']
-\, ['Cornsilk'            , 'fff8dc'], ['Crimson'             , 'dc143c']
-\, ['Cyan'                , '00ffff'], ['DarkBlue'            , '00008b']
-\, ['DarkCyan'            , '008b8b'], ['DarkGoldenRod'       , 'b8860b']
-\, ['DarkGray'            , 'a9a9a9'], ['DarkGreen'           , '006400']
-\, ['DarkKhaki'           , 'bdb76b'], ['DarkMagenta'         , '8b008b']
-\, ['DarkOliveGreen'      , '556b2f'], ['Darkorange'          , 'ff8c00']
-\, ['DarkOrchid'          , '9932cc'], ['DarkRed'             , '8b0000']
-\, ['DarkSalmon'          , 'e9967a'], ['DarkSeaGreen'        , '8fbc8f']
-\, ['DarkSlateBlue'       , '483d8b'], ['DarkSlateGray'       , '2f4f4f']
-\, ['DarkTurquoise'       , '00ced1'], ['DarkViolet'          , '9400d3']
-\, ['DeepPink'            , 'ff1493'], ['DeepSkyBlue'         , '00bfff']
-\, ['DimGray'             , '696969'], ['DodgerBlue'          , '1e90ff']
-\, ['FireBrick'           , 'b22222'], ['FloralWhite'         , 'fffaf0']
-\, ['ForestGreen'         , '228b22'], ['Fuchsia'             , 'ff00ff']
-\, ['Gainsboro'           , 'dcdcdc'], ['GhostWhite'          , 'f8f8ff']
-\, ['Gold'                , 'ffd700'], ['GoldenRod'           , 'daa520']
-\, ['GreenYellow'         , 'adff2f'], ['HoneyDew'            , 'f0fff0']
-\, ['HotPink'             , 'ff69b4'], ['IndianRed'           , 'cd5c5c']
-\, ['Indigo'              , '4b0082'], ['Ivory'               , 'fffff0']
-\, ['Khaki'               , 'f0e68c'], ['Lavender'            , 'e6e6fa']
-\, ['LavenderBlush'       , 'fff0f5'], ['LawnGreen'           , '7cfc00']
-\, ['LemonChiffon'        , 'fffacd'], ['LightBlue'           , 'add8e6']
-\, ['LightCoral'          , 'f08080'], ['LightCyan'           , 'e0ffff']
-\, ['LightGoldenRodYellow', 'fafad2'], ['LightGrey'           , 'd3d3d3']
-\, ['LightGreen'          , '90ee90'], ['LightPink'           , 'ffb6c1']
-\, ['LightSalmon'         , 'ffa07a'], ['LightSeaGreen'       , '20b2aa']
-\, ['LightSkyBlue'        , '87cefa'], ['LightSlateGray'      , '778899']
-\, ['LightSteelBlue'      , 'b0c4de'], ['LightYellow'         , 'ffffe0']
-\, ['Lime'                , '00ff00'], ['LimeGreen'           , '32cd32']
-\, ['Linen'               , 'faf0e6'], ['Magenta'             , 'ff00ff']
-\, ['MediumAquaMarine'    , '66cdaa']
-\, ['MediumBlue'          , '0000cd'], ['MediumOrchid'        , 'ba55d3']
-\, ['MediumPurple'        , '9370d8'], ['MediumSeaGreen'      , '3cb371']
-\, ['MediumSlateBlue'     , '7b68ee'], ['MediumSpringGreen'   , '00fa9a']
-\, ['MediumTurquoise'     , '48d1cc'], ['MediumVioletRed'     , 'c71585']
-\, ['MidnightBlue'        , '191970'], ['MintCream'           , 'f5fffa']
-\, ['MistyRose'           , 'ffe4e1'], ['Moccasin'            , 'ffe4b5']
-\, ['NavajoWhite'         , 'ffdead'], ['Navy'                , '000080']
-\, ['OldLace'             , 'fdf5e6'], ['Olive'               , '808000']
-\, ['OliveDrab'           , '6b8e23'], ['Orange'              , 'ffa500']
-\, ['OrangeRed'           , 'ff4500'], ['Orchid'              , 'da70d6']
-\, ['PaleGoldenRod'       , 'eee8aa'], ['PaleGreen'           , '98fb98']
-\, ['PaleTurquoise'       , 'afeeee'], ['PaleVioletRed'       , 'd87093']
-\, ['PapayaWhip'          , 'ffefd5'], ['PeachPuff'           , 'ffdab9']
-\, ['Peru'                , 'cd853f'], ['Pink'                , 'ffc0cb']
-\, ['Plum'                , 'dda0dd'], ['PowderBlue'          , 'b0e0e6']
-\, ['Red'                 , 'ff0000']
-\, ['RosyBrown'           , 'bc8f8f'], ['RoyalBlue'           , '4169e1']
-\, ['SaddleBrown'         , '8b4513'], ['Salmon'              , 'fa8072']
-\, ['SandyBrown'          , 'f4a460'], ['SeaGreen'            , '2e8b57']
-\, ['SeaShell'            , 'fff5ee'], ['Sienna'              , 'a0522d']
-\, ['Silver'              , 'c0c0c0'], ['SkyBlue'             , '87ceeb']
-\, ['SlateBlue'           , '6a5acd'], ['SlateGray'           , '708090']
-\, ['Snow'                , 'fffafa'], ['SpringGreen'         , '00ff7f']
-\, ['SteelBlue'           , '4682b4'], ['Tan'                 , 'd2b48c']
-\, ['Teal'                , '008080'], ['Thistle'             , 'd8bfd8']
-\, ['Tomato'              , 'ff6347'], ['Turquoise'           , '40e0d0']
-\, ['Violet'              , 'ee82ee'], ['Wheat'               , 'f5deb3']
-\, ['White'               , 'ffffff'], ['WhiteSmoke'          , 'f5f5f5']
-\, ['Yellow'              , 'ffff00'], ['YellowGreen'         , '9acd32']
+\  ['AliceBlue'           , 'F0F8FF'], ['AntiqueWhite'        , 'FAEBD7']
+\, ['Aqua'                , '00FFFF'], ['Aquamarine'          , '7FFFD4']
+\, ['Azure'               , 'F0FFFF'], ['Beige'               , 'F5F5DC']
+\, ['Bisque'              , 'FFE4C4'], ['Black'               , '000000']
+\, ['BlanchedAlmond'      , 'FFEBCD'], ['Blue'                , '0000FF']
+\, ['BlueViolet'          , '8A2BE2'], ['Brown'               , 'A52A2A']
+\, ['BurlyWood'           , 'DEB887'], ['CadetBlue'           , '5F9EA0']
+\, ['Chartreuse'          , '7FFF00'], ['Chocolate'           , 'D2691E']
+\, ['Coral'               , 'FF7F50'], ['CornflowerBlue'      , '6495ED']
+\, ['Cornsilk'            , 'FFF8DC'], ['Crimson'             , 'DC143C']
+\, ['Cyan'                , '00FFFF'], ['DarkBlue'            , '00008B']
+\, ['DarkCyan'            , '008B8B'], ['DarkGoldenRod'       , 'B8860B']
+\, ['DarkGray'            , 'A9A9A9'], ['DarkGreen'           , '006400']
+\, ['DarkKhaki'           , 'BDB76B'], ['DarkMagenta'         , '8B008B']
+\, ['DarkOliveGreen'      , '556B2F'], ['Darkorange'          , 'FF8C00']
+\, ['DarkOrchid'          , '9932CC'], ['DarkRed'             , '8B0000']
+\, ['DarkSalmon'          , 'E9967A'], ['DarkSeaGreen'        , '8FBC8F']
+\, ['DarkSlateBlue'       , '483D8B'], ['DarkSlateGray'       , '2F4F4F']
+\, ['DarkTurquoise'       , '00CED1'], ['DarkViolet'          , '9400D3']
+\, ['DeepPink'            , 'FF1493'], ['DeepSkyBlue'         , '00BFFF']
+\, ['DimGray'             , '696969'], ['DodgerBlue'          , '1E90FF']
+\, ['FireBrick'           , 'B22222'], ['FloralWhite'         , 'FFFAF0']
+\, ['ForestGreen'         , '228B22'], ['Fuchsia'             , 'FF00FF']
+\, ['Gainsboro'           , 'DCDCDC'], ['GhostWhite'          , 'F8F8FF']
+\, ['Gold'                , 'FFD700'], ['GoldenRod'           , 'DAA520']
+\, ['GreenYellow'         , 'ADFF2F'], ['HoneyDew'            , 'F0FFF0']
+\, ['HotPink'             , 'FF69B4'], ['IndianRed'           , 'CD5C5C']
+\, ['Indigo'              , '4B0082'], ['Ivory'               , 'FFFFF0']
+\, ['Khaki'               , 'F0E68C'], ['Lavender'            , 'E6E6FA']
+\, ['LavenderBlush'       , 'FFF0F5'], ['LawnGreen'           , '7CFC00']
+\, ['LemonChiffon'        , 'FFFACD'], ['LightBlue'           , 'ADD8E6']
+\, ['LightCoral'          , 'F08080'], ['LightCyan'           , 'E0FFFF']
+\, ['LightGoldenRodYellow', 'FAFAD2'], ['LightGrey'           , 'D3D3D3']
+\, ['LightGreen'          , '90EE90'], ['LightPink'           , 'FFB6C1']
+\, ['LightSalmon'         , 'FFA07A'], ['LightSeaGreen'       , '20B2AA']
+\, ['LightSkyBlue'        , '87CEFA'], ['LightSlateGray'      , '778899']
+\, ['LightSteelBlue'      , 'B0C4DE'], ['LightYellow'         , 'FFFFE0']
+\, ['Lime'                , '00FF00'], ['LimeGreen'           , '32CD32']
+\, ['Linen'               , 'FAF0E6'], ['Magenta'             , 'FF00FF']
+\, ['MediumAquaMarine'    , '66CDAA']
+\, ['MediumBlue'          , '0000CD'], ['MediumOrchid'        , 'BA55D3']
+\, ['MediumPurple'        , '9370D8'], ['MediumSeaGreen'      , '3CB371']
+\, ['MediumSlateBlue'     , '7B68EE'], ['MediumSpringGreen'   , '00FA9A']
+\, ['MediumTurquoise'     , '48D1CC'], ['MediumVioletRed'     , 'C71585']
+\, ['MidnightBlue'        , '191970'], ['MintCream'           , 'F5FFFA']
+\, ['MistyRose'           , 'FFE4E1'], ['Moccasin'            , 'FFE4B5']
+\, ['NavajoWhite'         , 'FFDEAD'], ['Navy'                , '000080']
+\, ['OldLace'             , 'FDF5E6'], ['Olive'               , '808000']
+\, ['OliveDrab'           , '6B8E23'], ['Orange'              , 'FFA500']
+\, ['OrangeRed'           , 'FF4500'], ['Orchid'              , 'DA70D6']
+\, ['PaleGoldenRod'       , 'EEE8AA'], ['PaleGreen'           , '98FB98']
+\, ['PaleTurquoise'       , 'AFEEEE'], ['PaleVioletRed'       , 'D87093']
+\, ['PapayaWhip'          , 'FFEFD5'], ['PeachPuff'           , 'FFDAB9']
+\, ['Peru'                , 'CD853F'], ['Pink'                , 'FFC0CB']
+\, ['Plum'                , 'DDA0DD'], ['PowderBlue'          , 'B0E0E6']
+\, ['Red'                 , 'FF0000']
+\, ['RosyBrown'           , 'BC8F8F'], ['RoyalBlue'           , '4169E1']
+\, ['SaddleBrown'         , '8B4513'], ['Salmon'              , 'FA8072']
+\, ['SandyBrown'          , 'F4A460'], ['SeaGreen'            , '2E8B57']
+\, ['SeaShell'            , 'FFF5EE'], ['Sienna'              , 'A0522D']
+\, ['Silver'              , 'C0C0C0'], ['SkyBlue'             , '87CEEB']
+\, ['SlateBlue'           , '6A5ACD'], ['SlateGray'           , '708090']
+\, ['Snow'                , 'FFFAFA'], ['SpringGreen'         , '00FF7F']
+\, ['SteelBlue'           , '4682B4'], ['Tan'                 , 'D2B48C']
+\, ['Teal'                , '008080'], ['Thistle'             , 'D8BFD8']
+\, ['Tomato'              , 'FF6347'], ['Turquoise'           , '40E0D0']
+\, ['Violet'              , 'EE82EE'], ['Wheat'               , 'F5DEB3']
+\, ['White'               , 'FFFFFF'], ['WhiteSmoke'          , 'F5F5F5']
+\, ['Yellow'              , 'FFFF00'], ['YellowGreen'         , '9ACD32']
 \]
 let s:clrf=[   ['FF0000', '00FF00', '0000FF', 'Uryyb Jbeyq']
             \, ['0000FF', '00FF00', 'FF0000', 'qyebj byyrU']
@@ -273,9 +273,9 @@ let s:clrf=[   ['FF0000', '00FF00', '0000FF', 'Uryyb Jbeyq']
             \, ['009246', 'F8F808', 'DD171D', 'Frartny~']
             \]
 "}}}
-let s:fmt.NAME=''
+let s:fmt.NAME='\%(\w\|_\|-\)\@<!White\%(\w\|_\|-\)\@!'
 for [nam,hex] in s:clrnW3C+s:clrn
-    let s:fmt.NAME .='\<'.nam.'\>\|'
+    let s:fmt['NAME'] ='\|'. s:fmt['NAME'] .'\%(\w\|_\|-\)\@<!'.nam.'\%(\w\|_\|-\)\@!'
 endfor
 let s:fmt.NAME =substitute(s:fmt.NAME,'\\|$','','')
 "}}}
@@ -2551,7 +2551,7 @@ python << EOF
 import re
 fmt={} #{{{
 # XXX \s is weird that can not be captured sometimes. use [ \t] instead
-# XXX '\( \)' will cause unbalance
+# XXX '\( \)' will cause pair unbalance error
 # XXX and the \( \\) can not catch the ')' . use [(] and [)] instead
 
 fmt['RGB']=re.compile(r'''
@@ -2641,14 +2641,17 @@ fmt['HSVA']=re.compile(r'''
         [)](?!\w)
         (?ix)
                         ''')
+
 # NOTE (?<![0-9a-fA-F]|0[xX]) is wrong!
-#      (?<![0-9a-fA-F])|(?<!0[xX]) is wrong
-#      use (?<!([\w#]))
+#      (?<![0-9a-fA-F])|(?<!0[xX]) is wrong too!
+#      maybe (?<!([09a-fA-F])|(0[xX])) still wrong.
+#      use (?<![\w#]) or (?<![09a-fA-FxX#])
+        
 fmt['HEX']=re.compile(r'''
-        (?<!([\w#]))                    #no preceding [0~z] # 0x
-        (?P<HEX>[0-9a-fA-F]{6})         #group HEX
+        (?<![\w#])                      #no preceding [0~z] # 0x
+        (?P<HEX>[0-9A-F]{6})            #group HEX in upper 'FFFFFF'
         (?!\w)                          #no following [0~z]
-        (?ix)
+        (?x)                            #no ignorecase
                         ''')
 fmt['HEX0']=re.compile(r'''
         0x                              # 0xffffff
@@ -2669,93 +2672,18 @@ fmt['NS3']=re.compile(r'''
         (?ix)
                         ''')
 
-# clr_lst {{{
-#X11 Standard
-clrnX11=[['Gray', 'BEBEBE'], ['Green', '00FF00']
-            , ['Maroon', 'B03060'], ['Purple', 'A020F0']]
-#W3C Standard
-clrnW3C=[['Gray', '808080'], ['Green', '008000']
-            , ['Maroon', '800000'], ['Purple', '800080']]
-clrn=[
-  ['AliceBlue'           , 'f0f8ff'], ['AntiqueWhite'        , 'faebd7']
-, ['Aqua'                , '00ffff'], ['Aquamarine'          , '7fffd4']
-, ['Azure'               , 'f0ffff'], ['Beige'               , 'f5f5dc']
-, ['Bisque'              , 'ffe4c4'], ['Black'               , '000000']
-, ['BlanchedAlmond'      , 'ffebcd'], ['Blue'                , '0000ff']
-, ['BlueViolet'          , '8a2be2'], ['Brown'               , 'a52a2a']
-, ['BurlyWood'           , 'deb887'], ['CadetBlue'           , '5f9ea0']
-, ['Chartreuse'          , '7fff00'], ['Chocolate'           , 'd2691e']
-, ['Coral'               , 'ff7f50'], ['CornflowerBlue'      , '6495ed']
-, ['Cornsilk'            , 'fff8dc'], ['Crimson'             , 'dc143c']
-, ['Cyan'                , '00ffff'], ['DarkBlue'            , '00008b']
-, ['DarkCyan'            , '008b8b'], ['DarkGoldenRod'       , 'b8860b']
-, ['DarkGray'            , 'a9a9a9'], ['DarkGreen'           , '006400']
-, ['DarkKhaki'           , 'bdb76b'], ['DarkMagenta'         , '8b008b']
-, ['DarkOliveGreen'      , '556b2f'], ['Darkorange'          , 'ff8c00']
-, ['DarkOrchid'          , '9932cc'], ['DarkRed'             , '8b0000']
-, ['DarkSalmon'          , 'e9967a'], ['DarkSeaGreen'        , '8fbc8f']
-, ['DarkSlateBlue'       , '483d8b'], ['DarkSlateGray'       , '2f4f4f']
-, ['DarkTurquoise'       , '00ced1'], ['DarkViolet'          , '9400d3']
-, ['DeepPink'            , 'ff1493'], ['DeepSkyBlue'         , '00bfff']
-, ['DimGray'             , '696969'], ['DodgerBlue'          , '1e90ff']
-, ['FireBrick'           , 'b22222'], ['FloralWhite'         , 'fffaf0']
-, ['ForestGreen'         , '228b22'], ['Fuchsia'             , 'ff00ff']
-, ['Gainsboro'           , 'dcdcdc'], ['GhostWhite'          , 'f8f8ff']
-, ['Gold'                , 'ffd700'], ['GoldenRod'           , 'daa520']
-, ['GreenYellow'         , 'adff2f'], ['HoneyDew'            , 'f0fff0']
-, ['HotPink'             , 'ff69b4'], ['IndianRed'           , 'cd5c5c']
-, ['Indigo'              , '4b0082'], ['Ivory'               , 'fffff0']
-, ['Khaki'               , 'f0e68c'], ['Lavender'            , 'e6e6fa']
-, ['LavenderBlush'       , 'fff0f5'], ['LawnGreen'           , '7cfc00']
-, ['LemonChiffon'        , 'fffacd'], ['LightBlue'           , 'add8e6']
-, ['LightCoral'          , 'f08080'], ['LightCyan'           , 'e0ffff']
-, ['LightGoldenRodYellow', 'fafad2'], ['LightGrey'           , 'd3d3d3']
-, ['LightGreen'          , '90ee90'], ['LightPink'           , 'ffb6c1']
-, ['LightSalmon'         , 'ffa07a'], ['LightSeaGreen'       , '20b2aa']
-, ['LightSkyBlue'        , '87cefa'], ['LightSlateGray'      , '778899']
-, ['LightSteelBlue'      , 'b0c4de'], ['LightYellow'         , 'ffffe0']
-, ['Lime'                , '00ff00'], ['LimeGreen'           , '32cd32']
-, ['Linen'               , 'faf0e6'], ['Magenta'             , 'ff00ff']
-, ['MediumAquaMarine'    , '66cdaa']
-, ['MediumBlue'          , '0000cd'], ['MediumOrchid'        , 'ba55d3']
-, ['MediumPurple'        , '9370d8'], ['MediumSeaGreen'      , '3cb371']
-, ['MediumSlateBlue'     , '7b68ee'], ['MediumSpringGreen'   , '00fa9a']
-, ['MediumTurquoise'     , '48d1cc'], ['MediumVioletRed'     , 'c71585']
-, ['MidnightBlue'        , '191970'], ['MintCream'           , 'f5fffa']
-, ['MistyRose'           , 'ffe4e1'], ['Moccasin'            , 'ffe4b5']
-, ['NavajoWhite'         , 'ffdead'], ['Navy'                , '000080']
-, ['OldLace'             , 'fdf5e6'], ['Olive'               , '808000']
-, ['OliveDrab'           , '6b8e23'], ['Orange'              , 'ffa500']
-, ['OrangeRed'           , 'ff4500'], ['Orchid'              , 'da70d6']
-, ['PaleGoldenRod'       , 'eee8aa'], ['PaleGreen'           , '98fb98']
-, ['PaleTurquoise'       , 'afeeee'], ['PaleVioletRed'       , 'd87093']
-, ['PapayaWhip'          , 'ffefd5'], ['PeachPuff'           , 'ffdab9']
-, ['Peru'                , 'cd853f'], ['Pink'                , 'ffc0cb']
-, ['Plum'                , 'dda0dd'], ['PowderBlue'          , 'b0e0e6']
-, ['Red'                 , 'ff0000']
-, ['RosyBrown'           , 'bc8f8f'], ['RoyalBlue'           , '4169e1']
-, ['SaddleBrown'         , '8b4513'], ['Salmon'              , 'fa8072']
-, ['SandyBrown'          , 'f4a460'], ['SeaGreen'            , '2e8b57']
-, ['SeaShell'            , 'fff5ee'], ['Sienna'              , 'a0522d']
-, ['Silver'              , 'c0c0c0'], ['SkyBlue'             , '87ceeb']
-, ['SlateBlue'           , '6a5acd'], ['SlateGray'           , '708090']
-, ['Snow'                , 'fffafa'], ['SpringGreen'         , '00ff7f']
-, ['SteelBlue'           , '4682b4'], ['Tan'                 , 'd2b48c']
-, ['Teal'                , '008080'], ['Thistle'             , 'd8bfd8']
-, ['Tomato'              , 'ff6347'], ['Turquoise'           , '40e0d0']
-, ['Violet'              , 'ee82ee'], ['Wheat'               , 'f5deb3']
-, ['White'               , 'ffffff'], ['WhiteSmoke'          , 'f5f5f5']
-, ['Yellow'              , 'ffff00'], ['YellowGreen'         , '9acd32']
-]
-# }}}
-NAME_txt=r'\bGray\b|\bGreen\b|\bMaroon\b|\bPurple\b'
-for [nam,hex] in clrn:
-    NAME_txt=r"|".join([NAME_txt,r'\b'+nam+r'\b'])
-
-fmt['NAME']=re.compile(NAME_txt,re.I|re.X)
-
 #}}}
-def name2hex(name,*rule): #{{{
+# clr_lst {{{
+clrnX11 = vim.eval("s:clrnX11")
+clrnW3C = vim.eval("s:clrnW3C")
+clrn    = vim.eval("s:clrn")
+# '-' in [] must escape or put in start/end
+NAME_ptn=r'(?<![\w_-])White(?![\w_-])'
+for [nam,hex] in clrn+clrnW3C:
+    NAME_ptn = r"|".join([NAME_ptn, r'(?<![\w_-])'+nam+r'(?![\w_-])'])
+fmt['NAME']=re.compile(NAME_ptn,re.I|re.X)
+#}}}
+def nam2hex(name,*rule): #{{{
     if len(name):
         if len(rule) and rule[0]=="X11":
             lst=clrn+clrnX11
@@ -2798,7 +2726,7 @@ def txt2hex(txt): #{{{
                     h,s,v=int(x.group('H')),int(x.group('S')),int(x.group('V'))
                     hx=rgb2hex(hls2rgb([h,s,v]))
                 elif key=="NAME":
-                    hx=name2hex(x.group())
+                    hx=nam2hex(x.group())
                 else:
                     continue
                 hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
@@ -2832,7 +2760,8 @@ endfunction "}}}
 function! s:txt2hex(txt) "{{{
     if has("python") && g:ColorV_no_python!=1
         call s:py_text_load()
-        py vim.command("return "+str(txt2hex(vim.eval("a:txt"))))
+        " return a list
+        py vim.command("".join(["return ",str(txt2hex(vim.eval("a:txt")))]))
     endif
 
     let text = a:txt
@@ -2926,11 +2855,11 @@ endfunction "}}}
 function! s:hex2txt(hex,fmt,...) "{{{
 
     let hex = s:fmt_hex(a:hex)
-    let [r,g,b]= s:printf("%3d",colorv#hex2rgb(hex))
-    let [rp,gp,bp]= s:printf("%3d",s:number([r/2.55,g/2.55,b/2.55]))
-    let [rf,gf,bf]= s:printf("%.2f",s:float([r/255.0,g/255.0,b/255.0]))
-    let [h,s,v] = s:printf("%3d",colorv#rgb2hsv([r,g,b]))
-    let [H,L,S]= s:printf("%3d",colorv#rgb2hls([r,g,b]))
+    let [r ,g ,b ] = s:printf("%3d",colorv#hex2rgb(hex))
+    let [rp,gp,bp] = s:printf("%3d",s:number([r/2.55,g/2.55,b/2.55]))
+    let [rf,gf,bf] = s:printf("%.2f",s:float([r/255.0,g/255.0,b/255.0]))
+    let [h ,s ,v ] = s:printf("%3d",colorv#rgb2hsv([r,g,b]))
+    let [H ,L ,S ] = s:printf("%3d",colorv#rgb2hls([r,g,b]))
 
     if a:fmt=="RGB"
         let text="rgb(".r.",".g.",".b.")"
@@ -3680,18 +3609,25 @@ function! colorv#prev_txt(txt) "{{{
         let [hex,idx,len,str,fmt] = prv_item
         if fmt == "NAME"
             if view_name == 1
-                let hi_ptn='\<'.str.'\>'
+                " dont't highlight NAME like 'white-space', 'white_space'
+                let hi_ptn='\%(\w\|_\|-\)\@<!'.str.'\%(\w\|_\|-\)\@!'
             else
                 continue
             endif
         elseif fmt =~ 'NS6\|NS3\|HEX\|HEX0'
-            let hi_ptn = str.'\x\@!'
+            if fmt == 'HEX'
+                " Uppercase only , no preceding or following chars
+                let hi_ptn = '\%(\w\|#\)\@<!'.str.'\C\w\@!'
+            else
+                let hi_ptn = str.'\x\@!'
+            endif
         else
             let hi_ptn = str
         endif
-
-        " cv_prv3_ff0000_NS6
-        let hi_grp="cv_prv".bufnr."_".hex."_".fmt
+        
+        "hi_grp: CV_prv3_ff0000_NS6
+        "uselessness? for matchadd highlight in each window
+        let hi_grp="CV_prv".bufnr."_".hex."_".fmt
         let hi_fg = view_homo==1 ? hex : s:rlt_clr(hex)
 
         " if does not exists in dict. then hi and add.
@@ -3706,7 +3642,6 @@ function! colorv#prev_txt(txt) "{{{
             call s:debug("E254: Could not hi color:".str)
             continue
         endtry
-
     endfor
 endfunction "}}}
 function! colorv#preview(...) "{{{
