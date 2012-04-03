@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2012-03-22
+" Last Update: 2012-04-03
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -18,39 +18,6 @@ endif
 let g:ColorV={}
 let g:ColorV.ver="2.5.4"
 
-if !exists("g:ColorV_debug")
-    let g:ColorV_debug=0
-endif
-if !exists('g:ColorV_no_python')
-    let g:ColorV_no_python=0
-endif
-if !exists('g:ColorV_cache_File')
-    let g:ColorV_cache_File = expand('$HOME') . '/.vim_colorv_cache'
-endif
-if !exists('g:ColorV_load_cache')
-    let g:ColorV_load_cache=1
-endif
-if !exists('g:ColorV_win_pos')
-    let g:ColorV_win_pos="bot"
-endif
-if !exists('g:ColorV_preview_name')
-    let g:ColorV_preview_name=1
-endif
-if !exists('g:ColorV_preview_homo')
-    let g:ColorV_preview_homo=0
-endif
-if !exists('g:ColorV_win_space')
-    let g:ColorV_win_space="hsv"
-endif
-if !exists('g:ColorV_gen_space')
-    let g:ColorV_gen_space="hsv"
-endif
-if !exists('g:ColorV_preview_ftype')
-    let g:ColorV_preview_ftype='css,javascript'
-endif
-if !exists('g:ColorV_max_preview')
-    let g:ColorV_max_preview=200
-endif
 let g:ColorV.name="_ColorV_"
 let g:ColorV.listname="_ColorV-List_"
 let g:ColorV.HEX="ff0000"
@@ -63,6 +30,36 @@ let g:ColorV.hls=[0   , 50  , 100 ]
 let g:ColorV.yiq=[30  , 60  , 21  ]
 let g:ColorV.hsv=[0   , 100 , 100 ]
 let g:ColorV.NAME="Red"
+
+function! colorv#default(option,value) "{{{
+    if !exists(a:option)
+        let {a:option} = a:value
+        return 0
+    endif
+    return 1
+endfunction "}}}
+call colorv#default("g:ColorV_debug",0)
+call colorv#default("g:ColorV_no_python",0)
+call colorv#default("g:ColorV_load_cache",1)
+call colorv#default("g:ColorV_win_pos","bot")
+call colorv#default("g:ColorV_preview_name",1)
+call colorv#default("g:ColorV_preview_homo",0)
+call colorv#default("g:ColorV_win_space","hsv")
+call colorv#default("g:ColorV_gen_space","hsv")
+call colorv#default("g:ColorV_preview_ftype",'css,javascript')
+call colorv#default("g:ColorV_max_preview",200)
+if !exists('g:ColorV_cache_File') "{{{
+    if has("win32") || has("win64")
+        if exists('$HOME')
+            let g:ColorV_cache_File = expand('$HOME') . '\.vim_colorv_cache'
+        else
+            let g:ColorV_cache_File = expand('$VIM') . '\.vim_galaxy_cache'
+        endif
+    else
+        let g:ColorV_cache_File = expand('$HOME') . '/.vim_colorv_cache'
+    endif
+endif "}}}
+
 "SVAR: {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:ColorV={}

@@ -3,7 +3,7 @@
 "    File: plugin/colorv.vim
 " Summary: A vim plugin that makes handling colors easier
 "  Author: Rykka10 <Rykka10(at)gmail.com>
-" Last Update: 2012-03-19
+" Last Update: 2012-04-03
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -35,13 +35,10 @@ command! -nargs=0  ColorVPreviewLine  call colorv#preview_line("c")
 
 command! -nargs=0  ColorVDropper   call colorv#dropper()
 
-if !exists('g:ColorV_no_global_map')
-  let g:ColorV_no_global_map = 0
-endif
 
-if !exists('g:ColorV_global_leader')
-  let g:ColorV_global_leader = '<Leader>c'
-endif
+
+call colorv#default("g:ColorV_no_global_map",0)
+call colorv#default("g:ColorV_global_leader",'<leader>c')
 
 function! colorv#define_global() "{{{
     if g:ColorV_no_global_map==1
@@ -96,7 +93,6 @@ function! colorv#define_global() "{{{
         endif
     endfor
 endfunction "}}}
-
 call colorv#define_global()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
