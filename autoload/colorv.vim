@@ -38,16 +38,16 @@ function! colorv#default(option,value) "{{{
     endif
     return 1
 endfunction "}}}
-call colorv#default("g:ColorV_debug",0)
-call colorv#default("g:ColorV_no_python",0)
-call colorv#default("g:ColorV_load_cache",1)
-call colorv#default("g:ColorV_win_pos","bot")
-call colorv#default("g:ColorV_preview_name",1)
-call colorv#default("g:ColorV_preview_homo",0)
-call colorv#default("g:ColorV_win_space","hsv")
-call colorv#default("g:ColorV_gen_space","hsv")
-call colorv#default("g:ColorV_preview_ftype",'css,javascript')
-call colorv#default("g:ColorV_max_preview",200)
+call colorv#default("g:ColorV_debug"         , 0                )
+call colorv#default("g:ColorV_no_python"     , 0                )
+call colorv#default("g:ColorV_load_cache"    , 1                )
+call colorv#default("g:ColorV_win_pos"       , "bot"            )
+call colorv#default("g:ColorV_preview_name"  , 1                )
+call colorv#default("g:ColorV_preview_homo"  , 0                )
+call colorv#default("g:ColorV_win_space"     , "hsv"            )
+call colorv#default("g:ColorV_gen_space"     , "hsv"            )
+call colorv#default("g:ColorV_preview_ftype" , 'css,javascript' )
+call colorv#default("g:ColorV_max_preview"   , 200              )
 if !exists('g:ColorV_cache_File') "{{{
     if has("win32") || has("win64")
         if exists('$HOME')
@@ -303,18 +303,20 @@ if !exists("s:hsv_dict") |let s:hsv_dict={} |endif
 if !exists("s:prev_dict")|let s:prev_dict={}|endif
 if !exists("s:pal_dict") |let s:pal_dict={} |endif
 "}}}
-"CORE: "{{{1
+"PYTH: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! s:py_core_load() "{{{
-    if exists("s:py_core_load")
+    if exists("s:py_core_loaded")
         return
     endif
-    let s:py_core_load=1
+    let s:py_core_loaded=1
 python << EOF
 from math import fmod
 import math
 import vim
 import colorsys
+import re
+
 def number(x):
     return int(round(float(x)))
 
@@ -345,7 +347,7 @@ def hsv2rgb(hsv):
     h,s,v=hsv
     r,g,b=colorsys.hsv_to_rgb(h/360.0,s/100.0,v/100.0)
     return [int(round(r*255.0)),int(round(g*255.0)),int(round(b*255.0))]
-    #}}}
+#}}}
 #{{{ yiq
 def rgb2yiq(rgb):
     r,g,b=rgb
@@ -366,18 +368,6 @@ def hls2rgb(hls):
     r,g,b=colorsys.hls_to_rgb(h/360.0,l/100.0,s/100.0)
     return [int(round(r*255.0)),int(round(g*255.0)),int(round(b*255.0))]
 #}}}
-    
-#{{{ hls
-def rgb2hls(rgb):
-    r,g,b=rgb
-    h,l,s=colorsys.rgb_to_hls(r/255.0,g/255.0,b/255.0)
-    return [int(round(h*360.0)),int(round(l*100.0)),int(round(s*100.0))]
-def hls2rgb(hls):
-    h,l,s=hls
-    r,g,b=colorsys.hls_to_rgb(h/360.0,l/100.0,s/100.0)
-    return [int(round(r*255.0)),int(round(g*255.0)),int(round(b*255.0))]
-#}}}
-
 #{{{ cmyk
 def rgb2cmyk(rgb):
     r,g,b = rgb
@@ -405,348 +395,6 @@ def cmyk2rgb(cmyk):
             number(round((1-Y)*255))]
 #}}}
 
-EOF
-endfunction "}}}
-
-function! colorv#rgb2hex(rgb)   "{{{
-    let [r,g,b]=s:number(a:rgb)
-    let r= r>255 ? 255 : r<0 ? 0 : r
-    let g= g>255 ? 255 : g<0 ? 0 : g
-    let b= b>255 ? 255 : b<0 ? 0 : b
-    return printf("%02X%02X%02X",r,g,b)
-endfunction "}}}
-function! colorv#hex2rgb(hex) "{{{
-    let hex=s:fmt_hex(a:hex)
-    return [str2nr(hex[0:1],16),str2nr(hex[2:3],16),str2nr(hex[4:5],16)]
-endfunction "}}}
-
-function! colorv#rgb2hsv(rgb)  "{{{
-    let [r,g,b]=s:float(a:rgb)
-    let r= r>255 ? 255 : r<0 ? 0 : r
-    let g= g>255 ? 255 : g<0 ? 0 : g
-    let b= b>255 ? 255 : b<0 ? 0 : b
-    if has("python") && g:ColorV_no_python!=1
-        call s:py_core_load()
-        py rgb=[float(vim.eval("r")),float(vim.eval("g")),float(vim.eval("b"))]
-        py vim.command("return "+str(rgb2hsv(rgb)))
-    else
-        let [r,g,b]=[r/255.0,g/255.0,b/255.0]
-        let max=s:fmax([r,g,b])
-        let min=s:fmin([r,g,b])
-        let df=max-min
-
-        let V=max
-        let S= V==0 ? 0 : df/max
-        let H = max==min ? 0 : max==r ? 60.0*(g-b)/df :
-                    \(max==g ? 120+60.0*(b-r)/df : 240+60.0*(r-g)/df)
-        let H=round(H<0?s:fmod(H,360.0)+360:(H>=360?s:fmod(H,360.0) : H))
-        return s:number([H,round(S*100),round(V*100)])
-    endif
-endfunction "}}}
-function! colorv#hsv2rgb(hsv) "{{{
-    let [h,s,v]=s:float(a:hsv)
-    let h = h>=360 ? s:fmod(h,360.0) : h<0 ? 360-s:fmod(abs(h),360.0) : h
-    let s = s>100 ? 100 : s < 0 ? 0 : s
-    let v = v>100 ? 100 : v < 0 ? 0 : v
-    if has("python") && g:ColorV_no_python!=1
-        call s:py_core_load()
-        py hsv=[float(vim.eval("h")),float(vim.eval("s")),float(vim.eval("v"))]
-        py vim.command("return "+str(hsv2rgb(hsv)))
-    else
-        let v=v*2.55
-        if s==0
-            let [R,G,B]=[v,v,v]
-        else
-            let s=s/100.0
-            let hi=floor(abs(h/60.0))
-            let f=h/60.0 - hi
-            let p=round(v*(1-s))
-            let q=round(v*(1-f*s))
-            let t=round(v*(1-(1-f)*s))
-            let v=round(v)
-            if hi==0
-                let [R,G,B]=[v,t,p]
-            elseif hi==1
-                let [R,G,B]=[q,v,p]
-            elseif hi==2
-                let [R,G,B]=[p,v,t]
-            elseif hi==3
-                let [R,G,B]=[p,q,v]
-            elseif hi==4
-                let [R,G,B]=[t,p,v]
-            elseif hi==5
-                let [R,G,B]=[v,p,q]
-            endif
-        endif
-        return s:number([round(R),round(G),round(B)])
-    endif
-endfunction "}}}
-function! colorv#hex2hsv(hex) "{{{
-   let hex=s:fmt_hex(a:hex)
-   return colorv#rgb2hsv(colorv#hex2rgb(hex))
-endfunction "}}}
-function! colorv#hsv2hex(hsv) "{{{
-    return colorv#rgb2hex(colorv#hsv2rgb(a:hsv))
-endfunction "}}}
-
-function! colorv#rgb2hls(rgb) "{{{
-    let [r,g,b]=s:float(a:rgb)
-    let r= r>255 ? 255 : r<0 ? 0 : r
-    let g= g>255 ? 255 : g<0 ? 0 : g
-    let b= b>255 ? 255 : b<0 ? 0 : b
-    if has("python") && g:ColorV_no_python!=1
-        call s:py_core_load()
-        py rgb=[float(vim.eval("r")),float(vim.eval("g")),float(vim.eval("b"))]
-        py vim.command("return "+str(rgb2hls(rgb)))
-    else
-        let [r,g,b]=[r/255.0,g/255.0,b/255.0]
-        let max=s:fmax([r,g,b])
-        let min=s:fmin([r,g,b])
-        let df=max-min
-
-        let L=(max+min)/2.0
-        if L==0 || max==min
-            let S=0
-        elseif L>0 && L<=0.5
-            let S= df/(max+min)
-        else
-            let S=df/(2-max-min)
-        endif
-
-        let H = max==min ? 0 : max==r ? 60.0*(g-b)/df :
-            \(max==g ? 120+60.0*(b-r)/df : 240+60.0*(r-g)/df)
-        let H=round(H<0?s:fmod(H,360.0)+360:(H>360?s:fmod(H,360.0) : H))
-        return s:number([H,round(L*100),round(S*100)])
-    endif
-endfunction "}}}
-function! colorv#hls2rgb(hls) "{{{
-    let [h,l,s]=s:float(a:hls)
-    let s = s>100 ? 100 : s < 0 ? 0 : s
-    let l = l>100 ? 100 : l < 0 ? 0 : l
-    if h>=360
-        let h=s:fmod(h,360.0)
-    elseif h<0
-        let h=360-s:fmod(abs(h),360.0)
-    endif
-    if has("python") && g:ColorV_no_python!=1
-        call s:py_core_load()
-        py hls=[float(vim.eval("h")),float(vim.eval("l")),float(vim.eval("s"))]
-        py vim.command("return "+str(hls2rgb(hls)))
-    else
-        let [h,s,l]=[h/360.0,s/100.0,l/100.0]
-        if s==0
-            let [r,g,b]=[l,l,l]
-        else
-            if l<0.5
-                let var_2= l *(1+s)
-            else
-                let var_2= (l+s)-(s*l)
-            endif
-            let var_1=2*l-var_2
-            function! s:vh2rgb(v1,v2,vh) "{{{
-                let [v1,v2,vh]=[a:v1,a:v2,a:vh]
-                if vh<0
-                    let vh+=1
-                endif
-                if vh>1
-                    let vh-=1
-                endif
-                if 6*vh<1
-                    return v1+(v2-v1)*6*vh
-                endif
-                if 2*vh<1
-                    return v2
-                endif
-                if 3*vh<2
-                    return v1+(v2-v1)*((2.0/3.0)-vh)*6
-                endif
-                return v1
-            endfunction "}}}
-            let r= s:vh2rgb(var_1,var_2,(h+1.0/3))
-            let g= s:vh2rgb(var_1,var_2,h)
-            let b= s:vh2rgb(var_1,var_2,(h-1.0/3))
-        endif
-        return s:number([round(r*255),round(g*255),round(b*255)])
-    endif
-endfunction "}}}
-function! colorv#hex2hls(hex) "{{{
-   return colorv#rgb2hls(colorv#hex2rgb(a:hex))
-endfunction "}}}
-function! colorv#hls2hex(hls) "{{{
-    return colorv#rgb2hex(colorv#hls2rgb(a:hls))
-endfunction "}}}
-
-"YUV color space (PAL)
-function! colorv#rgb2yuv(rgb) "{{{
-    let [r,g,b]=s:float(a:rgb)
-    let r= r>255 ? 255 : r<0 ? 0 : r
-    let g= g>255 ? 255 : g<0 ? 0 : g
-    let b= b>255 ? 255 : b<0 ? 0 : b
-    let [r,g,b]=[r/255.0,g/255.0,b/255.0]
-    let Y=0.299*r+0.587*g+0.114*b
-    let U=-0.147*r-0.289*g+0.436*b
-    let V=0.615*r-0.515*g-0.100*b
-    return s:number([round(Y*100),round(U*100),round(V*100)])
-endfunction "}}}
-function! colorv#yuv2rgb(yuv) "{{{
-    let [Y,U,V]=s:float(a:yuv)
-    let [Y,U,V]=[Y/100.0,U/100.0,V/100.0]
-    let Y= Y>100 ? 100 : Y<0 ? 0 : Y
-    let U= U>100 ? 100 : U<-100 ? -100 : U
-    let V= V>100 ? 100 : V<-100 ? -100 : V
-    let R = Y + 1.14 *V
-    let G = Y - 0.395*U - 0.581*V
-    let B = Y + 2.032*U
-    let R = R>1 ? 1 : R<0 ? 0 : R
-    let G = G>1 ? 1 : G<0 ? 0 : G
-    let B = B>1 ? 1 : B<0 ? 0 : B
-    return s:number([round(R*255.0),round(G*255.0),round(B*255.0)])
-endfunction "}}}
-
-"YIQ color space (NTSC)
-function! colorv#rgb2yiq(rgb) "{{{
-    let [r,g,b]=s:float(a:rgb)
-    let r= r>255 ? 255 : r<0 ? 0 : r
-    let g= g>255 ? 255 : g<0 ? 0 : g
-    let b= b>255 ? 255 : b<0 ? 0 : b
-if has("python") && g:ColorV_no_python!=1
-    call s:py_core_load()
-    py rgb=[float(vim.eval("r")),float(vim.eval("g")),float(vim.eval("b"))]
-    py vim.command("return "+str(rgb2yiq(rgb)))
-else
-    let [r,g,b]=[r/255.0,g/255.0,b/255.0]
-    let Y=  0.299 *r + 0.587 *g+ 0.114 *b
-    let I=  0.5957*r +-0.2745*g+-0.3213*b
-    let Q=  0.2115*r +-0.5226*g+ 0.3111*b
-    return s:number([round(Y*100),round(I*100), round(Q*100)])
-endif
-endfunction "}}}
-function! colorv#yiq2rgb(yiq) "{{{
-    let [y,i,q]=s:float(a:yiq)
-    let y= y>100 ? 100 : y<0 ? 0 : y
-    let i= i>100 ? 100 : i<-100 ? -100 : i
-    let q= q>100 ? 100 : q<-100 ? -100 : q
-    if has("python") && g:ColorV_no_python!=1
-        call s:py_core_load()
-        py yiq=[float(vim.eval("y")),float(vim.eval("i")),float(vim.eval("q"))]
-        py vim.command("return "+str(yiq2rgb(yiq)))
-    else
-        let [y,i,q]=[y/100.0,i/100.0,q/100.0]
-        let r = y + 0.9563*i+ 0.6210*q
-        let g = y - 0.2721*i- 0.6474*q
-        let b = y - 1.1070*i+ 1.7046*q
-        let r = r>1 ? 1 : r<0 ? 0 : r
-        let g = g>1 ? 1 : g<0 ? 0 : g
-        let b = b>1 ? 1 : b<0 ? 0 : b
-        return s:number([round(r*255.0),round(g*255.0),round(b*255.0)])
-    endif
-endfunction "}}}
-function! colorv#hex2yiq(hex) "{{{
-   let hex=s:fmt_hex(a:hex)
-   return colorv#rgb2yiq(colorv#hex2rgb(hex))
-endfunction "}}}
-function! colorv#yiq2hex(yiq) "{{{
-    return colorv#rgb2hex(colorv#yiq2rgb(a:yiq))
-endfunction "}}}
-
-function! colorv#rgb2lab(rgb) "{{{
-    let [r,g,b]=s:float(a:rgb)
-    let r= r>255 ? 255 : r<0 ? 0 : r
-    let g= g>255 ? 255 : g<0 ? 0 : g
-    let b= b>255 ? 255 : b<0 ? 0 : b
-
-    let [r,g,b]=[r/255.0,g/255.0,b/255.0]
-    if r > 0.04045
-      let r = pow(((r + 0.055) / 1.055) , 2.4)
-    else
-      let r = r / 12.92
-    endif
-    if g > 0.04045
-      let g = pow(((g + 0.055) / 1.055) , 2.4)
-    else
-      let g = g / 12.92
-    endif
-    if b > 0.04045
-      let b = pow(((b + 0.055) / 1.055) , 2.4)
-    else
-      let b = b / 12.92
-    endif
-    
-    let [r,g,b] =[r*100,g*100,b*100]
-
-    let X = r * 0.4124 + g * 0.3576 + b * 0.1805
-    let Y = r * 0.2126 + g * 0.7152 + b * 0.0722
-    let Z = r * 0.0193 + g * 0.1192 + b * 0.9505
-
-    " XYZ to Lab
-    " http://www.easyrgb.com/index.php?X=MATH&H=07#text7
-    let X = X/95.047
-    let Y = Y/100.000
-    let Z = Z/108.883
-
-    if (X > 0.008856)
-      let X = pow(X ,(0.3333333))
-    else
-      let X = (7.787 * X) + (16 / 116.0)
-    endif
-    if (Y > 0.008856)
-      let Y = pow(Y ,(0.3333333))
-    else
-      let Y = (7.787 * Y) + (16 / 116.0)
-    endif
-    if (Z > 0.008856)
-      let Z = pow(Z ,(0.3333333))
-    else
-      let Z = (7.787 * Z) + (16 / 116.0)
-    endif
-
-    let L = (116 * Y) - 16
-    let a = 500 * (X - Y)
-    let b = 200 * (Y - Z)
-
-    return [L, a, b]
-
-endfunction "}}}
-
-"CMYK (Cyan,Magenta,Yellow and Black)
-function! colorv#rgb2cmyk(rgb) "{{{
-    let [r,g,b]=s:float(a:rgb)
-    let r= r>255 ? 255 : r<0 ? 0 : r
-    let g= g>255 ? 255 : g<0 ? 0 : g
-    let b= b>255 ? 255 : b<0 ? 0 : b
-    let [R,G,B]=[r/255.0,g/255.0,b/255.0]
-    let [C,M,Y]=[1.0-R,1.0-G,1.0-B]
-    let vk=1.0
-    if C < vk | let vk =C | endif
-    if M < vk | let vk =M | endif
-    if Y < vk | let vk =Y | endif
-    if vk==1
-        let [C,M,Y]=[0,0,0]
-    else
-        let C=(C-vk)/(1.0-vk)
-        let M=(M-vk)/(1.0-vk)
-        let Y=(Y-vk)/(1.0-vk)
-    endif
-    let K =vk
-    return s:printf("%.2f",[C,M,Y,K])
-endfunction "}}}
-function! colorv#cmyk2rgb(cmyk) "{{{
-    let [C,M,Y,K]=s:float(a:cmyk)
-    let C=C*(1-K)+K
-    let M=M*(1-K)+K
-    let Y=Y*(1-K)+K
-    return s:number([round((1-C)*255),round((1-M)*255),round((1-Y)*255)])
-endfunction "}}}
-
-"Terminal
-function! s:py_term_load() "{{{
-    if exists("s:py_term_loaded")
-        return
-    endif
-    let s:py_term_loaded=1
-    call s:py_core_load()
-
-python << EOF
 #{{{dicts
 tmclr8_dict = {
                0:"000000",1:"800000",2:"008000",
@@ -825,12 +473,598 @@ def hex2term(hex1): #{{{
 
     #}}}
 
+def draw_palette(h,height,width): #{{{
+    vim.command("call s:clear_match('pal')")
+    space = vim.eval("s:space")
+    if h>=360:
+        h =fmod(h,360)
+    elif h<0:
+        h = 360-fmod(abs(h),360)
+    h_off,w_off=1,0
+    pal_clr_list=[]
+    cmd_list=[]
+    for line in range(1,height+1):
+        # L or V.
+        if space=="hls":
+            v=100.0-(line-1)*100.0/(height+2)
+        else:
+            v=100.0-(line-1)*100.0/(height)
+        if v==0: v=1
+        col_list=[]
+        for col in range(1,width+1):
+            if space=="hls":
+                s=90.0-(col-1)*100.0/(width+2)
+                if s==0:s=1
+                hex=rgb2hex(hls2rgb([h,s,v]))
+            else:
+                s=100.0-(col-1)*100.0/(width-1)
+                if s==0:s=1
+                hex=rgb2hex(hsv2rgb([h,s,v]))
+
+            hi_grp="".join(["cv_pal_",hex])
+            hi_cmd="".join(["call colorv#hi_color('",hi_grp,"','",hex,"','",hex,"')"])
+            cmd_list.append(hi_cmd)
+            pos_ptn="".join(["\\%",str(line+h_off),"l\\%",str(col+w_off),"c"])
+            match_cmd="".join(["let s:pal_dict['",hi_grp,"']=s:matchadd('",hi_grp,"','",pos_ptn,"')"])
+            cmd_list.append(match_cmd)
+            col_list.append(hex)
+        pal_clr_list.append(col_list)
+
+    for cmd in cmd_list:
+        vim.command(cmd)
+    vim.command("".join(["let s:pal_clr_list=",str(pal_clr_list)]))
+#}}}
+def draw_pallete_hex(hex): #{{{
+    h,s,v=rgb2hsv(hex2rgb(hex))
+    y,x=int(vim.eval("s:pal_H")),int(vim.eval("s:pal_W"))
+    draw_palette(h,y,x)
+#}}}
+fmt={} #{{{
+# XXX \s is weird that can not be captured sometimes. use [ \t] instead
+# XXX '\( \)' will cause pair unbalance error
+# XXX and the \( \\) can not catch the ')' . use [(] and [)] instead
+
+fmt['RGB']=re.compile(r'''
+        (?<!\w)rgb[(]                            # wordbegin
+        [ \t]*(?P<R>\d{1,3}),                    # group2 R
+        [ \t]*(?P<G>\d{1,3}),                    # group3 G
+        [ \t]*(?P<B>\d{1,3})                     # group4 B
+        [)](?!\w)                                # wordend
+        (?ix)                                    # [iLmsux] i:igone x:verbose
+                      ''')
+fmt['RGBA']=re.compile(r'''
+        (?<!\w)rgba[(]
+        [ \t]*(?P<R>\d{1,3}),                    # group2 R
+        [ \t]*(?P<G>\d{1,3}),                    # group3 G
+        [ \t]*(?P<B>\d{1,3}),                    # group4 B
+        [ \t]*(?P<A>\d{1,3}(?:\.\d*)?)%?
+        [)](?!\w)
+        (?ix)
+                      ''')
+fmt['glRGBA']=re.compile(r'''
+        (?<!\w)glColor\du?[bsifd][(]
+        [ \t]*(?P<R>\d(?:\.\d*)?),               # group2 R
+        [ \t]*(?P<G>\d(?:\.\d*)?),               # group3 G
+        [ \t]*(?P<B>\d(?:\.\d*)?),               # group4 B
+        [ \t]*(?P<A>\d(?:\.\d*)?)
+        [)](?!\w)
+        (?ix)
+                      ''')
+fmt['RGBP']=re.compile(r'''
+        (?<!\w)rgb[(]
+        [ \t]*(?P<R>\d{1,3})%,                   # group2 R
+        [ \t]*(?P<G>\d{1,3})%,                   # group3 G
+        [ \t]*(?P<B>\d{1,3})%                    # group4 B
+        [)](?!\w)
+        (?ix)
+                        ''')
+fmt['RGBAP']=re.compile(r'''
+        (?<!\w)rgba[(]
+        [ \t]*(?P<R>\d{1,3})%,                   # group2 R
+        [ \t]*(?P<G>\d{1,3})%,                   # group3 G
+        [ \t]*(?P<B>\d{1,3})%,                   # group4 B
+        [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
+        [)](?!\w)
+        (?ix)
+                        ''')
+
+fmt['HSL']=re.compile(r'''
+        (?<!\w)hsl[(]
+        [ \t]*(?P<H>\d{1,3}),                    # group2 H
+        [ \t]*(?P<S>\d{1,3})%,                   # group3 S
+        [ \t]*(?P<L>\d{1,3})%                    # group4 L
+        [)](?!\w)
+        (?ix)
+                        ''')
+fmt['HSLA']=re.compile(r'''
+        (?<!\w)hsla[(]
+        [ \t]*(?P<H>\d{1,3}),                    # group2 H
+        [ \t]*(?P<S>\d{1,3})%,                   # group3 S
+        [ \t]*(?P<L>\d{1,3})%,                   # group4 L
+        [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
+        [)](?!\w)
+        (?ix)
+                        ''')
+fmt['CMYK']=re.compile(r'''
+        (?<!\w)cmyk[(]
+        [ \t]*(?P<C>\d\.\d*),                    # group2 C
+        [ \t]*(?P<M>\d\.\d*),                    # group3 M
+        [ \t]*(?P<Y>\d\.\d*),                    # group4 Y
+        [ \t]* (?P<K>\d\.\d*)                    # group4 K
+        [)](?!\w)
+        (?ix)
+                        ''')
+fmt['HSV']=re.compile(r'''
+        (?<!\w)hsv[(]
+        [ \t]*(?P<H>\d{1,3}),                    # group2 H
+        [ \t]*(?P<S>\d{1,3}),                    # group3 S
+        [ \t]*(?P<V>\d{1,3})                     # group4 V
+        [)](?!\w)
+        (?ix)
+                        ''')
+fmt['HSVA']=re.compile(r'''
+        (?<!\w)hsva[(]
+        [ \t]*(?P<H>\d{1,3}),                    # group2 H
+        [ \t]*(?P<S>\d{1,3}),                    # group3 S
+        [ \t]*(?P<V>\d{1,3}),                    # group4 V
+        [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
+        [)](?!\w)
+        (?ix)
+                        ''')
+
+# NOTE (?<![0-9a-fA-F]|0[xX]) is wrong!
+#      (?<![0-9a-fA-F])|(?<!0[xX]) is wrong too!
+#      maybe (?<!([09a-fA-F])|(0[xX])) still wrong.
+#      use (?<![\w#]) or (?<![09a-fA-FxX#])
+        
+fmt['HEX']=re.compile(r'''
+        (?<![\w#])                      #no preceding [0~z] # 0x
+        (?P<HEX>[0-9A-F]{6})            #group HEX in upper 'FFFFFF'
+        (?!\w)                          #no following [0~z]
+        (?x)                            #no ignorecase
+                        ''')
+fmt['HEX0']=re.compile(r'''
+        0x                              # 0xffffff
+        (?P<HEX>[0-9a-fA-F]{6})         
+        (?!\w)                          
+        (?ix)
+                        ''')
+fmt['NS6']=re.compile(r'''
+        [#]                             # #ffffff
+        (?P<HEX>[0-9a-fA-F]{6})         
+        (?!\w)                          
+        (?ix)
+                        ''')
+fmt['NS3']=re.compile(r'''
+        [#]                             # #ffffff
+        (?P<HEX>[0-9a-fA-F]{3})         
+        (?!\w)                          
+        (?ix)
+                        ''')
+
+#}}}
+# clr_lst {{{
+clrnX11 = vim.eval("s:clrnX11")
+clrnW3C = vim.eval("s:clrnW3C")
+clrn    = vim.eval("s:clrn")
+# '-' in [] must escape or put in start/end
+NAME_ptn=r'(?<![\w_-])White(?![\w_-])'
+for [nam,hex] in clrn+clrnW3C:
+    NAME_ptn = r"|".join([NAME_ptn, r'(?<![\w_-])'+nam+r'(?![\w_-])'])
+fmt['NAME']=re.compile(NAME_ptn,re.I|re.X)
+#}}}
+def nam2hex(name,*rule): #{{{
+    if len(name):
+        if len(rule) and rule[0]=="X11":
+            lst=clrn+clrnX11
+        else:
+            lst=clrn+clrnW3C
+        for [nam,clr] in lst:
+            # ignore the case
+            if name.lower()==nam.lower():
+                return clr
+    return 0 #}}}
+def txt2hex(txt): #{{{
+    hex_list=[]
+    for key,var in fmt.iteritems():
+        r_list=list(var.finditer(txt))
+        if len(r_list)>0:
+            for x in r_list:
+                if key=="HEX" or key=="NS6" or key=="HEX0":
+                    hx=x.group('HEX')
+                elif key=="NS3":
+                    hx3=x.group('HEX')
+                    hx=hx3[0]*2+hx3[1]*2+hx3[2]*2
+                elif key=="RGBA" or key=="RGB":
+                    hx=rgb2hex([x.group('R'),x.group('G'),x.group('B')])
+                elif key=="RGBP" or key=="RGBAP":
+                    r,g,b=int(x.group('R')),int(x.group('G')),int(x.group('B'))
+                    hx=rgb2hex([r*2.55,g*2.55,b*2.55])
+                elif key=="glRGBA":
+                    r,g,b=[float(x.group('R')),
+                            float(x.group('G')),
+                            float(x.group('B'))]
+                    hx=rgb2hex([r*255,g*255,b*255])
+                elif key=="HSL" or key=="HSLA" :
+                    h,s,l=int(x.group('H')),int(x.group('S')),int(x.group('L'))
+                    hx=rgb2hex(hls2rgb([h,l,s]))
+                elif key=="CMYK" :
+                    c,m,y,k=[float(x.group('C')),float(x.group('M')) 
+                          ,float(x.group('Y')),float(x.group('K'))]
+                    hx=rgb2hex(cmyk2rgb([c,m,y,k]))
+                elif key=="HSV" or key=="HSVA" :
+                    h,s,v=int(x.group('H')),int(x.group('S')),int(x.group('V'))
+                    hx=rgb2hex(hsv2rgb([h,s,v]))
+                elif key=="NAME":
+                    hx=nam2hex(x.group())
+                else:
+                    continue
+                hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
+    return hex_list #}}}
+def hex2nam(hex,lst="W3C"): #{{{
+    best_match = 0
+    smallest_distance = 10000000
+
+    t= int(vim.eval("s:aprx_rate"))
+    if lst=="X11":clr_list=clrn+clrnX11
+    else:clr_list=clrn+clrnW3C
+    r1,g1,b1 = hex2rgb(hex)
+
+    for lst in clr_list:
+        r2,g2,b2 = hex2rgb(lst[1])
+        d = abs(r1-r2)+abs(g1-g2)+abs(b1-b2)
+        if d < smallest_distance:
+            smallest_distance = d
+            best_match = lst[0]
+
+    if smallest_distance == 0:
+        return best_match
+    elif smallest_distance <= t*5:
+        return best_match+"~"
+    elif smallest_distance <= t*10:
+        return best_match+"~~"
+    else:
+        return "" #}}}
 EOF
 endfunction "}}}
+
+if has("python") "{{{
+    let g:ColorV_has_python = 2
+    call s:py_core_load()
+else
+    let g:ColorV_has_python = 0
+endif "}}}
+
+"CORE: "{{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! colorv#rgb2hex(rgb)   "{{{
+    let [r,g,b]=s:numberL(a:rgb)
+    let r= r>255 ? 255 : r<0 ? 0 : r
+    let g= g>255 ? 255 : g<0 ? 0 : g
+    let b= b>255 ? 255 : b<0 ? 0 : b
+    return printf("%02X%02X%02X",r,g,b)
+endfunction "}}}
+function! colorv#hex2rgb(hex) "{{{
+    let hex=s:fmt_hex(a:hex)
+    return [str2nr(hex[0:1],16),str2nr(hex[2:3],16),str2nr(hex[4:5],16)]
+endfunction "}}}
+
+function! colorv#rgb2hsv(rgb)  "{{{
+    let [r,g,b]=s:floatL(a:rgb)
+    let r= r>255 ? 255 : r<0 ? 0 : r
+    let g= g>255 ? 255 : g<0 ? 0 : g
+    let b= b>255 ? 255 : b<0 ? 0 : b
+    if g:ColorV_has_python && g:ColorV_no_python!=1
+        py rgb=[float(vim.eval("r")),float(vim.eval("g")),float(vim.eval("b"))]
+        py vim.command("return "+str(rgb2hsv(rgb)))
+    else
+        let [r,g,b]=[r/255.0,g/255.0,b/255.0]
+        let max=s:fmax([r,g,b])
+        let min=s:fmin([r,g,b])
+        let df=max-min
+
+        let V=max
+        let S= V==0 ? 0 : df/max
+        let H = max==min ? 0 : max==r ? 60.0*(g-b)/df :
+                    \(max==g ? 120+60.0*(b-r)/df : 240+60.0*(r-g)/df)
+        let H=round(H<0?s:fmod(H,360.0)+360:(H>=360?s:fmod(H,360.0) : H))
+        return s:numberL([H,round(S*100),round(V*100)])
+    endif
+endfunction "}}}
+function! colorv#hsv2rgb(hsv) "{{{
+    let [h,s,v]=s:floatL(a:hsv)
+    let h = h>=360 ? s:fmod(h,360.0) : h<0 ? 360-s:fmod(abs(h),360.0) : h
+    let s = s>100 ? 100 : s < 0 ? 0 : s
+    let v = v>100 ? 100 : v < 0 ? 0 : v
+    if g:ColorV_has_python && g:ColorV_no_python!=1
+        py hsv=[float(vim.eval("h")),float(vim.eval("s")),float(vim.eval("v"))]
+        py vim.command("return "+str(hsv2rgb(hsv)))
+    else
+        let v=v*2.55
+        if s==0
+            let [R,G,B]=[v,v,v]
+        else
+            let s=s/100.0
+            let hi=floor(abs(h/60.0))
+            let f=h/60.0 - hi
+            let p=round(v*(1-s))
+            let q=round(v*(1-f*s))
+            let t=round(v*(1-(1-f)*s))
+            let v=round(v)
+            if hi==0
+                let [R,G,B]=[v,t,p]
+            elseif hi==1
+                let [R,G,B]=[q,v,p]
+            elseif hi==2
+                let [R,G,B]=[p,v,t]
+            elseif hi==3
+                let [R,G,B]=[p,q,v]
+            elseif hi==4
+                let [R,G,B]=[t,p,v]
+            elseif hi==5
+                let [R,G,B]=[v,p,q]
+            endif
+        endif
+        return s:numberL([round(R),round(G),round(B)])
+    endif
+endfunction "}}}
+function! colorv#hex2hsv(hex) "{{{
+   let hex=s:fmt_hex(a:hex)
+   return colorv#rgb2hsv(colorv#hex2rgb(hex))
+endfunction "}}}
+function! colorv#hsv2hex(hsv) "{{{
+    return colorv#rgb2hex(colorv#hsv2rgb(a:hsv))
+endfunction "}}}
+
+function! colorv#rgb2hls(rgb) "{{{
+    let [r,g,b]=s:floatL(a:rgb)
+    let r= r>255 ? 255 : r<0 ? 0 : r
+    let g= g>255 ? 255 : g<0 ? 0 : g
+    let b= b>255 ? 255 : b<0 ? 0 : b
+    if g:ColorV_has_python && g:ColorV_no_python!=1
+        py rgb=[float(vim.eval("r")),float(vim.eval("g")),float(vim.eval("b"))]
+        py vim.command("return "+str(rgb2hls(rgb)))
+    else
+        let [r,g,b]=[r/255.0,g/255.0,b/255.0]
+        let max=s:fmax([r,g,b])
+        let min=s:fmin([r,g,b])
+        let df=max-min
+
+        let L=(max+min)/2.0
+        if L==0 || max==min
+            let S=0
+        elseif L>0 && L<=0.5
+            let S= df/(max+min)
+        else
+            let S=df/(2-max-min)
+        endif
+
+        let H = max==min ? 0 : max==r ? 60.0*(g-b)/df :
+            \(max==g ? 120+60.0*(b-r)/df : 240+60.0*(r-g)/df)
+        let H=round(H<0?s:fmod(H,360.0)+360:(H>360?s:fmod(H,360.0) : H))
+        return s:numberL([H,round(L*100),round(S*100)])
+    endif
+endfunction "}}}
+function! colorv#hls2rgb(hls) "{{{
+    let [h,l,s]=s:floatL(a:hls)
+    let s = s>100 ? 100 : s < 0 ? 0 : s
+    let l = l>100 ? 100 : l < 0 ? 0 : l
+    if h>=360
+        let h=s:fmod(h,360.0)
+    elseif h<0
+        let h=360-s:fmod(abs(h),360.0)
+    endif
+    if g:ColorV_has_python && g:ColorV_no_python!=1
+        py hls=[float(vim.eval("h")),float(vim.eval("l")),float(vim.eval("s"))]
+        py vim.command("return "+str(hls2rgb(hls)))
+    else
+        let [h,s,l]=[h/360.0,s/100.0,l/100.0]
+        if s==0
+            let [r,g,b]=[l,l,l]
+        else
+            if l<0.5
+                let var_2= l *(1+s)
+            else
+                let var_2= (l+s)-(s*l)
+            endif
+            let var_1=2*l-var_2
+            function! s:vh2rgb(v1,v2,vh) "{{{
+                let [v1,v2,vh]=[a:v1,a:v2,a:vh]
+                if vh<0
+                    let vh+=1
+                endif
+                if vh>1
+                    let vh-=1
+                endif
+                if 6*vh<1
+                    return v1+(v2-v1)*6*vh
+                endif
+                if 2*vh<1
+                    return v2
+                endif
+                if 3*vh<2
+                    return v1+(v2-v1)*((2.0/3.0)-vh)*6
+                endif
+                return v1
+            endfunction "}}}
+            let r= s:vh2rgb(var_1,var_2,(h+1.0/3))
+            let g= s:vh2rgb(var_1,var_2,h)
+            let b= s:vh2rgb(var_1,var_2,(h-1.0/3))
+        endif
+        return s:numberL([round(r*255),round(g*255),round(b*255)])
+    endif
+endfunction "}}}
+function! colorv#hex2hls(hex) "{{{
+   return colorv#rgb2hls(colorv#hex2rgb(a:hex))
+endfunction "}}}
+function! colorv#hls2hex(hls) "{{{
+    return colorv#rgb2hex(colorv#hls2rgb(a:hls))
+endfunction "}}}
+
+"YUV color space (PAL)
+function! colorv#rgb2yuv(rgb) "{{{
+    let [r,g,b]=s:floatL(a:rgb)
+    let r= r>255 ? 255 : r<0 ? 0 : r
+    let g= g>255 ? 255 : g<0 ? 0 : g
+    let b= b>255 ? 255 : b<0 ? 0 : b
+    let [r,g,b]=[r/255.0,g/255.0,b/255.0]
+    let Y=0.299*r+0.587*g+0.114*b
+    let U=-0.147*r-0.289*g+0.436*b
+    let V=0.615*r-0.515*g-0.100*b
+    return s:numberL([round(Y*100),round(U*100),round(V*100)])
+endfunction "}}}
+function! colorv#yuv2rgb(yuv) "{{{
+    let [Y,U,V]=s:floatL(a:yuv)
+    let [Y,U,V]=[Y/100.0,U/100.0,V/100.0]
+    let Y= Y>100 ? 100 : Y<0 ? 0 : Y
+    let U= U>100 ? 100 : U<-100 ? -100 : U
+    let V= V>100 ? 100 : V<-100 ? -100 : V
+    let R = Y + 1.14 *V
+    let G = Y - 0.395*U - 0.581*V
+    let B = Y + 2.032*U
+    let R = R>1 ? 1 : R<0 ? 0 : R
+    let G = G>1 ? 1 : G<0 ? 0 : G
+    let B = B>1 ? 1 : B<0 ? 0 : B
+    return s:numberL([round(R*255.0),round(G*255.0),round(B*255.0)])
+endfunction "}}}
+
+"YIQ color space (NTSC)
+function! colorv#rgb2yiq(rgb) "{{{
+    let [r,g,b]=s:floatL(a:rgb)
+    let r= r>255 ? 255 : r<0 ? 0 : r
+    let g= g>255 ? 255 : g<0 ? 0 : g
+    let b= b>255 ? 255 : b<0 ? 0 : b
+if g:ColorV_has_python && g:ColorV_no_python!=1
+    py rgb=[float(vim.eval("r")),float(vim.eval("g")),float(vim.eval("b"))]
+    py vim.command("return "+str(rgb2yiq(rgb)))
+else
+    let [r,g,b]=[r/255.0,g/255.0,b/255.0]
+    let Y=  0.299 *r + 0.587 *g+ 0.114 *b
+    let I=  0.5957*r +-0.2745*g+-0.3213*b
+    let Q=  0.2115*r +-0.5226*g+ 0.3111*b
+    return s:numberL([round(Y*100),round(I*100), round(Q*100)])
+endif
+endfunction "}}}
+function! colorv#yiq2rgb(yiq) "{{{
+    let [y,i,q]=s:floatL(a:yiq)
+    let y= y>100 ? 100 : y<0 ? 0 : y
+    let i= i>100 ? 100 : i<-100 ? -100 : i
+    let q= q>100 ? 100 : q<-100 ? -100 : q
+    if g:ColorV_has_python && g:ColorV_no_python!=1
+        py yiq=[float(vim.eval("y")),float(vim.eval("i")),float(vim.eval("q"))]
+        py vim.command("return "+str(yiq2rgb(yiq)))
+    else
+        let [y,i,q]=[y/100.0,i/100.0,q/100.0]
+        let r = y + 0.9563*i+ 0.6210*q
+        let g = y - 0.2721*i- 0.6474*q
+        let b = y - 1.1070*i+ 1.7046*q
+        let r = r>1 ? 1 : r<0 ? 0 : r
+        let g = g>1 ? 1 : g<0 ? 0 : g
+        let b = b>1 ? 1 : b<0 ? 0 : b
+        return s:numberL([round(r*255.0),round(g*255.0),round(b*255.0)])
+    endif
+endfunction "}}}
+function! colorv#hex2yiq(hex) "{{{
+   let hex=s:fmt_hex(a:hex)
+   return colorv#rgb2yiq(colorv#hex2rgb(hex))
+endfunction "}}}
+function! colorv#yiq2hex(yiq) "{{{
+    return colorv#rgb2hex(colorv#yiq2rgb(a:yiq))
+endfunction "}}}
+
+function! colorv#rgb2lab(rgb) "{{{
+    let [r,g,b]=s:floatL(a:rgb)
+    let r= r>255 ? 255 : r<0 ? 0 : r
+    let g= g>255 ? 255 : g<0 ? 0 : g
+    let b= b>255 ? 255 : b<0 ? 0 : b
+
+    let [r,g,b]=[r/255.0,g/255.0,b/255.0]
+    if r > 0.04045
+      let r = pow(((r + 0.055) / 1.055) , 2.4)
+    else
+      let r = r / 12.92
+    endif
+    if g > 0.04045
+      let g = pow(((g + 0.055) / 1.055) , 2.4)
+    else
+      let g = g / 12.92
+    endif
+    if b > 0.04045
+      let b = pow(((b + 0.055) / 1.055) , 2.4)
+    else
+      let b = b / 12.92
+    endif
+    
+    let [r,g,b] =[r*100,g*100,b*100]
+
+    let X = r * 0.4124 + g * 0.3576 + b * 0.1805
+    let Y = r * 0.2126 + g * 0.7152 + b * 0.0722
+    let Z = r * 0.0193 + g * 0.1192 + b * 0.9505
+
+    " XYZ to Lab
+    " http://www.easyrgb.com/index.php?X=MATH&H=07#text7
+    let X = X/95.047
+    let Y = Y/100.000
+    let Z = Z/108.883
+
+    if (X > 0.008856)
+      let X = pow(X ,(0.3333333))
+    else
+      let X = (7.787 * X) + (16 / 116.0)
+    endif
+    if (Y > 0.008856)
+      let Y = pow(Y ,(0.3333333))
+    else
+      let Y = (7.787 * Y) + (16 / 116.0)
+    endif
+    if (Z > 0.008856)
+      let Z = pow(Z ,(0.3333333))
+    else
+      let Z = (7.787 * Z) + (16 / 116.0)
+    endif
+
+    let L = (116 * Y) - 16
+    let a = 500 * (X - Y)
+    let b = 200 * (Y - Z)
+
+    return [L, a, b]
+
+endfunction "}}}
+
+"CMYK (Cyan,Magenta,Yellow and Black)
+function! colorv#rgb2cmyk(rgb) "{{{
+    let [r,g,b]=s:floatL(a:rgb)
+    let r= r>255 ? 255 : r<0 ? 0 : r
+    let g= g>255 ? 255 : g<0 ? 0 : g
+    let b= b>255 ? 255 : b<0 ? 0 : b
+    let [R,G,B]=[r/255.0,g/255.0,b/255.0]
+    let [C,M,Y]=[1.0-R,1.0-G,1.0-B]
+    let vk=1.0
+    if C < vk | let vk =C | endif
+    if M < vk | let vk =M | endif
+    if Y < vk | let vk =Y | endif
+    if vk==1
+        let [C,M,Y]=[0,0,0]
+    else
+        let C=(C-vk)/(1.0-vk)
+        let M=(M-vk)/(1.0-vk)
+        let Y=(Y-vk)/(1.0-vk)
+    endif
+    let K =vk
+    return s:printfL("%.2f",[C,M,Y,K])
+endfunction "}}}
+function! colorv#cmyk2rgb(cmyk) "{{{
+    let [C,M,Y,K]=s:floatL(a:cmyk)
+    let C=C*(1-K)+K
+    let M=M*(1-K)+K
+    let Y=Y*(1-K)+K
+    return s:numberL([round((1-C)*255),round((1-M)*255),round((1-Y)*255)])
+endfunction "}}}
+
+"Terminal
 function! colorv#hex2term(hex,...) "{{{
 " in: hex, a:1 "CHECK"
-    if has("python") && g:ColorV_no_python!=1
-        call s:py_term_load()
+    if g:ColorV_has_python && g:ColorV_no_python!=1
         if exists("a:1")
             if (&t_Co<=8 && a:1==#"CHECK") || a:1==8
                 py vim.command("return "+str(hex2term8(vim.eval("a:hex"))))
@@ -917,27 +1151,34 @@ function! s:v_hex2term16(hex) "{{{
     return best_match
 endfunction "}}}
 
-
 " RGBA
-function! s:rgb2rgba(rgb) "{{{
-    return a:rgb + [255]
+function! s:rgb2rgba(rgb,...) "{{{
+    if exists("a:1")
+        return a:rgb + [a:1]
+    else
+        return a:rgb + [255]
+    endif
 endfunction "}}}
 function! s:rgba2rgb(rgba) "{{{
     return a:rgba[0:2]
 endfunction "}}}
-function! s:hex2hexa(hex) "{{{
-    return a:hex+"ff"
+function! s:hex2hexa(hex,...) "{{{
+    if exists("a:1")
+        return a:hex + a:1
+    else
+        return a:hex + "ff"
+    endif
 endfunction "}}}
 function! s:hexa2hex(hexa) "{{{
     return a:hexa[0:-3]
 endfunction "}}}
 function! s:hexa2rgba(hexa) "{{{
-    let hex=s:fmt_hex(a:hexa)
+    let hex=s:fmt_hex(a:hexa,8)
     return [str2nr(hex[0:1],16), str2nr(hex[2:3],16),
                 \str2nr(hex[4:5],16), str2nr(hex[6:7],16)]
 endfunction "}}}
 function! s:rgba2hexa(rgba) "{{{
-    let [r,g,b,a]=s:number(a:rgba)
+    let [r,g,b,a]=s:numberL(a:rgba)
     let r= r>255 ? 255 : r<0 ? 0 : r
     let g= g>255 ? 255 : g<0 ? 0 : g
     let b= b>255 ? 255 : b<0 ? 0 : b
@@ -962,65 +1203,8 @@ function! colorv#hexadd(hexa1,hexa2) "{{{
     return  s:rgba2hexa(s:add(rgba1, rgba2))
 endfunction "}}}
 
-
 "DRAW: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! s:py_draw_load() "{{{
-    if exists("s:py_draw_loaded")
-        return
-    endif
-    let s:py_draw_loaded=1
-    call s:py_core_load()
-python << EOF
-def draw_palette(h,height,width): #{{{
-    vim.command("call s:clear_match('pal')")
-    space = vim.eval("s:space")
-    if h>=360:
-        h =fmod(h,360)
-    elif h<0:
-        h = 360-fmod(abs(h),360)
-    h_off,w_off=1,0
-    pal_clr_list=[]
-    cmd_list=[]
-    for line in range(1,height+1):
-        # L or V.
-        if space=="hls":
-            v=100.0-(line-1)*100.0/(height+2)
-        else:
-            v=100.0-(line-1)*100.0/(height)
-        if v==0: v=1
-        col_list=[]
-        for col in range(1,width+1):
-            if space=="hls":
-                s=90.0-(col-1)*100.0/(width+2)
-                if s==0:s=1
-                hex=rgb2hex(hls2rgb([h,s,v]))
-            else:
-                s=100.0-(col-1)*100.0/(width-1)
-                if s==0:s=1
-                hex=rgb2hex(hsv2rgb([h,s,v]))
-
-            hi_grp="".join(["cv_pal_",hex])
-            hi_cmd="".join(["call colorv#hi_color('",hi_grp,"','",hex,"','",hex,"')"])
-            cmd_list.append(hi_cmd)
-            pos_ptn="".join(["\\%",str(line+h_off),"l\\%",str(col+w_off),"c"])
-            match_cmd="".join(["let s:pal_dict['",hi_grp,"']=s:matchadd('",hi_grp,"','",pos_ptn,"')"])
-            cmd_list.append(match_cmd)
-            col_list.append(hex)
-        pal_clr_list.append(col_list)
-
-    for cmd in cmd_list:
-        vim.command(cmd)
-    vim.command("".join(["let s:pal_clr_list=",str(pal_clr_list)]))
-#}}}
-def draw_pallete_hex(hex): #{{{
-    h,s,v=rgb2hsv(hex2rgb(hex))
-    y,x=int(vim.eval("s:pal_H")),int(vim.eval("s:pal_W"))
-    draw_palette(h,y,x)
-#}}}
-EOF
-endfunction "}}}
-
 function! s:draw_palette(h,l,c) "{{{
 "Input: h,l,c,[loffset,coffset]
     call s:clear_match("pal")
@@ -1062,8 +1246,7 @@ function! s:draw_palette(h,l,c) "{{{
 endfunction
 "}}}
 function! s:draw_palette_hex(hex,...) "{{{
-    if has("python") && g:ColorV_no_python!=1
-        call s:py_draw_load()
+    if g:ColorV_has_python && g:ColorV_no_python!=1
         py draw_pallete_hex(vim.eval("a:hex"))
     else
         let [h,s,v]=colorv#hex2hsv(a:hex)
@@ -1352,10 +1535,10 @@ function! s:draw_text(...) "{{{
     let cur=s:clear_text()
     let cv = g:ColorV
     let hex= cv.HEX
-    let [r,g,b]= s:printf("%3d",cv.rgb)
-    let [h,s,v]= s:printf("%3d",cv.hsv)
-    let [H,L,S]= s:printf("%3d",cv.hls)
-    let [Y,I,Q]= s:printf("%3d",s:number(cv.yiq))
+    let [r,g,b]= s:printfL("%3d",cv.rgb)
+    let [h,s,v]= s:printfL("%3d",cv.hsv)
+    let [H,L,S]= s:printfL("%3d",cv.hls)
+    let [Y,I,Q]= s:printfL("%3d",s:numberL(cv.yiq))
 
     let height = s:mode=="max" ? s:max_h : s:mode=="mid" ? s:mid_h :
                 \ s:min_h
@@ -1930,12 +2113,10 @@ function! colorv#dropper() "{{{
         call s:error("pygtk have Error in Terminal. So not Supported.")
         return
     endif
-    if !has("python")
+    if !g:ColorV_has_python
         call s:error("Only support vim compiled with python.")
         return
     endif
-    call s:caution("pyGTK ColorPicker:")
-    call s:py_core_load()
     call s:warning("Select a color and press OK to Return to Vim.")
 python << EOF
 try:
@@ -1974,10 +2155,9 @@ function! s:fmod(x,y) "{{{
     else
         return fmod(s:float(a:x),s:float(a:y))
     endif
-
 endfunction "}}}
-function! s:number(x) "{{{
-" return a num or a num list
+function! s:numberL(x) "{{{
+" return a num list
     if type(a:x) == type([])
         if !empty(a:x)
             let x=[]
@@ -2000,7 +2180,11 @@ function! s:number(x) "{{{
             call s:error("Empty Dict for s:number()")
             return 0
         endif
-    elseif  type(a:x) == type(function("tr"))
+    endif
+endfunction "}}}
+function! s:number(x) "{{{
+" return a num
+    if  type(a:x) == type(function("tr"))
         return 0
     elseif type(a:x) == type("")
         return str2nr(a:x)
@@ -2010,7 +2194,7 @@ function! s:number(x) "{{{
         return a:x
     endif
 endfunction "}}}
-function! s:float(x) "{{{
+function! s:floatL(x) "{{{
     if type(a:x) == type([])
         if !empty(a:x)
             let x=[]
@@ -2033,7 +2217,10 @@ function! s:float(x) "{{{
             call s:error("Empty Dict for s:float()")
             return 0.0
         endif
-    elseif  type(a:x) == type(function("tr"))
+    endif
+endfunction "}}}
+function! s:float(x) "{{{
+    if  type(a:x) == type(function("tr"))
         return 0.0
     elseif type(a:x) == type("")
         return str2float(a:x)
@@ -2083,7 +2270,7 @@ function! s:random(min,max) "{{{
                 \str2nr(strftime("%M%S"))*5+
                 \str2nr(strftime("%H%d"))*1+19
     endif
-    let s:seed=s:fmod((20907*s:seed+17343),104530)
+    let s:seed=s:fmod((20907*s:seed+27143),104537)
     return s:fmod(s:seed,a:max-a:min+1)+a:min
 endfunction "}}}
 "HELP: "{{{1
@@ -2100,9 +2287,9 @@ function! s:matchadd(grp,ptn,...) "{{{
     endtry
     return c
 endfunction "}}}
-function! s:fmt_hex(hex) "{{{
+function! s:fmt_hex(hex,...) "{{{
 " return "FFFFFF" for "0xffffff" "#ffffff" "#fff"
-" return "FFFFFFFF" for "0xffffffff" "#ffffffff"
+" fmt_hex(hex,8) return "FFFFFFFF" for "0xffffffff" "#ffffffff"
 " return "000000" for invalid hex.
    let hex = a:hex
    if hex =~ '#'
@@ -2116,15 +2303,14 @@ function! s:fmt_hex(hex) "{{{
        let hex=substitute(hex,'.','&&','g')
    endif
 
-   if len(hex) == 8
-        return printf("%08X","0x".hex)
-   elseif len(hex) > 6
-        call s:error("Formated Hex > ffffff. Truncated")
-        let hex = hex[:5]
+   let len = exists("a:1") ? a:1 : 6
+   if len(hex) > len
+        call s:error("Formated Hex too long. Truncated")
+        let hex = hex[:(len-1)]
    endif
-   return printf("%06X","0x".hex)
+   return printf("%0".len."X","0x".hex)
 endfunction "}}}
-function! s:printf(fmt,s) "{{{
+function! s:printfL(fmt,s) "{{{
     if type(a:s) == type([])
         if !empty(a:s)
             let s = []
@@ -2147,15 +2333,14 @@ function! s:printf(fmt,s) "{{{
             call s:error("Empty Dict for s:printf()")
             return ""
         endif
-    elseif  type(a:s) == type(function("tr"))
-        return ""
-    else
-        try
-            return printf(a:fmt,a:s)
-		catch /^Vim\%((\a\+)\)\=:E/	" catch all Vim errors
-		    call s:error(v:exception)
-        endtry
     endif
+endfunction "}}}
+function! s:printf(fmt,s) "{{{
+    try
+        return printf(a:fmt,a:s)
+    catch /^Vim\%((\a\+)\)\=:E/	" catch all Vim errors
+        call s:error(v:exception)
+    endtry
 endfunction "}}}
 
 function! s:echo_tips() "{{{
@@ -2250,8 +2435,7 @@ function! s:approx2(hex1,hex2,...) "{{{
     endif
 endfunction "}}}
 function! s:rlt_clr(hex) "{{{
-    if has("python") && g:ColorV_no_python!=1
-        call s:py_core_load()
+    if g:ColorV_has_python && g:ColorV_no_python!=1
 python << EOF
 y,i,q=rgb2yiq(hex2rgb(vim.eval("a:hex")))
 if y >= 30 and y < 50:
@@ -2309,7 +2493,7 @@ function! s:opz_clr(hex) "{{{
 endfunction "}}}
 
 function! s:time() "{{{
-    if has("python")
+    if g:ColorV_has_python
         py import time
         py import vim
         py vim.command("return "+str(time.time()))
@@ -2590,225 +2774,8 @@ function! s:flag_clr(nam) "{{{
 endfunction "}}}
 "TEXT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! s:py_text_load() "{{{
-    if exists("s:py_text_load")
-        return
-    endif
-    let s:py_text_load=1
-    call s:py_core_load()
-python << EOF
-import re
-fmt={} #{{{
-# XXX \s is weird that can not be captured sometimes. use [ \t] instead
-# XXX '\( \)' will cause pair unbalance error
-# XXX and the \( \\) can not catch the ')' . use [(] and [)] instead
-
-fmt['RGB']=re.compile(r'''
-        (?<!\w)rgb[(]                            # wordbegin
-        [ \t]*(?P<R>\d{1,3}),                    # group2 R
-        [ \t]*(?P<G>\d{1,3}),                    # group3 G
-        [ \t]*(?P<B>\d{1,3})                     # group4 B
-        [)](?!\w)                                # wordend
-        (?ix)                                    # [iLmsux] i:igone x:verbose
-                      ''')
-fmt['RGBA']=re.compile(r'''
-        (?<!\w)rgba[(]
-        [ \t]*(?P<R>\d{1,3}),                    # group2 R
-        [ \t]*(?P<G>\d{1,3}),                    # group3 G
-        [ \t]*(?P<B>\d{1,3}),                    # group4 B
-        [ \t]*(?P<A>\d{1,3}(?:\.\d*)?)%?
-        [)](?!\w)
-        (?ix)
-                      ''')
-fmt['glRGBA']=re.compile(r'''
-        (?<!\w)glColor\du?[bsifd][(]
-        [ \t]*(?P<R>\d(?:\.\d*)?),               # group2 R
-        [ \t]*(?P<G>\d(?:\.\d*)?),               # group3 G
-        [ \t]*(?P<B>\d(?:\.\d*)?),               # group4 B
-        [ \t]*(?P<A>\d(?:\.\d*)?)
-        [)](?!\w)
-        (?ix)
-                      ''')
-fmt['RGBP']=re.compile(r'''
-        (?<!\w)rgb[(]
-        [ \t]*(?P<R>\d{1,3})%,                   # group2 R
-        [ \t]*(?P<G>\d{1,3})%,                   # group3 G
-        [ \t]*(?P<B>\d{1,3})%                    # group4 B
-        [)](?!\w)
-        (?ix)
-                        ''')
-fmt['RGBAP']=re.compile(r'''
-        (?<!\w)rgba[(]
-        [ \t]*(?P<R>\d{1,3})%,                   # group2 R
-        [ \t]*(?P<G>\d{1,3})%,                   # group3 G
-        [ \t]*(?P<B>\d{1,3})%,                   # group4 B
-        [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
-        [)](?!\w)
-        (?ix)
-                        ''')
-
-fmt['HSL']=re.compile(r'''
-        (?<!\w)hsl[(]
-        [ \t]*(?P<H>\d{1,3}),                    # group2 H
-        [ \t]*(?P<S>\d{1,3})%,                   # group3 S
-        [ \t]*(?P<L>\d{1,3})%                    # group4 L
-        [)](?!\w)
-        (?ix)
-                        ''')
-fmt['HSLA']=re.compile(r'''
-        (?<!\w)hsla[(]
-        [ \t]*(?P<H>\d{1,3}),                    # group2 H
-        [ \t]*(?P<S>\d{1,3})%,                   # group3 S
-        [ \t]*(?P<L>\d{1,3})%,                   # group4 L
-        [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
-        [)](?!\w)
-        (?ix)
-                        ''')
-fmt['CMYK']=re.compile(r'''
-        (?<!\w)cmyk[(]
-        [ \t]*(?P<C>\d\.\d*),                    # group2 C
-        [ \t]*(?P<M>\d\.\d*),                    # group3 M
-        [ \t]*(?P<Y>\d\.\d*),                    # group4 Y
-        [ \t]* (?P<K>\d\.\d*)                    # group4 K
-        [)](?!\w)
-        (?ix)
-                        ''')
-fmt['HSV']=re.compile(r'''
-        (?<!\w)hsv[(]
-        [ \t]*(?P<H>\d{1,3}),                    # group2 H
-        [ \t]*(?P<S>\d{1,3}),                    # group3 S
-        [ \t]*(?P<V>\d{1,3})                     # group4 V
-        [)](?!\w)
-        (?ix)
-                        ''')
-fmt['HSVA']=re.compile(r'''
-        (?<!\w)hsva[(]
-        [ \t]*(?P<H>\d{1,3}),                    # group2 H
-        [ \t]*(?P<S>\d{1,3}),                    # group3 S
-        [ \t]*(?P<V>\d{1,3}),                    # group4 V
-        [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
-        [)](?!\w)
-        (?ix)
-                        ''')
-
-# NOTE (?<![0-9a-fA-F]|0[xX]) is wrong!
-#      (?<![0-9a-fA-F])|(?<!0[xX]) is wrong too!
-#      maybe (?<!([09a-fA-F])|(0[xX])) still wrong.
-#      use (?<![\w#]) or (?<![09a-fA-FxX#])
-        
-fmt['HEX']=re.compile(r'''
-        (?<![\w#])                      #no preceding [0~z] # 0x
-        (?P<HEX>[0-9A-F]{6})            #group HEX in upper 'FFFFFF'
-        (?!\w)                          #no following [0~z]
-        (?x)                            #no ignorecase
-                        ''')
-fmt['HEX0']=re.compile(r'''
-        0x                              # 0xffffff
-        (?P<HEX>[0-9a-fA-F]{6})         
-        (?!\w)                          
-        (?ix)
-                        ''')
-fmt['NS6']=re.compile(r'''
-        [#]                             # #ffffff
-        (?P<HEX>[0-9a-fA-F]{6})         
-        (?!\w)                          
-        (?ix)
-                        ''')
-fmt['NS3']=re.compile(r'''
-        [#]                             # #ffffff
-        (?P<HEX>[0-9a-fA-F]{3})         
-        (?!\w)                          
-        (?ix)
-                        ''')
-
-#}}}
-# clr_lst {{{
-clrnX11 = vim.eval("s:clrnX11")
-clrnW3C = vim.eval("s:clrnW3C")
-clrn    = vim.eval("s:clrn")
-# '-' in [] must escape or put in start/end
-NAME_ptn=r'(?<![\w_-])White(?![\w_-])'
-for [nam,hex] in clrn+clrnW3C:
-    NAME_ptn = r"|".join([NAME_ptn, r'(?<![\w_-])'+nam+r'(?![\w_-])'])
-fmt['NAME']=re.compile(NAME_ptn,re.I|re.X)
-#}}}
-def nam2hex(name,*rule): #{{{
-    if len(name):
-        if len(rule) and rule[0]=="X11":
-            lst=clrn+clrnX11
-        else:
-            lst=clrn+clrnW3C
-        for [nam,clr] in lst:
-            # ignore the case
-            if name.lower()==nam.lower():
-                return clr
-    return 0 #}}}
-def txt2hex(txt): #{{{
-    hex_list=[]
-    for key,var in fmt.iteritems():
-        r_list=list(var.finditer(txt))
-        if len(r_list)>0:
-            for x in r_list:
-                if key=="HEX" or key=="NS6" or key=="HEX0":
-                    hx=x.group('HEX')
-                elif key=="NS3":
-                    hx3=x.group('HEX')
-                    hx=hx3[0]*2+hx3[1]*2+hx3[2]*2
-                elif key=="RGBA" or key=="RGB":
-                    hx=rgb2hex([x.group('R'),x.group('G'),x.group('B')])
-                elif key=="RGBP" or key=="RGBAP":
-                    r,g,b=int(x.group('R')),int(x.group('G')),int(x.group('B'))
-                    hx=rgb2hex([r*2.55,g*2.55,b*2.55])
-                elif key=="glRGBA":
-                    r,g,b=[float(x.group('R')),
-                            float(x.group('G')),
-                            float(x.group('B'))]
-                    hx=rgb2hex([r*255,g*255,b*255])
-                elif key=="HSL" or key=="HSLA" :
-                    h,s,l=int(x.group('H')),int(x.group('S')),int(x.group('L'))
-                    hx=rgb2hex(hls2rgb([h,l,s]))
-                elif key=="CMYK" :
-                    c,m,y,k=[float(x.group('C')),float(x.group('M')) 
-                          ,float(x.group('Y')),float(x.group('K'))]
-                    hx=rgb2hex(cmyk2rgb([c,m,y,k]))
-                elif key=="HSV" or key=="HSVA" :
-                    h,s,v=int(x.group('H')),int(x.group('S')),int(x.group('V'))
-                    hx=rgb2hex(hsv2rgb([h,s,v]))
-                elif key=="NAME":
-                    hx=nam2hex(x.group())
-                else:
-                    continue
-                hex_list.append([hx,x.start(),x.end()-x.start(),x.group(),key])
-    return hex_list #}}}
-def hex2nam(hex,lst="W3C"): #{{{
-    best_match = 0
-    smallest_distance = 10000000
-
-    t= int(vim.eval("s:aprx_rate"))
-    if lst=="X11":clr_list=clrn+clrnX11
-    else:clr_list=clrn+clrnW3C
-    r1,g1,b1 = hex2rgb(hex)
-
-    for lst in clr_list:
-        r2,g2,b2 = hex2rgb(lst[1])
-        d = abs(r1-r2)+abs(g1-g2)+abs(b1-b2)
-        if d < smallest_distance:
-            smallest_distance = d
-            best_match = lst[0]
-
-    if smallest_distance == 0:
-        return best_match
-    elif smallest_distance <= t*5:
-        return best_match+"~"
-    elif smallest_distance <= t*10:
-        return best_match+"~~"
-    else:
-        return "" #}}}
-EOF
-endfunction "}}}
 function! s:txt2hex(txt) "{{{
-    if has("python") && g:ColorV_no_python!=1
-        call s:py_text_load()
+    if g:ColorV_has_python && g:ColorV_no_python!=1
         " return a list
         py vim.command("".join(["return ",str(txt2hex(vim.eval("a:txt")))]))
     endif
@@ -2866,7 +2833,7 @@ function! s:txt2hex(txt) "{{{
                 elseif fmt=="glRGBA"
                     let n_str=matchstr(p_str,'(\zs.*\ze)')
                     let [r,g,b]=split(n_str,'\s*%\=,\s*')[0:2]
-                    let [r,g,b]=s:float([r,g,b])
+                    let [r,g,b]=s:floatL([r,g,b])
                     if r > 1 || g >1 || b > 1
                         call s:error("RGB out of boundary")
                         continue
@@ -2906,29 +2873,29 @@ function! s:hex2txt(hex,fmt,...) "{{{
     let hex = s:fmt_hex(a:hex)
     " NOTE: ' 255'/2 = 0 . so use str and nr separately
     let [r ,g ,b ] = colorv#hex2rgb(hex)
-    let [rs,gs,bs] = s:printf("%3d",[r,g,b])
+    let [rs,gs,bs] = s:printfL("%3d",[r,g,b])
 
     if a:fmt=="RGB"
         let text="rgb(".rs.",".gs.",".bs.")"
     elseif a:fmt=="RGBA"
         let text="rgba(".rs.",".gs.",".bs.",1.0)"
     elseif a:fmt=="HSV"
-        let [h ,s ,v ] = s:printf("%3d",colorv#rgb2hsv([r,g,b]))
+        let [h ,s ,v ] = s:printfL("%3d",colorv#rgb2hsv([r,g,b]))
         let text="hsv(".h.",".s.",".v.")"
     elseif a:fmt=="HSL"
-        let [H ,L ,S ] = s:printf("%3d",colorv#rgb2hls([r,g,b]))
+        let [H ,L ,S ] = s:printfL("%3d",colorv#rgb2hls([r,g,b]))
         let text="hsl(".H.",".S."%,".L."%)"
     elseif a:fmt=="HSLA"
-        let [H ,L ,S ] = s:printf("%3d",colorv#rgb2hls([r,g,b]))
+        let [H ,L ,S ] = s:printfL("%3d",colorv#rgb2hls([r,g,b]))
         let text="hsla(".H.",".S."%,".L."%,1.0)"
     elseif a:fmt=="RGBP"
-        let [rp,gp,bp] = s:printf("%3d",s:number([r/2.55,g/2.55,b/2.55]))
+        let [rp,gp,bp] = s:printfL("%3d",s:numberL([r/2.55,g/2.55,b/2.55]))
         let text="rgb(".rp."%,".gp."%,".bp."%)"
     elseif a:fmt=="glRGBA"
-        let [rf,gf,bf] = s:printf("%.2f",[r/255.0,g/255.0,b/255.0])
+        let [rf,gf,bf] = s:printfL("%.2f",[r/255.0,g/255.0,b/255.0])
         let text="glColor4f(".rf.",".gf.",".bf.",1.0)"
     elseif a:fmt=="RGBAP"
-        let [rp,gp,bp] = s:printf("%3d",s:number([r/2.55,g/2.55,b/2.55]))
+        let [rp,gp,bp] = s:printfL("%3d",s:numberL([r/2.55,g/2.55,b/2.55]))
         let text="rgba(".rp."%,".gp."%,".bp."%,1.0)"
     elseif a:fmt=="HEX"
         let text=hex
@@ -2971,8 +2938,7 @@ function! s:nam2hex(nam,...) "{{{
     return 0
 endfunction "}}}
 function! s:hex2nam(hex,...) "{{{
-    if has("python") && g:ColorV_no_python!=1
-        call s:py_text_load()
+    if g:ColorV_has_python && g:ColorV_no_python!=1
         let lst = exists("a:1") && a:1 == "X11" ? "X11" : "W3C"
         py vim.command("return "+"\""+
                     \hex2nam(vim.eval("a:hex"),vim.eval("lst"))+"\"")
@@ -3347,7 +3313,7 @@ function! s:circle_coord_gen(x,y,num) "{{{
     " in    x,y,num
     " out   [[x0,y0],[x1,y1]..]
     let circle_list = []
-    let [x,y,num]= s:float([a:x,a:y,a:num])
+    let [x,y,num]= s:floatL([a:x,a:y,a:num])
     let radus = sqrt(pow(x,2)+pow(y,2))
     let radan = atan(y/x)
     if y>0 && x>0
