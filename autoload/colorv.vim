@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.4
-" Last Update: 2012-04-03
+" Last Update: 2012-04-04
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -916,6 +916,52 @@ function! s:v_hex2term16(hex) "{{{
     endfor
     return best_match
 endfunction "}}}
+
+
+" RGBA
+function! s:rgb2rgba(rgb) "{{{
+    return a:rgb + [255]
+endfunction "}}}
+function! s:rgba2rgb(rgba) "{{{
+    return a:rgba[0:2]
+endfunction "}}}
+function! s:hex2hexa(hex) "{{{
+    return a:hex+"ff"
+endfunction "}}}
+function! s:hexa2hex(hexa) "{{{
+    return a:hexa[0:-3]
+endfunction "}}}
+function! s:hexa2rgba(hexa) "{{{
+    let hex=s:fmt_hex(a:hexa)
+    return [str2nr(hex[0:1],16), str2nr(hex[2:3],16),
+                \str2nr(hex[4:5],16), str2nr(hex[6:7],16)]
+endfunction "}}}
+function! s:rgba2hexa(rgba) "{{{
+    let [r,g,b,a]=s:number(a:rgba)
+    let r= r>255 ? 255 : r<0 ? 0 : r
+    let g= g>255 ? 255 : g<0 ? 0 : g
+    let b= b>255 ? 255 : b<0 ? 0 : b
+    let a= a>255 ? 255 : a<0 ? 0 : a
+    return printf("%02X%02X%02X%02X",r,g,b,a)
+endfunction "}}}
+
+" Operation
+function! s:add(rgba1,rgba2) "{{{
+    let [r1,b1,g1,a1] = a:rgba1
+    let [r2,b2,g2,a2] = a:rgba2
+    let t = ( a1 + 0.0 ) / ( a1 + a2 + 0.0)
+    let r3 = r1 * t + r2 * ( 1 - t )
+    let g3 = g1 * t + g2 * ( 1 - t )
+    let b3 = b1 * t + b2 * ( 1 - t )
+    let a3 = a1 * t + a2 * ( 1 - t )
+    return [r3,g3,b3,a3]
+endfunction "}}}
+function! colorv#hexadd(hexa1,hexa2) "{{{
+    let rgba1 = s:hexa2rgba(a:hexa1)
+    let rgba2 = s:hexa2rgba(a:hexa2)
+    return  s:rgba2hexa(s:add(rgba1, rgba2))
+endfunction "}}}
+
 
 "DRAW: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2055,18 +2101,24 @@ function! s:matchadd(grp,ptn,...) "{{{
     return c
 endfunction "}}}
 function! s:fmt_hex(hex) "{{{
-" return "FFFFFF" and return "000000" for invalid hex.
+" return "FFFFFF" for "0xffffff" "#ffffff" "#fff"
+" return "FFFFFFFF" for "0xffffffff" "#ffffffff"
+" return "000000" for invalid hex.
    let hex = a:hex
-   if hex=~ '#'
+   if hex =~ '#'
        let hex=substitute(hex,"#",'','')
    endif
-   if hex=~ '0x'
+   if hex =~? '0x'
        let hex=substitute(hex,'0x','','')
    endif
-   if hex=~ '\x\@<!\x\{3}\x\@!'
+   " if hex =~ '\x\@<!\x\{3}\x\@!'
+   if hex =~ '\<\x\{3}\>'
        let hex=substitute(hex,'.','&&','g')
    endif
-   if len(hex) > 6
+
+   if len(hex) == 8
+        return printf("%08X","0x".hex)
+   elseif len(hex) > 6
         call s:error("Formated Hex > ffffff. Truncated")
         let hex = hex[:5]
    endif
