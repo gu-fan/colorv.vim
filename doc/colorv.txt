@@ -197,7 +197,6 @@ USAGE                                               *colorv-usage*
     The info line in the bottom shows tips and can be clicked.
     The H/Y V/L M/m TEXT in the right cornder indicate the status.
     H/Y     |g:ColorV_gen_space|   'hsv' or 'yiq'
-    V/L     |g:ColorV_win_space|   'hsv' or 'hls'
     M/m     Current Window mode.
 
                                                     *colorv-usage-edit*
@@ -251,6 +250,9 @@ USAGE                                               *colorv-usage*
                                                     *colorv-usage-preview*
     Preview color-text in current buffer:~
     <leader>cpp or command |:ColorVPreview|. 
+
+    NOTE: If have no Python Support. Colorname preview will be disabled as it's
+          too slow.
 
     NOTE: It previews limited number of lines each time.
           Set |g:ColorV_max_preview| to change the limitation.
@@ -431,20 +433,20 @@ MAPPINGS                                            *colorv-mappings*
 
                                                     *colorv-mapping-generate*
     Generate color list with current word by matching type.
-    <leader>clh    Hue
-    <leader>cls    Saturation
-    <leader>clv    Value
-    <leader>cla    Analogous
-    <leader>cln    Neutral
-    <leader>clc    Clash
-    <leader>clp    Split-Complementary
-    <leader>clq    Square
-    <leader>cl1/m  Monochromatic
-    <leader>cl2    Complementary
-    <leader>cl3/t  Triadic
-    <leader>cl4    Rectangle(Tetradic)
-    <leader>cl5    Five-Tone
-    <leader>cl6    Six-Tone
+    <leader>cgh    Hue
+    <leader>cgs    Saturation
+    <leader>cgv    Value
+    <leader>cga    Analogous
+    <leader>cgn    Neutral
+    <leader>cgc    Clash
+    <leader>cgp    Split-Complementary
+    <leader>cgq    Square
+    <leader>cg1/m  Monochromatic
+    <leader>cg2    Complementary
+    <leader>cg3/t  Triadic
+    <leader>cg4    Rectangle(Tetradic)
+    <leader>cg5    Five-Tone
+    <leader>cg6    Six-Tone
     See |colorv-generate| for details.
 
                                                     *colorv-mapping-preview*
@@ -539,19 +541,19 @@ display.
                                                     *colorv-buffer-generate*
     Generate color list with current HEX in ColorV window.
     l1/h  Hue
-    ls    Saturation
-    lv    Value
-    la    Analogous
-    ln    Neutral
-    lc    Clash
-    lp    Split-Complementary
-    lq    Square
-    lm    Monochromatic
-    l2    Complementary
-    l3/t  Triadic
-    l4    Rectangle(Tetradic)
-    l5    Five-Tone
-    l6    Six-Tone
+    gs    Saturation
+    gv    Value
+    ga    Analogous
+    gn    Neutral
+    gc    Clash
+    gp    Split-Complementary
+    gq    Square
+    gm    Monochromatic
+    g2    Complementary
+    g3/t  Triadic
+    g4    Rectangle(Tetradic)
+    g5    Five-Tone
+    g6    Six-Tone
 
     See |colorv-generate| for details.
 
@@ -610,15 +612,6 @@ will change all color-text in current buf after closing the ColorV window.
 ==============================================================================
 OPTIONS                                             *colorv-options*
 
-                                                *g:ColorV_win_space*
-                                                (default="hsv")
-    g:ColorV_win_space      ColorV's Main showing color space.
-                            if set to 'hls'.
-                            The pallette/text will use 'HLS' colorspace.
-
-                            It's status will be show at the right corner
-                            V:'hsv' L:'hls'
-                            NOTE: the 'HLS' is the same thing of 'HSL'
 
                                                 *g:ColorV_gen_space*
                                                 (default="hsv")
@@ -641,6 +634,8 @@ OPTIONS                                             *colorv-options*
                             If you don't want to make the colorname text
                             like 'red', 'black', 'navy' to be colored.
                             set it to 0
+
+                            NOTE: Must have Python support. 
 
                                                 *g:ColorV_preview_homo*
                                                 (default=0)
@@ -691,7 +686,6 @@ VIMRC EXAMPLE                                       *colorv-example*
     " ColorV window position "bot" or "top"
     "let g:ColorV_win_pos="top"  
     " Use HLS colorspace instead of HSV
-    "let g:ColorV_win_space="hls"  
     " Use YIQ colorspace for generating color list
     "let g:ColorV_gen_space="yiq" 
     " Stop coloring colornames like 'Black','Navy','white'
@@ -857,10 +851,16 @@ DEPENDENCIES                                        *colorv-dependencies*
 CHANGELOG                                           *colorv-changelog* 
 
 " 2.5.5 devel~
+"  DONE: 2012-04-06 rmv g:ColorV_win_space
+"  DONE: 2012-04-06 mak the max height -1. now 8.
+"  DONE: 2012-04-06 s:rlt_clr() now looks better.
+"  DONE: 2012-04-06 :ColorVList now map to g<xx> again.
+"  DONE: 2012-04-06 refactoring functions: CORE,PYTH,DRAW,PREV
+"  DONE: 2012-04-06 use lookup dict to make pallete drawing faster.
+"  DONE: 2012-04-05 new hex2term functions
 "  DONE: 2012-03-19 arranging commands and  mappings. 
 "                   now generate colors with 'l' mappings.
 "  DONE: 2012-03-19 add g:ColorV_preview_ftype and g:ColorV_max_preview.
-
 
 
 " 2.5.4 Spring Festival~
