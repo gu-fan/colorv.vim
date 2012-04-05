@@ -817,6 +817,15 @@ FUNCTIONS                                           *colorv-functions*
                                     {step} the step between each color. 
 
                                     See details in |colorv-generate|.
+                                                    
+                                                    *colorv#hexadd*
+    colorv#hexadd(hexa1,hexa2)
+                                    Add hexa1 and hexa2 with it's alpha 
+                                    channel.
+
+                                    e.g.:
+                                    add hexa '8000FF80' and 'FF80CCFF'
+                                    will return 'D4DD55D4'
 
 ==============================================================================
 DEVELOPER                                             *colorv-developer*
@@ -854,10 +863,11 @@ CHANGELOG                                           *colorv-changelog*
 "  DONE: 2012-04-06 rmv g:ColorV_win_space
 "  DONE: 2012-04-06 mak the max height -1. now 8.
 "  DONE: 2012-04-06 s:rlt_clr() now looks better.
-"  DONE: 2012-04-06 :ColorVList now map to g<xx> again.
+"  DONE: 2012-04-06 :ColorVList now mapping to 'g<xx>' again.
 "  DONE: 2012-04-06 refactoring functions: CORE,PYTH,DRAW,PREV
 "  DONE: 2012-04-06 use lookup dict to make pallete drawing faster.
 "  DONE: 2012-04-05 new hex2term functions
+"  DONE: 2012-04-04 add colorv#hexadd()
 "  DONE: 2012-03-19 arranging commands and  mappings. 
 "                   now generate colors with 'l' mappings.
 "  DONE: 2012-03-19 add g:ColorV_preview_ftype and g:ColorV_max_preview.
