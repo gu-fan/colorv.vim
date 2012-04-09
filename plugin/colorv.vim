@@ -3,13 +3,18 @@
 "    File: plugin/colorv.vim
 " Summary: A vim plugin that makes handling colors easier
 "  Author: Rykka10 <Rykka10(at)gmail.com>
-" Last Update: 2012-04-06
+" Last Update: 2012-04-10
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
 
 if v:version < 700
+    echom "[ColorV] Stoped as your vim version < 7.0."
     finish
+elseif exists("g:colorv_loaded") && g:colorv_loaded == 1
+    finish
+else
+    let g:colorv_loaded = 1
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
