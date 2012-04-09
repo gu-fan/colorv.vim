@@ -862,6 +862,7 @@ CHANGELOG                                           *colorv-changelog*
 " 2.5.5 devel~
 "  DONE: 2012-04-06 rmv g:ColorV_win_space
 "  DONE: 2012-04-06 mak the max height -1. now 8.
+"  DONE: 2012-04-06 highlight whole EDIT line.
 "  DONE: 2012-04-06 s:rlt_clr() now looks better.
 "  DONE: 2012-04-06 :ColorVList now mapping to 'g<xx>' again.
 "  DONE: 2012-04-06 refactoring functions: CORE,PYTH,DRAW,PREV
