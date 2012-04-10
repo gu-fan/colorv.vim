@@ -5,8 +5,9 @@
     With it you can easily:
         View, Edit, Preview, Generate, Pick, Cache ... Colors.
 
-    To Start: 
-        :ColorV
+    Screenshot: http://img.ly/gAvP
 
-    Screenshot: http://rykka.is-programmer.com/posts/31819
+
+![Screenshot](http://s3.amazonaws.com/imgly_production/3953605/large.png)
+
     Post issues: https://github.com/Rykka/ColorV/issues 

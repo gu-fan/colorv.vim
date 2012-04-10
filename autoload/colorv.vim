@@ -2093,15 +2093,16 @@ function! colorv#random(num,...) "{{{
     endif
     if g:ColorV_has_python
         py vcmd("return "+str(random.randint(int(veval("min")),int(veval("max")))))
+    else
+        call s:nextseed()
+        return float2nr(s:fmod(abs(s:seed),max-min+1) + min)
     endif
-    call s:nextseed()
-    return float2nr(s:fmod(abs(s:seed),max-min+1) + min)
 endfunction "}}}
 function! s:nextseed() "{{{
     if !exists("s:seed")
-        let s:seed = localtime() * (localtime() + 100) * 82121107
+        let s:seed = localtime() * (localtime() + 10) * 2207
     endif
-    let s:seed = s:fmod((20907*s:seed+27143),104537)
+    let s:seed = s:fmod((1097*s:seed+2713),10457)
 endfunction "}}}
 "HELP: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2575,6 +2576,8 @@ function! s:edit_at_cursor(...) "{{{
             elseif hex =~ '^\x\{3}$'
                 let hex=substitute(hex,'.','&&','g')
                 call s:draw_win(hex)
+            else
+                call s:error("invalid input.")
             endif
         endif
     elseif position==7
@@ -2606,6 +2609,8 @@ function! s:edit_at_cursor(...) "{{{
         if {c} =~ '^-\=\d\{1,3}$' && {c} <= r_max && {c} >= r_min
             exe e_txt
             call s:draw_win(hex)
+        else
+            call s:error("invalid input.")
         endif
     endif "}}}
 
@@ -3342,6 +3347,51 @@ function! colorv#yiq_winlist_gen(hex,...) "{{{
         call add(list,[type.i,hex])
         let i+=1
     endfor
+    return list
+endfunction "}}}
+function! colorv#list_gen2(hex1,hex2) "{{{
+    let hex1=a:hex1
+    let hex2=a:hex2
+    let hex_list=[]
+    let type=exists("a:1") && !empty(a:1) ? a:1 : s:gen_def_type
+    let nums=exists("a:2") && !empty(a:2) ? a:2 : s:gen_def_nums
+    let step=exists("a:3") && !empty(a:3) ? a:3 : s:gen_def_step
+    let circle=exists("a:4") ? a:4 : 1
+    let [h0,s0,v0] = colorv#hex2hsv(hex1)
+    let [H0,S0,V0] = colorv#hex2hsv(hex2)
+    let [hd,sd,vd] = [H0-h0,S0-s0,V0-v0]
+    let hex0 = hex1
+    let HEX0 = hex2
+
+
+        let hstep = (hd+0.0) /nums
+        let sstep = (sd+0.0) /nums
+        let vstep = (vd+0.0) /nums
+        for i in range(1,nums)
+            
+            let h{i}  = h{i-1} + hstep
+            let s{i}  = s{i-1} + sstep
+            let v{i}  = v{i-1} + vstep
+
+            let hex{i}=colorv#hsv2hex([h{i},s{i},v{i}])
+            call add(hex_list,hex{i})
+        endfor
+    return hex_list
+endfunction "}}}
+
+function! colorv#winlist_gen2(hex1,hex2) "{{{
+    let hex1=a:hex1
+    let hex2=a:hex2
+    let genlist=colorv#list_gen2(hex1,hex2)
+
+    let list=[]
+    call add(list,['MixTwo List','======='])
+    let i=0
+    for hex in genlist
+        call add(list,["MixTwo".i,hex])
+        let i+=1
+    endfor
+
     return list
 endfunction "}}}
 

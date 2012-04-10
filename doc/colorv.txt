@@ -38,10 +38,9 @@ INTRO                                               *colorv-intro*
     With it you can easily:
         View, Edit, Preview, Generate, Pick, Cache ... Colors.
 
-    To Start: 
-        :ColorV
 
-    Screenshot: http://rykka.is-programmer.com/posts/31819
+    Screen Shot:  http://img.ly/gAvP
+
     Post issues: https://github.com/Rykka/ColorV/issues 
 ------------------------------------------------------------------------------
 QUICKSTART                                               *colorv-quickstart*
