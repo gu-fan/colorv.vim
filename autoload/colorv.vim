@@ -659,7 +659,7 @@ H_OFF,W_OFF = int(veval("s:OFF_H")),int(veval("s:OFF_W"))
 
 def draw_palette(H,height,width): #{{{
 
-    H = fmod(h,360) if H >= 360 else 360-fmod(abs(H),360) if H < 0 else H
+    H = fmod(H,360) if H >= 360 else 360-fmod(abs(H),360) if H < 0 else H
     name = "_".join([str(H),str(height),str(width)])
     if name not in lookup: 
         p2=[]
