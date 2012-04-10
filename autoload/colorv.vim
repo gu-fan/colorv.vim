@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.5
-" Last Update: 2012-04-10
+" Last Update: 2012-04-11
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -45,15 +45,15 @@ call colorv#default("g:ColorV_preview_homo"  , 0                )
 call colorv#default("g:ColorV_gen_space"     , "hsv"            )
 call colorv#default("g:ColorV_preview_ftype" , 'css,javascript' )
 call colorv#default("g:ColorV_max_preview"   , 200              )
-if !exists('g:ColorV_cache_File') "{{{
+if !exists('g:ColorV_cache_file') "{{{
     if has("win32") || has("win64")
         if exists('$HOME')
-            let g:ColorV_cache_File = expand('$HOME') . '\.vim_colorv_cache'
+            let g:ColorV_cache_file = expand('$HOME') . '\.vim_colorv_cache'
         else
-            let g:ColorV_cache_File = expand('$VIM') . '\.vim_galaxy_cache'
+            let g:ColorV_cache_file = expand('$VIM') . '\.vim_galaxy_cache'
         endif
     else
-        let g:ColorV_cache_File = expand('$HOME') . '/.vim_colorv_cache'
+        let g:ColorV_cache_file = expand('$HOME') . '/.vim_colorv_cache'
     endif
 endif "}}}
 
@@ -3670,7 +3670,7 @@ endfunction "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#write_cache() "{{{
     let CacheStringList = []
-    let file = g:ColorV_cache_File
+    let file = g:ColorV_cache_file
     if len(s:his_cpd_list) < 18
         let list = deepcopy(s:his_cpd_list[0:-1])
     else
@@ -3689,7 +3689,7 @@ function! colorv#write_cache() "{{{
     endtry
 endfunction "}}}
 function! colorv#load_cache() "{{{
-    let file = g:ColorV_cache_File
+    let file = g:ColorV_cache_file
     try
         let CacheStringList = readfile(file)
     catch /^Vim\%((\a\+)\)\=:E/
