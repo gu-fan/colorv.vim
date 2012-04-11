@@ -3224,8 +3224,9 @@ function! colorv#yiq_list_gen(hex,...) "{{{
     let [h0,s0,v0] = [h,s,v]
     let [y0,i0,q0] = [y,i,q]
     let hex0 = hex
+    cal add(hex_list,hex0)
     if type==?"Hue"
-        for i in range(1,nums)
+        for i in range(1,nums-1)
             let h{i}=h+i*step
             let hex{i}=colorv#hsv2hex([h{i},s,v])
             let [y{i},i{i},q{i}]=colorv#rgb2yiq(colorv#hex2rgb(hex{i}))
@@ -3234,7 +3235,7 @@ function! colorv#yiq_list_gen(hex,...) "{{{
         endfor
     elseif type==?"Luma"
         "y+
-        for i in range(1,nums)
+        for i in range(1,nums-1)
             let y{i}=y{i-1}+step
             if circle==1
                 let y{i} = y{i} >=100 ? 1 : y{i} <= 0 ? 100 : y{i}
@@ -3247,7 +3248,7 @@ function! colorv#yiq_list_gen(hex,...) "{{{
     elseif type=="Value"
         "v+
         " let v{i}= v+step*i<=100 ? v+step*i : 100
-        for i in range(1,nums)
+        for i in range(1,nums-1)
             let y{i}=y{i-1}+step
             if circle==1
                 let y{i} = y{i} >=100 ? 1 : y{i} <= 0 ? 100 : y{i}
@@ -3258,7 +3259,7 @@ function! colorv#yiq_list_gen(hex,...) "{{{
             call add(hex_list,hex)
         endfor
     elseif type=="Saturation"
-        for i in range(1,nums)
+        for i in range(1,nums-1)
             let s{i}=s{i-1}+step
             if circle==1
                 let s{i} = s{i} >=100 ? 1 : s{i} <= 0 ? 100 : s{i}
@@ -3279,7 +3280,7 @@ function! colorv#yiq_list_gen(hex,...) "{{{
     elseif type==?"Complementary"
         let hex_list=colorv#yiq_list_gen(hex,"Hue",nums,180)
     elseif type=="Split-Complementary"
-        for i in range(1,nums)
+        for i in range(1,nums-1)
             let h{i}=s:fmod(i,2)==1 ? h{i-1}+150 : h{i-1}+60
             let hex{i}=colorv#hsv2hex([h{i},s,v])
             let [y{i},i{i},q{i}]=colorv#rgb2yiq(colorv#hex2rgb(hex{i}))
@@ -3289,7 +3290,7 @@ function! colorv#yiq_list_gen(hex,...) "{{{
     elseif type==?"Triadic"
         let hex_list=colorv#yiq_list_gen(hex,"Hue",nums,120)
     elseif type=="Clash"
-        for i in range(1,nums)
+        for i in range(1,nums-1)
             let h{i}=s:fmod(i,2)==1 ? h{i-1}+90 : h{i-1}+180
             let hex{i}=colorv#hsv2hex([h{i},s,v])
             let [y{i},i{i},q{i}]=colorv#rgb2yiq(colorv#hex2rgb(hex{i}))
@@ -3300,7 +3301,7 @@ function! colorv#yiq_list_gen(hex,...) "{{{
         let hex_list=colorv#yiq_list_gen(hex,"Hue",nums,90)
     elseif type=="Tetradic" || type=="Rectangle"
         "h+60,h+120,...
-        for i in range(1,nums)
+        for i in range(1,nums-1)
             let h{i}=s:fmod(i,2)==1 ? h{i-1}+60 : h{i-1}+120
             let hex{i}=colorv#hsv2hex([h{i},s,v])
             let [y{i},i{i},q{i}]=colorv#rgb2yiq(colorv#hex2rgb(hex{i}))
@@ -3309,7 +3310,7 @@ function! colorv#yiq_list_gen(hex,...) "{{{
         endfor
     elseif type==?"Five-Tone"
         "h+115,+40,+50,+40,+115
-        for i in range(1,nums)
+        for i in range(1,nums-1)
             let h{i}=s:fmod(i,5)==1 ? h{i-1}+115 :
                     \ s:fmod(i,5)==2 ? h{i-1}+40 :
                     \ s:fmod(i,5)==3 ? h{i-1}+50 :
@@ -3321,7 +3322,7 @@ function! colorv#yiq_list_gen(hex,...) "{{{
             call add(hex_list,hex{i})
         endfor
     elseif type==?"Six-Tone"
-        for i in range(1,nums)
+        for i in range(1,nums-1)
             let h{i}=s:fmod(i,2)==1 ? h{i-1}+30 : h{i-1}+90
             let hex{i}=colorv#hsv2hex([h{i},s,v])
             let [y{i},i{i},q{i}]=colorv#rgb2yiq(colorv#hex2rgb(hex{i}))
@@ -3367,7 +3368,8 @@ function! colorv#list_gen2(hex1,hex2) "{{{
         let hstep = (hd+0.0) /nums
         let sstep = (sd+0.0) /nums
         let vstep = (vd+0.0) /nums
-        for i in range(1,nums)
+        call add(hex_list,hex0)
+        for i in range(1,nums-1)
             
             let h{i}  = h{i-1} + hstep
             let s{i}  = s{i-1} + sstep
@@ -3419,7 +3421,8 @@ function! colorv#list_gen(hex,...) "{{{
     let [h,s,v] = colorv#hex2hsv(hex)
     let [h0,s0,v0] = [h,s,v]
     let hex0 = hex
-    for i in range(1,nums)
+    call add(hex_list,hex0)
+    for i in range(1,nums-1)
         if type==?"Hue"
             "h+
             let h{i} = h + step*i
