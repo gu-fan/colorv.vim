@@ -1,7 +1,7 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  Script: ColorV 
 "    File: plugin/colorv.vim
-" Summary: A vim plugin tries to simplifiy handling colors.
+" Summary: A vim plugin tries to make handling colors easier.
 "  Author: Rykka10 <Rykka10(at)gmail.com>
 " Last Update: 2012-04-12
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

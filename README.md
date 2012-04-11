@@ -1,13 +1,17 @@
 ##INTRO:##
 
-   *ColorV* is a vim plugin with which you can easily handling with colors.
+**ColorV** is a vim plugin tries to make handling colors easier.
    
+    For example:
     When editing text like '#9370D8' or 'LightSlateGray' or 'rgb(216,112,147)'
-    We want to view the actual colors, and pick the actual color we want to get
+    We want to view it's actual color, and pick the actual color we want to get
 
-    This plugin helps you dealing with it.
-    ':ColorVEdit' on the 'LightSlateGray' 
-    will open the ColorV window to view and Edit it with actual color.
+    ColorV helps you doing this.
+
+    Press '<leader>ce'(':ColorVEdit') in 'LightSlateGray',
+    this will open ColorV window showing the text's color.
+    And after picking a color and close the window,
+    The text will be changed to your picked color.
 
     Features:
     View, Edit, Preview, Generate, Pick, Cache ... Colors and more.

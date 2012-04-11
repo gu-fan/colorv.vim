@@ -1,11 +1,11 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  Script: ColorV
 "    File: autoload/colorv.vim
-" Summary: A vim plugin that makes handling colors easier
+" Summary: A vim plugin tries to make handling colors easier.
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.5
-" Last Update: 2012-04-11
+" Last Update: 2012-04-12
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
