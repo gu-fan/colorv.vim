@@ -27,7 +27,7 @@ Post issues at https://github.com/Rykka/ColorV/issues
 2. Using vim.org http://www.vim.org/scripts/script.php?script_id=3597
 
     Download and Extract to your ~/.vim Folder
-    :helptags ~/.vim/doc
+    `:helptags ~/.vim/doc`
     
 **NOTE**   Get Latest version
            https://github.com/Rykka/ColorV/
