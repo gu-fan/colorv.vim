@@ -16,7 +16,7 @@
  DESCRIPTION                                   *colorv-description*
     1. Intro                                      |colorv-intro|
     2. Install                                    |colorv-install|
-    3. Usage                                      |colorv-usage|
+    3. Quickstart                                 |colorv-quickstart|
  ADVANCED                                      *colorv_advanced*
     4. Commands                                   |colorv-commands|
     5. Mappings                                   |colorv-mappings|
@@ -29,7 +29,7 @@
     11. Changelog                                 |colorv-changelog|
     12. License                                   |colorv-license|
 ==============================================================================
-INTRO                                               *colorv-intro*
+INTRO                                                   *colorv-intro*
 
    *ColorV* is a vim plugin with which you can easily handling with colors.
    
@@ -43,10 +43,25 @@ INTRO                                               *colorv-intro*
     Features:
     View, Edit, Preview, Generate, Pick, Cache ... Colors and more.
 
-    Screenshot: http://img.ly/gAvP
+    Screenshot: http://img.ly/gC9p
 
-    Post issues: https://github.com/Rykka/ColorV/issues 
+    Post issues at https://github.com/Rykka/ColorV/issues 
 ------------------------------------------------------------------------------
+INSTALL                                                     *colorv-install*
+
+1.Using [Vundle.vim] https://github.com/gmarik/vundle 
+
+    Add this Line to your vimrc
+    `Bundle 'Rykka/ColorV'` 
+ 
+2.Using [Vim.org] http://www.vim.org/scripts/script.php?script_id=3597
+
+    Download and Extract to your ~/.vim Folder
+    :helptags ~/.vim/doc
+ 
+    NOTE   Get Latest version
+           https://github.com/Rykka/ColorV/
+==============================================================================
 QUICKSTART                                               *colorv-quickstart*
 
     Quick Start~
@@ -99,21 +114,6 @@ QUICKSTART                                               *colorv-quickstart*
         (vim with '+python' and pygtk2.0 included)
 
             
-==============================================================================
-INSTALL                                             *colorv-install*
-
-1.Using [Vundle.vim] https://github.com/gmarik/vundle 
-
-    Add this Line to your vimrc
-    `Bundle 'Rykka/ColorV'` 
- 
-2.Using [Vim.org] http://www.vim.org/scripts/script.php?script_id=3597
-
-    Download and Extract to your ~/.vim Folder
-    :helptags ~/.vim/doc
- 
-    NOTE   Get Latest version
-           https://github.com/Rykka/ColorV/
 
 ------------------------------------------------------------------------------
 TROUBLESHOOTING                                 *colorv-troubleshooting*

@@ -12,12 +12,10 @@
     Features:
     View, Edit, Preview, Generate, Pick, Cache ... Colors and more.
 
-    Screenshot: http://img.ly/gAvP
-
-
+    Screenshot: http://img.ly/gC9p
 ![Screenshot](http://s3.amazonaws.com/imgly_production/3953605/large.png)
 
-    Post issues: https://github.com/Rykka/ColorV/issues 
+Post issues at https://github.com/Rykka/ColorV/issues 
 
 ##INSTALL:##
 
