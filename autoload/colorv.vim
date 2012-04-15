@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.5
-" Last Update: 2012-04-12
+" Last Update: 2012-04-15
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -66,7 +66,9 @@ let s:lookup = {}
 let s:prv_hex = "FF0000"
 let s:hue_H = 0
 let s:val_S = 100
-
+let s:his_color0 = "FF0000"
+let s:his_color1 = "FFFFFF"
+let s:his_color2 = "FFFFFF"
 let s:size = "mid"
 let s:mode = has("gui_running") ? "gui" : "cterm"
 
@@ -119,7 +121,7 @@ let s:hlp_d = {
 let s:win_tips = [
             \"Yank:yy Hue:gh Names:nn Tips:? ",
             \"Copy:cc Sat:gs Next:Tab Help:H ",
-            \"Paste:P Val:gv Names:nn Help:H ",
+            \"Paste:P Val:gv TurnT:gg Help:H ",
             \"Edit:Clik/Enter   Change:+/-   ",
             \]
 let s:tips_list=[
@@ -131,6 +133,7 @@ let s:tips_list=[
             \'ColornameEdit(W3C):na/ne       (X11):nx',
             \'ColornameList:nn (:ColorVName  <leader>cn)',
             \'ColorList: g1/g2/g3/g4/g5/g6/gh/gs/gv...',
+            \'ColorList2: gg (hex1 Turn To hex2)',
             \'View color-text: :ColorVView (<leader>cw) ',
             \'Edit color-text: :ColorVEdit (<leader>ce) ',
             \'Preview in file: :ColorVPreview (<leader>cpp) ',
@@ -1244,8 +1247,8 @@ endfunction "}}}
 function! s:draw_history_set(hex) "{{{
     let hex= s:fmt_hex(a:hex)
     let len=len(s:his_set_list)
-    let s:his_color2= len >2 ? s:his_set_list[len-3] : 'ffffff'
-    let s:his_color1= len >1 ? s:his_set_list[len-2] : 'ffffff'
+    let s:his_color2= len >2 ? s:his_set_list[len-3] : 'FFFFFF'
+    let s:his_color1= len >1 ? s:his_set_list[len-2] : 'FFFFFF'
     let s:his_color0= len >0 ? s:his_set_list[len-1] : hex
     " if s:size == "mid"
     "     let s:his_set_rect=[43,2,5,3]
@@ -1461,10 +1464,10 @@ function! s:hi_misc() "{{{
         call s:hi_link("cv_stip","SpecialComment")
         let s:misc_dict["cv_stip"]=s:matchadd("cv_stip",tip_ptn,15)
         let stat_ptn='\%'.(s:pal_H+1).'l\%>'.(s:stat_pos-1).'c\%<60c[mMYH]'
-        call s:hi_link("cv_stat","Todo")
+        call s:hi_link("cv_stat","Keyword")
         let s:misc_dict["cv_stat"]=s:matchadd("cv_stat",stat_ptn,25)
         let stat_ptn='\%'.(s:pal_H+1).'l\%>'.(s:stat_pos-1).'c\%<60c[x]'
-        call s:hi_link("cv_xstat","Error")
+        call s:hi_link("cv_xstat","Title")
         let s:misc_dict["cv_xstat"]=s:matchadd("cv_xstat",stat_ptn,26)
     endif
 endfunction "}}}
@@ -1865,6 +1868,8 @@ function! s:set_map() "{{{
     nmap <silent><buffer> g4 :call colorv#gen_win(g:ColorV.HEX,"Tetradic")<cr>
     nmap <silent><buffer> g5 :call colorv#gen_win(g:ColorV.HEX,"Five-Tone")<cr>
     nmap <silent><buffer> g6 :call colorv#gen_win(g:ColorV.HEX,"Six-Tone")<cr>
+
+    nmap <silent><buffer> gg :call colorv#gen_win2()<CR>
 
     "easy moving
     noremap <silent><buffer>j gj
@@ -2478,6 +2483,8 @@ function! s:set_in_pos() "{{{
             call s:echo_tips()
         elseif key == "Help"
             h colorv-usage
+        elseif key == "TurnT"
+            call colorv#gen_win2()
         elseif key == "Hue"
             call colorv#gen_win(g:ColorV.HEX,"Hue",20,15)
         elseif key == "Sat"
@@ -3350,63 +3357,57 @@ function! colorv#yiq_winlist_gen(hex,...) "{{{
     endfor
     return list
 endfunction "}}}
+
 function! colorv#list_gen2(hex1,hex2) "{{{
-    let hex1=a:hex1
-    let hex2=a:hex2
+    let hex0=s:fmt_hex(a:hex1)
+    let HEX0=s:fmt_hex(a:hex2)
     let hex_list=[]
-    let type=exists("a:1") && !empty(a:1) ? a:1 : s:gen_def_type
-    let nums=exists("a:2") && !empty(a:2) ? a:2 : s:gen_def_nums
-    let step=exists("a:3") && !empty(a:3) ? a:3 : s:gen_def_step
-    let circle=exists("a:4") ? a:4 : 1
-    let [h0,s0,v0] = colorv#hex2hsv(hex1)
-    let [H0,S0,V0] = colorv#hex2hsv(hex2)
+    let nums=20
+    let [h0,s0,v0] = colorv#hex2hsv(hex0)
+    let [H0,S0,V0] = colorv#hex2hsv(HEX0)
     let [hd,sd,vd] = [H0-h0,S0-s0,V0-v0]
-    let hex0 = hex1
-    let HEX0 = hex2
+    " NOTE: differ hex0 to hex1 and hex1 to hex0
+    if hd < 0
+        let hd +=360
+    endif
+    let hstep = (hd+0.0) /(nums-1)
+    let sstep = (sd+0.0) /(nums-1)
+    let vstep = (vd+0.0) /(nums-1)
+    call add(hex_list,hex0)
+    for i in range(1,nums-1)
+        
+        let h{i}  = h{i-1} + hstep
+        let s{i}  = s{i-1} + sstep
+        let v{i}  = v{i-1} + vstep
 
-
-        let hstep = (hd+0.0) /nums
-        let sstep = (sd+0.0) /nums
-        let vstep = (vd+0.0) /nums
-        call add(hex_list,hex0)
-        for i in range(1,nums-1)
-            
-            let h{i}  = h{i-1} + hstep
-            let s{i}  = s{i-1} + sstep
-            let v{i}  = v{i-1} + vstep
-
-            let hex{i}=colorv#hsv2hex([h{i},s{i},v{i}])
-            call add(hex_list,hex{i})
-        endfor
+        let hex{i}=colorv#hsv2hex([h{i},s{i},v{i}])
+        call add(hex_list,hex{i})
+    endfor
     return hex_list
 endfunction "}}}
-
 function! colorv#winlist_gen2(hex1,hex2) "{{{
     let hex1=a:hex1
     let hex2=a:hex2
     let genlist=colorv#list_gen2(hex1,hex2)
 
     let list=[]
-    call add(list,['MixTwo List','======='])
+    call add(list,['TurtTo List','======='])
     let i=0
     for hex in genlist
-        call add(list,["MixTwo".i,hex])
+        call add(list,["TurnTo".i,hex])
         let i+=1
     endfor
 
     return list
 endfunction "}}}
-
-function! s:clear_list_text() "{{{
-    if !s:check_win(s:ColorV.listname)
-        call s:error("Not [ColorV-List] buffer.")
-        return [0,0,0,0]
-    else
-        let cur=getpos('.')
-        silent! %delete _
-        return cur
-    endif
+function! colorv#gen_win2(...) "{{{
+    let hex1 = exists("a:1") ? a:1 : s:his_color0
+    let hex2 = exists("a:2") ? a:2 : s:his_color1
+    let list=colorv#winlist_gen2(hex1,hex2)
+    call colorv#list_win(list)
+    call s:get_buf_win(s:ColorV.listname)
 endfunction "}}}
+
 function! colorv#list_gen(hex,...) "{{{
     let hex=a:hex
     let hex_list=[]
@@ -3552,6 +3553,16 @@ function! colorv#gen_win(hex,...) "{{{
     endif
     call colorv#list_win(list)
     call s:get_buf_win(s:ColorV.listname)
+endfunction "}}}
+function! s:clear_list_text() "{{{
+    if !s:check_win(s:ColorV.listname)
+        call s:error("Not [ColorV-List] buffer.")
+        return [0,0,0,0]
+    else
+        let cur=getpos('.')
+        silent! %delete _
+        return cur
+    endif
 endfunction "}}}
 "PREV: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

@@ -3,7 +3,7 @@
 "    File: plugin/colorv.vim
 " Summary: A vim plugin tries to make handling colors easier.
 "  Author: Rykka10 <Rykka10(at)gmail.com>
-" Last Update: 2012-04-12
+" Last Update: 2012-04-15
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -32,8 +32,7 @@ command! -nargs=1  ColorVEditTo      call colorv#cursor_win(1,<q-args>)
 
 command! -nargs=0  ColorVName        call colorv#list_win()
 command! -nargs=+  ColorVList        call colorv#cursor_win(3,<f-args>)
-command! -nargs=+  ColorVList2
-                \ call colorv#list_win(colorv#winlist_gen2(<f-args>))
+command! -nargs=*  ColorVList2       call colorv#gen_win2(<f-args>)
 
 command! -nargs=0  ColorVAutoPreview call colorv#prev_aug()
 command! -nargs=0  ColorVPreview     call colorv#preview()
