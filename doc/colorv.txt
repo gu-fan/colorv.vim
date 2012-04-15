@@ -10,7 +10,6 @@
                              Ver:2.5                                  ~
                                 
 ==============================================================================
-
  CONTENTS                                      *colorv-contents*
 
  DESCRIPTION                                   *colorv-description*
@@ -25,11 +24,11 @@
     8. Variables                                  |colorv-variables|
     9. Functions                                  |colorv-functions|
  CREDITS                                       *colorv-credits*
-    10. Developer                                 |colorv-developer|
+    10. Credit                                    |colorv-credit|
     11. Changelog                                 |colorv-changelog|
     12. License                                   |colorv-license|
 ==============================================================================
-INTRO                                                   *colorv-intro*
+ 1. INTRO                                      *colorv-intro*
 
    *ColorV* is a vim plugin tries to make handling colors easier.
    
@@ -51,7 +50,7 @@ INTRO                                                   *colorv-intro*
 
     Post issues at https://github.com/Rykka/ColorV/issues 
 ------------------------------------------------------------------------------
-INSTALL                                                     *colorv-install*
+ 2. INSTALL                                    *colorv-install*
 
 1.Using [Vundle.vim] https://github.com/gmarik/vundle 
 
@@ -66,7 +65,7 @@ INSTALL                                                     *colorv-install*
     NOTE   Get Latest version
            https://github.com/Rykka/ColorV/
 ==============================================================================
-QUICKSTART                                               *colorv-quickstart*
+ 3. QUICKSTART                                 *colorv-quickstart*
 
     Quick Start~
 
@@ -118,9 +117,8 @@ QUICKSTART                                               *colorv-quickstart*
         (vim with '+python' and pygtk2.0 included)
 
             
-
 ------------------------------------------------------------------------------
-TROUBLESHOOTING                                 *colorv-troubleshooting*
+ 3.1 TROUBLESHOOTING                           *colorv-troubleshooting*
     
     1. Too Slow~
     NOTE   If your vim is not compiled with 'python' (python2.x) 
@@ -144,10 +142,8 @@ TROUBLESHOOTING                                 *colorv-troubleshooting*
 
     4.Report bugs~
         You can report bugs at https://github.com/Rykka/ColorV/issues . 
-
-
 ==============================================================================
-COMMANDS                                            *colorv-commands*
+ 4. COMMANDS                                   *colorv-commands*
 
                                                     *:ColorV*
     |:ColorV|       Open ColorV window with previous size.
@@ -198,9 +194,8 @@ will change all color-text in current buf after closing the ColorV window.
 
                                                     *:ColorVquit*
     |:ColorVQuit|       Quit ColorV window.
-
 ==============================================================================
-MAPPINGS                                            *colorv-mappings*
+ 5. MAPPINGS                                   *colorv-mappings*
     
     Global Mappins.~
     
@@ -269,10 +264,8 @@ MAPPINGS                                            *colorv-mappings*
 
     You can set |g:ColorV_preview_ftype| to automatically preview
     some filetypes. Default is 'css,html'
-
 ------------------------------------------------------------------------------
-
-                                                    *colorv-mapping-buffer*
+                                               *colorv-mapping-buffer*
 
     Mappings in ColorV window buffer~
     
@@ -318,9 +311,8 @@ MAPPINGS                                            *colorv-mappings*
     
     Qui~
     q/Q             Quit ColorV.
-
 ==============================================================================
-COLORINFO                                            *colorv-colorinfo*
+ 6. COLORINFO                                  *colorv-colorinfo*
     
     This section is information about colors.~
                                                      *colorv-colorname*
@@ -351,7 +343,7 @@ COLORINFO                                            *colorv-colorinfo*
             ColorV will automatically edit it as X11 color names. 
             But the name showing in ColorV window is always W3C color name.
 ------------------------------------------------------------------------------
-                                                    *colorv-color-text*
+                                               *colorv-color-text*
                                                     *colorv-formats*
     The formats of color-text.~
     This is predefined in ColorV.
@@ -371,9 +363,8 @@ COLORINFO                                            *colorv-colorinfo*
     HSV     hsv(360,100,100)
     CMYK    cmyk(1.00,1.00,1.00,1.00) 
     NAME    red/lime/blue                   (see |colorv-colorname|)
-
 ------------------------------------------------------------------------------
-                                                      *colorv-colors-generate*
+                                               *colorv-colors-generate*
     Types for generating color list.~
     There are following type currently:
     Hue/Saturation/Value        Generate by H/S/V  h/s/v+{step}
@@ -426,9 +417,8 @@ COLORINFO                                            *colorv-colorinfo*
         #00FFBF            #00702F             #FF8FD0
         #00FFFF            #006969             #FF9696
     
-
 ==============================================================================
-OPTIONS                                             *colorv-options*
+ 7. OPTIONS                                    *colorv-options*
 
                                                 *g:ColorV_global_leader*
                                                 (default='<leader>c')
@@ -492,15 +482,15 @@ OPTIONS                                             *colorv-options*
                                                 *g:ColorV_cache_file*
                                             (default='$HOME/.vim_colorv_cache')
     g:ColorV_cache_file     The copied_history_list's cache file position.
+  
 ==============================================================================
-VARIABLES                                           *colorv-variables*
+ 8. VARIABLES                                  *colorv-variables*
 
     Global variables that could be used by your scripts.~
     g:ColorV        The |dict| that keeps all ColorV global vars.
                     Check it if you need it.
-
 ==============================================================================
-FUNCTIONS                                           *colorv-functions*
+ 9. FUNCTIONS                                  *colorv-functions*
 
     Global Functions that could be used by your scripts.~
     
@@ -541,6 +531,7 @@ FUNCTIONS                                           *colorv-functions*
     colorv#rgb2cmyk({rgb})          (c:0~1,m:0~1,y:0~1,k:0~1)
     colorv#cmyk2rgb({cmyk})
 ------------------------------------------------------------------------------
+                                               *colorv-functions2*
     colorv#hex2term({hex}[,{mode}]) Output colornumber (0~256)
                                     in terminal of vim 
                                     {mode} can be 8/16 or "CHECK" 
@@ -562,11 +553,10 @@ FUNCTIONS                                           *colorv-functions*
     colorv#hexadd(hexa1,hexa2)
                                     Add hexa1 and hexa2 with it's alpha 
                                     channel value.
-
 ==============================================================================
-DEVELOPER                                             *colorv-developer*
+ 10. CREDIT                                    *colorv-credit*
 
-    |ColorV| is develped by Rykka GreenForest |<Rykka10(at)gmail.com>|.
+    |ColorV| is develped by Rykka G.Forest |<Rykka10(at)gmail.com>|.
    
     Thanks to many other plugin writers and persons.
         ColorSel.vim/Gpick/...
@@ -574,9 +564,8 @@ DEVELOPER                                             *colorv-developer*
         David Necas     ColorSel. A RGB/HSV color selector.
         Lilyldjwg       Colorizer. An inline color previewer.
         Fabien LOISON   color_picker. pygtk scripts.
-
 ==============================================================================
-CHANGELOG                                           *colorv-changelog* 
+ 11. CHANGELOG                                 *colorv-changelog* 
 
 " 2.5.5 devel~
 "  DONE: 2012-04-10 Add :ColorVList2
@@ -879,9 +868,8 @@ CHANGELOG                                           *colorv-changelog*
 " DONE: 110509  use tab to toggle
 " DONE: 110509  draw_block /draw_multi_Block
 " DONE: 110509  draw hue line
-
 ==============================================================================
-LICENSE                                             *colorv-license*
+ 12. LICENSE                                   *colorv-license*
 
     Copyright 2010-2012 Rykka GreenForest. All rights reserved.
     MIT license  {{{
