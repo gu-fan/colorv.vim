@@ -38,7 +38,7 @@
 
     ColorV helps you doing this.
 
-    Press '<leader>ce'(':ColorVEdit') in 'LightSlateGray',
+    Press '<leader>ce'(|:ColorVEdit|) in 'LightSlateGray',
     this will open ColorV window showing the text's color.
     And after picking a color and close the window,
     The text will be changed to your picked color.
