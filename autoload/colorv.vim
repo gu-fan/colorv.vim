@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.5
-" Last Update: 2012-04-15
+" Last Update: 2012-04-16
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -2482,7 +2482,7 @@ function! s:set_in_pos() "{{{
         if key == "Tips"
             call s:echo_tips()
         elseif key == "Help"
-            h colorv-usage
+            h colorv-quickstart
         elseif key == "TurnT"
             call colorv#gen_win2()
         elseif key == "Hue"
