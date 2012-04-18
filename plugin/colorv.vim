@@ -3,7 +3,7 @@
 "    File: plugin/colorv.vim
 " Summary: A vim plugin tries to make handling colors easier.
 "  Author: Rykka10 <Rykka10(at)gmail.com>
-" Last Update: 2012-04-18
+" Last Update: 2012-04-19
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim

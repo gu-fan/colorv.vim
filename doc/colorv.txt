@@ -539,14 +539,14 @@ will change all color-text in current buf after closing the ColorV window.
                                     "input  {hex}[,{type}[,{num}[,{step}]]]
                                     "return ["ffffff","ffffff",...]
 
-    colorv#list#yiq_gen({hex}[,{type}[,{num}[,{step}]]])             
+    colorv#list_yiq_gen({hex}[,{type}[,{num}[,{step}]]])             
                                     "input  {hex}[,{type}[,{num}[,{step}]]]
                                     "return ["ffffff","ffffff",...]
                                     'yiq' version of colorv#list_gen
 
                                     See details in |colorv-colors-generate|.
                                                     
-    colorv#list#gen2({hex1},{hex2})
+    colorv#list_gen2({hex1},{hex2})
                                     Generate a list from hex1 to hex2.
 
     colorv#hexadd(hexa1,hexa2)
