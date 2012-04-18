@@ -3019,8 +3019,10 @@ function! colorv#prev_list(list) "{{{
         let hi_grp="CV_prv"."_".hex."FF"
         let hi_fg = view_homo==1 ? hex : s:rlt_clr(hex)
 
-        if fmt =~ 'NAME\|HEX'
+        if fmt =~ 'HEX'
             let hi_dic_name = fmt.'_'.hex
+        elseif fmt == 'NAME'
+            let hi_dic_name = fmt.'_'.tolower(str)
         else
             let hi_dic_name = substitute(str,'\W',"_","g")
         endif
