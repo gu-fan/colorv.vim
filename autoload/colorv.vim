@@ -2777,7 +2777,7 @@ function! s:hex2nam(hex,...) "{{{
     else
 
         if lst =="X11"  | let clr_list=s:clrnX11
-        else            | let clr_list=s:clrnW3  
+        else            | let clr_list=s:clrnW3C  
         endif
 
         let best_name=""
