@@ -220,14 +220,14 @@ will change all color-text in current buf after closing the ColorV window.
     <leader>ce      :ColorVEdit<CR>
     <leader>cE      :ColorVEditALL<CR>
 
-    <leader>c2x     Change colot-text to HEX format later.
-    <leader>c2r     Change colot-text to RGB format later.
-    <leader>c2p     Change colot-text to RGBP format later.
-    <leader>c2n     Change colot-text to NAME format later.
-    <leader>c2#     Change colot-text to NS6 format later.
-    <leader>c2s     Change colot-text to NS6 format later.
-    <leader>c2h     Change colot-text to HSV format later.
-    <leader>c2m     Change colot-text to CMYK format later.
+    <leader>c2x     Edit and Change colot-text to HEX format.
+    <leader>c2r     Edit and Change colot-text to RGB format.
+    <leader>c2p     Edit and Change colot-text to RGBP format.
+    <leader>c2n     Edit and Change colot-text to NAME format.
+    <leader>c2#     Edit and Change colot-text to NS6 format.
+    <leader>c2s     Edit and Change colot-text to NS6 format.
+    <leader>c2h     Edit and Change colot-text to HSV format.
+    <leader>c2m     Edit and Change colot-text to CMYK format later.
                     See format details in |colorv-color-text|
 
     <leader>cq      :ColorVQuit<CR>
@@ -235,8 +235,7 @@ will change all color-text in current buf after closing the ColorV window.
     <leader>cn      :ColorName<CR>
 
     Generate color list with current word by matching type.
-    Local means mapping in ColorV window buffer.
-    Global        Local 
+    Global        Local ( mapping in ColorV window buffer.)
     <leader>cgh    l1/h  Hue
     <leader>cgs    gs    Saturation
     <leader>cgv    gv    Value
@@ -274,17 +273,17 @@ will change all color-text in current buf after closing the ColorV window.
     
     Copy~
     register " register + (|quotequote|  |quote+|)
-    Y/yy      C/cc     Copy HEX format 'FFFFFF'
-    ys/y#     cs/c#    Copy NS6 format '#ffffff'
-    yx        cx       Copy HEX0 plain '0xffffff'
-    yr        cr       Copy RGB format 'rgb(255,255,255)'
-    yp        cp       Copy RGBP format 'rgb(100%,100%,100%)'
-    yaa       caa      Copy RGBA format 'rgba(255,255,255,255)'
-    yap       cap      Copy RGBAP format 'rgba(100%,100%,100%.100%)'
-    yn        cn       Copy NAM format 'white' into register"
-    yh        ch       Copy HSV format 'hsv(360,100,100)'
-    yl        cl       Copy HSV format 'hsl(360,100,100)'
-    ym        cm       Copy CMYK format 'cmyk(1.00,1.00,1.001.00)'
+    Y/yy        C/cc     Copy HEX format 'FFFFFF'
+    ys/y#       cs/c#    Copy NS6 format '#ffffff'
+    yx          cx       Copy HEX0 plain '0xffffff'
+    yr          cr       Copy RGB format 'rgb(255,255,255)'
+    yp          cp       Copy RGBP format 'rgb(100%,100%,100%)'
+    yaa         caa      Copy RGBA format 'rgba(255,255,255,255)'
+    yap         cap      Copy RGBAP format 'rgba(100%,100%,100%.100%)'
+    yn          cn       Copy NAM format 'white' into register"
+    yh          ch       Copy HSV format 'hsv(360,100,100)'
+    yl          cl       Copy HSV format 'hsl(360,100,100)'
+    ym          cm       Copy CMYK format 'cmyk(1.00,1.00,1.001.00)'
 
     Paste~
     <Ctrl-v>    paste color-text in register+ into ColorV.
@@ -540,14 +539,14 @@ will change all color-text in current buf after closing the ColorV window.
                                     "input  {hex}[,{type}[,{num}[,{step}]]]
                                     "return ["ffffff","ffffff",...]
 
-    colorv#yiq_list_gen({hex}[,{type}[,{num}[,{step}]]])             
+    colorv#list#yiq_gen({hex}[,{type}[,{num}[,{step}]]])             
                                     "input  {hex}[,{type}[,{num}[,{step}]]]
                                     "return ["ffffff","ffffff",...]
                                     'yiq' version of colorv#list_gen
 
                                     See details in |colorv-colors-generate|.
                                                     
-    colorv#list_gen2({hex1},{hex2})
+    colorv#list#gen2({hex1},{hex2})
                                     Generate a list from hex1 to hex2.
 
     colorv#hexadd(hexa1,hexa2)
