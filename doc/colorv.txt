@@ -10,7 +10,7 @@
                              Ver:2.5                                  ~
                                 
 ==============================================================================
- CONTENTS                                      *colorv-contents*
+    CONTENTS                                   *colorv-contents*
 
  DESCRIPTION                                   *colorv-description*
     1. Intro                                      |colorv-intro|
@@ -123,7 +123,7 @@
     1. Too Slow~
     NOTE   If your vim is not compiled with 'python' (python2.x) 
            Or you OS have no python2.x installed.
-           Then it's 3~5 times slower.
+           Then it's 3~5 times slower when previewing files.
 
     2. Solve Bugs~
     NOTE   First get the latest ColorV version.
@@ -250,6 +250,7 @@ will change all color-text in current buf after closing the ColorV window.
     <leader>cg4    g4    Rectangle(Tetradic)
     <leader>cg5    g5    Five-Tone
     <leader>cg6    g6    Six-Tone
+                   gg    Turn-To
     See |colorv-colors-generate| for format details.
 
                                                     *colorv-mapping-preview*
@@ -269,7 +270,9 @@ will change all color-text in current buf after closing the ColorV window.
     Mappings in ColorV window buffer~
     
     Size~
-    m/M         toggle ColorV window size (max/mid/min)
+    m           toggle ColorV window size (max/mid/min)
+
+    M           add color to mark list, shows in max size.
     
     Copy~
     register " register + (|quotequote|  |quote+|)
@@ -318,12 +321,12 @@ will change all color-text in current buf after closing the ColorV window.
     The colorname are the the name of the colors, like 'red', 'green', 
     'blue', 'OrangeRed', 'cornsilk'.
     Note Exclude name in word with '_' or '-'.
-         For example 'white-space' , 'black-sheep'
+         For example 'white-space' , 'black_sheep' will not be recongized.
 
     ColorV contains two types of names: X11 and W3C. 
+    The X11 standard is used by vim and X Window system.
+    The W3C standard is mostly used in HTML/CSS and browsers.
     They have few difference.
-    Note  The X11 standard is used by vim and X Window system.
-          The W3C standard is mostly used in HTML/CSS and browsers.
     
     There are several color names that have the same Hex.
         Aqua      Cyan            #00FFFF
@@ -345,13 +348,13 @@ will change all color-text in current buf after closing the ColorV window.
                                                *colorv-color-text*
                                                     *colorv-formats*
     The formats of color-text.~
-    This is predefined in ColorV.
-    It is used when coping/pasting/reading color-texts.
+    Predefined in ColorV.
+    It is used when coping/pasting/viewing/... color-texts.
     There are following formats currently:
-    HEX     FFFFFF                          (uppercase only)
-    NS6     #ffffff                         (short for Number Sign 6)
-    NS3     #fff
-    HEX0    0xffffff
+
+    HEX3    #CFF #F11
+    HEX     FF00FF #00FFFF 0xFFFF00     
+    NAME    red/lime/blue                   (see |colorv-colorname|)
     RGB     rgb(255,255,255)                (css1 standard)
     RGBA    rgba(255,255,255,1.0)           (css2 standard)
     HSL     hsl(300,100%,100%)              (css3 standard)
@@ -360,12 +363,13 @@ will change all color-text in current buf after closing the ColorV window.
     RGBP    rgb(100%, 98%, 98%)             
     RGBAP   rgba(100%,100%,100%,1.0) 
     HSV     hsv(360,100,100)
-    CMYK    cmyk(1.00,1.00,1.00,1.00) 
-    NAME    red/lime/blue                   (see |colorv-colorname|)
+    CMYK    cmyk(25,41, 0,46) 
 ------------------------------------------------------------------------------
                                                *colorv-colors-generate*
     Types for generating color list.~
+    They are used for generating colors.
     There are following type currently:
+
     Hue/Saturation/Value        Generate by H/S/V  h/s/v+{step}
     Monochromatic               Generate by S and V s/v+{step}
     Analogous                   Generate colors h+15
@@ -379,7 +383,11 @@ will change all color-text in current buf after closing the ColorV window.
     Complementary               Generate opposite color h+180
     Split-Complementary         Generate 2 opposite colors
     Luma                        Generate by Luma+{step} ('yiq' only)
-
+    
+    Turn-To                     Generate colorlist by history_0 and history_1
+                                with it's alpha channel set to 'FF'
+                                using colorv#list_gen2({hexa1},{hexa2}).
+------------------------------------------------------------------------------
                                                       *colorv-color-space*
     Same S and V in HSV or HLS colors space don't result the same lumination.
 
@@ -491,43 +499,43 @@ will change all color-text in current buf after closing the ColorV window.
 ==============================================================================
  9. FUNCTIONS                                  *colorv-functions*
 
-    Global Functions that could be used by your scripts.~
+    Functions could be used~
     
     colorv#rgb2hsv({rgb})             Convert RGB to HSV.
-                                    " [r,g,b] 0~255 num
-                                    " returns [H,S,V] 0~360 0~100 num
-
+                                      [r,g,b] 0~255 num
+                                      returns [H,S,V] 0~360 0~100 num
+                                      
     colorv#hsv2rgb({hsv})             Convert HSV to RGB.
-                                    " input [h,s,v] 0~360 0~100 num
-                                    " return [R,G,B] 0~255  num
-
+                                      input [h,s,v] 0~360 0~100 num
+                                      return [R,G,B] 0~255  num
+                                      
     colorv#rgb2hex({rgb})             Convert RGB to HEX.
-                                    " input [r,g,b]  0~255  num/str
-                                    " return ffffff         str
-
+                                      input [r,g,b]  0~255  num/str
+                                      return ffffff         str
+                                      
     colorv#hex2rgb({hex})             Convert HEX to RGB.
-                                    " input ffffff          num/str
-                                    " return [r,g,b] 0~255  str
-
+                                      input ffffff          num/str
+                                      return [r,g,b] 0~255  str
+                                      
     colorv#hex2hsv({hex})             Convert HEX to HSV.
-                                    " input ffffff          num/str
-                                    " return [h,s,v] 0~360 0~100 num
-    
+                                      input ffffff          num/str
+                                      return [h,s,v] 0~360 0~100 num
+                                      
     colorv#hsv2hex({hsv})             Convert HSV to HEX.
-                                    " input [h,s,v] 0~360 0~100 num
-                                    " return ffffff         str
-
+                                      input [h,s,v] 0~360 0~100 num
+                                      return ffffff         str
+                                      
     colorv#hex2hls({hex})             Convert HEX to HLS.
-                                    " input ffffff          num/str
-                                    " return [h,l,s] 0~360 0~100 num
-    
+                                      input ffffff          num/str
+                                      return [h,l,s] 0~360 0~100 num
+                                      
     colorv#hls2hex({hsl})             Convert HLS to HEX.
-                                    " input [h,l,s] 0~360 0~100 num
-                                    " return ffffff         str
+                                      input [h,l,s] 0~360 0~100 num
+                                      return ffffff         str
 
     colorv#hex2yiq({hex})           (y:0~100,i:-100~100,q:-100~100)
     colorv#yiq2hex({yiq})
-    colorv#rgb2cmyk({rgb})          (c:0~1,m:0~1,y:0~1,k:0~1)
+    colorv#rgb2cmyk({rgb})          (c:0~100,m:0~100,y:0~100,k:0~100)
     colorv#cmyk2rgb({cmyk})
 ------------------------------------------------------------------------------
                                                *colorv-functions2*
@@ -536,18 +544,19 @@ will change all color-text in current buf after closing the ColorV window.
                                     {mode} can be 8/16 or "CHECK" 
                                     
     colorv#list_gen({hex}[,{type}[,{num}[,{step}]]])             
-                                    "input  {hex}[,{type}[,{num}[,{step}]]]
-                                    "return ["ffffff","ffffff",...]
+                                    input  {hex}[,{type}[,{num}[,{step}]]]
+                                    return ["ffffff","ffffff",...]
 
     colorv#list_yiq_gen({hex}[,{type}[,{num}[,{step}]]])             
-                                    "input  {hex}[,{type}[,{num}[,{step}]]]
-                                    "return ["ffffff","ffffff",...]
+                                    input  {hex}[,{type}[,{num}[,{step}]]]
+                                    return ["ffffff","ffffff",...]
                                     'yiq' version of colorv#list_gen
 
                                     See details in |colorv-colors-generate|.
                                                     
-    colorv#list_gen2({hex1},{hex2})
-                                    Generate a list from hex1 to hex2.
+    colorv#list_gen2({hexa1},{hexa2})
+                                    Generate a list from hexa1 to hexa2.
+                                    hexa : 'ffffffff' hex with alpha channel.
 
     colorv#hexadd(hexa1,hexa2)
                                     Add hexa1 and hexa2 with it's alpha 

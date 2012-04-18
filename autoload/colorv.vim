@@ -366,9 +366,8 @@ def hls2rgb(hls):
 #}}}
 #{{{ cmyk
 def rgb2cmyk(rgb):
-    r,g,b = rgb
-    [R,G,B]=[r/255.0,g/255.0,b/255.0]
-    [C,M,Y]=[1.0-R,1.0-G,1.0-B]
+    R,G,B = rgb
+    [C,M,Y]=[1.0-R/255.0,1.0-G/255.0,1.0-B/255.0]
     vk=1.0
     if C < vk : vk =C 
     if M < vk : vk =M 
@@ -380,16 +379,13 @@ def rgb2cmyk(rgb):
         M=(M-vk)/(1.0-vk)
         Y=(Y-vk)/(1.0-vk)
     K =vk
-    return [C,M,Y,K]
+    return map(lambda x: int(round(x*100)),[C,M,Y,K])
 def cmyk2rgb(cmyk):
-    C,M,Y,K = cmyk
+    C,M,Y,K = map(lambda x: x/100.0, cmyk)
     C=C*(1-K)+K
     M=M*(1-K)+K
     Y=Y*(1-K)+K
     return map(lambda x: int(round((1-x)*255)),[C,M,Y])
-    # return [number(round((1-C)*255)),
-    #         number(round((1-M)*255)),
-    #         number(round((1-Y)*255))]
 #}}}
 
 def hex2term8(hex1,mode=8): #{{{
@@ -491,14 +487,14 @@ fmt['HSLA']=re.compile(r'''
         [ \t]*(?P<H>\d{1,3}),                    # group2 H
         [ \t]*(?P<S>\d{1,3})%,                   # group3 S
         [ \t]*(?P<L>\d{1,3})%,                   # group4 L
-        [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
+        [ \t]*(?P<A>\d{1,3} (?:\.\d*)?) %?
         [)] (?ix) ''')
 fmt['CMYK']=re.compile(r'''
         \\b cmyk[(]
-        [ \t]*(?P<C>\d\.\d*),                    # group2 C
-        [ \t]*(?P<M>\d\.\d*),                    # group3 M
-        [ \t]*(?P<Y>\d\.\d*),                    # group4 Y
-        [ \t]* (?P<K>\d\.\d*)                    # group4 K
+        [ \t]*(?P<C>\d{1,3}),                    # group2 C
+        [ \t]*(?P<M>\d{1,3}),                    # group3 M
+        [ \t]*(?P<Y>\d{1,3}),                    # group4 Y
+        [ \t]*(?P<K>\d{1,3})                     # group4 K
         [)] (?ix) ''')
 fmt['HSV']=re.compile(r'''
         \\b hsv[(]
@@ -587,7 +583,7 @@ def txt2hex(txt): #{{{
             elif fm=="glRGBA":
                 alp = float(obj.group('A'))
                 r,g,b=[float(obj.group('R'))*255,float(obj.group('G'))*255,
-                        float(obj.group('B'))*255]
+                       float(obj.group('B'))*255]
                 if r<0 or r>255 or g<0 or g>255 or b<0 or b>255:
                     continue
                 HEX=rgb2hex([r,g,b])
@@ -605,9 +601,10 @@ def txt2hex(txt): #{{{
                     continue
                 HEX=rgb2hex(hls2rgb([h,l,s]))
             elif fm=="CMYK" :
-                c,m,y,k=[float(obj.group('C')),float(obj.group('M'))
-                        ,float(obj.group('Y')),float(obj.group('K'))]
-                if c>1 or c<0 or m>1 or m<0 or y>1 or y<0 or k>1 or k<0:
+                c,m,y,k=[int(obj.group('C')),int(obj.group('M'))
+                        ,int(obj.group('Y')),int(obj.group('K'))]
+                if c>100 or c<0 or m>100 or m<0 or y>100 or y<0 \
+                   or k>100 or k<0:
                     continue 
                 HEX=rgb2hex(cmyk2rgb([c,m,y,k]))
             elif fm=="HSV":
@@ -2606,10 +2603,10 @@ let s:fmt.HSLA='\v\c<hsla\('
             \.'\s*(\d{1,3})\%,'
             \.'\s*(\d{1,3})\.=\d*\)'
 let s:fmt.CMYK='\v\c<cmyk\('
-            \.'\s*(\d\.=\d*),'
-            \.'\s*(\d\.=\d*),'
-            \.'\s*(\d\.=\d*),'
-            \.'\s*(\d\.=\d*)\)'
+            \.'\s*(\d{1,3}),'
+            \.'\s*(\d{1,3}),'
+            \.'\s*(\d{1,3}),'
+            \.'\s*(\d{1,3})\)'
 let s:fmt.glRGBA='\v\c<glColor\du=[bsifd]\('
             \.'\s*(\d\.=\d*),'
             \.'\s*(\d\.=\d*),'
@@ -2671,17 +2668,18 @@ function! s:txt2hex(txt) "{{{
                 let hex = colorv#hsl2hex([h,s,l])
             elseif fmt=="CMYK"
                 let [c,m,y,k]=p_lst[1:4]
-                if c>1 || c<0 || m>1 || m<0 || y>1 || y<0 || k>1 || k<0
+                if c>100 || c<0 || m>100 || m<0 || y>100 || y<0 || k>100 || k<0
                     continue 
                 endif
                 let hex = colorv#cmyk2hex([c,m,y,k])
             elseif fmt=="glRGBA"
                 let p_alp  = str2float(p_lst[4])
-                let [r,g,b] = p_lst[1:3]
-                if r>1 || r<0 || g>1 || g<0 || b>1 || b<0
+                " let [r,g,b] = p_lst[1:3]
+                let [r,g,b] = [str2float(p_lst[1])*255,str2float(p_lst[2])*255,str2float(p_lst[3])*255]
+                if r>255 || r<0 || g>255 || g<0 || b>255 || b<0
                     continue
                 endif
-                let hex = colorv#rgb2hex([r*255,g*255,b*255])
+                let hex = colorv#rgb2hex([r,g,b])
             elseif fmt=="HEX"
                 let hex = toupper(p_lst[1])
             elseif fmt=="HEX3"
@@ -2732,7 +2730,7 @@ function! s:hex2txt(hex,fmt,...) "{{{
     elseif a:fmt=="HEX3"
         let text="#".hex
     elseif a:fmt=="CMYK"
-        let [c,m,y,k]= colorv#rgb2cmyk([r,g,b])
+        let [c,m,y,k]= map(colorv#rgb2cmyk([r,g,b]),'printf("%2d",v:val)')
         let text="cmyk(".c.",".m.",".y.",".k.")"
     elseif a:fmt=="NAME"
         if a:0>1 && a:2 == "X11"
