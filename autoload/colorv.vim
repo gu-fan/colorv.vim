@@ -9,8 +9,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
-" if version < 700 || exists("g:loaded_ColorV") | finish
-" else             | let g:loaded_ColorV = 1  | endif
+if version < 700 || exists("g:loaded_ColorV") | finish
+else             | let g:loaded_ColorV = 1  | endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "GVAR: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1960,8 +1960,8 @@ try:
     import pygtk
     pygtk.require('2.0')
 except ImportError:
-    vcmd("throw 'No gtk module in python'")
     gtk=None
+    vcmd("throw 'No gtk module in python'")
 
 if gtk:
     vcmd('call s:warning("Select a color and press OK to Return it to Vim.")')
@@ -1979,7 +1979,6 @@ EOF
     catch 'No .* python'
         call s:warning("Select color and press OK to Return it to Vim.")
         let color = system(s:path."colorv/colorpicker ".shellescape(g:ColorV.HEX))
-
     finally
         if !empty(color)
             if color =~ 'No such file'
