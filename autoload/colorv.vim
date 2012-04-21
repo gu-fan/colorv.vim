@@ -1981,11 +1981,18 @@ EOF
         let color = system(s:path."colorv/colorpicker ".g:ColorV.HEX)
     finally
         if !empty(color)
-            if color =~ 'No such file'
-                call s:warning("compile with autoload/colorv/Makefile to use colorpicker.")
-            else
+            if color =~ '\x\{6}'
                 call colorv#win(s:size,color)
+            else
+                if color =~ 'no such file'
+                    call s:error("No colorpicker.Compile it first.")
+                    call s:error("Makefile is in $VIM/autoload/colorv/")
+                else
+                    call s:error("Errors occures with colorpicker:\r".color)
+                endif
             endif
+        else
+            call s:warning("No color returned.")
         endif
     endtry
 endfunction "}}}
