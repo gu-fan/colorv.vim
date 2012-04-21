@@ -35,8 +35,6 @@ void sel_color(gint r,gint g,gint b) {
 gint main(gint argc, gchar * argv[]){
     gint r, g, b;
 
-    self = argv[0];
-    gtk_init(&argc, &argv);
 
     if (argc==2) {
         for(r=0; r<6; r++){
@@ -45,6 +43,7 @@ gint main(gint argc, gchar * argv[]){
             }
         }
         sscanf(argv[1], "%2x%2x%2x", &r, &g, &b);
+        gtk_init(&argc, &argv);
         sel_color(r,g,b);
     }
     return 0;
