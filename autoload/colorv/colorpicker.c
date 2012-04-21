@@ -1,7 +1,6 @@
 #include <gtk/gtk.h>
 #include <ctype.h>
 
-char* self = NULL;
 void sel_color(gint* r,gint* g,gint* b) {
     GtkWidget *colorseldlg;
     GtkColorSelection *colorsel;
