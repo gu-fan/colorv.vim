@@ -11,5 +11,6 @@ all: main
 main: $(SRCS)
 	$(CC) $(CFLAGS) $(SRCS) $(GTKFLAGS)
 
+# rule for cleaning files generated during compilations.
 clean:
 	/bin/rm -f colorpicker
