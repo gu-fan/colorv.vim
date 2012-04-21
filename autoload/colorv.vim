@@ -1964,7 +1964,7 @@ except ImportError:
     gtk=None
 
 if gtk:
-    vcmd('call s:warning("Select a color and press OK to Return to Vim.")')
+    vcmd('call s:warning("Select a color and press OK to Return it to Vim.")')
     color_dlg = gtk.ColorSelectionDialog("[ColorV] Pygtk color picker")
     c_set = gtk.gdk.color_parse("#"+veval("g:ColorV.HEX"))
     color_dlg.colorsel.set_current_color(c_set)
@@ -1977,7 +1977,7 @@ if gtk:
     color_dlg.destroy()
 EOF
     catch 'No .* python'
-        call s:warning("Select color and press OK to Return to Vim.")
+        call s:warning("Select color and press OK to Return it to Vim.")
         let color = system(s:path."colorv/colorpicker ".shellescape(g:ColorV.HEX))
 
     finally
