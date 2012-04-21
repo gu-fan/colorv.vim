@@ -1979,9 +1979,14 @@ EOF
     catch 'No .* python'
         call s:warning("Select color and press OK to Return to Vim.")
         let color = system(s:path."colorv/colorpicker ".shellescape(g:ColorV.HEX))
+
     finally
         if !empty(color)
-            call colorv#win(s:size,color)
+            if color =~ 'No such file'
+                call s:warning("compile with autoload/colorv/Makefile to use colorpicker.")
+            else
+                call colorv#win(s:size,color)
+            endif
         endif
     endtry
 endfunction "}}}
