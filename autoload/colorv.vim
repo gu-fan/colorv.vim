@@ -9,8 +9,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
-if version < 700 || exists("g:loaded_ColorV") | finish
-else             | let g:loaded_ColorV = 1  | endif
+" if version < 700 || exists("g:loaded_ColorV") | finish
+" else             | let g:loaded_ColorV = 1  | endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "GVAR: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2997,6 +2997,7 @@ function! s:edit_text(action,bufinfo,...) "{{{
 
     try
         exec cmd
+        call setpos('.',pos)
     catch /^Vim\%((\a\+)\)\=:E486/
         call s:error("Pattern not found.")
     catch /^Vim\%((\a\+)\)\=:E/
