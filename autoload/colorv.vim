@@ -5,12 +5,12 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.6
-" Last Update: 2012-04-19
+" Last Update: 2012-04-21
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
-if version < 700 || exists("g:loaded_ColorV") | finish
-else             | let g:loaded_ColorV = 1  | endif
+" if version < 700 || exists("g:loaded_ColorV") | finish
+" else             | let g:loaded_ColorV = 1  | endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "GVAR: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -35,7 +35,7 @@ let s:ColorV.name="_ColorV_".g:ColorV.version
 let s:ColorV.listname="_ColorVList_".g:ColorV.version
 let s:size = "mid"
 let s:mode = has("gui_running") ? "gui" : "cterm"
-
+let s:path = expand('%:p:h').'/'
 "colorname list "{{{
 let s:a='Uryyb'
 let s:t='fghDPijmrYFGtudBevwxklyzEIZOJLMnHsaKbcopqNACQRSTUVWX'
@@ -1946,36 +1946,46 @@ endfunction "}}}
 function! colorv#dropper() "{{{
     "terminal error?
     if !has("gui_running")
-        call s:error("pygtk have Error in Terminal. So not Supported.")
+        call s:error("no GUI picker in Terminal.")
         return
     endif
-    if !g:ColorV_has_python
-        call s:error("Only support vim compiled with python.")
-        return
-    endif
-    call s:warning("Select a color and press OK to Return to Vim.")
+    let color=""
+    try 
+        if !g:ColorV_has_python
+            throw 'No python'
+        endif
 python << EOF
 try:
     import gtk
     import pygtk
     pygtk.require('2.0')
 except ImportError:
-    vcmd("call s:error('Python:Could not find gtk or pygtk module.Stop using dropper.')")
+    vcmd("throw 'No gtk module in python'")
     gtk=None
 
 if gtk:
-    color_dlg = gtk.ColorSelectionDialog("[ColorV] Pygtk colorpicker")
+    vcmd('call s:warning("Select a color and press OK to Return to Vim.")')
+    color_dlg = gtk.ColorSelectionDialog("[ColorV] Pygtk color picker")
     c_set = gtk.gdk.color_parse("#"+veval("g:ColorV.HEX"))
     color_dlg.colorsel.set_current_color(c_set)
 
     if color_dlg.run() == gtk.RESPONSE_OK:
         clr = color_dlg.colorsel.get_current_color()
         c_hex = rgb2hex([clr.red/257,clr.green/257,clr.blue/257])
-        vcmd("ColorV "+c_hex)
+        vcmd("let color="+c_hex)
 
     color_dlg.destroy()
 EOF
+    catch 'No .* python'
+        call s:warning("Select color and press OK to Return to Vim.")
+        let color = system(s:path."colorv/colorpicker ".shellescape(g:ColorV.HEX))
+    finally
+        if !empty(color)
+            call colorv#win(s:size,color)
+        endif
+    endtry
 endfunction "}}}
+
 function! s:list_map() "{{{
     nmap <silent><buffer> q :call colorv#exit_list_win()<cr>
     nmap <silent><buffer> Q :call colorv#exit_list_win()<cr>

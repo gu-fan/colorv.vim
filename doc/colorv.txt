@@ -115,6 +115,7 @@
     A GUI colorpicker.~
         <leader>cd
         (vim with '+python' and pygtk2.0 included)
+        (or make with Makefile in autoload/colorv/Makefile)
 
             
 ------------------------------------------------------------------------------
@@ -134,11 +135,6 @@
 
            If got bugs with python. 
            use 'let g:ColorV_no_python=1' to stop using python.
-
-    3. No GUI picker in Archlinux~
-        The ArchLinux's offical gvim is not well compiled with 'pygtk' library,
-        To use it in ArchLinux. you should recompile gvim yourself.
-        follow the steps in PKGBUILD.
 
     4.Report bugs~
         You can report bugs at https://github.com/Rykka/ColorV/issues . 
@@ -185,6 +181,8 @@ will change all color-text in current buf after closing the ColorV window.
                                                     *:ColorVDropper*
     |:ColorVDropper|    Open a gtk colorpicker to drop colors.
                       Requires +python and pygtk2
+                      Or Make it with autoload/colorv/Makefile
+                      For Windows users: install gtk+ package first.
 
                                                     *:ColoVPreview*
     |:ColorVPreview|    preview color texts in current buffer.
