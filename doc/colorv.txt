@@ -115,7 +115,7 @@
     A GUI colorpicker.~
         <leader>cd
         (vim with '+python' and pygtk2.0 included)
-        (or make with Makefile in autoload/colorv/Makefile)
+        (or |:make| with Makefile in autoload/colorv/Makefile)
 
             
 ------------------------------------------------------------------------------
@@ -179,10 +179,11 @@ will change all color-text in current buf after closing the ColorV window.
                       See details of {args} in |colorv-color-text|
 
                                                     *:ColorVDropper*
-    |:ColorVDropper|    Open a gtk colorpicker to drop colors.
+    |:ColorVDropper|    Open a gtk colorpicker to pick colors.
                       Requires +python and pygtk2
-                      Or Make it with autoload/colorv/Makefile
-                      For Windows users: install gtk+ package first.
+                      Or |:make| a colorpicker with autoload/colorv/Makefile
+                      the gtk+-2.0 lib is needed.
+                      so Windows users should install gtk+ package first.
 
                                                     *:ColoVPreview*
     |:ColorVPreview|    preview color texts in current buffer.
