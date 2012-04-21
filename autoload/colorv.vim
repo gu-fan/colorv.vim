@@ -35,7 +35,7 @@ let s:ColorV.name="_ColorV_".g:ColorV.version
 let s:ColorV.listname="_ColorVList_".g:ColorV.version
 let s:size = "mid"
 let s:mode = has("gui_running") ? "gui" : "cterm"
-let s:path = expand('%:p:h').'/'
+let s:path = expand('<sfile>:p:h').'/'
 "colorname list "{{{
 let s:a='Uryyb'
 let s:t='fghDPijmrYFGtudBevwxklyzEIZOJLMnHsaKbcopqNACQRSTUVWX'
@@ -1978,7 +1978,7 @@ if gtk:
 EOF
     catch 'No .* python'
         call s:warning("Select color and press OK to Return it to Vim.")
-        let color = system(s:path."colorv/colorpicker ".shellescape(g:ColorV.HEX))
+        let color = system(s:path."colorv/colorpicker ".g:ColorV.HEX)
     finally
         if !empty(color)
             if color =~ 'No such file'
