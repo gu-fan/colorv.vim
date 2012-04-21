@@ -2898,6 +2898,7 @@ function! colorv#cursor_text(action,...) "{{{
     else
         let list = s:txt2hex(line)
     endif
+    let w_list=[]
     if empty(list)
         call s:error("color-text not found under line of cursor.")
         return
@@ -2909,6 +2910,10 @@ function! colorv#cursor_text(action,...) "{{{
                 break
             endif
         endfor
+    endif
+    if empty(w_list)
+        call s:error("no color-text under cursor.")
+        return
     endif
     if a:action == "view"
         call colorv#win(s:size,hex)
