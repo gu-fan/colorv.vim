@@ -35,7 +35,7 @@ command! -nargs=+  ColorVList        call colorv#cursor_text(3,<f-args>)
 command! -nargs=*  ColorVList2       call colorv#list_win2(<f-args>)
 
 command! -nargs=0  ColorVAutoPreview call colorv#prev_aug()
-command! -nargs=0  ColorVPreview     call colorv#preview()
+command! -nargs=0  ColorVPreview     call colorv#preview("c")
 command! -nargs=0  ColorVPreviewArea call colorv#preview("bc")
 command! -nargs=0  ColorVPreviewLine call colorv#preview_line()
 
