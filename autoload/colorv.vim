@@ -849,7 +849,7 @@ function! s:draw_multi_rect(rect,hex_list) "{{{
 
     for idx in range(len(rect_hex_list))
         let hex=rect_hex_list[idx]
-        let hi_grp="cv_rct".rect_hex_list[idx]
+        let hi_grp="cv_rct_".(x+w*idx-1)."_".(y-1)
         let rect_ptn="\\%>".(x+w*idx-1)."c\\%<".(x+w*(idx+1)).
                     \"c\\%>".(y-1)."l\\%<".(y+h)."l"
         call s:hi_color(hi_grp,hex,hex," ")
