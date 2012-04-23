@@ -849,9 +849,9 @@ function! s:draw_multi_rect(rect,hex_list) "{{{
 
     for idx in range(len(rect_hex_list))
         let hex=rect_hex_list[idx]
-        let hi_grp="cv_rct_".(x+w*idx-1)."_".(y-1)
-        let rect_ptn="\\%>".(x+w*idx-1)."c\\%<".(x+w*(idx+1)).
-                    \"c\\%>".(y-1)."l\\%<".(y+h)."l"
+        let hi_grp="cv_rct_".(x+w*idx)."_".y."_".w."_".h
+        let rect_ptn='\%>'.(x+w*idx-1).'c\%<'.(x+w*(idx+1))
+                     \.'c\%>'.(y-1).'l\%<'.(y+h)."l"
         call s:hi_color(hi_grp,hex,hex," ")
         sil! let s:rect_dict[hi_grp]=matchadd(hi_grp,rect_ptn)
     endfor
@@ -1790,14 +1790,14 @@ function! s:rlt_clr(hex) "{{{
         let hex=s:fmt_hex(a:hex)
         let [y,i,q]=colorv#hex2yiq(hex)
 
-        if     y>=80    | let y = 40
+        if     y>=80    | let y = 35
         elseif y>=70    | let y = 30
         elseif y>=60    | let y = 20
         elseif y>=50    | let y = 10
-        elseif y>=40    | let y = 5
-        elseif y>=30    | let y = 75
-        elseif y>=20    | let y = 65
-        else            | let y = 55
+        elseif y>=40    | let y = 0
+        elseif y>=30    | let y = 85
+        elseif y>=20    | let y = 70
+        else            | let y = 60
         endif
 
         if     i >= 35  | let i += -20
