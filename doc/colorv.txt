@@ -190,7 +190,9 @@ will change all color-text in current buf after closing the ColorV window.
 
 
                                                     *:ColoVPreview*
-    |:ColorVPreview|    preview color texts in current buffer.
+    |:ColorVPreview|    highlight color texts in current buffer.
+                      invalid color text will not be highlighted.
+                      e.g: rgb(256,256,256) , which exceed range of 0~255
 
                                                     *:ColorVClear*
     |:ColorVClear|      clear all the previewing colors.
