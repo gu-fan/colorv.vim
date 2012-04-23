@@ -7,11 +7,11 @@ import re
 
 vcmd = vim.command
 veval = vim.eval
-# number #{{{
+# number 
 def number(x):
     return int(round(float(x)))
-#}}}
-#{{{ hex
+
+# hex
 def hex2rgb(h):
     h = h[1:] if h.startswith('#') else h[2:] if h.startswith(("0x","0X")) else h
     return map(lambda x:int(x,16), [h[0:2],h[2:4],h[4:6]])
@@ -19,8 +19,8 @@ def rgb2hex(rgb):
     r,g,b = map(lambda x: 0 if x < 0 else 255 if x > 255 else x,
             map(lambda x: int(round(float(x))),rgb))
     return '%02X%02X%02X' % (r,g,b)
-#}}}
-#{{{ hsv
+
+#hsv
 def rgb2hsv(rgb):
     r,g,b=rgb
     h,s,v=colorsys.rgb_to_hsv(r/255.0,g/255.0,b/255.0)
@@ -29,8 +29,8 @@ def hsv2rgb(hsv):
     h,s,v=hsv
     r,g,b=colorsys.hsv_to_rgb(h/360.0,s/100.0,v/100.0)
     return map(lambda x: int(round(x*255.0)),[r,g,b])
-#}}}
-#{{{ yiq
+
+#yiq
 def rgb2yiq(rgb):
     r,g,b=rgb
     y,i,q=colorsys.rgb_to_yiq(r/255.0,g/255.0,b/255.0)
@@ -39,8 +39,8 @@ def yiq2rgb(yiq):
     y,i,q=yiq
     r,g,b=colorsys.yiq_to_rgb(y/100.0,i/100.0,q/100.0)
     return map(lambda x: int(round(x*255.0)),[r,g,b])
-    #}}}
-#{{{ hls
+    
+#hls
 def rgb2hls(rgb):
     r,g,b=rgb
     h,l,s=colorsys.rgb_to_hls(r/255.0,g/255.0,b/255.0)
@@ -49,8 +49,8 @@ def hls2rgb(hls):
     h,l,s=hls
     r,g,b=colorsys.hls_to_rgb(h/360.0,l/100.0,s/100.0)
     return map(lambda x: int(round(x*255.0)),[r,g,b])
-#}}}
-#{{{ cmyk
+
+#cmyk
 def rgb2cmyk(rgb):
     R,G,B = rgb
     [C,M,Y]=[1.0-R/255.0,1.0-G/255.0,1.0-B/255.0]
@@ -72,9 +72,9 @@ def cmyk2rgb(cmyk):
     M=M*(1-K)+K
     Y=Y*(1-K)+K
     return map(lambda x: int(round((1-x)*255)),[C,M,Y])
-#}}}
 
-def hex2term8(hex1,mode=8): #{{{
+
+def hex2term8(hex1,mode=8): 
     r,g,b = hex2rgb(hex1)
     r,g,b = map(lambda x: 0 if x <= 64 else 1 if x <= 192 else 2, [r,g,b])
     if r <= 1 and g <= 1 and b <= 1:
@@ -90,8 +90,8 @@ def hex2term8(hex1,mode=8): #{{{
     if t == 7:
         t = 8
     return t
-#}}}
-def hex2term(h): #{{{
+
+def hex2term(h): 
     r,g,b = hex2rgb(h)
     
     if abs(r-g) <=16 and  abs(g-b) <=16 and abs(r-b) <=16:
@@ -122,11 +122,10 @@ def hex2term(h): #{{{
                               5 , [r,g,b])
         t_num  = r*36 + g*6 + b + 16
     return t_num
-    #}}}
+    
 
-fmt={} #{{{
+fmt={} 
 # NOTE: '\b\s..' as first word in vim should escape twice.
-
 fmt['RGB']=re.compile(r'''
         \b rgb[ ]?[(]                       # wordbegin
         [ \t]*(?P<R>\d{1,3}),               # group2 R
@@ -208,19 +207,14 @@ fmt['HEX']=re.compile(r'''
 fmt['HEX3']=re.compile(r'''
         [#](?P<HEX3>[0-9a-fA-F]{3})\b(?ix)''')
 
-#}}}
-# clr_lst {{{
+
+# clr_lst 
 clrnX11 = veval("s:clrnX11")
 clrnW3C = veval("s:clrnW3C")
-# # '-' in [] must escape or put in start/end
-# NAME_ptn=r'(?<![\w_-])White(?![\w_-])'
-# for [nam,hex] in clrnW3C:
-#     NAME_ptn = r"|".join([NAME_ptn, r'(?<![\w_-])'+nam+r'(?![\w_-])'])
-# fmt['NAME']=re.compile(NAME_ptn,re.I|re.X)
 clrdX11 = veval("s:clrdX11")
 clrdW3C = veval("s:clrdW3C")
-#}}}
-def txt2namhex(txt): #{{{
+
+def txt2namhex(txt): 
     hex_list=[]
     startidx=0
     for t in re.split(r'(\s+|[:;.,\'\"/|\\])',txt):
@@ -229,8 +223,8 @@ def txt2namhex(txt): #{{{
             p_idx = txt.find(t, startidx)
             hex_list.append([t, clrdW3C[ltxt], 'NAME', p_idx, 1])
             startidx = p_idx + len(t)
-    return hex_list #}}}
-def txt2hex(txt): #{{{
+    return hex_list 
+def txt2hex(txt): 
     hex_list=[]
     for fm,reg in fmt.iteritems():
         for obj in reg.finditer(txt):
@@ -310,9 +304,9 @@ def txt2hex(txt): #{{{
                 continue
             hex_list.append([obj.group(),HEX,fm,obj.start(),alp])
     nhex_list = txt2namhex(txt)
-    return hex_list + nhex_list #}}}
+    return hex_list + nhex_list 
 
-def nam2hex(name,*rule): #{{{
+def nam2hex(name,*rule): 
     if len(name):
         if len(rule) and rule[0]=="X11":
             dic=clrdX11
@@ -321,8 +315,8 @@ def nam2hex(name,*rule): #{{{
         ln = name.lower()
         if ln in dic:
             return dic[ln]
-    return 0 #}}}
-def hex2nam(hex,lst="W3C"): #{{{
+    return 0 
+def hex2nam(hex,lst="W3C"): 
 
     best_match = ""
     smallest_distance = 10000000
@@ -346,11 +340,11 @@ def hex2nam(hex,lst="W3C"): #{{{
     elif smallest_distance <= t*8:
         return best_match+"~~"
     else:
-        return "" #}}}
+        return "" 
 
 lookup = {}
 H_OFF,W_OFF = int(veval("s:OFF_H")),int(veval("s:OFF_W"))
-def draw_palette(H,height,width): #{{{
+def draw_palette(H,height,width): 
 
     H = fmod(H,360) if H >= 360 else 360+fmod(H,360) if H < 0 else H
     name = "_".join([str(H),str(height),str(width)])
@@ -378,19 +372,19 @@ def draw_palette(H,height,width): #{{{
     for row  in range(height):
         for col in range(width):
             hex = p2[row][col]
-            hi_grp  = "".join(["cv_pal_",hex])
+            hi_grp  = "".join(["cv_pal_",str(row),"_",str(col)])
             pos_ptn = "".join(["\\%",str(row+H_OFF+1),"l\\%"
                                     ,str(col+W_OFF+1),"c"])
             vcmd("call s:hi_color('{}','{}','{}',' ')".format(hi_grp,hex,hex))
             vcmd("sil! let s:pal_dict['{0}'] = matchadd('{0}','{1}')"
                     .format( hi_grp,pos_ptn))
     vcmd("".join(["let s:pal_clr_list=",str(p2)]))
-#}}}
-def draw_pallete_hex(hex): #{{{
+
+def draw_pallete_hex(hex): 
     h,s,v=rgb2hsv(hex2rgb(hex))
     pal_H,pal_W = int(veval("s:pal_H")),int(veval("s:pal_W"))
     draw_palette(h,pal_H,pal_W)
-#}}}
+
 
 def rlt_clr(hex1):
     y,i,q=rgb2yiq(hex2rgb(hex1))

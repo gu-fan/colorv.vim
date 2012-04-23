@@ -818,7 +818,7 @@ function! s:draw_palette(H,h,w) "{{{
     for row in range(height) "{{{
         for col in range(width)
             let hex = p2[row][col]
-            let hi_grp  = "tv_pal_".hex
+            let hi_grp  = "tv_pal_".row."_".col
             call s:hi_color(hi_grp,hex,hex," ")
             let pos_ptn = '\%'.(row+s:OFF_H+1).'l'
                         \.'\%'.(col+s:OFF_W+1).'c'
