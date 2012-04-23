@@ -14,25 +14,25 @@ else             | let g:loaded_ColorV = 1  | endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "GVAR: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:ColorV={}
-let g:ColorV.version="2.5.6"
+let g:colorv={}
+let g:colorv.version="2.5.6"
 
-let g:ColorV.HEX="FF0000"
-let g:ColorV.RGB={'R':255 , 'G':0   , 'B':0   }
-let g:ColorV.HSV={'H':0   , 'S':100 , 'V':100 }
-let g:ColorV.HLS={'H':0   , 'L':50  , 'S':100 }
-let g:ColorV.YIQ={'Y':30  , 'I':60  , 'Q':21  }
-let g:ColorV.rgb=[255 , 0   , 0   ]
-let g:ColorV.hls=[0   , 50  , 100 ]
-let g:ColorV.yiq=[30  , 60  , 21  ]
-let g:ColorV.hsv=[0   , 100 , 100 ]
-let g:ColorV.NAME="Red"
+let g:colorv.HEX="FF0000"
+let g:colorv.RGB={'R':255 , 'G':0   , 'B':0   }
+let g:colorv.HSV={'H':0   , 'S':100 , 'V':100 }
+let g:colorv.HLS={'H':0   , 'L':50  , 'S':100 }
+let g:colorv.YIQ={'Y':30  , 'I':60  , 'Q':21  }
+let g:colorv.rgb=[255 , 0   , 0   ]
+let g:colorv.hls=[0   , 50  , 100 ]
+let g:colorv.yiq=[30  , 60  , 21  ]
+let g:colorv.hsv=[0   , 100 , 100 ]
+let g:colorv.NAME="Red"
 
 "SVAR: {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:ColorV = {}
-let s:ColorV.name="_ColorV_".g:ColorV.version
-let s:ColorV.listname="_ColorVList_".g:ColorV.version
+let s:ColorV.name="_ColorV_".g:colorv.version
+let s:ColorV.listname="_ColorVList_".g:colorv.version
 let s:size = "mid"
 let s:mode = has("gui_running") ? "gui" : "cterm"
 let s:path = expand('<sfile>:p:h').'/'
@@ -281,7 +281,7 @@ let s:tips_list=[
             \'View color-text: :ColorVView (<leader>cw) ',
             \'Edit color-text: :ColorVEdit (<leader>ce) ',
             \'Preview in file: :ColorVPreview (<leader>cpp) ',
-            \'Pick in screen:  :ColorVDropper (<leader>cd) ',
+            \'Pick in screen:  :ColorVPicker (<leader>cd) ',
             \'Help:<F1>/H       Quit:q/Q',
             \]
 "}}}
@@ -635,7 +635,7 @@ endfunction "}}}
 
 "Terminal
 function! colorv#hex2term(hex,...) "{{{
-    if g:ColorV_has_python && g:ColorV_no_python!=1
+    if g:colorv_has_python && g:colorv_no_python!=1
         if a:0
             if (&t_Co<=8 && a:1==#"CHECK") || a:1==8
                 exe s:py . ' vcmd("return \""+str(hex2term8(veval("a:hex"))) + "\"")'
@@ -829,11 +829,11 @@ function! s:draw_palette(H,h,w) "{{{
 endfunction
 "}}}
 function! s:draw_palette_hex(hex,...) "{{{
-    if g:ColorV_has_python && g:ColorV_no_python!=1
+    if g:colorv_has_python && g:colorv_no_python!=1
         exe s:py . ' draw_pallete_hex(veval("a:hex"))'
     else
         let [h,s,v]=colorv#hex2hsv(a:hex)
-        let g:ColorV.HSV.H=h
+        let g:colorv.HSV.H=h
         if a:0 && len(a:1) == 2
             call s:draw_palette(h,a:1[0],a:1[1])
         else
@@ -890,8 +890,8 @@ function! s:draw_hueline(l) "{{{
     let step  = 360/s:pal_W
     
     " NOTE: make hueline dynamic.
-    if g:ColorV.HSV.S !=0
-        let s:hue_H = g:ColorV.HSV.H
+    if g:colorv.HSV.S !=0
+        let s:hue_H = g:colorv.HSV.H
     endif
     let h = s:hue_H
 
@@ -935,8 +935,8 @@ function! s:draw_valline(l) "{{{
 
     let h = s:hue_H
     " make val Lines's Saturation same with color.
-    if g:ColorV.HSV.S != 0
-        let s:val_S = g:ColorV.HSV.S
+    if g:colorv.HSV.S != 0
+        let s:val_S = g:colorv.HSV.S
     endif
     let s = s:val_S
 
@@ -1012,21 +1012,21 @@ function! s:update_his_list(hex) "{{{
 endfunction "}}}
 function! s:update_global(hex) "{{{
     let hex           = s:fmt_hex(a:hex)
-    let g:ColorV.HEX  = hex
-    let g:ColorV.NAME = s:hex2nam(hex)
+    let g:colorv.HEX  = hex
+    let g:colorv.NAME = s:hex2nam(hex)
     let [r,g,b] = colorv#hex2rgb(hex)
     let [h,s,v] = colorv#rgb2hsv([r,g,b])
     let [H,L,S] = colorv#rgb2hls([r,g,b])
     let [Y,I,Q] = colorv#rgb2yiq([r,g,b])
-    let g:ColorV.rgb = [r,g,b]
-    let g:ColorV.hsv = [h,s,v]
-    let g:ColorV.hls = [H,L,S]
-    let g:ColorV.hsl = [H,S,L]
-    let g:ColorV.yiq = [Y,I,Q]
-    let [g:ColorV.RGB.R,g:ColorV.RGB.G,g:ColorV.RGB.B] = [r,g,b]
-    let [g:ColorV.HSV.H,g:ColorV.HSV.S,g:ColorV.HSV.V] = [h,s,v]
-    let [g:ColorV.HLS.H,g:ColorV.HLS.S,g:ColorV.HLS.L] = [H,L,S]
-    let [g:ColorV.YIQ.Y,g:ColorV.YIQ.I,g:ColorV.YIQ.Q] = [Y,I,Q]
+    let g:colorv.rgb = [r,g,b]
+    let g:colorv.hsv = [h,s,v]
+    let g:colorv.hls = [H,L,S]
+    let g:colorv.hsl = [H,S,L]
+    let g:colorv.yiq = [Y,I,Q]
+    let [g:colorv.RGB.R,g:colorv.RGB.G,g:colorv.RGB.B] = [r,g,b]
+    let [g:colorv.HSV.H,g:colorv.HSV.S,g:colorv.HSV.V] = [h,s,v]
+    let [g:colorv.HLS.H,g:colorv.HLS.S,g:colorv.HLS.L] = [H,L,S]
+    let [g:colorv.YIQ.Y,g:colorv.YIQ.I,g:colorv.YIQ.Q] = [Y,I,Q]
     
     " update callback
     if exists("s:call_type")
@@ -1086,7 +1086,7 @@ endfunction "}}}
 
 function! s:draw_text(...) "{{{
     let cur=s:clear_text()
-    let cv = g:ColorV
+    let cv = g:colorv
     let hex= cv.HEX
     let [r,g,b]= map(copy(cv.rgb),'printf("%3d",v:val)')
     let [h,s,v]= map(copy(cv.hsv),'printf("%3d",v:val)')
@@ -1105,10 +1105,10 @@ function! s:draw_text(...) "{{{
     " para and help, stat:
     let help_txt = s:win_tips[s:tip_c]
     
-    let stat_g = g:ColorV_gen_space==?"hsv" ? "H" : "Y"
+    let stat_g = g:colorv_gen_space==?"hsv" ? "H" : "Y"
     let stat_m = s:size=="max" ? "S" : s:size=="mid" ? "s" : "-"
     let stat_txt = stat_g." ".stat_m." x"
-    let line[0]=s:line("ColorV ".g:ColorV.version,3)
+    let line[0]=s:line("ColorV ".g:colorv.version,3)
     let line[0]=s:line_sub(line[0],"HEX:".hex,22)
     if s:size=="max"
         let line[1]=s:line("R:".r."  G:".g."  B:".b,22)
@@ -1130,7 +1130,7 @@ function! s:draw_text(...) "{{{
     endif
 
     " colorname
-    let nam=g:ColorV.NAME
+    let nam=g:colorv.NAME
     if !empty(nam)
         if s:size=="min"
         let line[0]=s:line_sub(line[0],nam,43)
@@ -1170,7 +1170,7 @@ function! s:get_bar_pos() "{{{
     if s:size=="min"
         let l = 2
         let step = 100.0/(s:pal_W)
-        let c = s:pal_W - float2nr(round(g:ColorV.HSV.S/step)) + 1 + s:OFF_W
+        let c = s:pal_W - float2nr(round(g:colorv.HSV.S/step)) + 1 + s:OFF_W
         if c>= s:pal_W+s:OFF_W
             let c = s:pal_W+s:OFF_W
         elseif c <= 1 + s:OFF_W
@@ -1183,8 +1183,8 @@ function! s:get_star_pos() "{{{
     if s:size=="max" || s:size=="mid"
         let h_step=100.0/(s:pal_H)
         let w_step=100.0/(s:pal_W)
-        let l = s:pal_H - float2nr(round(g:ColorV.HSV.V/h_step)) + 1 + s:OFF_H
-        let c = s:pal_W - float2nr(round(g:ColorV.HSV.S/w_step)) + 1 + s:OFF_W
+        let l = s:pal_H - float2nr(round(g:colorv.HSV.V/h_step)) + 1 + s:OFF_H
+        let c = s:pal_W - float2nr(round(g:colorv.HSV.S/w_step)) + 1 + s:OFF_W
 
         if l >= s:pal_H+s:OFF_H
             let l = s:pal_H+s:OFF_H
@@ -1195,7 +1195,7 @@ function! s:get_star_pos() "{{{
     elseif s:size=="min"
         let l = 3
         let w_step = 100.0/s:pal_W
-        let c = s:pal_W - float2nr(round(g:ColorV.HSV.V/w_step)) + 1 + s:OFF_W
+        let c = s:pal_W - float2nr(round(g:colorv.HSV.V/w_step)) + 1 + s:OFF_W
     endif
 
     if c >= s:pal_W+s:OFF_W
@@ -1267,7 +1267,7 @@ function! colorv#win(...) "{{{
     let s:tip_c = colorv#random(0,3)
     
     " color
-    let hex = exists("g:ColorV.HEX") ? g:ColorV.HEX : "FF0000" 
+    let hex = exists("g:colorv.HEX") ? g:colorv.HEX : "FF0000" 
     let s:skip_his_rec_upd = 1
     let hex_list = s:txt2hex(color)
     if !empty(hex_list)
@@ -1307,7 +1307,7 @@ function! s:draw_win(hex,...) "{{{
     " hex from from internal call may get wrong
     let hex= s:fmt_hex(a:hex)
 
-    if g:ColorV_debug==1
+    if g:colorv_debug==1
         let funcs = "colorv#timer"
     else
         let funcs = "call"
@@ -1326,7 +1326,7 @@ function! s:draw_win(hex,...) "{{{
         call {funcs}("s:draw_valline",[3])
     else
         " NOTE: prv_hex: avoid pallete hue became 0 when sat became 0
-        if g:ColorV.HSV.S==0
+        if g:colorv.HSV.S==0
             call {funcs}("s:draw_palette_hex",[s:prv_hex])
         else
             if a:0 && a:1=="skippal"
@@ -1361,7 +1361,7 @@ function! s:draw_win(hex,...) "{{{
 endfunction "}}}
 
 function! s:new_win(name,...) "{{{
-    let spLoc= g:ColorV_win_pos == "top" ? "topleft " : "botright "
+    let spLoc= g:colorv_win_pos == "top" ? "topleft " : "botright "
     let spSize= a:0 && a:1 =="v" ? 29 :s:pal_H+1
     let spDirc= a:0 && a:1 =="v" ? "v" : ""
     let exists_buffer= bufnr(a:name)
@@ -1449,8 +1449,9 @@ function! s:set_map() "{{{
     map <silent><buffer> C   :call <SID>copy("HEX","+")<cr>
     map <silent><buffer> cc  :call <SID>copy("HEX","+")<cr>
     map <silent><buffer> cx  :call <SID>copy("HEX0","+")<cr>
-    map <silent><buffer> cs  :call <SID>copy("NS6","+")<cr>
-    map <silent><buffer> c#  :call <SID>copy("NS5","+")<cr>
+    map <silent><buffer> c0  :call <SID>copy("HEX0","+")<cr>
+    map <silent><buffer> cs  :call <SID>copy("HEX#","+")<cr>
+    map <silent><buffer> c#  :call <SID>copy("HEX#","+")<cr>
     map <silent><buffer> cr  :call <SID>copy("RGB","+")<cr>
     map <silent><buffer> cp  :call <SID>copy("RGBP","+")<cr>
     map <silent><buffer> caa :call <SID>copy("RGBA","+")<cr>
@@ -1463,8 +1464,9 @@ function! s:set_map() "{{{
     map <silent><buffer> Y   :call <SID>copy()<cr>
     map <silent><buffer> yy  :call <SID>copy()<cr>
     map <silent><buffer> yx  :call <SID>copy("HEX0")<cr>
-    map <silent><buffer> ys  :call <SID>copy("NS6")<cr>
-    map <silent><buffer> y#  :call <SID>copy("NS6")<cr>
+    map <silent><buffer> y0  :call <SID>copy("HEX0")<cr>
+    map <silent><buffer> ys  :call <SID>copy("HEX#")<cr>
+    map <silent><buffer> y#  :call <SID>copy("HEX#")<cr>
     map <silent><buffer> yr  :call <SID>copy("RGB")<cr>
     map <silent><buffer> yp  :call <SID>copy("RGBP")<cr>
     map <silent><buffer> yaa :call <SID>copy("RGBA")<cr>
@@ -1481,22 +1483,22 @@ function! s:set_map() "{{{
     map <silent><buffer> <middlemouse> :call <SID>paste("+")<cr>
 
     "generator with current color
-    nmap <silent><buffer> gh :call colorv#list_gen_win(g:ColorV.HEX,"Hue",20,15)<cr>
-    nmap <silent><buffer> g1 :call colorv#list_gen_win(g:ColorV.HEX,"Hue",20,15)<cr>
-    nmap <silent><buffer> gs :call colorv#list_gen_win(g:ColorV.HEX,"Saturation",20,5,1)<cr>
-    nmap <silent><buffer> gv :call colorv#list_gen_win(g:ColorV.HEX,"Value",20,5,1)<cr>
-    nmap <silent><buffer> ga :call colorv#list_gen_win(g:ColorV.HEX,"Analogous")<cr>
-    nmap <silent><buffer> gq :call colorv#list_gen_win(g:ColorV.HEX,"Square")<cr>
-    nmap <silent><buffer> gn :call colorv#list_gen_win(g:ColorV.HEX,"Neutral")<cr>
-    nmap <silent><buffer> gc :call colorv#list_gen_win(g:ColorV.HEX,"Clash")<cr>
-    nmap <silent><buffer> gp :call colorv#list_gen_win(g:ColorV.HEX,"Split-Complementary")<cr>
-    nmap <silent><buffer> gm :call colorv#list_gen_win(g:ColorV.HEX,"Monochromatic")<cr>
-    nmap <silent><buffer> g2 :call colorv#list_gen_win(g:ColorV.HEX,"Complementary")<cr>
-    nmap <silent><buffer> gt :call colorv#list_gen_win(g:ColorV.HEX,"Triadic")<cr>
-    nmap <silent><buffer> g3 :call colorv#list_gen_win(g:ColorV.HEX,"Triadic")<cr>
-    nmap <silent><buffer> g4 :call colorv#list_gen_win(g:ColorV.HEX,"Tetradic")<cr>
-    nmap <silent><buffer> g5 :call colorv#list_gen_win(g:ColorV.HEX,"Five-Tone")<cr>
-    nmap <silent><buffer> g6 :call colorv#list_gen_win(g:ColorV.HEX,"Six-Tone")<cr>
+    nmap <silent><buffer> gh :call colorv#list_gen_win(g:colorv.HEX,"Hue",20,15)<cr>
+    nmap <silent><buffer> g1 :call colorv#list_gen_win(g:colorv.HEX,"Hue",20,15)<cr>
+    nmap <silent><buffer> gs :call colorv#list_gen_win(g:colorv.HEX,"Saturation",20,5,1)<cr>
+    nmap <silent><buffer> gv :call colorv#list_gen_win(g:colorv.HEX,"Value",20,5,1)<cr>
+    nmap <silent><buffer> ga :call colorv#list_gen_win(g:colorv.HEX,"Analogous")<cr>
+    nmap <silent><buffer> gq :call colorv#list_gen_win(g:colorv.HEX,"Square")<cr>
+    nmap <silent><buffer> gn :call colorv#list_gen_win(g:colorv.HEX,"Neutral")<cr>
+    nmap <silent><buffer> gc :call colorv#list_gen_win(g:colorv.HEX,"Clash")<cr>
+    nmap <silent><buffer> gp :call colorv#list_gen_win(g:colorv.HEX,"Split-Complementary")<cr>
+    nmap <silent><buffer> gm :call colorv#list_gen_win(g:colorv.HEX,"Monochromatic")<cr>
+    nmap <silent><buffer> g2 :call colorv#list_gen_win(g:colorv.HEX,"Complementary")<cr>
+    nmap <silent><buffer> gt :call colorv#list_gen_win(g:colorv.HEX,"Triadic")<cr>
+    nmap <silent><buffer> g3 :call colorv#list_gen_win(g:colorv.HEX,"Triadic")<cr>
+    nmap <silent><buffer> g4 :call colorv#list_gen_win(g:colorv.HEX,"Tetradic")<cr>
+    nmap <silent><buffer> g5 :call colorv#list_gen_win(g:colorv.HEX,"Five-Tone")<cr>
+    nmap <silent><buffer> g6 :call colorv#list_gen_win(g:colorv.HEX,"Six-Tone")<cr>
 
     nmap <silent><buffer> gg :call colorv#list_win2()<CR>
 
@@ -1559,7 +1561,7 @@ function! colorv#exit() "{{{
 
 endfunction "}}}
 
-function! colorv#dropper() "{{{
+function! colorv#picker() "{{{
     "terminal error?
     if !has("gui_running")
         call s:error("no GUI picker in Terminal.")
@@ -1568,13 +1570,13 @@ function! colorv#dropper() "{{{
     let color=""
     call s:warning("Select color and press OK to Return it to Vim.")
     try 
-        let color = system("python2 ".s:pypicker." ".g:ColorV.HEX)
+        let color = system(g:colorv_python_cmd." ".s:pypicker." ".g:colorv.HEX)
         if !empty(color) && color !~ '\x\{6}'
             throw 'Error with python picker'
         endif
         let color = substitute(color,'\n','','')
     catch
-        let color = system(s:cpicker." ".g:ColorV.HEX)
+        let color = system(s:cpicker." ".g:colorv.HEX)
     finally
         if !empty(color)
             if color =~ '\x\{6}'
@@ -1630,7 +1632,7 @@ function! colorv#list_gen_win(hex,...) "{{{
     let nums= a:0>1 ? a:2 : ""
     let step= a:0>2 ? a:3 : ""
     let list=[]
-    if g:ColorV_gen_space ==? "yiq"
+    if g:colorv_gen_space ==? "yiq"
         let genlist=colorv#list_yiq_gen(hex,type,nums,step)
         call add(list,["YIQ ".type,'======='])
     else
@@ -1685,7 +1687,7 @@ function! colorv#random(num,...) "{{{
         let min = 0
         let max = a:num
     endif
-    if g:ColorV_has_python
+    if g:colorv_has_python
         exe s:py . ' import random'
         exe s:py . ' vcmd("return "+str(random.randint(int(veval("min")),int(veval("max")))))'
     else
@@ -1780,7 +1782,7 @@ function! s:echo(msg) "{{{
     endtry
 endfunction "}}}
 function! s:debug(msg) "{{{
-    if g:ColorV_debug!=1
+    if g:colorv_debug!=1
         return
     endif
     echohl Errormsg
@@ -1789,7 +1791,7 @@ function! s:debug(msg) "{{{
 endfunction "}}}
 
 function! s:rlt_clr(hex) "{{{
-    if g:ColorV_has_python && g:ColorV_no_python!=1
+    if g:colorv_has_python && g:colorv_no_python!=1
         exec s:py ' vcmd("return \""+ rlt_clr(veval("a:hex")) + "\"")'
     else
         let hex=s:fmt_hex(a:hex)
@@ -1836,7 +1838,7 @@ function! s:opz_clr(hex) "{{{
 endfunction "}}}
 
 function! s:time() "{{{
-    if g:ColorV_has_python
+    if g:colorv_has_python
         if !exists("s:time_loaded")
             exe s:py . ' import time'
             exe s:py . ' import vim'
@@ -1897,7 +1899,7 @@ let s:min_pos=[["Hex:",1,22,10],
 function! s:set_in_pos(...) "{{{
     let [l,c] = getpos('.')[1:2]
 
-    let clr=g:ColorV
+    let clr=g:colorv
     let hex=clr.HEX
     let [r,g,b]=clr.rgb
     let [h,s,v]=clr.hsv
@@ -1993,11 +1995,11 @@ function! s:set_in_pos(...) "{{{
             call colorv#list_win2()
             call s:echo("Convert from ".s:his_color0. " to ".s:his_color1)
         elseif key == "Hue"
-            call colorv#list_gen_win(g:ColorV.HEX,"Hue",20,15)
+            call colorv#list_gen_win(g:colorv.HEX,"Hue",20,15)
         elseif key == "Sat"
-            call colorv#list_gen_win(g:ColorV.HEX,"Saturation",20,5)
+            call colorv#list_gen_win(g:colorv.HEX,"Saturation",20,5)
         elseif key == "Val"
-            call colorv#list_gen_win(g:ColorV.HEX,"Value",20,5)
+            call colorv#list_gen_win(g:colorv.HEX,"Value",20,5)
         elseif key == "Names"
             call colorv#list_win)
         elseif key == "Copy"
@@ -2012,13 +2014,13 @@ function! s:set_in_pos(...) "{{{
     elseif l==s:pal_H+1 && c >= s:stat_pos
         let char = getline(l)[c-1]
         if char =~ "Y"
-            let g:ColorV_gen_space = "hsv"
+            let g:colorv_gen_space = "hsv"
             setl ma
             call s:draw_text()
             setl noma
             call s:echo("change generating color space to 'hsv'")
         elseif char =~ 'H'
-            let g:ColorV_gen_space = "yiq"
+            let g:colorv_gen_space = "yiq"
             setl ma
             call s:draw_text()
             setl noma
@@ -2063,7 +2065,7 @@ function! s:size_toggle() "{{{
 endfunction "}}}
 function! s:edit_at_cursor(...) "{{{
     let tune=a:0 ? a:1 == "+" ? 1 : a:1 == "-" ? -1  : 0  : 0
-    let clr=g:ColorV
+    let clr=g:colorv
     let hex=clr.HEX
     let [r,g,b]=clr.rgb
     let [h,s,v]=clr.hsv
@@ -2129,7 +2131,7 @@ function! s:edit_at_cursor(...) "{{{
 endfunction "}}}
 function! s:input_colorname(...) "{{{
 
-    let name = substitute(g:ColorV.NAME,'\~',"","g")
+    let name = substitute(g:colorv.NAME,'\~',"","g")
     if a:0 && a:1=="X11"
         let text = input("Input color name(X11:Blue/Green/Red):",name)
         let hex = s:nam2hex(text,a:1)
@@ -2216,7 +2218,7 @@ let s:fmt.glRGBA='\v\c<glColor\du=[bsifd]\('
             \.'\s*(\d\.=\d*)\)'
 "}}}
 function! s:txt2hex(txt) "{{{
-    if g:ColorV_has_python && g:ColorV_no_python!=1
+    if g:colorv_has_python && g:colorv_no_python!=1
         exe s:py . ' vcmd("".join(["return ",str(txt2hex(veval("a:txt")))]))'
     endif
     let hex_list = []
@@ -2331,6 +2333,10 @@ function! s:hex2txt(hex,fmt,...) "{{{
         let text="rgba(".rp."%,".gp."%,".bp."%,".A.")"
     elseif a:fmt=="HEX3"
         let text="#".hex
+    elseif a:fmt=="HEX0"
+        let text="0x".hex
+    elseif a:fmt=="HEX#"
+        let text="#".hex
     elseif a:fmt=="CMYK"
         let [c,m,y,k]= map(colorv#rgb2cmyk([r,g,b]),'printf("%2d",v:val)')
         let text="cmyk(".c.",".m.",".y.",".k.")"
@@ -2365,7 +2371,7 @@ function! s:nam2hex(nam,...) "{{{
 endfunction "}}}
 function! s:hex2nam(hex,...) "{{{
     let lst = a:0 && a:1 == "X11" ? "X11" : "W3C"
-    if g:ColorV_has_python && g:ColorV_no_python!=1
+    if g:colorv_has_python && g:colorv_no_python!=1
         exe s:py . ' vcmd("return \""+ hex2nam(veval("a:hex"),veval("lst"))+"\"")'
     else
 
@@ -2451,7 +2457,7 @@ function! s:paste(...) "{{{
 endfunction "}}}
 function! s:copy(...) "{{{
     let fmt = a:0 ? a:1 : "HEX"
-    let l:cliptext=s:hex2txt(g:ColorV.HEX,fmt)
+    let l:cliptext=s:hex2txt(g:colorv.HEX,fmt)
 
     if  a:0>1 && a:2=="\""
         call s:echo("Copied to Clipboard(reg\"):".l:cliptext)
@@ -2466,12 +2472,12 @@ function! s:copy(...) "{{{
 endfunction "}}}
 function! s:mark() "{{{
     "no duplicated next color
-    if string(get(s:his_mkd_list,-1))!=string(g:ColorV.HEX)
-        call add(s:his_mkd_list,g:ColorV.HEX)
+    if string(get(s:his_mkd_list,-1))!=string(g:colorv.HEX)
+        call add(s:his_mkd_list,g:colorv.HEX)
         if s:size=="max"
             call s:draw_mark_rect()
         endif
-        call s:echo("add color to mark list:".g:ColorV.HEX)
+        call s:echo("add color to mark list:".g:colorv.HEX)
     endif
 endfunction "}}}
 function! s:delmark(n) "{{{
@@ -2563,16 +2569,16 @@ function! s:edit_text(action,bufinfo,...) "{{{
     let [str,hex,fmt,idx,alp] = w_list
     if a:action =="changeTo"
         if &filetype=="vim"
-            let to_str = s:hex2txt(g:ColorV.HEX,a:1,alp,"X11")
+            let to_str = s:hex2txt(g:colorv.HEX,a:1,alp,"X11")
         else
-            let to_str = s:hex2txt(g:ColorV.HEX,a:1,alp)
+            let to_str = s:hex2txt(g:colorv.HEX,a:1,alp)
         endif
         if empty(to_str)
             call s:error("Choosed colortext is empty.")
             return
         endif
     else
-        let to_str = s:hex2txt(g:ColorV.HEX,fmt,alp)
+        let to_str = s:hex2txt(g:colorv.HEX,fmt,alp)
     endif
     if fmt =='HEX'
         if str=~'0x'
@@ -2654,8 +2660,8 @@ function! colorv#prev_list(list) "{{{
 endfunction "}}}
 function! colorv#preview(...) "{{{
 
-    let b:view_name=g:ColorV_preview_name
-    let b:view_homo=g:ColorV_preview_homo
+    let b:view_name=g:colorv_preview_name
+    let b:view_homo=g:colorv_preview_homo
 
     let view_silent=0
     if a:0 "{{{
@@ -2675,7 +2681,7 @@ function! colorv#preview(...) "{{{
     " if file > 300 line, preview 200 line around cursor.
     let cur = line('.')
     let eof = line('$')
-    let mprv = g:ColorV_max_preview
+    let mprv = g:colorv_max_preview
     if eof >= mprv*3/2
         let [begin,end] = cur<mprv ? [1,mprv]
                   \ : cur>eof-mprv ? [eof-mprv,eof]
@@ -2697,8 +2703,8 @@ function! colorv#preview(...) "{{{
 endfunction "}}}
 function! colorv#preview_line(...) "{{{
 
-    let b:view_name=g:ColorV_preview_name
-    let b:view_homo=g:ColorV_preview_homo
+    let b:view_name=g:colorv_preview_name
+    let b:view_homo=g:colorv_preview_homo
     if a:0
         " n-> name   b->homo   c->clear
         " N-> noname B->nohomo C->noclear
@@ -3014,7 +3020,7 @@ endfunction "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! colorv#write_cache() "{{{
     let CacheStringList = []
-    let file = g:ColorV_cache_file
+    let file = g:colorv_cache_file
     if len(s:his_mkd_list) < 18
         let list = deepcopy(s:his_mkd_list[0:-1])
     else
@@ -3033,7 +3039,7 @@ function! colorv#write_cache() "{{{
     endtry
 endfunction "}}}
 function! colorv#load_cache() "{{{
-    let file = g:ColorV_cache_file
+    let file = g:colorv_cache_file
     try
         let CacheStringList = readfile(file)
     catch /^Vim\%((\a\+)\)\=:E/
@@ -3051,40 +3057,41 @@ function! colorv#load_cache() "{{{
     endif
 endfunction "}}}
 function! colorv#init() "{{{
-    call colorv#default("g:ColorV_debug"         , 0                )
-    call colorv#default("g:ColorV_no_python"     , 0                )
-    call colorv#default("g:ColorV_load_cache"    , 1                )
-    call colorv#default("g:ColorV_win_pos"       , "bot"            )
-    call colorv#default("g:ColorV_preview_name"  , 1                )
-    call colorv#default("g:ColorV_preview_homo"  , 0                )
-    call colorv#default("g:ColorV_gen_space"     , "hsv"            )
-    call colorv#default("g:ColorV_preview_ftype" , 'css,javascript' )
-    call colorv#default("g:ColorV_max_preview"   , 200              )
-    if !exists('g:ColorV_cache_file') "{{{
+    call colorv#default("g:colorv_debug"         , 0                )
+    call colorv#default("g:colorv_no_python"     , 0                )
+    call colorv#default("g:colorv_load_cache"    , 1                )
+    call colorv#default("g:colorv_win_pos"       , "bot"            )
+    call colorv#default("g:colorv_preview_name"  , 1                )
+    call colorv#default("g:colorv_preview_homo"  , 0                )
+    call colorv#default("g:colorv_gen_space"     , "hsv"            )
+    call colorv#default("g:colorv_preview_ftype" , 'css,javascript' )
+    call colorv#default("g:colorv_max_preview"   , 200              )
+    call colorv#default("g:colorv_python_cmd"    , "python2"        )
+    if !exists('g:colorv_cache_file') "{{{
         if has("win32") || has("win64")
             if exists('$HOME')
-                let g:ColorV_cache_file = expand('$HOME') . '\.vim_colorv_cache'
+                let g:colorv_cache_file = expand('$HOME') . '\.vim_colorv_cache'
             else
-                let g:ColorV_cache_file = expand('$VIM') . '\.vim_galaxy_cache'
+                let g:colorv_cache_file = expand('$VIM') . '\.vim_galaxy_cache'
             endif
         else
-            let g:ColorV_cache_file = expand('$HOME') . '/.vim_colorv_cache'
+            let g:colorv_cache_file = expand('$HOME') . '/.vim_colorv_cache'
         endif
     endif "}}}
 
     if has("python") "{{{
-        let g:ColorV_has_python = 2
+        let g:colorv_has_python = 2
         let s:py="py"
         call s:py_core_load()
     elseif has("python3")
-        let g:ColorV_has_python = 3
+        let g:colorv_has_python = 3
         let s:py="py3"
         call s:py_core_load()
     else
-        let g:ColorV_has_python = 0
+        let g:colorv_has_python = 0
     endif "}}}
 
-    if g:ColorV_load_cache==1 "{{{
+    if g:colorv_load_cache==1 "{{{
         call colorv#load_cache()
         aug colorv#cache
             au! VIMLEAVEPre * call colorv#write_cache()
@@ -3092,7 +3099,7 @@ function! colorv#init() "{{{
     endif "}}}
 
     aug colorv#preview_ftpye "{{{
-        for file in  split(g:ColorV_preview_ftype, '\s*,\s*')
+        for file in  split(g:colorv_preview_ftype, '\s*,\s*')
                 exec "au!  FileType ".file." call colorv#prev_aug()"
         endfor
     aug END "}}}

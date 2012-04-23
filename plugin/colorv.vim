@@ -3,7 +3,7 @@
 "    File: plugin/colorv.vim
 " Summary: A vim plugin tries to make handling colors easier.
 "  Author: Rykka10 <Rykka10(at)gmail.com>
-" Last Update: 2012-04-19
+" Last Update: 2012-04-23
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -39,16 +39,16 @@ command! -nargs=0  ColorVPreview     call colorv#preview()
 command! -nargs=0  ColorVPreviewHomo call colorv#preview("bc")
 command! -nargs=0  ColorVPreviewLine call colorv#preview_line("c")
 
-command! -nargs=0  ColorVDropper     call colorv#dropper()
+command! -nargs=0  ColorVPicker     call colorv#picker()
 
-call colorv#default("g:ColorV_no_global_map",0)
-call colorv#default("g:ColorV_global_leader",'<leader>c')
+call colorv#default("g:colorv_no_global_map",0)
+call colorv#default("g:colorv_global_leader",'<leader>c')
 
 function! colorv#define_global() "{{{
-    if g:ColorV_no_global_map==1
+    if g:colorv_no_global_map==1
         return
     endif
-    let leader_maps=g:ColorV_global_leader
+    let leader_maps=g:colorv_global_leader
     let map_dicts=[
     \{'key': ['v'] ,       'cmd': ':ColorV<CR>'},
     \{'key': ['1','m'] ,   'cmd': ':ColorVMin<CR>'},
@@ -57,7 +57,7 @@ function! colorv#define_global() "{{{
     \{'key': ['w' ],       'cmd': ':ColorVView<CR>'},
     \{'key': ['e' ],       'cmd': ':ColorVEdit<CR>'},
     \{'key': ['E' ],       'cmd': ':ColorVEditAll<CR>'},
-    \{'key': ['d' ],       'cmd': ':ColorVDropper<CR>'},
+    \{'key': ['d' ],       'cmd': ':ColorVPicker<CR>'},
     \{'key': ['n' ],       'cmd': ':ColorVName<CR>'},
     \{'key': ['q' ],       'cmd': ':ColorVQuit<CR>'},
     \{'key': ['pp'] ,      'cmd': ':ColorVPreview<CR>'},

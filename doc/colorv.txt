@@ -113,30 +113,28 @@
 
                                                             *colorv-picker*
     A GUI colorpicker.~
-        <leader>cd
-        (vim with '+python' and pygtk2.0 included)
-        (or |:make| with Makefile in autoload/colorv/Makefile)
+        <leader>cd or |:ColorVPicker|
+        (py version: |g:colorv_python_cmd| in $PATH with pygtk2.0 lib.)
+        (C  version: |:make| with Makefile in autoload/colorv/Makefile)
 
             
 ------------------------------------------------------------------------------
  3.1 TROUBLESHOOTING                           *colorv-troubleshooting*
     
     1. Too Slow~
-    NOTE   If your vim is not compiled with 'python' (python2.x) 
-           Or you OS have no python2.x installed.
+    NOTE   If your vim is not compiled with 'python' or 'python3'
            Then it's 3~5 times slower when previewing files.
 
     2. Solve Bugs~
     NOTE   First get the latest ColorV version.
 
            Then get latest vim version
-           Then check if your vim compiled with +python.
-           :echo has("python")
+           Then check if your vim compiled with +python or +python3
 
-           If got bugs with python. 
-           use 'let g:ColorV_no_python=1' to stop using python.
+           If got errors with python. 
+           use 'let g:colorv_no_python=1' to stop using python.
 
-    4.Report bugs~
+    3.Report bugs~
         You can report bugs at https://github.com/Rykka/ColorV/issues . 
 ==============================================================================
  4. COMMANDS                                   *colorv-commands*
@@ -178,12 +176,15 @@ will change all color-text in current buf after closing the ColorV window.
                       {args}: (NAME\HEX\RGB\0x\RGBA...) 
                       See details of {args} in |colorv-color-text|
 
-                                                    *:ColorVDropper*
-    |:ColorVDropper|    Open a gtk colorpicker to pick colors.
-                      Requires +python and pygtk2
-                      Or |:make| a colorpicker with autoload/colorv/Makefile
-                      the gtk+-2.0 lib is needed.
-                      so Windows users should install gtk+ package first.
+                                                    *:ColorVPicker*
+    |:ColorVPicker|     Open a gtk colorpicker to pick colors.
+                      default use Python2 version.
+                      requires |g:colorv_python_cmd| in $PATH and
+                      python installed with pygtk-2.0 package.
+
+                      Or |:make| C version colorpicker 
+                      with makefile in 'autoload/colorv/Makefile'
+                      gtk+-2.0 lib is needed.
 
                                                     *:ColoVPreview*
     |:ColorVPreview|    preview color texts in current buffer.
@@ -199,12 +200,12 @@ will change all color-text in current buf after closing the ColorV window.
     Global Mappins.~
     
     All global mappings start with '<leader>c' , 
-    You can change it with |g:ColorV_global_leader|
+    You can change it with |g:colorv_global_leader|
     And you can redefine each mapping with each command, 
     then the default one will not be defined.
     
     If you don't want any global mappings at all.
-    set |g:ColorV_no_global_map| to 1
+    set |g:colorv_no_global_map| to 1
 
     NOTE  If other plugins have alredy taken the mapping. 
           It will not exist. You should redfine it In your vimrc.
@@ -258,10 +259,10 @@ will change all color-text in current buf after closing the ColorV window.
     <leader>cpb    |:ColorVPreviewHomo|
     <leader>cpc    |:ColorVClear|
 
-    options: |g:ColorV_preview_name|  |g:ColorV_preview_homo|
-             |g:ColorV_max_preview|
+    options: |g:colorv_preview_name|  |g:colorv_preview_homo|
+             |g:colorv_max_preview|
 
-    You can set |g:ColorV_preview_ftype| to automatically preview
+    You can set |g:colorv_preview_ftype| to automatically preview
     some filetypes. Default is 'css,html'
 ------------------------------------------------------------------------------
                                                *colorv-mapping-buffer*
@@ -277,16 +278,16 @@ will change all color-text in current buf after closing the ColorV window.
     Copy~
     register " register + (|quotequote|  |quote+|)
     Y/yy        C/cc     Copy HEX format 'FFFFFF'
-    ys/y#       cs/c#    Copy NS6 format '#ffffff'
-    yx          cx       Copy HEX0 plain '0xffffff'
+    yx/y0       cx/c0    Copy HEX0 plain '0xFFFFFF'
+    ys/y#       cs/c#    Copy HEX# plain '#FFFFFF'
     yr          cr       Copy RGB format 'rgb(255,255,255)'
     yp          cp       Copy RGBP format 'rgb(100%,100%,100%)'
-    yaa         caa      Copy RGBA format 'rgba(255,255,255,255)'
-    yap         cap      Copy RGBAP format 'rgba(100%,100%,100%.100%)'
+    yaa         caa      Copy RGBA format 'rgba(255,255,255,1.0)'
+    yap         cap      Copy RGBAP format 'rgba(100%,100%,100%,1.0)'
     yn          cn       Copy NAM format 'white' into register"
     yh          ch       Copy HSV format 'hsv(360,100,100)'
     yl          cl       Copy HSV format 'hsl(360,100,100)'
-    ym          cm       Copy CMYK format 'cmyk(1.00,1.00,1.001.00)'
+    ym          cm       Copy CMYK format 'cmyk(100,100,100,100)'
 
     Paste~
     <Ctrl-v>    paste color-text in register+ into ColorV.
@@ -388,7 +389,7 @@ will change all color-text in current buf after closing the ColorV window.
                                 with it's alpha channel set to 'FF'
                                 using colorv#list_gen2({hexa1},{hexa2}).
 ------------------------------------------------------------------------------
-                                                      *colorv-color-space*
+                                               *colorv-color-space*
     Same S and V in HSV or HLS colors space don't result the same lumination.
 
     e.g:    Blue(0000FF) and Yellow(FFFF00) both '100' in S and V
@@ -427,74 +428,80 @@ will change all color-text in current buf after closing the ColorV window.
 ==============================================================================
  7. OPTIONS                                    *colorv-options*
 
-                                                *g:ColorV_global_leader*
+                                                *g:colorv_global_leader*
                                                 (default='<leader>c')
-    g:ColorV_global_leader  The leader for your gloabl mapping.
+    g:colorv_global_leader  The leader for your gloabl mapping.
 
-                                                *g:ColorV_no_global_map*
+                                                *g:colorv_no_global_map*
                                                 (default=0)
-    g:ColorV_no_global_map  No global mapping will be defined.
+    g:colorv_no_global_map  No global mapping will be defined.
 
-                                                *g:ColorV_win_pos*
+                                                *g:colorv_win_pos*
                                                 (default="bot")
-    g:ColorV_win_pos        Default ColorV window position.
+    g:colorv_win_pos        Default ColorV window position.
                             You could use "top" instead.
 
-                                                *g:ColorV_gen_space*
+                                                *g:colorv_gen_space*
                                                 (default="hsv")
-    g:ColorV_gen_space      Generated color with colorspace.
+    g:colorv_gen_space      Generated color with colorspace.
                             if set to 'yiq'.
                             You could get colors with same 'Lumination'. 
 
                             It's status will be show at the right corner
                             H:'hsv' Y:'yiq'
 
-                            With |g:ColorV_gen_space| set to 'yiq'. 
+                            With |g:colorv_gen_space| set to 'yiq'. 
                             You could get colors with same 'Lumination'. 
                             The disadvantage is 'Hue' Scope decreased.
                             see |colorv-color-space| for details.
 
 
-                                                *g:ColorV_preview_name*
+                                                *g:colorv_preview_name*
                                                 (default=1)
-    g:ColorV_preview_name   Show colorname when previewing color.
+    g:colorv_preview_name   Show colorname when previewing color.
                             If you don't want to make the colorname text
                             like 'red', 'black', 'navy' to be colored.
                             set it to 0
 
                             NOTE: Must have Python support. 
 
-                                                *g:ColorV_preview_homo*
+                                                *g:colorv_preview_homo*
                                                 (default=0)
-    g:ColorV_preview_homo   Always Previewing color-text with same fg/bg 
+    g:colorv_preview_homo   Always Previewing color-text with same fg/bg 
                             colors.
 
-                                                *g:ColorV_preview_ftype*
+                                                *g:colorv_preview_ftype*
                                                 (default='css,html' ))
-    g:ColorV_preview_ftype  Auto Preview color-text in defined filetypes.
+    g:colorv_preview_ftype  Auto Preview color-text in defined filetypes.
                             will auto update preview after write file.
 
-                                                *g:ColorV_max_preview*
+                                                *g:colorv_max_preview*
                                                 (default=200 ))
-    g:ColorV_max_preview    max line when preview color-text .
+    g:colorv_max_preview    max line when preview color-text .
 
 
-                                                *g:ColorV_debug*
+                                                *g:colorv_debug*
                                                 (default=0)
-    g:ColorV_debug          Debug mode.
-                                                *g:ColorV_no_python*
+    g:colorv_debug          Debug mode.
+                                                *g:colorv_no_python*
                                                 (default=0)
-    g:ColorV_no_python      No Python!
+    g:colorv_no_python      No Python!
 
-                                                *g:ColorV_cache_file*
+                                                *g:colorv_python_cmd*
+                                                (default="python2")
+    g:colorv_python_cmd 
+                            python2 command in your $PATH. 
+                            for executing colorpicker.
+
+                                                *g:colorv_cache_file*
                                             (default='$HOME/.vim_colorv_cache')
-    g:ColorV_cache_file     The copied_history_list's cache file position.
+    g:colorv_cache_file     The copied_history_list's cache file position.
   
 ==============================================================================
  8. VARIABLES                                  *colorv-variables*
 
     Global variables that could be used by your scripts.~
-    g:ColorV        The |dict| that keeps all ColorV global vars.
+    g:colorv        The |dict| that keeps all ColorV global vars.
                     Check it if you need it.
 ==============================================================================
  9. FUNCTIONS                                  *colorv-functions*
@@ -576,7 +583,8 @@ will change all color-text in current buf after closing the ColorV window.
  11. CHANGELOG                                 *colorv-changelog* 
 
 " 2.5.6~
-"  DONE: 2012-04-23 seperate python file. fix issue09.
+"  DONE: 2012-04-23 change all variable prefix to g:colorv.
+"  DONE: 2012-04-23 seperate python file. support py3. fix issue09.
 "  DONE: 2012-04-23 Add del mark
 "  DONE: 2012-04-20 fix s:cursor_text when no color
 "  DONE: 2012-04-20 add colorpicker.c
@@ -587,7 +595,7 @@ will change all color-text in current buf after closing the ColorV window.
 
 " 2.5.5 devel~
 "  DONE: 2012-04-10 Add :ColorVList2
-"  DONE: 2012-04-06 rmv g:ColorV_win_space
+"  DONE: 2012-04-06 rmv g:colorv_win_space
 "  DONE: 2012-04-06 mak the max height -1. now 8.
 "  DONE: 2012-04-06 highlight whole EDIT line.
 "  DONE: 2012-04-06 s:rlt_clr() now looks better.
@@ -598,7 +606,7 @@ will change all color-text in current buf after closing the ColorV window.
 "  DONE: 2012-04-04 add colorv#hexadd()
 "  DONE: 2012-03-19 arranging commands and  mappings. 
 "                   now generate colors with 'l' mappings.
-"  DONE: 2012-03-19 add g:ColorV_preview_ftype and g:ColorV_max_preview.
+"  DONE: 2012-03-19 add g:colorv_preview_ftype and g:colorv_max_preview.
 
 
 " 2.5.4 Spring Festival~
@@ -611,7 +619,7 @@ will change all color-text in current buf after closing the ColorV window.
 " 2.5.3~
 "FIXED: 110911  stop using i in global namespace.
 "FIXED: 110911  single color-list window now.
-" DONE: 110907  add 'g:ColorV_global_leader' and 'g:ColorV_no_global_map'
+" DONE: 110907  add 'g:colorv_global_leader' and 'g:colorv_no_global_map'
 "FIXED: 110907  rmv useless funcs. put cursor in list when opened.
 "FIXED: 110907  changed ColorVchange to ColorVEdit
 
@@ -622,7 +630,7 @@ will change all color-text in current buf after closing the ColorV window.
 "FIXED: 110904  new method of open_win(). fix errors on windows and terminal
 
 " 2.5.1~
-" DONE: 110902  add g:ColorV_preview_ftype to auto preview *.css files.
+" DONE: 110902  add g:colorv_preview_ftype to auto preview *.css files.
 "FIXED: 110902  fix v: colorv#hls2rgb() wrong 'h' input range for calc. 
 "FIXED: 110902  fix v: draw_pallette() wrong 'S' for hex error. 
 "FIXED: 110902  fix v: v3_hex2term() error calculating.
@@ -718,7 +726,7 @@ will change all color-text in current buf after closing the ColorV window.
 " DONE: 110620  support colornames in s:txt2hex() 
 "FIXED: 110620  the star mark of pallette use s:rlt_clr()
 " DONE: 110620  add hex2hsv() hsv2hex
-" DONE: 110620  g:ColorV_xxx options and help docs added
+" DONE: 110620  g:colorv_xxx options and help docs added
 "FIXED: 110620  fmod hsv2rgb() and rgb2hsv() rgb2hex() input with warning
 " TODO: 110620  readme doc and image changed
 
@@ -737,7 +745,7 @@ will change all color-text in current buf after closing the ColorV window.
 
 " 1.7.7
 "FIXED: 110617  error of opening 'NS3' format '#fff'
-" DONE: 110617  g:ColorV_uppercase=1 lowecase to uppercase 'FFFFFF'
+" DONE: 110617  g:colorv_uppercase=1 lowecase to uppercase 'FFFFFF'
 " DONE: 110617  add format 'HSV' "hsv(360,100,100)"
 "FIXED: 110617  change format "0xffffff" name to 'HEX0'
 
@@ -746,7 +754,7 @@ will change all color-text in current buf after closing the ColorV window.
 "FIXED: 110611  fix format name "#" which was invalid to 'NS6'.
 "FIXED: 110611  change2 doesnt unlet with s:changing()
 "FIXED: 110611  cursor word will include '#' format.
-" DONE: 110611  add g:ColorV_win_pos 'top/bot'
+" DONE: 110611  add g:colorv_win_pos 'top/bot'
 "FIXED: 110611  now |:ColorVword| doesnt move cursor into ColorV window.
 "FIXED: 110611  now |:ColorVEdit| will move cursor back.
 " DONE: 110611  add |:ColorVquit| and <leader>cq
@@ -775,10 +783,10 @@ will change all color-text in current buf after closing the ColorV window.
 
 " 1.4.0 'mid' mode 
 "FIXED: 110603  s:echo() will escape with '"'
-"FIXED: 110603  using option name g:ColorV_dynamic_hue 
+"FIXED: 110603  using option name g:colorv_dynamic_hue 
 " DONE: 110602  colorname interface description. ctrl-a to show texts.
-"FIXED: 110602  rmv quit mark.rmv g:ColorV_show_quit. fix silent_set
-" DONE: 110602  change tip text. add g:ColorV_echo_tips (0/1/2)
+"FIXED: 110602  rmv quit mark.rmv g:colorv_show_quit. fix silent_set
+" DONE: 110602  change tip text. add g:colorv_echo_tips (0/1/2)
 " DONE: 110602  change arrow_ptn color to reverse.
 " DONE: 110602  fix the pallette. no black line and white column now. 
 " DONE: 110602  add max/mid/min mode. default is mid mode
@@ -796,7 +804,7 @@ will change all color-text in current buf after closing the ColorV window.
 "FIXED: 110531  arrow hl error while switch from norm 2 mini
 
 " 1.2.0 Color Name
-" DONE: 110526  g:ColorV_name_approx g:ColorV.NAME
+" DONE: 110526  g:colorv_name_approx g:colorv.NAME
 " DONE: 110526  precisely change current word without confirm
 " DONE: 110526  Add Color name support (W3C standard).
 " DONE: 110526  input color name in ColorV to choose color.
@@ -846,8 +854,8 @@ will change all color-text in current buf after closing the ColorV window.
 " DONE: 110520  read rgb/rgba/rgb%/rgb%a text
 " DONE: 110520  paste clipboard hex to update color
 " DONE: 110520  go back to origin cursor position
-" DONE: 110520  g:ColorV_silent_set
-" DONE: 110520  g:ColorV_show_star
+" DONE: 110520  g:colorv_silent_set
+" DONE: 110520  g:colorv_show_star
 " DONE: 110520  dynamic hueline
 " DONE: 110520  control register
 " DONE: 110520  change with all the same color <key>
@@ -856,7 +864,7 @@ will change all color-text in current buf after closing the ColorV window.
 " DONE: 110520  Silently mapping
 " DONE: 110520  Add with mini mode
 " DONE: 110520  toggle tips with ?/h
-" DONE: 110520  var integration in g:ColorV.dict
+" DONE: 110520  var integration in g:colorv.dict
 "0.8.0
 "FIXED: 110519  toggle window to last window
 "FIXED: 110519  error msg while not in the precise position
