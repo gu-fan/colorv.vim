@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.6
-" Last Update: 2012-04-23
+" Last Update: 2012-04-24
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -2339,6 +2339,7 @@ function! s:hex2txt(hex,fmt,...) "{{{
         else
             let text=s:hex2nam(hex)
         endif
+        let text = substitute(text,'\~','','g')
     else
         let text=hex
     endif
@@ -2586,14 +2587,16 @@ function! s:edit_text(action,bufinfo,...) "{{{
     if a:action == "editAll"
         let cmd =  '%s/'.str.'/'.to_str.'/gc'
     else
-        let cmd = 's/\%>'.(idx-1).'c'.str.'/'.to_str.'/'
+        if idx>=1
+            let cmd = 's/\%>'.(idx-1).'c'.str.'/'.to_str.'/'
+        else
+            let cmd = 's/'.str.'/'.to_str.'/'
+        endif
     endif
 
     try
         exec cmd
         call setpos('.',pos)
-    catch /^Vim\%((\a\+)\)\=:E486/
-        call s:error("Pattern not found.")
     catch /^Vim\%((\a\+)\)\=:E/
         call s:error(v:exception)
     endtry
