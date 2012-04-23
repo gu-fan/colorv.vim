@@ -127,8 +127,8 @@
     NOTE   Get the latest ColorV version.
            Get the latest vim version.
            Check if your vim compiled with +python or +python3.
-           If got errors with python. 
-           use 'let g:colorv_no_python=1' to stop using python.
+           If have errors with python. 
+           ':let g:colorv_has_python=0' to stop using python.
 
     3.Report bugs~
         You can report bugs at https://github.com/Rykka/ColorV/issues . 
@@ -485,15 +485,18 @@ will change all color-text in current buf after closing the ColorV window.
                                                 *g:colorv_debug*
                                                 (default=0)
     g:colorv_debug          Debug mode.
-                                                *g:colorv_no_python*
-                                                (default=0)
-    g:colorv_no_python      No Python!
+                                                *g:colorv_has_python*
+                                                (2, if +python
+                                                 3, if +python3
+                                                 0, if no python)
+    g:colorv_has_python     python version vim compiled in.
+                            set it to 0 to disable use of python.
 
                                                 *g:colorv_python_cmd*
                                                 (default="python2")
     g:colorv_python_cmd 
-                            python2 command in your $PATH. 
-                            for executing colorpicker.
+                            external command  of python2 in your $PATH. 
+                            for executing python version colorpicker.
 
                                                 *g:colorv_cache_file*
                                             (default='$HOME/.vim_colorv_cache')

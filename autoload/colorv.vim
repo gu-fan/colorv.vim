@@ -635,7 +635,7 @@ endfunction "}}}
 
 "Terminal
 function! colorv#hex2term(hex,...) "{{{
-    if g:colorv_has_python && g:colorv_no_python!=1
+    if g:colorv_has_python
         if a:0
             if (&t_Co<=8 && a:1==#"CHECK") || a:1==8
                 exe s:py . ' vcmd("return \""+str(hex2term8(veval("a:hex"))) + "\"")'
@@ -829,7 +829,7 @@ function! s:draw_palette(H,h,w) "{{{
 endfunction
 "}}}
 function! s:draw_palette_hex(hex,...) "{{{
-    if g:colorv_has_python && g:colorv_no_python!=1
+    if g:colorv_has_python
         exe s:py . ' draw_pallete_hex(veval("a:hex"))'
     else
         let [h,s,v]=colorv#hex2hsv(a:hex)
@@ -1683,7 +1683,8 @@ function! colorv#random(num,...) "{{{
     endif
     if g:colorv_has_python
         exe s:py . ' import random'
-        exe s:py . ' vcmd("return "+str(random.randint(int(veval("min")),int(veval("max")))))'
+        exe s:py . ' import vim'
+        exe s:py . ' vim.command("return "+str(random.randint(int(veval("min")),int(veval("max")))))'
     else
         if !exists("s:seed")
             let s:seed = localtime() * (localtime()+101) * 2207
@@ -1785,7 +1786,7 @@ function! s:debug(msg) "{{{
 endfunction "}}}
 
 function! s:rlt_clr(hex) "{{{
-    if g:colorv_has_python && g:colorv_no_python!=1
+    if g:colorv_has_python
         exec s:py ' vcmd("return \""+ rlt_clr(veval("a:hex")) + "\"")'
     else
         let hex=s:fmt_hex(a:hex)
@@ -1832,7 +1833,7 @@ function! s:opz_clr(hex) "{{{
 endfunction "}}}
 
 function! s:time() "{{{
-    if g:colorv_has_python
+    if has("python") || has("python3")
         if !exists("s:time_loaded")
             exe s:py . ' import time'
             exe s:py . ' import vim'
@@ -2212,7 +2213,7 @@ let s:fmt.glRGBA='\v\c<glColor\du=[bsifd]\('
             \.'\s*(\d\.=\d*)\)'
 "}}}
 function! s:txt2hex(txt) "{{{
-    if g:colorv_has_python && g:colorv_no_python!=1
+    if g:colorv_has_python
         exe s:py . ' vcmd("".join(["return ",str(txt2hex(veval("a:txt")))]))'
     endif
     let hex_list = []
@@ -2365,7 +2366,7 @@ function! s:nam2hex(nam,...) "{{{
 endfunction "}}}
 function! s:hex2nam(hex,...) "{{{
     let lst = a:0 && a:1 == "X11" ? "X11" : "W3C"
-    if g:colorv_has_python && g:colorv_no_python!=1
+    if g:colorv_has_python
         exe s:py . ' vcmd("return \""+ hex2nam(veval("a:hex"),veval("lst"))+"\"")'
     else
 
@@ -3053,7 +3054,6 @@ function! colorv#load_cache() "{{{
 endfunction "}}}
 function! colorv#init() "{{{
     call colorv#default("g:colorv_debug"         , 0                )
-    call colorv#default("g:colorv_no_python"     , 0                )
     call colorv#default("g:colorv_load_cache"    , 1                )
     call colorv#default("g:colorv_win_pos"       , "bot"            )
     call colorv#default("g:colorv_preview_name"  , 1                )
@@ -3075,11 +3075,11 @@ function! colorv#init() "{{{
     endif "}}}
 
     if has("python") "{{{
-        let g:colorv_has_python = 2
+        call colorv#default("g:colorv_has_python"     , 2                )
         let s:py="py"
         call s:py_core_load()
     elseif has("python3")
-        let g:colorv_has_python = 3
+        call colorv#default("g:colorv_has_python"     , 3                )
         let s:py="py3"
         call s:py_core_load()
     else
