@@ -593,7 +593,7 @@ will change all color-text in current buf after closing the ColorV window.
 
 " 2.5.6~
 " FIXED: 2012-04-24 fix nametxt2hex() split ptn. use [^0-9A-Za-z-_].
-" FIXED: 2012-04-24 fix autopreview commmand
+" FIXED: 2012-04-24 fix autopreview/previewarea commmand
 " FIXED: 2012-04-24 fix no changing if to_str is empty.
 "  DONE: 2012-04-23 change all variable prefix to g:colorv.
 "  DONE: 2012-04-23 seperate python file. support py3. fix issue09.
