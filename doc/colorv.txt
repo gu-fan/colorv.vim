@@ -269,9 +269,10 @@ will change all color-text in current buf after closing the ColorV window.
     Mappings in ColorV window buffer~
     
     Size~
-    m           toggle ColorV window size (max/mid/min)
+    s/S           toggle ColorV window size (max/mid/min)
 
-    M           add color to mark list, shows in max size.
+    mm           add color to mark list, list rect shows in max size.
+    dd           rmv color in mark list, which one cursor is in.
     
     Copy~
     register " register + (|quotequote|  |quote+|)
