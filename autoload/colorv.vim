@@ -9,8 +9,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
-if version < 700 || exists("g:loaded_ColorV") | finish
-else             | let g:loaded_ColorV = 1  | endif
+" if version < 700 || exists("g:loaded_ColorV") | finish
+" else             | let g:loaded_ColorV = 1  | endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "GVAR: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -313,9 +313,9 @@ let s:pycolor = s:path."colorv/colorv.py"
 let s:pypicker = s:path."colorv/picker.py"
 let s:cpicker = s:path."colorv/colorpicker"
 function! s:py_core_load() "{{{
-    if exists("s:py_core_loaded")
-        return
-    endif
+    " if exists("s:py_core_loaded")
+    "     return
+    " endif
     let s:py_core_loaded=1
     exec s:py."file ".s:pycolor
 endfunction "}}}
@@ -2166,8 +2166,8 @@ endfunction "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " fmt "{{{
 let s:fmt={}
-let s:fmt.HEX ='\v\c%(#|<0x|<)(\x{6})>'
-let s:fmt.HEX3='\v#(\x{3})>'
+let s:fmt.HEX ='\v\c%(#|<0x|<)(\x{6})\w@!'
+let s:fmt.HEX3='\v#(\x{3})\w@!'
 let s:fmt.RGB = '\v\c<rgb[ ]=\('
             \.'\s*(\d{1,3}),'
             \.'\s*(\d{1,3}),'
@@ -2401,15 +2401,15 @@ function! s:nametxt2hex(txt) "{{{
     let text = a:txt
     let hex_list=[]
     let startidx = 0
-    for txt in split(text,'\v%(\s+|[:;.,''"\\|/])\zs')
+    for txt in split(text,'\v%(\s+|[^0-9A-Za-z_-])\zs')
         let t_len=len(txt)
         "NOTE: we only need word which is not following or followed by '-_'
-        let rtx = matchstr(txt,'\v%(\w|[-_])@<!\w+%(\w|[-_])@!')
-        let ltx = tolower(rtx)
+        " let rtx = matchstr(txt,'\v%(\w|[-_])@<!\w+%(\w|[-_])@!')
+        let ltx = tolower(txt)
         if has_key(s:clrdW3C,ltx)
-            let p_idx = match(text,rtx,startidx)
+            let p_idx = match(text,txt,startidx)
             let hex   = s:clrdW3C[ltx]
-            call add(hex_list,[rtx,hex,'NAME',p_idx,1])
+            call add(hex_list,[txt,hex,'NAME',p_idx,1])
         endif
         let startidx += t_len
     endfor
@@ -2488,24 +2488,19 @@ function! colorv#cursor_text(action,...) "{{{
 
     let line = getline(row)
     if line =~ '^\s*$'
-        call s:error("no color in an empty line.")
+        call s:error("it's an empty line.")
         return
     else
         let list = s:txt2hex(line)
     endif
     let w_list=[]
-    if empty(list)
-        call s:error("color-text not found under line of cursor.")
-        return
-    else
-        for [str,hex,fmt,idx,alp] in list
-            if idx<=(col-1) && (idx+len(str))>=(col-1)
-                let c_hex = hex
-                let w_list = [str,hex,fmt,idx,alp]
-                break
-            endif
-        endfor
-    endif
+    for [str,hex,fmt,idx,alp] in list
+        if idx<=(col-1) && (idx+len(str))>=(col-1)
+            let c_hex = hex
+            let w_list = [str,hex,fmt,idx,alp]
+            break
+        endif
+    endfor
     if empty(w_list)
         call s:error("no color-text under cursor.")
         return
@@ -2561,20 +2556,27 @@ function! s:edit_text(action,bufinfo,...) "{{{
         return
     endif
     let [str,hex,fmt,idx,alp] = w_list
+    if a:0
+        let to_fmt = a:1
+    else
+        let to_fmt = fmt
+    endif
     if a:action =="changeTo"
         if &filetype=="vim"
-            let to_str = s:hex2txt(g:colorv.HEX,a:1,alp,"X11")
+            let to_str = s:hex2txt(g:colorv.HEX,to_fmt,alp,"X11")
         else
-            let to_str = s:hex2txt(g:colorv.HEX,a:1,alp)
-        endif
-        if empty(to_str)
-            call s:error("Choosed colortext is empty.")
-            return
+            let to_str = s:hex2txt(g:colorv.HEX,to_fmt,alp)
         endif
     else
         let to_str = s:hex2txt(g:colorv.HEX,fmt,alp)
     endif
-    if fmt =='HEX'
+    
+    if empty(to_str)
+        call s:error("No Changing as colortext is empty.")
+        return
+    endif
+
+    if to_fmt=='HEX'
         if str=~'0x'
             let to_str = "0x".to_str
         elseif str=~'#'
@@ -2610,14 +2612,14 @@ function! colorv#prev_list(list) "{{{
     "let view_alph = 1
 
     let view_name = exists("b:view_name") && b:view_name==1 ? 1 : 0
-    let view_homo = exists("b:view_homo") && b:view_homo==1 ? 1 : 0
+    let view_area = exists("b:view_area") && b:view_area==1 ? 1 : 0
     for [str,hex,fmt,idx,alpha;rest] in a:list
         if fmt == 'NAME'
             if view_name == 1
                 " NOTE: highlight name in all cases, 
                 " 'Blue',':blUe','\BLUE'
                 " except which is following or followed by '-_'
-                " and use '\w' atom as it is faster than [:alnum:] form.
+                " and use '\w' atom as it is faster? than [:alnum:] form.
                 let hi_ptn = '\v\c%(\w|[-_])@<!'.str.'%(\w|[-_])@!'
             else
                 continue
@@ -2625,16 +2627,16 @@ function! colorv#prev_list(list) "{{{
         elseif fmt == 'HEX'
             " NOTE: highlight hex in all cases, 
             " '#ff00ff' 'ff00ff' '0xff00ff' ':ffffff'
-            let hi_ptn = '\v\c%(#|<0x|<)'.hex.'>'
+            let hi_ptn = '\v\c%(#|<0x|<)'.hex.'\w@!'
         elseif fmt == 'HEX3'
-            let hi_ptn = '\v\c'.str.'>'
+            let hi_ptn = '\v\c'.str.'\w@!'
         else
             let hi_ptn = str
         endif
         
         " CV_prv_FF0000FF
         let hi_grp="CV_prv"."_".hex."FF"
-        let hi_fg = view_homo==1 ? hex : s:rlt_clr(hex)
+        let hi_fg = view_area==1 ? hex : s:rlt_clr(hex)
 
         if fmt =~ 'HEX'
             let hi_dic_name = fmt.'_'.hex
@@ -2657,15 +2659,15 @@ endfunction "}}}
 function! colorv#preview(...) "{{{
 
     let b:view_name=g:colorv_preview_name
-    let b:view_homo=g:colorv_preview_homo
+    let b:view_area=g:colorv_preview_area
 
     let view_silent=0
     if a:0 "{{{
         " NOTE:      c->clear
-        " n-> name_  b->homo   s->silence      
-        " N-> noname B->nohomo S->nosilence     
+        " n-> name_  b->area   s->silence      
+        " N-> noname B->noarea S->nosilence     
         let b:view_name = a:1=~#"N" ? 0 : a:1=~#"n" ? 1 : b:view_name
-        let b:view_homo = a:1=~#"B" ? 0 : a:1=~#"b" ? 1 : b:view_homo
+        let b:view_area = a:1=~#"B" ? 0 : a:1=~#"b" ? 1 : b:view_area
         let view_silent = a:1=~#"S" ? 0 : a:1=~#"s" ? 1 : view_silent
         if a:1 =~# "c"
             call s:clear_match("prev")
@@ -2700,12 +2702,12 @@ endfunction "}}}
 function! colorv#preview_line(...) "{{{
 
     let b:view_name=g:colorv_preview_name
-    let b:view_homo=g:colorv_preview_homo
+    let b:view_area=g:colorv_preview_area
     if a:0
-        " n-> name   b->homo   c->clear
-        " N-> noname B->nohomo C->noclear
+        " n-> name   b->area   c->clear
+        " N-> noname B->noarea C->noclear
         let b:view_name = a:1=~#"N" ? 0 : a:1=~#"n" ? 1 : b:view_name
-        let b:view_homo = a:1=~#"B" ? 0 : a:1=~#"b" ? 1 : b:view_homo
+        let b:view_area = a:1=~#"B" ? 0 : a:1=~#"b" ? 1 : b:view_area
         if a:1 =~# "c"
             call s:clear_match("prev")
         endif
@@ -3058,9 +3060,9 @@ function! colorv#init() "{{{
     call colorv#default("g:colorv_load_cache"    , 1                )
     call colorv#default("g:colorv_win_pos"       , "bot"            )
     call colorv#default("g:colorv_preview_name"  , 1                )
-    call colorv#default("g:colorv_preview_homo"  , 0                )
+    call colorv#default("g:colorv_preview_area"  , 0                )
     call colorv#default("g:colorv_gen_space"     , "hsv"            )
-    call colorv#default("g:colorv_preview_ftype" , 'css,javascript' )
+    call colorv#default("g:colorv_preview_ftype" , 'css,html,javascript' )
     call colorv#default("g:colorv_max_preview"   , 200              )
     call colorv#default("g:colorv_python_cmd"    , "python2"        )
     if !exists('g:colorv_cache_file') "{{{
@@ -3098,6 +3100,7 @@ function! colorv#init() "{{{
         for file in  split(g:colorv_preview_ftype, '\s*,\s*')
                 exec "au!  FileType ".file." call colorv#prev_aug()"
         endfor
+        au! BufEnter */doc/colorv.txt    call colorv#preview_line("b",9)
     aug END "}}}
 endfunction "}}}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

@@ -3,7 +3,7 @@
 "    File: plugin/colorv.vim
 " Summary: A vim plugin tries to make handling colors easier.
 "  Author: Rykka10 <Rykka10(at)gmail.com>
-" Last Update: 2012-04-23
+" Last Update: 2012-04-24
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -36,8 +36,8 @@ command! -nargs=*  ColorVList2       call colorv#list_win2(<f-args>)
 
 command! -nargs=0  ColorVAutoPreview call colorv#prev_aug()
 command! -nargs=0  ColorVPreview     call colorv#preview()
-command! -nargs=0  ColorVPreviewHomo call colorv#preview("bc")
-command! -nargs=0  ColorVPreviewLine call colorv#preview_line("c")
+command! -nargs=0  ColorVPreviewArea call colorv#preview("bc")
+command! -nargs=0  ColorVPreviewLine call colorv#preview_line()
 
 command! -nargs=0  ColorVPicker     call colorv#picker()
 
@@ -61,10 +61,10 @@ function! colorv#define_global() "{{{
     \{'key': ['n' ],       'cmd': ':ColorVName<CR>'},
     \{'key': ['q' ],       'cmd': ':ColorVQuit<CR>'},
     \{'key': ['pp'] ,      'cmd': ':ColorVPreview<CR>'},
-    \{'key': ['pa'] ,      'cmd': ':ColorVAutoPreview<CR>'},
+    \{'key': ['ap'] ,      'cmd': ':ColorVAutoPreview<CR>'},
     \{'key': ['pl'] ,      'cmd': ':ColorVPreviewLine<CR>'},
+    \{'key': ['pa'] ,      'cmd': ':ColorVPreviewArea<CR>'},
     \{'key': ['pc'] ,      'cmd': ':ColorVClear<CR>'},
-    \{'key': ['ph'] ,      'cmd': ':ColorVViewHomo<CR>'},
     \{'key': ['2x'] ,      'cmd': ':ColorVEditTo HEX<CR>'},
     \{'key': ['2h'] ,      'cmd': ':ColorVEditTo HSV<CR>'},
     \{'key': ['2n'] ,      'cmd': ':ColorVEditTo NAME<CR>'},

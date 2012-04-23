@@ -203,9 +203,9 @@ fmt['HSVA']=re.compile(r'''
 fmt['HEX']=re.compile(r'''
         ([#]|\b0x|\b)                     # ffffff #ffffff 0xffffff
         (?P<HEX>[0-9A-F]{6})            #group HEX in upper 'FFFFFF'
-        \b(?ix)     ''')
+        (?!\w)(?ix)     ''')
 fmt['HEX3']=re.compile(r'''
-        [#](?P<HEX3>[0-9a-fA-F]{3})\b(?ix)''')
+        [#](?P<HEX3>[0-9a-fA-F]{3})(?!\w)(?ix)''')
 
 
 # clr_lst 
@@ -214,10 +214,10 @@ clrnW3C = veval("s:clrnW3C")
 clrdX11 = veval("s:clrdX11")
 clrdW3C = veval("s:clrdW3C")
 
-def txt2namhex(txt): 
+def nametxt2hex(txt): 
     hex_list=[]
     startidx=0
-    for t in re.split(r'(\s+|[:;.,\'\"/|\\])',txt):
+    for t in re.split(r'(\s+|[^0-9a-zA-Z_-])',txt):
         ltxt = t.lower()
         if ltxt in clrdW3C:
             p_idx = txt.find(t, startidx)
@@ -303,7 +303,7 @@ def txt2hex(txt):
             else:
                 continue
             hex_list.append([obj.group(),HEX,fm,obj.start(),alp])
-    nhex_list = txt2namhex(txt)
+    nhex_list = nametxt2hex(txt)
     return hex_list + nhex_list 
 
 def nam2hex(name,*rule): 

@@ -6,7 +6,8 @@
               _  /    _  __ \_  /_  __ \_  ___/_ | / /                ~
               / /___  / /_/ /  / / /_/ /  /   __ |/ /                 ~
               \____/  \____//_/  \____//_/    _____/                  ~
-                                                                      ~
+            #f00#f70#ff0#bf0#7f0#0f0#0f7#0ff#07f#00f#70f              ~
+
                              Ver:2.5                                  ~
                                 
 ==============================================================================
@@ -258,14 +259,16 @@ will change all color-text in current buf after closing the ColorV window.
                                                     *colorv-mapping-preview*
     <leader>cpp    |:ColorVPreview|
     <leader>cpl    |:ColorVPreviewLine|
-    <leader>cpb    |:ColorVPreviewHomo|
+    <leader>cpa    |:ColorVPreviewArea|
     <leader>cpc    |:ColorVClear|
 
-    options: |g:colorv_preview_name|  |g:colorv_preview_homo|
-             |g:colorv_max_preview|
+    <leader>cap    |:ColorVAutoPreview| auto preview current buffer.
 
     You can set |g:colorv_preview_ftype| to automatically preview
-    some filetypes. Default is 'css,html'
+    filetypes.
+
+    options: |g:colorv_preview_name|  |g:colorv_preview_area|
+             |g:colorv_max_preview|
 ------------------------------------------------------------------------------
                                                *colorv-mapping-buffer*
 
@@ -467,18 +470,18 @@ will change all color-text in current buf after closing the ColorV window.
 
                             NOTE: Must have Python support. 
 
-                                                *g:colorv_preview_homo*
+                                                *g:colorv_preview_area*
                                                 (default=0)
-    g:colorv_preview_homo   Always Previewing color-text with same fg/bg 
+    g:colorv_preview_area   Previewing color-text with same fg/bg 
                             colors.
 
                                                 *g:colorv_preview_ftype*
-                                                (default='css,html' ))
+                                            (default='css,html,javascript')
     g:colorv_preview_ftype  Auto Preview color-text in defined filetypes.
                             will auto update preview after write file.
 
                                                 *g:colorv_max_preview*
-                                                (default=200 ))
+                                                (default=200 )
     g:colorv_max_preview    max line when preview color-text .
 
 
@@ -589,12 +592,15 @@ will change all color-text in current buf after closing the ColorV window.
  11. CHANGELOG                                 *colorv-changelog* 
 
 " 2.5.6~
+" FIXED: 2012-04-24 fix nametxt2hex() split ptn. use [^0-9A-Za-z-_].
+" FIXED: 2012-04-24 fix autopreview commmand
+" FIXED: 2012-04-24 fix no changing if to_str is empty.
 "  DONE: 2012-04-23 change all variable prefix to g:colorv.
 "  DONE: 2012-04-23 seperate python file. support py3. fix issue09.
 "  DONE: 2012-04-23 Add del mark
-"  DONE: 2012-04-20 fix s:cursor_text when no color
+" FIXED: 2012-04-20 fix s:cursor_text when no color
 "  DONE: 2012-04-20 add colorpicker.c
-"  DONE: 2012-04-18 fix cmyk ,using cmyk(100,90,80,30) now
+" FIXED: 2012-04-18 fix cmyk ,using cmyk(100,90,80,30) now
 "  DONE: 2012-04-18 merge list.vim to imprv spd
 "  DONE: 2012-04-18 rewrite TEXT PREV , tuned CORE.
     
