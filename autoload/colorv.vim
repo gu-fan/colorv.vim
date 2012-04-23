@@ -3097,6 +3097,7 @@ function! colorv#init() "{{{
     endif "}}}
 
     aug colorv#preview_ftpye "{{{
+        au!
         for file in  split(g:colorv_preview_ftype, '\s*,\s*')
                 exec "au!  FileType ".file." call colorv#prev_aug()"
         endfor
