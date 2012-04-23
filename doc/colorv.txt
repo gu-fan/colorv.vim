@@ -179,12 +179,18 @@ will change all color-text in current buf after closing the ColorV window.
                                                     *:ColorVPicker*
     |:ColorVPicker|     Open a gtk colorpicker to pick colors.
                       default use Python2 version.
+                      If you have error with python version.
+                      it will try C version. 
+                      else it will print out the error.
+
+                      Python2 version colorpicker
                       requires |g:colorv_python_cmd| in $PATH and
                       python installed with pygtk-2.0 package.
-
-                      Or |:make| C version colorpicker 
+                      
+                      C version colorpicker needs  |:make|
                       with makefile in 'autoload/colorv/Makefile'
                       gtk+-2.0 lib is needed.
+
 
                                                     *:ColoVPreview*
     |:ColorVPreview|    preview color texts in current buffer.
