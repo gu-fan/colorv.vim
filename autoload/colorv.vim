@@ -149,7 +149,7 @@ let s:clrf=[   ['FF0000', '00FF00', '0000FF', 'Uryyb Jbeyq']
             \, ['009246', 'F8F808', 'DD171D', 'Frartny~']
             \]
 " dict "{{{
-" finding in dict is much faster than list
+" searching in dict is much faster than list
 let s:clrd ={
 \  'aliceblue'           : 'F0F8FF', 'antiquewhite'        : 'FAEBD7'
 \, 'aqua'                : '00FFFF', 'aquamarine'          : '7FFFD4'
