@@ -35,7 +35,7 @@
    
     For example:
     When editing text like '#9370D8' or 'LightSlateGray' or 'rgb(216,112,147)'
-    We want to view it's actual color, and pick the actual color we want to get
+    We want to view it's actual color, and pick the actual color we want.
 
     ColorV helps you doing this.
 
