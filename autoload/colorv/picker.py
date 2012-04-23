@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 
+from __future__ import print_function
 if __name__ == "__main__":
     import sys
     if len(sys.argv)==2:
@@ -25,6 +26,6 @@ if __name__ == "__main__":
                         map(lambda x: int(round(float(x))),
                         [clr.red/257,clr.green/257,clr.blue/257]))
                 c_hex = '%02X%02X%02X' % (r,g,b)
-                print(c_hex)
+                print(c_hex,end='')
 
             cdlg.destroy()

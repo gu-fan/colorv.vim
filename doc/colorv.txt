@@ -114,8 +114,6 @@
                                                             *colorv-picker*
     A GUI colorpicker.~
         <leader>cd or |:ColorVPicker|
-        (py version: |g:colorv_python_cmd| in $PATH with pygtk2.0 lib.)
-        (C  version: |:make| with Makefile in autoload/colorv/Makefile)
 
             
 ------------------------------------------------------------------------------
@@ -126,11 +124,9 @@
            Then it's 3~5 times slower when previewing files.
 
     2. Solve Bugs~
-    NOTE   First get the latest ColorV version.
-
-           Then get latest vim version
-           Then check if your vim compiled with +python or +python3
-
+    NOTE   Get the latest ColorV version.
+           Get the latest vim version.
+           Check if your vim compiled with +python or +python3.
            If got errors with python. 
            use 'let g:colorv_no_python=1' to stop using python.
 

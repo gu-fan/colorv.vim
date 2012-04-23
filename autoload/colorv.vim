@@ -1562,11 +1562,6 @@ function! colorv#exit() "{{{
 endfunction "}}}
 
 function! colorv#picker() "{{{
-    "terminal error?
-    if !has("gui_running")
-        call s:error("no GUI picker in Terminal.")
-        return
-    endif
     let color=""
     call s:warning("Select color and press OK to Return it to Vim.")
     try 
@@ -1574,7 +1569,6 @@ function! colorv#picker() "{{{
         if !empty(color) && color !~ '\x\{6}'
             throw 'Error with python picker'
         endif
-        let color = substitute(color,'\n','','')
     catch
         let color = system(s:cpicker." ".g:colorv.HEX)
     finally
@@ -2728,6 +2722,7 @@ function! colorv#prev_aug() "{{{
     aug colorv#prev_aug
         au!  BufWinEnter  <buffer> call colorv#preview()
         au!  BufWritePost <buffer> call colorv#preview()
+        au!  InsertLeave  <buffer> call colorv#preview_line()
     aug END
 endfunction "}}}
 "LIST:"{{{1
