@@ -1673,6 +1673,7 @@ function! s:float(x) "{{{
         return a:x+0.0
     endif
 endfunction "}}}
+let s:seed = localtime() * (localtime()+101) * 2207
 function! colorv#random(num,...) "{{{
     if a:0 
         let min = a:num
@@ -1686,9 +1687,6 @@ function! colorv#random(num,...) "{{{
         exe s:py . ' import vim'
         exe s:py . ' vim.command("return "+str(random.randint(int(veval("min")),int(veval("max")))))'
     else
-        if !exists("s:seed")
-            let s:seed = localtime() * (localtime()+101) * 2207
-        endif
         let s:seed = s:fmod((1097*s:seed+2713),10457)
         return float2nr(s:fmod(abs(s:seed),max-min+1) + min)
     endif
