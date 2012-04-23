@@ -1,4 +1,4 @@
-*colorv.txt* *colorv*         ColorV         handling colors easier
+*colorv.txt*    Easier color handling.
 
 
               _________     ______            ___    __               ~
