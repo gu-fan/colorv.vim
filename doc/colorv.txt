@@ -575,6 +575,16 @@ will change all color-text in current buf after closing the ColorV window.
 ==============================================================================
  11. CHANGELOG                                 *colorv-changelog* 
 
+" 2.5.6~
+"  DONE: 2012-04-23 seperate python file. fix issue09.
+"  DONE: 2012-04-23 Add del mark
+"  DONE: 2012-04-20 fix s:cursor_text when no color
+"  DONE: 2012-04-20 add colorpicker.c
+"  DONE: 2012-04-18 fix cmyk ,using cmyk(100,90,80,30) now
+"  DONE: 2012-04-18 merge list.vim to imprv spd
+"  DONE: 2012-04-18 rewrite TEXT PREV , tuned CORE.
+    
+
 " 2.5.5 devel~
 "  DONE: 2012-04-10 Add :ColorVList2
 "  DONE: 2012-04-06 rmv g:ColorV_win_space

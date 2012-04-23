@@ -3075,13 +3075,14 @@ function! colorv#init() "{{{
     if has("python") "{{{
         let g:ColorV_has_python = 2
         let s:py="py"
+        call s:py_core_load()
     elseif has("python3")
         let g:ColorV_has_python = 3
         let s:py="py3"
+        call s:py_core_load()
     else
         let g:ColorV_has_python = 0
     endif "}}}
-    call s:py_core_load()
 
     if g:ColorV_load_cache==1 "{{{
         call colorv#load_cache()
