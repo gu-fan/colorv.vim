@@ -495,8 +495,9 @@ will change all color-text in current buf after closing the ColorV window.
                                                 *g:colorv_python_cmd*
                                                 (default="python2")
     g:colorv_python_cmd 
-                            external command  of python2 in your $PATH. 
-                            for executing python version colorpicker.
+                            external shell command for python2.
+                            should be in your $PATH. 
+                            use for executing python version colorpicker.
 
                                                 *g:colorv_cache_file*
                                             (default='$HOME/.vim_colorv_cache')
