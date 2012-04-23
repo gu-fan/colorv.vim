@@ -2027,7 +2027,7 @@ function! s:set_in_pos(...) "{{{
             call s:echo("change generating color space to 'yiq'")
         elseif char =~ 'x'
             call colorv#exit()
-        elseif char =~ '[Mm-]'
+        elseif char =~ '[Ss-]'
             call s:size_toggle()
             call s:echo("window size: ".s:size)
         endif 
