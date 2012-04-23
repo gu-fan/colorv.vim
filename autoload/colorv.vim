@@ -9,8 +9,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
-" if version < 700 || exists("g:loaded_ColorV") | finish
-" else             | let g:loaded_ColorV = 1  | endif
+if version < 700 || exists("g:loaded_ColorV") | finish
+else             | let g:loaded_ColorV = 1  | endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "GVAR: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -313,9 +313,9 @@ let s:pycolor = s:path."colorv/colorv.py"
 let s:pypicker = s:path."colorv/picker.py"
 let s:cpicker = s:path."colorv/colorpicker"
 function! s:py_core_load() "{{{
-    " if exists("s:py_core_loaded")
-    "     return
-    " endif
+    if exists("s:py_core_loaded")
+        return
+    endif
     let s:py_core_loaded=1
     exec s:py."file ".s:pycolor
 endfunction "}}}
