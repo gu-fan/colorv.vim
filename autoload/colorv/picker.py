@@ -10,7 +10,7 @@ if __name__ == "__main__":
             pygtk.require('2.0')
         except ImportError:
             print("python gtk module import error")
-            sys.exit()
+            sys.exit(2)
 
         if gtk:
             cdlg = gtk.ColorSelectionDialog("[ColorV] Python colorpicker")
