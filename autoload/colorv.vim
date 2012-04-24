@@ -9,8 +9,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
-" if version < 700 || exists("g:loaded_ColorV") | finish
-" else             | let g:loaded_ColorV = 1  | endif
+if version < 700 || exists("g:loaded_ColorV") | finish
+else             | let g:loaded_ColorV = 1  | endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "GVAR: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
