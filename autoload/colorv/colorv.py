@@ -385,7 +385,6 @@ def draw_pallete_hex(hex):
     pal_H,pal_W = int(veval("s:pal_H")),int(veval("s:pal_W"))
     draw_palette(h,pal_H,pal_W)
 
-
 def rlt_clr(hex1):
     y,i,q=rgb2yiq(hex2rgb(hex1))
 

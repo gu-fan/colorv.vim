@@ -375,7 +375,7 @@ will change all color-text in current buf after closing the ColorV window.
 ------------------------------------------------------------------------------
                                                *colorv-colors-generate*
     Types for generating color list.~
-    They are used for generating colors.
+    They are used for generating color harmonies.
     There are following type currently:
 
     Hue/Saturation/Value        Generate by H/S/V  h/s/v+{step}

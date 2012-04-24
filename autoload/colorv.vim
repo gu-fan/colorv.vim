@@ -9,8 +9,8 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
-if version < 700 || exists("g:loaded_ColorV") | finish
-else             | let g:loaded_ColorV = 1  | endif
+" if version < 700 || exists("g:loaded_ColorV") | finish
+" else             | let g:loaded_ColorV = 1  | endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "GVAR: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -540,53 +540,56 @@ function! colorv#yiq2hex(yiq) "{{{
     return colorv#rgb2hex(colorv#yiq2rgb(a:yiq))
 endfunction "}}}
 
-function! colorv#rgb2lab(rgb) "{{{
+" http://www.fho-emden.de/~hoffmann/ciexyz29082000.pdf
+" http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+" sRGB D65(noon light) 2ᵒ
+" xr=95.047 yr=100 zr=108.883
+function! colorv#rgb2xyz(rgb) "{{{
     let [r,g,b]= a:rgb
     let r= r>255 ? 255 : r<0 ? 0 : r
     let g= g>255 ? 255 : g<0 ? 0 : g
     let b= b>255 ? 255 : b<0 ? 0 : b
-
     let [r,g,b]=[r/255.0,g/255.0,b/255.0]
-    if r > 0.04045
-      let r = pow(((r + 0.055) / 1.055) , 2.4)
-    else
-      let r = r / 12.92
-    endif
-    if g > 0.04045
-      let g = pow(((g + 0.055) / 1.055) , 2.4)
-    else
-      let g = g / 12.92
-    endif
-    if b > 0.04045
-      let b = pow(((b + 0.055) / 1.055) , 2.4)
-    else
-      let b = b / 12.92
-    endif
-    
-    let X = r * 41.24 + g * 35.76 + b * 18.05
-    let Y = r * 21.26 + g * 71.52 + b * 07.22
-    let Z = r * 01.93 + g * 11.92 + b * 95.05
-
-    " XYZ to Lab
-    " http://www.easyrgb.com/index.php?X=MATH&H=07#text7
-    let X = X/95.047
-    let Y = Y/100.000
+    let X = 0.4124564*r + 0.3575761*g + 0.1804375*b
+    let Y = 0.2126729*r + 0.7151522*g + 0.0721750*b
+    let Z = 0.0193339*r + 0.1191920*g + 0.9503041*b
+    let X = X*100.0
+    let Y = Y*100.0
+    let Z = Z*100.0
+    return [X,Y,Z]
+endfunction "}}}
+function! colorv#xyz2rgb(xyz) "{{{
+    let [x,y,z]= a:xyz
+    let x = x/100.0
+    let y = y/100.0
+    let z = z/100.0
+    let R = 3.2404542*x +-1.5371385*y +-0.4985314*z
+    let G =-0.9692660*x + 1.8760108*y + 0.0415560*z
+    let B = 0.0556434*x +-0.2040259*y + 1.0572252*z
+    return [R*255,G*255,B*255]
+endfunction "}}}
+" CIELAB
+" http://www.fho-emden.de/~hoffmann/cielab03022003.pdf
+" http://www.easyrgb.com/index.php?X=MATH&H=07#text7
+function! colorv#xyz2lab(xyz) "{{{
+    let [X,Y,Z] = a:xyz
+    let X = X/ 95.047
+    let Y = Y/100.0
     let Z = Z/108.883
-
     if (X > 0.008856)
       let X = pow(X ,(0.3333333))
     else
-      let X = (7.787 * X) + (16 / 116.0)
+      let X = (7.787 * X) + (0.1379310)
     endif
     if (Y > 0.008856)
       let Y = pow(Y ,(0.3333333))
     else
-      let Y = (7.787 * Y) + (16 / 116.0)
+      let Y = (7.787 * Y) + (0.1379310)
     endif
     if (Z > 0.008856)
       let Z = pow(Z ,(0.3333333))
     else
-      let Z = (7.787 * Z) + (16 / 116.0)
+      let Z = (7.787 * Z) + (0.1379310)
     endif
 
     let L = (116 * Y) - 16
@@ -594,8 +597,41 @@ function! colorv#rgb2lab(rgb) "{{{
     let b = 200 * (Y - Z)
 
     return [L, a, b]
-
 endfunction "}}}
+function! colorv#lab2xyz(lab) "{{{
+    let [L,a,b] = a:lab
+    let Y = (L+16)/116.0
+    let X = a/500.0 + Y
+    let Z = Y-b/200.0
+
+    if pow(X,3) > 0.008856
+        let X = pow(X,3)
+    else
+        let X = (116*X-16)/903.3
+    endif
+
+    if pow(Y,3) > 0.008856
+        let Y = pow(Y,3)
+    else
+        let Y = (116*Y-16)/903.3
+    endif
+    if pow(Z,3) > 0.008856
+        let Z = pow(Z,3)
+    else
+        let Z = (116*Z-16)/903.3
+    endif
+    let X = X* 95.047
+    let Y = Y*100.0
+    let Z = Z*108.883
+    return [X,Y,Z]
+endfunction "}}}
+function! colorv#rgb2lab(rgb) "{{{
+    return colorv#xyz2lab(colorv#rgb2xyz(a:rgb))
+endfunction "}}}
+function! colorv#lab2rgb(lab) "{{{
+    return colorv#xyz2rgb(colorv#lab2xyz(a:lab))
+endfunction "}}}
+
 
 "CMYK (Cyan,Magenta,Yellow and Black)
 function! colorv#rgb2cmyk(rgb) "{{{
@@ -1644,7 +1680,19 @@ endfunction "}}}
 function! colorv#list_win2(...) "{{{
     let hex1 = a:0 ? a:1 : s:his_color0
     let hex2 = a:0>1 ? a:2 : s:his_color1
-    let list = s:list_winlist2(hex1,hex2)
+    let list=[]
+    if g:colorv_gen_space ==? "yiq"
+        let genlist=colorv#list_yiq_gen2(hex1,hex2)
+        call add(list,['TurtTo YIQ ','======='])
+    else
+        let genlist=colorv#list_gen2(hex1,hex2)
+        call add(list,['TurtTo List','======='])
+    endif
+    let i=0
+    for hex in genlist
+        call add(list,["TurnTo".i,hex])
+        let i+=1
+    endfor
     call colorv#list_win(list)
     call s:get_buf_win(s:ColorV.listname)
 endfunction "}}}
@@ -3000,20 +3048,28 @@ function! colorv#list_gen2(hex1,hex2) "{{{
     endfor
     return hex_list
 endfunction "}}}
-function! s:list_winlist2(hex1,hex2) "{{{
-    let hex1=a:hex1
-    let hex2=a:hex2
-    let genlist=colorv#list_gen2(hex1,hex2)
+function! colorv#list_yiq_gen2(hex1,hex2) "{{{
+    let hex0=s:fmt_hex(a:hex1)
+    let HEX0=s:fmt_hex(a:hex2)
+    let hex_list=[]
+    let nums=20
+    let [y0,i0,q0] = colorv#hex2yiq(hex0)
+    let [Y0,I0,Q0] = colorv#hex2yiq(HEX0)
+    let [yd,id,qd] = [Y0-y0,I0-i0,Q0-q0]
+    let ystep = (yd+0.0) /(nums-1)
+    let istep = (id+0.0) /(nums-1)
+    let qstep = (qd+0.0) /(nums-1)
+    call add(hex_list,hex0)
+    for i in range(1,nums-1)
+        
+        let y{i}  = y{i-1} + ystep
+        let i{i}  = i{i-1} + istep
+        let q{i}  = q{i-1} + qstep
 
-    let list=[]
-    call add(list,['TurtTo List','======='])
-    let i=0
-    for hex in genlist
-        call add(list,["TurnTo".i,hex])
-        let i+=1
+        let hex{i}=colorv#yiq2hex([y{i},i{i},q{i}])
+        call add(hex_list,hex{i})
     endfor
-
-    return list
+    return hex_list
 endfunction "}}}
 "INIT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
