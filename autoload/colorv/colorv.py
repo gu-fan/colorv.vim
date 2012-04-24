@@ -389,24 +389,24 @@ def draw_pallete_hex(hex):
 def rlt_clr(hex1):
     y,i,q=rgb2yiq(hex2rgb(hex1))
 
-    if   y>=80: y = 35
-    elif y>=70: y = 30
-    elif y>=60: y = 20
-    elif y>=50: y = 10
-    elif y>=40: y = 0
-    elif y>=30: y = 85
-    elif y>=20: y = 70
-    else:       y = 60
+    if   y>=80: y-=60
+    elif y>=40: y-=40
+    elif y>=20: y+=40
+    else:       y+=55
 
-    if   i >= 35: i += -20
-    elif i >= 10: i += -5
+    if   i >= 55: i -= 30
+    elif i >= 35: i -= 20
+    elif i >= 10: i -= 5
     elif i >=-10: i += 0
     elif i >=-35: i += 5
-    else:         i += 20
+    elif i >=-55: i += 20
+    else:         i += 30
 
-    if   q >= 35: q += -20
-    elif q >= 10: q += -5
+    if   q >= 55: q -= 30
+    elif q >= 35: q -= 20
+    elif q >= 10: q -= 5
     elif q >=-10: q += 0
     elif q >=-35: q += 5
-    else:         q += 20
+    elif q >=-55: q += 20
+    else:         q += 30
     return rgb2hex(yiq2rgb([y,i,q]))

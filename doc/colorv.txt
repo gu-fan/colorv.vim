@@ -411,26 +411,26 @@ will change all color-text in current buf after closing the ColorV window.
     Use |:ColorVPreview| (<leader>cpp) to have an overview.
 
         HSV                YIQ (Blue)          YIQ (Yellow)
-        #4000FF            #2C00EB             #D3FF14 
-        #8000FF            #5A00DB             #A7FF28
-        #BF00FF            #8600C7             #79FF38
-        #FF00FF            #B300B3             #4CFF4C
-        #FF00BF            #B90079             #46FF86
-        #FF0080            #C10043             #3FFFC0
-        #FF0040            #C80009             #37FFF6
-        #FF0000            #CF0000             #30FFFF
-        #FF4000            #A90000             #56FFFF
-        #FF8000            #830400             #7CFBFF
-        #FFBF00            #5E1E00             #A1E1FF
-        #FFFF00            #383800             #C7C7FF
-        #BFFF00            #0C4B00             #F3B4FF
-        #80FF00            #005E00             #FFA0FF
+        #0000FF            #0000FF             #FFFF00 
+        #4000FF            #2C00E9             #D3FF16
+        #7F00FF            #5A00D8             #A5FF27
+        #BF00FF            #8400C6             #7BFF39
+        #FF00FF            #B000B2             #4FFF4D
+        #FF00BF            #BA0076             #45FF89
+        #FF007F            #C20041             #40FFBC
+        #FF0040            #C90007             #36FFF8
+        #FF0000            #D00000             #2FFFFF
+        #FF4000            #AA0000             #55FFFF
+        #FF7F00            #840400             #7BFBFF
+        #FFBF00            #5F1F00             #A0E0FF
+        #FFFF00            #393900             #C6C6FF
+        #BFFF00            #0C4C00             #F3B3FF
+        #7FFF00            #006000             #FF9FFF
         #40FF00            #007200             #FF8DFF
         #00FF00            #008500             #FF7AFF
-        #00FF40            #007D00             #FF82FF
-        #00FF80            #007600             #FF88FF
-        #00FFBF            #00702F             #FF8FD0
-        #00FFFF            #006969             #FF9696
+        #00FF40            #007E00             #FF81FF
+        #00FF7F            #007700             #FF87FF
+        #00FFBF            #007031             #FF8FCE
     
 ==============================================================================
  7. OPTIONS                                    *colorv-options*

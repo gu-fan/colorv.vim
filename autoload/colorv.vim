@@ -1790,28 +1790,28 @@ function! s:rlt_clr(hex) "{{{
         let hex=s:fmt_hex(a:hex)
         let [y,i,q]=colorv#hex2yiq(hex)
 
-        if     y>=80    | let y = 35
-        elseif y>=70    | let y = 30
-        elseif y>=60    | let y = 20
-        elseif y>=50    | let y = 10
-        elseif y>=40    | let y = 0
-        elseif y>=30    | let y = 85
-        elseif y>=20    | let y = 70
-        else            | let y = 60
+        if     y>=80    | let y -= 60
+        elseif y>=40    | let y -= 40
+        elseif y>=20    | let y += 40
+        else            | let y += 55
         endif
 
-        if     i >= 35  | let i += -20
-        elseif i >= 10  | let i += -5
+        if     i >= 55  | let i -= 30
+        elseif i >= 35  | let i -= 20
+        elseif i >= 10  | let i -= 5
         elseif i >=-10  | let i += 0
         elseif i >=-35  | let i += 5
-        else            | let i += 20
+        elseif i >=-55  | let i += 20
+        else            | let i += 30
         endif
 
-        if     q >= 35  | let q += -20
-        elseif q >= 10  | let q += -5
+        if     q >= 55  | let q -= 30
+        elseif q >= 35  | let q -= 20
+        elseif q >= 10  | let q -= 5
         elseif q >=-10  | let q += 0
         elseif q >=-35  | let q += 5
-        else            | let q += 20
+        elseif q >=-55  | let q += 20
+        else            | let q += 30
         endif
 
         return colorv#yiq2hex([y,i,q])
