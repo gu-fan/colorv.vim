@@ -1022,12 +1022,12 @@ function! s:hi_color(hl_grp,hl_fg,hl_bg,hl_fm) "{{{
 
     let hl_fg = empty(hl_fg) ? "" : " ".s:mode."fg=".hl_fg
     let hl_bg = empty(hl_bg) ? "" : " ".s:mode."bg=".hl_bg
-    let hl_fm = empty(hl_fm) ? "" : " ".s:mode."="  .hl_fm
+    let hl_fm = hl_fm=~'^\s*$' ? "" : " ".s:mode."="  .hl_fm
 
     try
         exec "hi ".hl_grp.hl_fg.hl_bg.hl_fm
     catch /^Vim\%((\a\+)\)\=:E/	 
-        call s:debug("hi ".v:exception.hl_grp.hl_fg.hl_bg.hl_fm)
+        call s:debug(v:exception."    hi ".hl_grp.hl_fg.hl_bg.hl_fm)
     endtry
 
 endfunction "}}}
@@ -1279,6 +1279,7 @@ function! s:clear_match(c) "{{{
             exe "hi clear ".key
             call matchdelete(var)
         catch
+            call s:debug("clear ".a:c. " " . v:exception)
         endtry
     endfor
     let s:{a:c}_dict={}
@@ -2733,6 +2734,7 @@ function! colorv#clear_prev() "{{{
             try
                 call matchdelete(var)
             catch
+                call s:debug("prev ptn:".v:exception)
             endtry
         endfor
     endif
@@ -2741,14 +2743,18 @@ function! colorv#clear_prev() "{{{
     if has_key(s:pbuf_dict,bufnr)
         for [grp,val] in items(s:pgrp_dict)
             " NOTE: clear if we have the buf in the grp.
-            if exists("val.".bufnr)
-                if len(val)==1
-                    exe "hi clear ".grp
-                    call remove(s:pgrp_dict,grp)
-                else
-                    call remove(s:pgrp_dict[grp],bufnr)
+            try
+                if exists("val.".bufnr)
+                    if len(val)==1
+                        exe "hi clear ".grp
+                        call remove(s:pgrp_dict,grp)
+                    else
+                        call remove(s:pgrp_dict[grp],bufnr)
+                    endif
                 endif
-            endif
+            catch
+                call s:debug("prev grp:".v:exception)
+            endtry
         endfor
         call remove(s:pbuf_dict,bufnr)
     endif
