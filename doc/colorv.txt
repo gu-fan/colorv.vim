@@ -594,33 +594,34 @@ will change all color-text in current buf after closing the ColorV window.
  11. CHANGELOG                                 *colorv-changelog* 
 
 " 2.5.6~
-" FIXED: 2012-04-24 fix nametxt2hex() split ptn. use [^0-9A-Za-z-_].
-" FIXED: 2012-04-24 fix autopreview/previewarea commmand
-" FIXED: 2012-04-24 fix no changing if to_str is empty.
-"  DONE: 2012-04-23 change all variable prefix to g:colorv.
-"  DONE: 2012-04-23 seperate python file. support py3. fix issue09.
-"  DONE: 2012-04-23 Add del mark
-" FIXED: 2012-04-20 fix s:cursor_text when no color
-"  DONE: 2012-04-20 add colorpicker.c
-" FIXED: 2012-04-18 fix cmyk ,using cmyk(100,90,80,30) now
-"  DONE: 2012-04-18 merge list.vim to imprv spd
-"  DONE: 2012-04-18 rewrite TEXT PREV , tuned CORE.
+"FIXED: 2012-04-25 fix prev_list() ,clear hl-prev as expected.
+"FIXED: 2012-04-24 fix nametxt2hex() split ptn. use [^0-9A-Za-z-_].
+"FIXED: 2012-04-24 fix autopreview/previewarea commmand
+"FIXED: 2012-04-24 fix no changing if to_str is empty.
+" DONE: 2012-04-23 change all variable prefix to g:colorv.
+" DONE: 2012-04-23 seperate python file. support py3. fix issue09.
+" DONE: 2012-04-23 Add del mark
+"FIXED: 2012-04-20 fix s:cursor_text when no color
+" DONE: 2012-04-20 add colorpicker.c
+"FIXED: 2012-04-18 fix cmyk ,using cmyk(100,90,80,30) now
+" DONE: 2012-04-18 merge list.vim to imprv spd
+" DONE: 2012-04-18 rewrite TEXT PREV , tuned CORE.
     
 
 " 2.5.5 devel~
-"  DONE: 2012-04-10 Add :ColorVList2
-"  DONE: 2012-04-06 rmv g:colorv_win_space
-"  DONE: 2012-04-06 mak the max height -1. now 8.
-"  DONE: 2012-04-06 highlight whole EDIT line.
-"  DONE: 2012-04-06 s:rlt_clr() now looks better.
-"  DONE: 2012-04-06 :ColorVList now mapping to 'g<xx>' again.
-"  DONE: 2012-04-06 refactoring functions: CORE,PYTH,DRAW,PREV
-"  DONE: 2012-04-06 use lookup dict to make pallete drawing faster.
-"  DONE: 2012-04-05 new hex2term functions
-"  DONE: 2012-04-04 add colorv#hexadd()
-"  DONE: 2012-03-19 arranging commands and  mappings. 
-"                   now generate colors with 'l' mappings.
-"  DONE: 2012-03-19 add g:colorv_preview_ftype and g:colorv_max_preview.
+" DONE: 2012-04-10 Add :ColorVList2
+" DONE: 2012-04-06 rmv g:colorv_win_space
+" DONE: 2012-04-06 mak the max height -1. now 8.
+" DONE: 2012-04-06 highlight whole EDIT line.
+" DONE: 2012-04-06 s:rlt_clr() now looks better.
+" DONE: 2012-04-06 :ColorVList now mapping to 'g<xx>' again.
+" DONE: 2012-04-06 refactoring functions: CORE,PYTH,DRAW,PREV
+" DONE: 2012-04-06 use lookup dict to make pallete drawing faster.
+" DONE: 2012-04-05 new hex2term functions
+" DONE: 2012-04-04 add colorv#hexadd()
+" DONE: 2012-03-19 arranging commands and  mappings. 
+"                  now generate colors with 'l' mappings.
+" DONE: 2012-03-19 add g:colorv_preview_ftype and g:colorv_max_preview.
 
 
 " 2.5.4 Spring Festival~

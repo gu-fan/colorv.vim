@@ -1284,7 +1284,6 @@ function! s:clear_match(c) "{{{
     let s:{a:c}_dict={}
 endfunction "}}}
 
-
 function! colorv#clear_all() "{{{
     call s:clear_match("rect")
     call s:clear_match("hsv")
@@ -2667,16 +2666,16 @@ function! s:prev_list(list) "{{{
         if fmt == 'NAME'
             if b:view_name == 1
                 " NOTE: highlight name in all cases, 
-                " 'Blue',':blUe','\BLUE'
                 " except which is following or followed by '-_'
-                " and use '\w' atom as it is faster? than [:alnum:] form.
+                " yes: ":BluE\blue" no: "_blue\-blue"
+                " use '\w' atom make this ptn 10% faster than [:alnum:] form.
                 let hi_ptn = '\v\c%(\w|[-_])@<!'.str.'%(\w|[-_])@!'
             else
                 continue
             endif
         elseif fmt == 'HEX'
             " NOTE: highlight hex in all cases, 
-            " '#ff00ff' 'ff00ff' '0xff00ff' ':ffffff'
+            " '#ffc0ff' 'ff00cf' '0xfc00ff' '-ffffff'
             let hi_ptn = '\v\c%(#|<0x|<)'.hex.'\w@!'
         elseif fmt == 'HEX3'
             let hi_ptn = '\v\c'.str.'\w@!'
@@ -2685,28 +2684,20 @@ function! s:prev_list(list) "{{{
             let hi_ptn = str
         endif
         
-        " CV_prv_FF0000FF
+        " cv_prv_0_FF0000FF
         let hi_grp="cv_prv_".b:view_area."_".hex."FF"
         let hi_fg = b:view_area==1 ? hex : s:rlt_clr(hex)
 
-        "FIXED: 2012-04-25 we should clear the hl-grp, 
-        " and when we clear the grp, 
-        " we only clear the hl used only by this buf.
-        " add num as one more buf use it.
-        "FIXED: 2012-04-25 the num may be added multi times
-        " when multi colors in buf.
-        " clear the group when no more buf use it..
-        " NOTE: no duplicated hl-group
+        " NOTE: we should clear the hl-grp
+        " and only clear the hl-grp not used anymore.
+        " s:pgrp_dict: {cv_prv_xx: {1:1,2:1},cv_prv_xx:{1:1,3:1}...}
+
+        " we dont' have this grp.
         if !has_key(s:pgrp_dict,hi_grp)
             call s:hi_color(hi_grp,hi_fg,hex," ")
-            " so we have this grp in this buf
             let s:pgrp_dict[hi_grp] = { b:view_bufn : 1}
-            " if no grp, add buf and grp
         else
-            "FIXED: 2012-04-25 if has grp, and no bufnr ,grp+1
-            " but here the bufnr may be defined by previous grp in buf.
-            " NOTE: check if we already have grp in the buf
-            " if not, add the buf into this grp.
+            " we don't have this grp in this buf.
             if !has_key(s:pgrp_dict[hi_grp],b:view_bufn)
                 " NOTE: we should use '[]' to access key with b: , not '.'
                 let s:pgrp_dict[hi_grp][b:view_bufn] = 1
@@ -2808,7 +2799,7 @@ function! colorv#preview(...) "{{{
 
     if !view_silent
         call s:echo( (end-begin)." lines previewed."
-                \."Takes ". string(s:time() - o_time). " sec." )
+                \." Takes ". string(s:time() - o_time). " sec." )
     endif
 endfunction "}}}
 function! colorv#preview_line(...) "{{{
