@@ -30,7 +30,7 @@ command! -nargs=0  ColorVEditAll     call colorv#cursor_text("editAll")
 command! -nargs=1  ColorVEditTo      call colorv#cursor_text("changeTo",<q-args>)
 
 command! -nargs=0  ColorVName        call colorv#list_win()
-command! -nargs=+  ColorVList        call colorv#cursor_text(3,<f-args>)
+command! -nargs=+  ColorVList        call colorv#cursor_text("list",<f-args>)
 command! -nargs=*  ColorVList2       call colorv#list_win2(<f-args>)
 
 command! -nargs=0  ColorVAutoPreview   call colorv#prev_aug()

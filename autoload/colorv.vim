@@ -2571,9 +2571,9 @@ function! colorv#cursor_text(action,...) "{{{
                     \,[a:action,bufinfo,a:1]])
         call s:echo("Change format of color-text under cursor to ".a:1)
     elseif a:action == "list"
-        if a:0
-            let [type,nums,step] = a:1
-        endif
+        let type = exists("a:1") ? a:1 : ""
+        let nums = exists("a:2") ? a:2 : ""
+        let step = exists("a:3") ? a:3 : ""
         call colorv#list_gen_win(hex,type,nums,step)
     else 
         call s:error("invalid action with color-text under cursor.")
