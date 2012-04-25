@@ -2828,7 +2828,7 @@ function! colorv#preview_line(...) "{{{
     call s:prev_list(s:txt2hex(line))
     let s:pbuf_dict[b:view_bufn] = 1
 endfunction "}}}
-function! colorv#prev_aug() "{{{
+function! colorv#prev_aug(...) "{{{
     aug colorv#prev_aug
         au!
         au!  BufWinEnter  <buffer> call colorv#preview()
@@ -2836,6 +2836,15 @@ function! colorv#prev_aug() "{{{
         au!  InsertLeave  <buffer> call colorv#preview_line()
         au!  BufHidden    <buffer> call colorv#clear_prev()
     aug END
+    if !a:0 || a:1 != "s"
+        call s:echo("current buffer will be auto previewed.")
+    endif
+endfunction "}}}
+function! colorv#prev_no_aug() "{{{
+    aug colorv#prev_aug
+        au!
+    aug END
+    call s:echo("current buffer will NOT be auto previewed.")
 endfunction "}}}
 "LIST:"{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -3215,7 +3224,7 @@ function! colorv#init() "{{{
     aug colorv#preview_ftpye "{{{
         au!
         for file in  split(g:colorv_preview_ftype, '\s*,\s*')
-                exec "au!  FileType ".file." call colorv#prev_aug()"
+                exec "au!  FileType ".file." call colorv#prev_aug('s')"
         endfor
         au! BufEnter */doc/colorv.txt    call colorv#preview_line("b",9)
     aug END "}}}

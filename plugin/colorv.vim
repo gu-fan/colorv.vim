@@ -33,7 +33,9 @@ command! -nargs=0  ColorVName        call colorv#list_win()
 command! -nargs=+  ColorVList        call colorv#cursor_text(3,<f-args>)
 command! -nargs=*  ColorVList2       call colorv#list_win2(<f-args>)
 
-command! -nargs=0  ColorVAutoPreview call colorv#prev_aug()
+command! -nargs=0  ColorVAutoPreview   call colorv#prev_aug()
+command! -nargs=0  ColorVNoAutoPreview call colorv#prev_no_aug()
+
 command! -nargs=0  ColorVPreview     call colorv#preview("c")
 command! -nargs=0  ColorVPreviewArea call colorv#preview("bc")
 command! -nargs=0  ColorVPreviewLine call colorv#preview_line()
@@ -62,6 +64,7 @@ function! colorv#define_global() "{{{
     \{'key': ['q' ],       'cmd': ':ColorVQuit<CR>'},
     \{'key': ['pp'] ,      'cmd': ':ColorVPreview<CR>'},
     \{'key': ['ap'] ,      'cmd': ':ColorVAutoPreview<CR>'},
+    \{'key': ['an'] ,      'cmd': ':ColorVNoAutoPreview<CR>'},
     \{'key': ['pl'] ,      'cmd': ':ColorVPreviewLine<CR>'},
     \{'key': ['pa'] ,      'cmd': ':ColorVPreviewArea<CR>'},
     \{'key': ['pc'] ,      'cmd': ':ColorVClear<CR>'},

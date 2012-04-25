@@ -264,7 +264,8 @@ will change all color-text in current buf after closing the ColorV window.
     <leader>cpa    |:ColorVPreviewArea|
     <leader>cpc    |:ColorVClear|
 
-    <leader>cap    |:ColorVAutoPreview| auto preview current buffer.
+    <leader>cap    |:ColorVAutoPreview|   Auto preview current buffer.
+    <leader>can    |:ColorVNoAutoPreview| No auto preview current buffer.
 
     You can set |g:colorv_preview_ftype| to automatically preview
     filetypes.
