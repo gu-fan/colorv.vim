@@ -11,7 +11,7 @@
                              Ver:2.5                                  ~
                                 
 ==============================================================================
-    CONTENTS                                   *colorv-contents*
+ 
 
  DESCRIPTION                                   *colorv-description*
     1. Intro                                      |colorv-intro|
@@ -50,6 +50,7 @@
     Screenshot: http://img.ly/gC9p
 
     Post issues at https://github.com/Rykka/ColorV/issues 
+
 ------------------------------------------------------------------------------
  2. INSTALL                                    *colorv-install*
 
@@ -65,6 +66,7 @@
  
     NOTE   Get Latest version
            https://github.com/Rykka/ColorV/
+
 ==============================================================================
  3. QUICKSTART                                 *colorv-quickstart*
 
@@ -112,7 +114,7 @@
     A GUI colorpicker.~
         <leader>cd or |:ColorVPicker|
 
-            
+
 ------------------------------------------------------------------------------
  3.1 TROUBLESHOOTING                           *colorv-troubleshooting*
     
@@ -129,6 +131,7 @@
 
     3.Report bugs~
         You can report bugs at https://github.com/Rykka/ColorV/issues . 
+
 ==============================================================================
  4. COMMANDS                                   *colorv-commands*
 
@@ -195,6 +198,7 @@ will change all color-text in current buf after closing the ColorV window.
 
                                                     *:ColorVquit*
     |:ColorVQuit|       Quit ColorV window.
+
 ==============================================================================
  5. MAPPINGS                                   *colorv-mappings*
     
@@ -268,6 +272,7 @@ will change all color-text in current buf after closing the ColorV window.
 
     options: |g:colorv_preview_name|  |g:colorv_preview_area|
              |g:colorv_max_preview|
+
 ------------------------------------------------------------------------------
                                                *colorv-mapping-buffer*
 
@@ -298,26 +303,24 @@ will change all color-text in current buf after closing the ColorV window.
     p/P         paste color-text in register" into ColorV.
 
 
+                                                    *colorv-mapping-edit*
     Choose colors.~
     <2-Space>   <2-Leftmouse>   <Enter>
-                                                    *colorv-mapping-edit*
     <Enter>         Start editing RGB/HSV property chosen
     <Kenter>        Start editing RGB/HSV property chosen
     +=/-_           Tuning RGB/HSV property chosen
     <ScrollWheelUp>/<ScrollWheelDown> Tuning poperty(Only in X11 Gui)
     
-    Color names~
     nn              Show colorname list
     na/ne           Entering a colorname.(W3C standard)   
     nx              Entering a colorname.(X11 standard)   
                     See |colorv-colorname| for details.
 
-    Help~
     ?               Show tips.
     H/<F1>          Show help document.
     
-    Qui~
     q/Q             Quit ColorV.
+
 ==============================================================================
  6. COLORINFO                                  *colorv-colorinfo*
     
@@ -504,11 +507,12 @@ will change all color-text in current buf after closing the ColorV window.
                                                 *g:colorv_cache_file*
                                             (default='$HOME/.vim_colorv_cache')
     g:colorv_cache_file     The copied_history_list's cache file position.
-  
+
 ==============================================================================
  8. VARIABLES                                  *colorv-variables*
 
     g:colorv        The |dict| that keeps all ColorV current color vars.
+
 ==============================================================================
  9. FUNCTIONS                                  *colorv-functions*
 
@@ -550,6 +554,7 @@ will change all color-text in current buf after closing the ColorV window.
     colorv#yiq2hex({yiq})
     colorv#rgb2cmyk({rgb})          (c:0~100,m:0~100,y:0~100,k:0~100)
     colorv#cmyk2rgb({cmyk})
+
 ------------------------------------------------------------------------------
                                                *colorv-functions2*
     colorv#hex2term({hex}[,{mode}]) Output colornumber (0~256)
