@@ -68,45 +68,41 @@
 ==============================================================================
  3. QUICKSTART                                 *colorv-quickstart*
 
-    Quick Start~
-
                                                             *colorv-window*
     ColorV Window~
-        <leader>cv     or |:ColorV|
+        |:ColorV| (<leader>cv)
 
     View and Edit color in window.~
-        Click/Enter , Input/+/- on the items.
+        Double Click/ <Space> / <Enter>
+        +/-(Wheel Up/Down) on items.
 
-    Copy color in ColorV window.~
-        cc/<Ctrl-C>/yy
-
-    Paste color into ColorV window.~
+    Copy and Paste~
+        cc/yy
         p/<Ctrl-V>
 
                                                             *colorv-names*
     Colornames list (W3C).~
-        <leader>cn or |:ColorVName|
+        |:ColorVName| (<leader>cn)
 
                                                             *colorv-view*
-    View colors of color-text.~
-        <leader>cw or |:ColorVView|
+    View color-text.~
+        |:ColorVView| (<leader>cw)
 
     NOTE:   Color-texts are words like:
             FF00CC #ff9744 rgb(33,44,155) OrangeRed cadetblue
 
                                                             *colorv-edit*
-    Change colors of color-text.~
-        <leader>ce  or |:ColorVEdit|
-        A ColorV window will be opened for editing color.
+    Edit color-text.~
+         |:ColorVEdit| (<leader>ce)
                                                             
                                                             *colorv--generate*
     Generate a list of color of color-text.~
-        <leader>cg1 or ':ColorVList Hue 20 5'
+        e.g: <leader>cg1 or ':ColorVList Hue 20 5'
 
         see |colorv-colors-generate| for details
 
     Generate a list from color1 to color2.~
-        ':ColorVList2 ff0000 334455'
+        e.g: ':ColorVList2 ff0000 334455'
 
                                                             *colorv-preview*
     Preview all color-text in current file~
@@ -122,7 +118,7 @@
     
     1. Too Slow~
     NOTE   If your vim is not compiled with 'python' or 'python3'
-           Then it's 3~5 times slower when previewing files.
+           Then it's 3~10 times slower when previewing files.
 
     2. Solve Bugs~
     NOTE   Get the latest ColorV version.
@@ -137,13 +133,13 @@
  4. COMMANDS                                   *colorv-commands*
 
                                                     *:ColorV*
-    |:ColorV|       Open ColorV window with previous size.
-    |:ColorVMid|    Open |colorv-mid| window.
-    |:ColorVMin|    Open |colorv-min| window.
-    |:ColorVMax|    Open |colorv-max| window.
+    |:ColorV|       ColorV window in previous size.
+    |:ColorVMid|    |colorv-mid| window.
+    |:ColorVMin|    |colorv-min| window.
+    |:ColorVMax|    |colorv-max| window.
     
                                                     *:ColorVName*
-    |:ColorVName|     Open the Color-Name list window
+    |:ColorVName|     Color-Name list window
 
                                                     *:ColorVList*
     |:ColorVList| {type} {nums} {step}
@@ -325,7 +321,7 @@ will change all color-text in current buf after closing the ColorV window.
 ==============================================================================
  6. COLORINFO                                  *colorv-colorinfo*
     
-    This section is information about colors.~
+    This section contains information about colors.~
                                                      *colorv-colorname*
     The colorname are the the name of the colors, like 'red', 'green', 
     'blue', 'OrangeRed', 'cornsilk'.
@@ -512,9 +508,7 @@ will change all color-text in current buf after closing the ColorV window.
 ==============================================================================
  8. VARIABLES                                  *colorv-variables*
 
-    Global variables that could be used by your scripts.~
-    g:colorv        The |dict| that keeps all ColorV global vars.
-                    Check it if you need it.
+    g:colorv        The |dict| that keeps all ColorV current color vars.
 ==============================================================================
  9. FUNCTIONS                                  *colorv-functions*
 
