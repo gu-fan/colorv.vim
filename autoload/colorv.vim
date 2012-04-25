@@ -5,12 +5,12 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.6
-" Last Update: 2012-04-24
+" Last Update: 2012-04-25
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
-if version < 700 || exists("g:loaded_ColorV") | finish
-else             | let g:loaded_ColorV = 1  | endif
+" if version < 700 || exists("g:loaded_ColorV") | finish
+" else             | let g:loaded_ColorV = 1  | endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "GVAR: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -289,7 +289,6 @@ let s:tips_list=[
 if !exists("s:misc_dict")|let s:misc_dict={}|endif
 if !exists("s:rect_dict")|let s:rect_dict={}|endif
 if !exists("s:hsv_dict") |let s:hsv_dict={} |endif
-if !exists("s:prev_dict")|let s:prev_dict={}|endif
 if !exists("s:pal_dict") |let s:pal_dict={} |endif
 let s:pal_clr_list= []
 let s:hueline_list= []
@@ -1276,17 +1275,22 @@ endfunction "}}}
 
 function! s:clear_match(c) "{{{
     for [key,var] in items(s:{a:c}_dict)
-        sil! call matchdelete(var)
-        sil! exe "hi clear ".key
+        try
+            exe "hi clear ".key
+            call matchdelete(var)
+        catch
+        endtry
     endfor
     let s:{a:c}_dict={}
 endfunction "}}}
+
+
 function! colorv#clear_all() "{{{
     call s:clear_match("rect")
     call s:clear_match("hsv")
     call s:clear_match("misc")
     call s:clear_match("pal")
-    call s:clear_match("prev")
+    call colorv#clear_prev()
     call clearmatches()
 endfunction "}}}
 "WINS: "{{{1
@@ -1575,6 +1579,7 @@ endfunction "}}}
 
 function! colorv#exit_list_win() "{{{
     if s:get_buf_win(s:ColorV.listname)
+        call colorv#clear_prev()
         close
     endif
 endfunction "}}}
@@ -2655,15 +2660,12 @@ endfunction "}}}
 
 "PREV: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-function! colorv#prev_list(list) "{{{
+function! s:prev_list(list) "{{{
     "TODO: mix alpha with 'background' SynID:45
-    "let view_alph = 1
-
-    let view_name = exists("b:view_name") && b:view_name==1 ? 1 : 0
-    let view_area = exists("b:view_area") && b:view_area==1 ? 1 : 0
+    
     for [str,hex,fmt,idx,alpha;rest] in a:list
         if fmt == 'NAME'
-            if view_name == 1
+            if b:view_name == 1
                 " NOTE: highlight name in all cases, 
                 " 'Blue',':blUe','\BLUE'
                 " except which is following or followed by '-_'
@@ -2679,12 +2681,37 @@ function! colorv#prev_list(list) "{{{
         elseif fmt == 'HEX3'
             let hi_ptn = '\v\c'.str.'\w@!'
         else
+            "  XXX: use fmt's ptn to match?
             let hi_ptn = str
         endif
         
         " CV_prv_FF0000FF
-        let hi_grp="CV_prv"."_".hex."FF"
-        let hi_fg = view_area==1 ? hex : s:rlt_clr(hex)
+        let hi_grp="cv_prv_".b:view_area."_".hex."FF"
+        let hi_fg = b:view_area==1 ? hex : s:rlt_clr(hex)
+
+        "FIXED: 2012-04-25 we should clear the hl-grp, 
+        " and when we clear the grp, 
+        " we only clear the hl used only by this buf.
+        " add num as one more buf use it.
+        "FIXED: 2012-04-25 the num may be added multi times
+        " when multi colors in buf.
+        " clear the group when no more buf use it..
+        " NOTE: no duplicated hl-group
+        if !has_key(s:pgrp_dict,hi_grp)
+            call s:hi_color(hi_grp,hi_fg,hex," ")
+            " so we have this grp in this buf
+            let s:pgrp_dict[hi_grp] = { b:view_bufn : 1}
+            " if no grp, add buf and grp
+        else
+            "FIXED: 2012-04-25 if has grp, and no bufnr ,grp+1
+            " but here the bufnr may be defined by previous grp in buf.
+            " NOTE: check if we already have grp in the buf
+            " if not, add the buf into this grp.
+            if !has_key(s:pgrp_dict[hi_grp],b:view_bufn)
+                " NOTE: we should use '[]' to access key with b: , not '.'
+                let s:pgrp_dict[hi_grp][b:view_bufn] = 1
+            endif
+        endif
 
         if fmt =~ 'HEX'
             let hi_dic_name = fmt.'_'.hex
@@ -2694,20 +2721,54 @@ function! colorv#prev_list(list) "{{{
             let hi_dic_name = substitute(str,'\W',"_","g")
         endif
 
-        if !has_key(s:prev_dict,hi_dic_name)
-            try
-                call s:hi_color(hi_grp,hi_fg,hex," ")
-                sil! let s:prev_dict[hi_dic_name]= matchadd(hi_grp,hi_ptn)
-            catch /^Vim\%((\a\+)\)\=:E/
-                call s:debug("E254: Could not hi color:".str)
-            endtry
-        endif
+        try
+            " NOTE: no duplicated hl-ptn
+            if !has_key(b:pptn_dict,hi_dic_name)
+                sil! let b:pptn_dict[hi_dic_name]= matchadd(hi_grp,hi_ptn)
+            endif
+        catch /^Vim\%((\a\+)\)\=:E/
+            call s:debug("E254: Could not hi color:".str)
+        endtry
     endfor
+endfunction "}}}
+" the dict to keep which grp have been previewed.
+" and it keeps the buffer which have the grp.
+let s:pgrp_dict=!exists("s:pgrp_dict") ? {} : s:pgrp_dict
+" the dict to keep which buffer have been previewed.
+let s:pbuf_dict=!exists("s:pbuf_dict") ? {} : s:pbuf_dict
+function! colorv#clear_prev() "{{{
+    if exists("b:pptn_dict")
+        " echoe 1 string(b:pptn_dict)
+        for [key,var] in items(b:pptn_dict)
+            try
+                call matchdelete(var)
+            catch
+            endtry
+        endfor
+    endif
+    let b:pptn_dict={}
+    let bufnr  = bufnr("%")
+    if has_key(s:pbuf_dict,bufnr)
+        for [grp,val] in items(s:pgrp_dict)
+            " NOTE: clear if we have the buf in the grp.
+            if exists("val.".bufnr)
+                if len(val)==1
+                    exe "hi clear ".grp
+                    call remove(s:pgrp_dict,grp)
+                else
+                    call remove(s:pgrp_dict[grp],bufnr)
+                endif
+            endif
+        endfor
+        call remove(s:pbuf_dict,bufnr)
+    endif
 endfunction "}}}
 function! colorv#preview(...) "{{{
 
     let b:view_name=g:colorv_preview_name
     let b:view_area=g:colorv_preview_area
+    let b:view_bufn=bufnr("%")
+    let b:pptn_dict=!exists("b:pptn_dict") ? {} : b:pptn_dict
 
     let view_silent=0
     if a:0 "{{{
@@ -2718,7 +2779,9 @@ function! colorv#preview(...) "{{{
         let b:view_area = a:1=~#"B" ? 0 : a:1=~#"b" ? 1 : b:view_area
         let view_silent = a:1=~#"S" ? 0 : a:1=~#"s" ? 1 : view_silent
         if a:1 =~# "c"
-            call s:clear_match("prev")
+            "FIXME: In fact, we should clear it before leaving the buffer.
+            " otherwise we could not find the match ID.
+            call colorv#clear_prev()
         endif
     endif "}}}
 
@@ -2740,7 +2803,8 @@ function! colorv#preview(...) "{{{
     for line in getline(begin,end)
         call extend(prv_list,s:txt2hex(line))
     endfor
-    call colorv#prev_list(prv_list)
+    call s:prev_list(prv_list)
+    let s:pbuf_dict[b:view_bufn] = 1
 
     if !view_silent
         call s:echo( (end-begin)." lines previewed."
@@ -2751,13 +2815,15 @@ function! colorv#preview_line(...) "{{{
 
     let b:view_name=g:colorv_preview_name
     let b:view_area=g:colorv_preview_area
+    let b:view_bufn=bufnr("%")
+    let b:pptn_dict=!exists("b:pptn_dict") ? {} : b:pptn_dict
     if a:0
         " n-> name   b->area   c->clear
         " N-> noname B->noarea C->noclear
         let b:view_name = a:1=~#"N" ? 0 : a:1=~#"n" ? 1 : b:view_name
         let b:view_area = a:1=~#"B" ? 0 : a:1=~#"b" ? 1 : b:view_area
         if a:1 =~# "c"
-            call s:clear_match("prev")
+            call colorv#clear_prev()
         endif
     endif
 
@@ -2768,13 +2834,16 @@ function! colorv#preview_line(...) "{{{
         let line = getline('.')
     endif
 
-    call colorv#prev_list(s:txt2hex(line))
+    call s:prev_list(s:txt2hex(line))
+    let s:pbuf_dict[b:view_bufn] = 1
 endfunction "}}}
 function! colorv#prev_aug() "{{{
     aug colorv#prev_aug
+        au!
         au!  BufWinEnter  <buffer> call colorv#preview()
         au!  BufWritePost <buffer> call colorv#preview()
         au!  InsertLeave  <buffer> call colorv#preview_line()
+        au!  BufHidden    <buffer> call colorv#clear_prev()
     aug END
 endfunction "}}}
 "LIST:"{{{1

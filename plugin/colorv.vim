@@ -3,7 +3,7 @@
 "    File: plugin/colorv.vim
 " Summary: A vim plugin tries to make handling colors easier.
 "  Author: Rykka10 <Rykka10(at)gmail.com>
-" Last Update: 2012-04-24
+" Last Update: 2012-04-25
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -23,7 +23,6 @@ command! -nargs=*  ColorVMid         call colorv#win("mid",<q-args>)
 command! -nargs=*  ColorVMin         call colorv#win("min",<q-args>)
 command! -nargs=*  ColorVMax         call colorv#win("max",<q-args>)
 command! -nargs=0  ColorVQuit        call colorv#exit()
-command! -nargs=0  ColorVClear       call colorv#clear_all()
 
 command! -nargs=0  ColorVView        call colorv#cursor_text("view")
 command! -nargs=0  ColorVEdit        call colorv#cursor_text("edit")
@@ -38,6 +37,7 @@ command! -nargs=0  ColorVAutoPreview call colorv#prev_aug()
 command! -nargs=0  ColorVPreview     call colorv#preview("c")
 command! -nargs=0  ColorVPreviewArea call colorv#preview("bc")
 command! -nargs=0  ColorVPreviewLine call colorv#preview_line()
+command! -nargs=0  ColorVClear       call colorv#clear_all()
 
 command! -nargs=0  ColorVPicker     call colorv#picker()
 
