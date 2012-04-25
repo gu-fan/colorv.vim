@@ -122,14 +122,25 @@
     NOTE   If your vim is not compiled with 'python' or 'python3'
            Then it's 3~10 times slower when previewing files.
 
-    2. Solve Bugs~
+    2. ColorPicker~
+
+        For windows users:
+        You should have python and pygtk installed. 
+        and have 'python2' in your $PATH.
+
+        OR install gtk package and compile it with autoload/colorv/Makefile
+
+        And, gtk is buggy in windows.
+
+
+    3. Solve Bugs~
     NOTE   Get the latest ColorV version.
            Get the latest vim version.
            Check if your vim compiled with +python or +python3.
            If have errors with python. 
            ':let g:colorv_has_python=0' to stop using python.
 
-    3.Report bugs~
+    4.Report bugs~
         You can report bugs at https://github.com/Rykka/ColorV/issues . 
 
 ==============================================================================

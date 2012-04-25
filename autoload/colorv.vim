@@ -5,12 +5,12 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.6
-" Last Update: 2012-04-25
+" Last Update: 2012-04-26
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
-if version < 700 || exists("g:loaded_ColorV") | finish
-else             | let g:loaded_ColorV = 1  | endif
+" if version < 700 || exists("g:loaded_ColorV") | finish
+" else             | let g:loaded_ColorV = 1  | endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "GVAR: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -309,8 +309,8 @@ let s:his_cpd_rect=[22,7,2,1]
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:py = "py"
 let s:pycolor = s:path."colorv/colorv.py"
-let s:pypicker = s:path."colorv/picker.py"
-let s:cpicker = s:path."colorv/colorpicker"
+let s:pypicker = shellescape(s:path."colorv/picker.py")
+let s:cpicker = shellescape(s:path."colorv/colorpicker")
 function! s:py_core_load() "{{{
     if exists("s:py_core_loaded")
         return
@@ -1606,9 +1606,6 @@ function! colorv#picker() "{{{
     call s:warning("Select color and press OK to Return it to Vim.")
     try 
         let color = system(g:colorv_python_cmd." ".s:pypicker." ".g:colorv.HEX)
-        if !empty(color) && color !~ '\x\{6}'
-            throw 'Error with python picker'
-        endif
     catch
         let color = system(s:cpicker." ".g:colorv.HEX)
     finally
