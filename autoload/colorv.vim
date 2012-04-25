@@ -1578,7 +1578,6 @@ endfunction "}}}
 
 function! colorv#exit_list_win() "{{{
     if s:get_buf_win(s:ColorV.listname)
-        call colorv#clear_prev()
         close
     endif
 endfunction "}}}
@@ -2796,6 +2795,7 @@ function! colorv#preview(...) "{{{
     endfor
     call s:prev_list(prv_list)
     let s:pbuf_dict[b:view_bufn] = 1
+    call s:clear_prev_aug()
 
     if !view_silent
         call s:echo( (end-begin)." lines previewed."
@@ -2827,6 +2827,7 @@ function! colorv#preview_line(...) "{{{
 
     call s:prev_list(s:txt2hex(line))
     let s:pbuf_dict[b:view_bufn] = 1
+    call s:clear_prev_aug()
 endfunction "}}}
 function! colorv#prev_aug(...) "{{{
     aug colorv#prev_aug
@@ -2834,7 +2835,6 @@ function! colorv#prev_aug(...) "{{{
         au!  BufWinEnter  <buffer> call colorv#preview()
         au!  BufWritePost <buffer> call colorv#preview()
         au!  InsertLeave  <buffer> call colorv#preview_line()
-        au!  BufHidden    <buffer> call colorv#clear_prev()
     aug END
     if !a:0 || a:1 != "s"
         call s:echo("current buffer will be auto previewed.")
@@ -2845,6 +2845,12 @@ function! colorv#prev_no_aug() "{{{
         au!
     aug END
     call s:echo("current buffer will NOT be auto previewed.")
+endfunction "}}}
+function! s:clear_prev_aug() "{{{
+    aug colorv#prev_auto_clear
+        au! 
+        au!  BufHidden    <buffer> call colorv#clear_prev()
+    aug END
 endfunction "}}}
 "LIST:"{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
