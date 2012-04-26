@@ -298,7 +298,7 @@ let s:valline_list= []
 " miscs "{{{
 let s:skip_his_rec_upd = 0
 let s:his_mkd_list=exists("s:his_mkd_list")
-            \ ? s:his_mkd_list : range(20)
+            \ ? s:his_mkd_list : repeat([1],20)
 let s:his_set_list=exists("s:his_set_list")
             \ ? s:his_set_list : ['ff0000']
 
