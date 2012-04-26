@@ -5,7 +5,7 @@
 "  Author: Rykka <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.6
-" Last Update: 2012-04-26
+" Last Update: 2012-04-27
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -2700,6 +2700,7 @@ function! s:prev_list(list) "{{{
 
         " NOTE: we should clear the hl-grp
         " and only clear the hl-grp not used anymore.
+        "                grp      buf:num
         " s:pgrp_dict: {cv_prv_xx: {1:1,2:1},cv_prv_xx:{1:1,3:1}...}
 
         " we dont' have this grp.
