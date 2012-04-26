@@ -1475,7 +1475,7 @@ function! s:set_map() "{{{
     nmap <silent><buffer> <ScrollWheelDown> :call <SID>edit_at_cursor("-")<cr>
 
     "edit name
-    nmap <silent><buffer> nn :call colorv#list_win)<cr>
+    nmap <silent><buffer> nn :call colorv#list_win()<cr>
     nmap <silent><buffer> na :call <SID>input_colorname()<cr>
     nmap <silent><buffer> ne :call <SID>input_colorname()<cr>
     nmap <silent><buffer> nx :call <SID>input_colorname("X11")<cr>
