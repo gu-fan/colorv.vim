@@ -912,7 +912,8 @@ function! s:draw_mark_rect() "{{{
             let t="AAAAAA"
         endif
         " let cpd_color= len>i ? s:his_mkd_list[-1-i] : t
-        let cpd_color= s:his_mkd_list[-1-i]=~'\x\{6}' ? s:his_mkd_list[-1-i] : t
+        let cpd_color= exists("s:his_mkd_list[-1-i]") &&
+                    \s:his_mkd_list[-1-i]=~'\x\{6}' ? s:his_mkd_list[-1-i] : t
         call add(clr_list,cpd_color)
     endfor
     call s:draw_multi_rect(s:his_cpd_rect,clr_list)
@@ -3191,15 +3192,14 @@ function! colorv#load_cache() "{{{
         call s:debug("Could not load cache. ".v:exception)
         return -1
     endtry
+    let his_list = []
     for i in CacheStringList
         if i =~ 'MAKRED_COLOR'
             let txt = matchstr(i,'MAKRED_COLOR\s*\zs.*\ze$')
             let his_list = split(txt)
         endif
     endfor
-    if exists("his_list") && !empty(his_list)
-        let s:his_mkd_list=deepcopy(his_list)
-    endif
+    let s:his_mkd_list =  repeat([1],(18-len(his_list))) + his_list
 endfunction "}}}
 function! colorv#init() "{{{
     call colorv#default("g:colorv_debug"         , 0                )
