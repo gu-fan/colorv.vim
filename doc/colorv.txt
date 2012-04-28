@@ -606,6 +606,7 @@ will change all color-text in current buf after closing the ColorV window.
  11. CHANGELOG                                 *colorv-changelog* 
 
 " 2.5.6~
+"FIXED: 2012-04-27 add del_mark() .
 "FIXED: 2012-04-25 fix prev_list() ,clear hl-prev as expected.
 "FIXED: 2012-04-24 fix nametxt2hex() split ptn. use [^0-9A-Za-z-_].
 "FIXED: 2012-04-24 fix autopreview/previewarea commmand
