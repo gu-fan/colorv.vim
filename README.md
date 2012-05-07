@@ -26,7 +26,7 @@ Post issues at https://github.com/Rykka/colorv.vim/issues
 1. Using Vundle  https://github.com/gmarik/vundle 
 
     Add this Line to your vimrc
-    `Bundle 'Rykka/ColorV'` 
+    `Bundle 'Rykka/colorv.vim'` 
 
 2. Using vim.org http://www.vim.org/scripts/script.php?script_id=3597
 

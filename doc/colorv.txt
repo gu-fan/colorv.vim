@@ -49,7 +49,7 @@
 
     Screenshot: http://img.ly/gC9p
 
-    Post issues at https://github.com/Rykka/ColorV/issues 
+    Post issues at https://github.com/Rykka/colorv.vim/issues 
 
 ------------------------------------------------------------------------------
  2. INSTALL                                    *colorv-install*
@@ -57,7 +57,7 @@
 1.Using [Vundle.vim] https://github.com/gmarik/vundle 
 
     Add this Line to your vimrc
-    `Bundle 'Rykka/ColorV'` 
+    `Bundle 'Rykka/colorv.vim'` 
  
 2.Using [Vim.org] http://www.vim.org/scripts/script.php?script_id=3597
 
@@ -65,7 +65,7 @@
     :helptags ~/.vim/doc
  
     NOTE   Get Latest version
-           https://github.com/Rykka/ColorV/
+           https://github.com/Rykka/colorv.vim/
 
 ==============================================================================
  3. QUICKSTART                                 *colorv-quickstart*
