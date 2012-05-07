@@ -19,7 +19,7 @@
     Screenshot: http://img.ly/gC9p
 ![Screenshot](http://s3.amazonaws.com/imgly_production/3959903/large.png)
 
-Post issues at https://github.com/Rykka/ColorV/issues 
+Post issues at https://github.com/Rykka/colorv.vim/issues 
 
 ##INSTALL:##
 
@@ -34,4 +34,4 @@ Post issues at https://github.com/Rykka/ColorV/issues
     `:helptags ~/.vim/doc`
     
 **NOTE**   Get Latest version
-           https://github.com/Rykka/ColorV/
+           https://github.com/Rykka/colorv.vim/
