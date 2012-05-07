@@ -1,6 +1,6 @@
 ##INTRO:##
 
-**ColorV** is a vim plugin tries to make handling colors easier.
+**ColorV** is a vim plugin tries to make colors handling easier.
    
     For example:
     When editing text like '#9370D8' or 'LightSlateGray' or 'rgb(216,112,147)'

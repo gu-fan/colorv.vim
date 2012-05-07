@@ -1,4 +1,4 @@
-*colorv.txt*    Easier color handling.
+*colorv.txt*    Easier colors handling.
 
 
               _________     ______            ___    __               ~
@@ -31,7 +31,7 @@
 ==============================================================================
  1. INTRO                                      *colorv-intro*
 
-   *ColorV* is a vim plugin tries to make handling colors easier.
+   *ColorV* is a vim plugin tries to make colors handling easier.
    
     For example:
     When editing text like '#9370D8' or 'LightSlateGray' or 'rgb(216,112,147)'
