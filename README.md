@@ -14,10 +14,10 @@
     The text will be changed to your picked color.
 
     Features:
-    View, Edit, Preview, Generate, Pick, Cache ... Colors and more.
+    View, Edit, Preview, Generate, Pick, Mark ... Colors and more.
 
-    Screenshot: http://img.ly/gC9p
-![Screenshot](http://s3.amazonaws.com/imgly_production/3959903/large.png)
+    Screenshot: http://img.ly/i6OO
+![Screenshot](http://s3.amazonaws.com/imgly_production/4316118/large.png)
 
 Post issues at https://github.com/Rykka/colorv.vim/issues 
 

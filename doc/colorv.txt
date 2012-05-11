@@ -45,9 +45,9 @@
     The text will be changed to your picked color.
 
     Features:
-    View, Edit, Preview, Generate, Pick, Cache ... Colors and more.
+    View, Edit, Preview, Generate, Pick, Mark ... Colors and more.
 
-    Screenshot: http://img.ly/gC9p
+    Screenshot: http://img.ly/i6OO
 
     Post issues at https://github.com/Rykka/colorv.vim/issues 
 
