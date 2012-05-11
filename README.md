@@ -16,7 +16,8 @@
     Features:
     View, Edit, Preview, Generate, Pick, Mark ... Colors and more.
 
-    Screenshot: http://img.ly/i6OO
+Screenshot: http://img.ly/i6OO
+
 ![Screenshot](http://s3.amazonaws.com/imgly_production/4316118/large.png)
 
 Post issues at https://github.com/Rykka/colorv.vim/issues 
