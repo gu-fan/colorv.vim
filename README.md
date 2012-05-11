@@ -18,7 +18,7 @@
 
 Screenshot: http://img.ly/i6OO
 
-![Screenshot](http://s3.amazonaws.com/imgly_production/4316118/large.png)
+![Screenshot](http://s3.amazonaws.com/imgly_production/4316118/original.png)
 
 Post issues at https://github.com/Rykka/colorv.vim/issues 
 
