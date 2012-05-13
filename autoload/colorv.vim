@@ -5,7 +5,7 @@
 "  Author: Rykka G.Forest <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.6
-" Last Update: 2012-05-07
+" Last Update: 2012-05-13
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -1351,11 +1351,12 @@ function! s:draw_win(hex,...) "{{{
 
     if g:colorv_debug==1
         let funcs = "colorv#timer"
+        call s:debug("=====================================")
     else
         let funcs = "call"
     endif
 
-    call {funcs}("s:update_his_list",[hex])
+    call call("s:update_his_list",[hex])
     call {funcs}("s:update_global",[hex])
 
     " NOTE: we should clear it here, otherwise can not draw multi.
@@ -1386,9 +1387,9 @@ function! s:draw_win(hex,...) "{{{
             call {funcs}("s:draw_mark_rect",[])
         endif
     endif
-    call {funcs}("s:hi_misc",[])
-    call {funcs}("s:draw_history_rect",[hex])
-    call {funcs}("s:draw_text",[])
+    call call("s:hi_misc",[])
+    call call("s:draw_history_rect",[hex])
+    call call("s:draw_text",[])
     setl noma nolz
 
     if winnr('$') != 1
@@ -1830,7 +1831,7 @@ function! s:debug(msg) "{{{
     if g:colorv_debug!=1
         return
     endif
-    echohl Errormsg
+    echohl KeyWord
     echom "[ColorV Debug] ".escape(a:msg,'"')
     echohl Normal
 endfunction "}}}
