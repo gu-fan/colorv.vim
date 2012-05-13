@@ -1828,12 +1828,12 @@ function! s:echo(msg) "{{{
     endtry
 endfunction "}}}
 function! s:debug(msg) "{{{
-    if g:colorv_debug!=1
-        return
+    if g:colorv_debug==1
+        redraw
+        echohl KeyWord
+        echom "[ColorV Debug] ".escape(a:msg,'"')
+        echohl Normal
     endif
-    echohl KeyWord
-    echom "[ColorV Debug] ".escape(a:msg,'"')
-    echohl Normal
 endfunction "}}}
 
 function! s:rlt_clr(hex) "{{{
