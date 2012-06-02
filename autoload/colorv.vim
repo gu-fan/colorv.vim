@@ -5,7 +5,7 @@
 "  Author: Rykka G.Forest <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.6
-" Last Update: 2012-05-13
+" Last Update: 2012-06-02
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -1351,7 +1351,7 @@ function! s:draw_win(hex,...) "{{{
 
     if g:colorv_debug==1
         let funcs = "colorv#timer"
-        call s:debug("=====================================")
+        echom "====================================="
     else
         let funcs = "call"
     endif
@@ -1909,6 +1909,7 @@ function! colorv#timer(func,...) "{{{
         sil! let rtn = call(a:func,farg)
     endfor
 
+    " redraw
     echom "[TIMER]:" string(s:time()-o_t) "seconds for exec" a:func num "times. "
 
     return rtn
