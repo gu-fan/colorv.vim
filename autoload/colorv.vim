@@ -5,7 +5,7 @@
 "  Author: Rykka G.Forest <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.6
-" Last Update: 2012-06-02
+" Last Update: 2012-06-04
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -1884,13 +1884,8 @@ function! s:opz_clr(hex) "{{{
 endfunction "}}}
 
 function! s:time() "{{{
-    if has("python") || has("python3")
-        if !exists("s:time_loaded")
-            exe s:py . ' import time'
-            exe s:py . ' import vim'
-            let s:time_loaded = 1
-        endif
-        exe s:py . ' vim.command("".join(["return ",str(time.time())]))'
+    if has(*reltime)
+        return str2float(reltimestr(reltime()))
     else
         return localtime()
     endif
@@ -1908,9 +1903,9 @@ function! colorv#timer(func,...) "{{{
     for i in range(num)
         sil! let rtn = call(a:func,farg)
     endfor
-
-    " redraw
-    echom "[TIMER]:" string(s:time()-o_t) "seconds for exec" a:func num "times. "
+    let e_t = s:time()
+    let time = printf("%.4f",(e_t-o_t))
+    echom "[TIMER]: " . time . " seconds for exec" a:func num "times. "
 
     return rtn
 endfunction "}}}
