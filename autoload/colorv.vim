@@ -1884,7 +1884,7 @@ function! s:opz_clr(hex) "{{{
 endfunction "}}}
 
 function! s:time() "{{{
-    if has(*reltime)
+    if has("reltime")
         return str2float(reltimestr(reltime()))
     else
         return localtime()
@@ -1909,6 +1909,32 @@ function! colorv#timer(func,...) "{{{
 
     return rtn
 endfunction "}}}
+
+function! colorv#assert(func,farg,assert_val) "{{{
+    let t = call(a:func,a:farg)
+    if t == a:assert_val
+        echo "assert: run ". a:func." succsessful."
+    else
+        echo "assert: run ". a:func." failed . with arg". string(a:farg)
+                    \."\n\tasserts  ".string(a:assert_val)
+                    \."\n\treturns  ".string(t)
+    endif
+endfunction "}}}
+function! colorv#compare(func1,func2,num,...) "{{{
+    if a:0==1
+        echom colorv#timer(a:func1,a:1,a:num)
+        echom colorv#timer(a:func2,a:1,a:num)
+    elseif a:0==2
+        echom colorv#timer(a:func1,a:1,a:num)
+        echom colorv#timer(a:func2,a:2,a:num)
+    else
+        echom colorv#timer(a:func1,[],a:num)
+        echom colorv#timer(a:func2,[],a:num)
+    endif
+    echom colorv#timer("colorv#stub0",[],a:num)
+endfunction "}}}
+function! colorv#stub0()
+endfunction
 
 function! colorv#default(option,value) "{{{
     if !exists(a:option)
