@@ -1884,7 +1884,7 @@ function! s:opz_clr(hex) "{{{
 endfunction "}}}
 
 function! s:time() "{{{
-    if has("*reltime")
+    if has("reltime")
         return str2float(reltimestr(reltime()))
     else
         return localtime()
