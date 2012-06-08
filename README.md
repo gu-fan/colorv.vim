@@ -1,7 +1,7 @@
 ##INTRO:##
 
 **ColorV** is a vim plugin tries to make colors handling easier.
-   
+
     For example:
     When editing text like '#9370D8' or 'LightSlateGray' or 'rgb(216,112,147)'
     We want to view it's actual color, and pick the actual color we want.
@@ -33,6 +33,6 @@ Post issues at https://github.com/Rykka/colorv.vim/issues
 
     Extract to your ~/.vim folder.
     `:helptags ~/.vim/doc`
-    
+
 **NOTE**   Get Latest version
            https://github.com/Rykka/colorv.vim/
