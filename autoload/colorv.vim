@@ -5,7 +5,7 @@
 "  Author: Rykka G.Forest <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 2.5.6
-" Last Update: 2012-06-04
+" Last Update: 2012-06-08
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -1432,7 +1432,7 @@ function! s:get_buf_win(name) "{{{
 endfunction "}}}
 function! s:win_setl() "{{{
     " local setting
-    setl buftype=nofile bufhidden=delete nobuflisted
+    setl buftype=nofile bufhidden=hide nobuflisted
     setl noswapfile
     setl winfixwidth noea
     setl nocursorline nocursorcolumn
@@ -1884,7 +1884,7 @@ function! s:opz_clr(hex) "{{{
 endfunction "}}}
 
 function! s:time() "{{{
-    if has("reltime")
+    if has("*reltime")
         return str2float(reltimestr(reltime()))
     else
         return localtime()
