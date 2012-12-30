@@ -368,7 +368,7 @@ def draw_palette(H,height,width):
     else:
         p2 = lookup[name]
     
-    vcmd("call s:clear_match('pal')")
+    vcmd("call colorv#clear('pal')")
     for row  in range(height):
         for col in range(width):
             hex = p2[row][col]
@@ -376,7 +376,7 @@ def draw_palette(H,height,width):
             pos_ptn = "".join(["\\%",str(row+H_OFF+1),"l\\%"
                                     ,str(col+W_OFF+1),"c"])
             vcmd("call s:hi_color('{}','{}','{}',' ')".format(hi_grp,hex,hex))
-            vcmd("sil! let s:pal_dict['{0}'] = matchadd('{0}','{1}')"
+            vcmd("sil! let s:cv_dic['pal']['{0}'] = matchadd('{0}','{1}')"
                     .format( hi_grp,pos_ptn))
     vcmd("".join(["let s:pal_clr_list=",str(p2)]))
 
