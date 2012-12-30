@@ -53,7 +53,7 @@ Get latest and Post issues at https://github.com/Rykka/colorv.vim
 On Screen
 ----------
 
-ScreenShot: CheatSheet
+ScreenShot:
 
 .. image:: http://i7.minus.com/iZJ5dh9waOZlu.png
 

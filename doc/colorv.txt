@@ -70,6 +70,10 @@ Design Schemes Easier~
 
 Get latest and Post issues at https://github.com/Rykka/colorv.vim
 
+ScreenShot:
+
+.. image:: http://i7.minus.com/iZJ5dh9waOZlu.png
+
 ------------------------------------------------------------------------------
  2. INSTALL                                    *colorv-install*
 
