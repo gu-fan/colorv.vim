@@ -11,7 +11,7 @@ ColorV: Colors in Vim
 Intro
 =====
 
-**ColorV** is a color picker/editor/design tool in vim.
+**ColorV** is a color view/pick/edit/design/scheme tool in vim.
 
 It makes handling colors much easier.  
 
