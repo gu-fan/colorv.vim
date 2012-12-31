@@ -6,7 +6,7 @@ ColorV: A Powerful color tool
 :Update: 2012-12-30
 :Version: 3.0.2
 :Github: https://github.com/Rykka/colorv.vim
-:Vim.org: http://www.vim.com/scripts/script.php?script_id=3597
+:Vim.org: http://www.vim.org/scripts/script.php?script_id=3597
 
 
 Intro
@@ -204,8 +204,8 @@ Done
 * 3.0.2:
 
   - add back_buf for all win. 
-  - add current fetch info. 
-  - fix nav arrow pos. 
+  - add scheme fetch info. 
+  - fix scheme nav arrow pos. 
 
 * 3.0.1:
 
