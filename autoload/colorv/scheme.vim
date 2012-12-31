@@ -17,6 +17,10 @@ call colorv#default("g:colorv_default_api" , 'colour')
 
 let s:win = {'name':'_ColorV_Schemes_','shift':9}
 let s:win['rect']= [1+s:win.shift,2,7,5]
+let g:_colorv = exists("g:_colorv") ? g:_colorv : {}
+let g:_colorv['scheme'] = {'j':[],'idx':0,'type':'NUL','win':s:win}
+let s:scheme = g:_colorv['scheme']
+
 " Fetch {{{1
 fun! s:parse_colors(content) "{{{
     if a:content =~ 'Hex:'
@@ -35,11 +39,11 @@ fun! colorv#scheme#fetch_k(...) "{{{
         if txt =~ '^\x\{6}$'
             let objs = webapi#feed#parseURL(g:colorv_url_kuler_search.'?searchQuery=hex:'.txt.'&key='.g:colorv_kuler_key)
         else
-            if txt == 'top'
+            if txt is 'top'
                 let txt = 'rating'
-            elseif txt == 'hot'
+            elseif txt is 'hot'
                 let txt = 'popular&timespan=30'
-            elseif txt =='new'
+            elseif txt is 'new'
                 let txt = 'recent'
             endif
             let objs = webapi#feed#parseURL(g:colorv_url_kuler_get.'?listtype='.txt.'&key='.g:colorv_kuler_key)
@@ -71,7 +75,7 @@ fun! colorv#scheme#fetch_l(...) "{{{
                         \{"format": 'json',"hex": txt,}
                         \)
         else
-            if txt == 'hot' | let txt = 'top' | endif
+            if txt is 'hot' | let txt = 'top' | endif
             let r_obj = webapi#http#get(
                         \g:colorv_url_colourlover.'/'.txt,
                         \{"format": 'json',}
@@ -86,52 +90,15 @@ fun! colorv#scheme#fetch_l(...) "{{{
     endtry
 endfun "}}}
 
-" Win {{{1
-fun! colorv#scheme#exit() "{{{
-    if colorv#win#get(s:win.name)
-        call colorv#clear('scheme')
-        close
-        call colorv#win#get(g:_colorv.name)
-    else
-        return -1
-    endif
-endfun "}}}
-fun! colorv#scheme#win(...) "{{{
-    " Create a window for fetched colors
-    if a:0 && !empty(a:1) || !exists("s:colorv_j") || empty(s:colorv_j)
-        let j = s:fetch_j(g:colorv_default_api, a:0 ? a:1 : '')
-    else
-        let j = s:colorv_j
-        call colorv#echo("Show previous schemes")
-    endif
+fun! s:fetch_j(type,...) "{{{
 
-    call colorv#win#get(g:_colorv.name)
-    call colorv#win#new(s:win.name, ['','top',7])
-    call s:set_map()
-    call s:set_var(j)
-    call colorv#scheme#draw(0)
-
-endfun "}}}
-fun! s:fetch_j(type,...)
-
-    if a:type == 'kuler'
+    if a:type is 'kuler'
         let func = 'fetch_k'
     else
         let func = 'fetch_l'
     endif
 
-    if a:0 && a:1 == 'in'
-        let [row,col] = getpos('.')[1:2]
-        if row > 1 && row < 7
-            let idx = s:get_color_idx(col)
-            let s = idx != -1 ? s:cur_color(idx) : ''
-        elseif row == 7
-            let word = expand('<cword>')
-            let s = word =~ 'Top\|New\|Rnd' ? word : ''
-        endif
-    else
-        let s = a:0 ? a:1 : ''
-    endif
+    let s = a:0 ? a:1 : ''
 
     call colorv#echo('Search scheme '. s .' from '.a:type.'. Please wait...')
     let j = colorv#scheme#{func}(s)
@@ -145,18 +112,35 @@ fun! s:fetch_j(type,...)
     endif
     echon 'Done'
     return j
-endfun
-fun! colorv#scheme#up(type) "{{{
-    
-    let j = s:fetch_j(a:type,'in')
-    if !empty(j) 
-        call s:set_var(j, a:type == 'kuler' ? 'KUL' : 'COL')
-        call colorv#scheme#draw(0)
+endfun "}}}
+" Win {{{1
+fun! colorv#scheme#exit() "{{{
+    if colorv#win#get(s:win.name)
+        call colorv#clear('scheme')
+        close
+        call colorv#win#get(g:_colorv.name)
+    else
+        return -1
     endif
+endfun "}}}
+fun! colorv#scheme#win(...) "{{{
+    " Create a window for fetched colors
+    if a:0 && !empty(a:1) || !exists("s:scheme.j") || empty(s:scheme.j)
+        let j = s:fetch_j(g:colorv_default_api, a:1 )
+    else
+        let j = s:scheme.j
+        call colorv#echo("Show previous schemes")
+    endif
+
+    call colorv#win#get(g:_colorv.name)
+    call colorv#win#new(s:win.name, ['','top',7])
+    call s:set_map()
+    call s:set_var(j)
+    call colorv#scheme#draw(0)
 
 endfun "}}}
 fun! s:cur_color(idx) "{{{
-    return s:colorv_j[s:colorv_idx].colors[a:idx]
+    return s:scheme.j[s:scheme.idx].colors[a:idx]
 endfun "}}}
 fun! colorv#scheme#draw(idx) "{{{
     " draw text and scheme with index in all fetched schemes
@@ -164,7 +148,7 @@ fun! colorv#scheme#draw(idx) "{{{
     " clear previous scheme
     call colorv#clear('scheme')
 
-    let m_idx = len(s:colorv_j)
+    let m_idx = len(s:scheme.j)
     if a:idx >= m_idx
         let idx = 0
     elseif a:idx < 0
@@ -173,17 +157,17 @@ fun! colorv#scheme#draw(idx) "{{{
         let idx = a:idx
     endif
 
-    let j = s:colorv_j[idx]
-    let s:colorv_idx = idx
+    let j = s:scheme.j[idx]
+    let s:scheme.idx = idx
     
     let w_line = repeat(" ",len(j.colors)*7+s:win.shift)
     let lines = map(range(7),'w_line')
 
 
     let lines[0] = j.title
-    let lines[6] = '['.s:colorv_type.']  Top New Rnd'
+    let lines[6] = '['.s:scheme.type.']  Top New Rnd'
     let lines[6] = colorv#line_sub(lines[6],
-                \"< ".(idx+1).'/'.len(s:colorv_j).' >',
+                \"< ".(idx+1).'/'.len(s:scheme.j).' >',
                 \(len(j.colors)-1)*7+1 )
 
     call map(lines, 'repeat(" ",s:win.shift).v:val')
@@ -204,16 +188,17 @@ fun! s:hi_misc() "{{{
     " execute '3match' "Keyword".' /\%1l[<>]/'
     " execute '2match' "Keyword".' /\%7l\[.\{3}\]/'
     cal colorv#hi('scheme','cv_s_nav','\%7l[<>]',['','','underline'])
-    " cal colorv#hi('scheme','cv_s_type','\%7l\s\h\{3}',['SpecialComment'],10)
+    cal colorv#hi('scheme','cv_s_type2','\%7l\s\h\{3}',['SpecialComment'])
     cal colorv#hi('scheme','cv_s_type','\%7l\[\u\{3}\]',['Keyword'],35)
 endfun "}}}
 fun! s:set_map() "{{{
     nnor <buffer><silent> q :call colorv#scheme#exit()<CR>
     nnor <buffer><silent> <Enter> :call colorv#scheme#act()<CR>
     nnor <buffer><silent> <2-LeftMouse> :call colorv#scheme#act()<CR>
-    nnor <buffer><silent> n :call colorv#scheme#draw(s:colorv_idx+1)<CR>
-    nnor <buffer><silent> N :call colorv#scheme#draw(s:colorv_idx-1)<CR>
-    nnor <buffer><silent> p :call colorv#scheme#draw(s:colorv_idx-1)<CR>
+    nnor <buffer><silent> <space><space> :call colorv#scheme#act()<CR>
+    nnor <buffer><silent> n :call colorv#scheme#draw(g:_colorv.scheme.idx+1)<CR>
+    nnor <buffer><silent> N :call colorv#scheme#draw(g:_colorv.scheme.idx-1)<CR>
+    nnor <buffer><silent> p :call colorv#scheme#draw(g:_colorv.scheme.idx-1)<CR>
     nnor <buffer><silent> f :call colorv#scheme#fav()<CR>
     nnor <buffer><silent> F :call colorv#scheme#unfav()<CR>
     nnor <buffer><silent> s :call colorv#scheme#show_fav()<CR>
@@ -224,20 +209,20 @@ fun! s:set_map() "{{{
 endfun "}}}
 
 fun! s:set_var(objs, ...) "{{{
-    unlet! s:colorv_j
+    unlet! s:scheme.j
     if type(a:objs) == type({})
-        let s:colorv_j = [a:objs]
+        let s:scheme.j = [a:objs]
     else
-        let s:colorv_j = a:objs
+        let s:scheme.j = a:objs
     endif
 
     if a:0 && !empty(a:1)
-        let s:colorv_type = a:1
+        let s:scheme.type = a:1
     else
-        if g:colorv_default_api == 'kuler'
-            let s:colorv_type = 'KUL'
+        if g:colorv_default_api is 'kuler'
+            let s:scheme.type = 'KUL'
         else
-            let s:colorv_type = 'COL'
+            let s:scheme.type = 'COL'
         endif
     endif
 endfun "}}}
@@ -260,13 +245,13 @@ fun! colorv#scheme#show_fav() "{{{
 endfun "}}}
 fun! colorv#scheme#fav() "{{{
     " add to fav list
-    if s:colorv_type == 'FAV' 
+    if s:scheme.type is 'FAV' 
         call colorv#warning("Already Faved this scheme")
         return 
     endif
-    let t={'title': s:colorv_j[s:colorv_idx]['title'], 'colors':s:colorv_j[s:colorv_idx]['colors'] }
+    let t={'title': s:scheme.j[s:scheme.idx]['title'], 'colors':s:scheme.j[s:scheme.idx]['colors'] }
     for j in s:fav_list
-        if j.title == t.title && j.colors == t.colors
+        if j.title is t.title && j.colors == t.colors
             call colorv#warning("Already Faved this scheme")
             return 
         endif
@@ -277,11 +262,11 @@ fun! colorv#scheme#fav() "{{{
 endfun "}}}
 fun! colorv#scheme#unfav() "{{{
     " rmv from fav list
-    if s:colorv_type != 'FAV'
-        let t = s:colorv_j[s:colorv_idx]
+    if s:scheme.type != 'FAV'
+        let t = s:scheme.j[s:scheme.idx]
 
         for i in range(len(s:fav_list))
-            if s:fav_list[i].title == t.title && s:fav_list[i].colors == t.colors
+            if s:fav_list[i].title is t.title && s:fav_list[i].colors == t.colors
                 unlet s:fav_list[i]
                 call colorv#scheme#save()
                 call colorv#warning("Unfaved this scheme.")
@@ -291,9 +276,9 @@ fun! colorv#scheme#unfav() "{{{
         call colorv#warning("No such scheme in Fav list")
         return 
     endif
-    if input("Unfav current scheme?(yes/no):") == 'yes'
-        call colorv#echo("Unfav ".s:fav_list[s:colorv_idx]['title'])
-        unlet s:fav_list[s:colorv_idx]
+    if input("Unfav current scheme?(yes/no):") is 'yes'
+        call colorv#echo("Unfav ".s:fav_list[s:scheme.idx]['title'])
+        unlet s:fav_list[s:scheme.idx]
         call colorv#scheme#save()
         if empty(s:fav_list)
             call colorv#warning("Fav List is Empty. Exit.")
@@ -317,7 +302,7 @@ endfun "}}}
 fun! s:get_color_idx(col) "{{{
     if a:col > s:win.shift
         let idx = float2nr(trunc((a:col-s:win.shift-1)/7))
-        let max = len(s:colorv_j[s:colorv_idx].colors)
+        let max = len(s:scheme.j[s:scheme.idx].colors)
         return  idx >= max ? -1 : idx
     else
         return -1
@@ -327,17 +312,43 @@ fun! colorv#scheme#act() "{{{
     let [row,col] = getpos('.')[1:2]
     if row == 7
         let char = getline(row)[col-1]
-        if char =='>'
-            call colorv#scheme#draw(s:colorv_idx+1)
-        elseif char == '<'
-            call colorv#scheme#draw(s:colorv_idx-1)
+        if char is '>'
+            call colorv#scheme#draw(s:scheme.idx+1)
+        elseif char is '<'
+            call colorv#scheme#draw(s:scheme.idx-1)
+        else
+            call colorv#scheme#up(g:colorv_default_api)
         endif
     elseif row > 1 && row < 7
         let idx = s:get_color_idx(col)
         if idx != -1
-            call colorv#win("", s:colorv_j[s:colorv_idx].colors[idx])
+            call colorv#win("", s:scheme.j[s:scheme.idx].colors[idx])
         endif
     endif
+endfun "}}}
+fun! colorv#scheme#up(type) "{{{
+    
+    let s =''
+    let [row,col] = getpos('.')[1:2]
+    if row > 1 && row < 7
+        let idx = s:get_color_idx(col)
+        let s = idx != -1 ? s:cur_color(idx) : ''
+    elseif row == 7
+        let word = expand('<cword>')
+        let s = word =~ 'Top\|New\|Rnd' ? word : ''
+        let s = s =~ 'Rnd' ? 'Random' : s
+    endif
+
+    if empty(s)
+        return
+    endif
+
+    let j = s:fetch_j(a:type, s)
+    if !empty(j) 
+        call s:set_var(j, a:type is 'kuler' ? 'KUL' : 'COL')
+        call colorv#scheme#draw(0)
+    endif
+
 endfun "}}}
 " Edit scheme
 fun! colorv#scheme#edit() "{{{
@@ -345,8 +356,8 @@ fun! colorv#scheme#edit() "{{{
     if row > 1 && row < 7
         let idx = s:get_color_idx(col)
         if idx != -1
-            let title = s:colorv_j[s:colorv_idx].title
-            let color = s:colorv_j[s:colorv_idx].colors[idx]
+            let title = s:scheme.j[s:scheme.idx].title
+            let color = s:scheme.j[s:scheme.idx].colors[idx]
             call colorv#win("", color,['exit','colorv#scheme#edit_cb',[idx,title]])
         endif
     else
@@ -362,19 +373,19 @@ fun! colorv#scheme#edit_cb(idx,title) "{{{
         return
     endif
 
-    if s:colorv_j[s:colorv_idx].title != a:title
+    if s:scheme.j[s:scheme.idx].title != a:title
         call colorv#error("Not the same scheme.")
         return 
     endif
 
-    let s:colorv_j[s:colorv_idx].colors[a:idx] = g:colorv.HEX
-    call colorv#scheme#draw(s:colorv_idx)
-    if s:colorv_type == 'FAV'
+    let s:scheme.j[s:scheme.idx].colors[a:idx] = g:colorv.HEX
+    call colorv#scheme#draw(s:scheme.idx)
+    if s:scheme.type is 'FAV'
         call colorv#scheme#save()
     endif
     
 endfun "}}}
-" create new scheme
+" Create new scheme
 fun! colorv#scheme#new(...) "{{{
     " Input: a:1 the colors length of the scheme.
     let len = a:0 && !empty(a:1) ? a:1 : 5
