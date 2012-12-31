@@ -64,9 +64,14 @@ Install
   Add this line to your vimrc::
  
     Bundle 'Rykka/colorv.vim'
+    " needed for fetching schemes online.
+    Bundle 'mattn/webapi-vim'
 
 * Using downloaded zip/tar.gz file. 
   Just extract it to your ``.vim`` folder .
+
+:NOTE: webapi.vim_ is needed for fetching schemes online.
+
 
 :NOTE: Make sure ``filetype plugin on`` and ``syntax on`` is in your vimrc
 
@@ -188,7 +193,10 @@ Todo and Done
 TODO
 ~~~~
 
-* 3.1: add upload, maybe a site to uplad to is needed.
+* 3.1: 
+ 
+  - add upload, maybe a site to uplad to is needed.
+  - ColorVTurn2 should use cursor color text if hex1 omitted.
 
 Done
 ~~~~
@@ -212,3 +220,4 @@ Anyone willing to help can contact me, for now.
 
 .. _Vundle: https://www.github.com/gmarik/vundle
 .. _Galaxy: https://www.github.com/Rykka/galaxy.vim
+.. _webapi.vim: https://github.com/mattn/webapi-vim 

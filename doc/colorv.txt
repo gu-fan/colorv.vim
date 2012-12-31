@@ -79,8 +79,11 @@ ScreenShot:
 
 1.Using [Vundle.vim] https://github.com/gmarik/vundle 
 
-    Add this Line to your vimrc
-    `Bundle 'Rykka/colorv.vim'` 
+  Add this Line to your vimrc::
+
+    Bundle 'Rykka/colorv.vim' 
+    " needed for fetching schemes online.
+    Bundle 'mattn/webapi-vim'
  
 2.Using [Vim.org] http://www.vim.org/scripts/script.php?script_id=3597
 
@@ -89,6 +92,10 @@ ScreenShot:
  
     NOTE   Get Latest version
            https://github.com/Rykka/colorv.vim/
+
+    NOTE   webapi.vim_ is needed for fetching schemes online.
+
+.. _webapi.vim: https://github.com/mattn/webapi-vim 
 
 ==============================================================================
  3. QUICKSTART                                 *colorv-quickstart*
