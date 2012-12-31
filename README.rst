@@ -4,8 +4,9 @@ ColorV: A Powerful color tool
 
 :Author: Rykka G.F
 :Update: 2012-12-30
-:Version: 3.0
+:Version: 3.0.1
 :Github: https://github.com/Rykka/colorv.vim
+:Vim.org: http://www.vim.com/scripts/script.php?script_id=3597
 
 
 Intro
@@ -34,7 +35,7 @@ Edit colors Easier
 Design Colors Easier
     ``:ColorVName`` (<leader>cn): show color name list window.
 
-    ``:ColorVList Hue`` (<leader>cg1) generate Hue list with color text under cursor.
+    ``:ColorVList Hue`` (<leader>cgh) generate Hue list with color text under cursor.
 
     ``:ColorVTurn2 {hex1} {hex2}`` (<leader>cgg) generate Hue list from hex1 to hex2.
 
