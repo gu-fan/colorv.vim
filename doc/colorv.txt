@@ -38,34 +38,34 @@ It makes handling colors much easier.
 With it, you can:
 
 View colors Easier~
-    ``:ColorV`` (<leader>cv): show ColorV window
+    ':ColorV' (<leader>cv): show ColorV window
 
-    ``:ColorVView`` (<leader>cw): show ColorV window with color text under cursor.
+    ':ColorVView' (<leader>cw): show ColorV window with color text under cursor.
 
-    ``:ColorVPreview`` (<leader>cpp): Preview colors in current buffer
+    ':ColorVPreview' (<leader>cpp): Preview colors in current buffer
 
 Edit colors Easier~
-    ``:ColorVEdit`` (<leader>ce): Edit color text under cursor
+    ':ColorVEdit' (<leader>ce): Edit color text under cursor
 
-    ``:ColorVEditAll`` (<leader>cE): Edit color text under cursor and change all in current buffer.
+    ':ColorVEditAll' (<leader>cE): Edit color text under cursor and change all in current buffer.
 
-    ``:ColorVInsert`` (<leader>cii): Insert color with ColorV window.
+    ':ColorVInsert' (<leader>cii): Insert color with ColorV window.
 
 Design Colors Easier~
-    ``:ColorVName`` (<leader>cn): show color name list window.
+    ':ColorVName' (<leader>cn): show color name list window.
 
-    ``:ColorVList Hue`` (<leader>cgh) generate Hue list with color text under cursor.
+    ':ColorVList Hue' (<leader>cgh) generate Hue list with color text under cursor.
 
-    ``:ColorVTurn2 {hex1} {hex2}`` (<leader>cgg) generate Hue list from hex1 to hex2.
+    ':ColorVTurn2 {hex1} {hex2}' (<leader>cgg) generate Hue list from hex1 to hex2.
 
-    ``:ColorVPicker`` (<leader>cd): show a GUI color picker.
+    ':ColorVPicker' (<leader>cd): show a GUI color picker.
 
 Design Schemes Easier~
-    ``:ColorVScheme`` (<leader>css) Fetch scheme from Kuler or ColourLover
+    ':ColorVScheme' (<leader>css) Fetch scheme from Kuler or ColourLover
 
-    ``:ColorVSchemeFav`` (<leader>csf) Show Faved schemes
+    ':ColorVSchemeFav' (<leader>csf) Show Faved schemes
 
-    ``:ColorVSchemeNew`` (<leader>csn) Create a new scheme
+    ':ColorVSchemeNew' (<leader>csn) Create a new scheme
 
 And More~
     You can even use it under 8/256 color terminal.

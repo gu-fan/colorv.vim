@@ -1151,6 +1151,7 @@ endfunction "}}}
 "WINS: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:_colorv['bufinfo'] = []
+let g:_colorv['lbufinfo'] = []
 function! colorv#win(...) "{{{
     " Args: a:1 size  a:2 color a:3 callback [type, func, arg]
     let size  = a:0 ? a:1 : ""
@@ -1289,6 +1290,9 @@ function! colorv#exit_list_win() "{{{
     if colorv#win#get(s:ColorV.listname)
         close
     endif
+    if !empty(g:_colorv['lbufinfo'])
+        call colorv#win#back(g:_colorv['lbufinfo'])
+    endif
 endfunction "}}}
 function! colorv#exit() "{{{
     if colorv#win#get(s:ColorV.name)
@@ -1348,26 +1352,37 @@ function! s:list_map() "{{{
 endfunction "}}}
 function! colorv#list_win(...) "{{{
     " call s:new_win(s:ColorV.listname,"v")
-    call colorv#win#new(s:ColorV.listname,['v','',29])
-    call s:list_map()
 
     let list=a:0 && !empty(a:1) ? a:1 :
             \ [['Colorname List','=======']] + s:clrn
             \+[['W3C_Standard'  ,'=======']] + s:cW3C
             \+[['X11_Standard'  ,'=======']] + s:cX11
     let lines =[]
+
+    let max = 0
+    for [name,hex] in list
+        let n = len(name)
+        if n > max
+            let max = n
+        endif
+    endfor
+
     for [name,hex] in list
         let txt= hex =~'\x\{6}' ? "#".hex : hex
-        let line=printf("%-20.18s%s",name,txt)
+        let line=printf("%-".(max+2)."s%s",name,txt)
         call add(lines,line)
     endfor
+
+    if !colorv#win#is_same(s:ColorV.listname)
+        let g:_colorv['lbufinfo'] = [bufnr('%'),bufname('%'),winnr(),getpos('.')]
+    endif
+    call colorv#win#new(s:ColorV.listname,['v','',(max+9)])
+    call s:list_map()
     setl ma
         silent! %delete _
         call setline(1,lines)
     setl noma
-    if winnr('$') != 1
-        execute 'vertical resize' 29
-    endif
+
     "preview without highlight colorname
     call colorv#preview("Nc")
 endfunction "}}}
@@ -1825,7 +1840,7 @@ function! s:set_in_pos(...) "{{{
         elseif char =~ 'q'
             call colorv#exit()
             call colorv#echo("Exit.")
-        elseif char =~ '[Ss-]'
+        elseif char =~ '[Zz-]'
             call s:size_toggle()
             call colorv#echo("window size: ".s:size)
         endif
@@ -3041,9 +3056,6 @@ function! colorv#define_global() "{{{
         call add(tmp_l, {'key':['2' . key], 'cmd': ':ColorVEditTo '.fmt.'<CR>'})
         call add(tmp_l, {'key':['i' . key], 'cmd': ':ColorVInsert '.fmt.'<CR>'})
     endfor
-    call extend(map_dicts, tmp_l)
-
-    let tmp_l = []
     for [key, gen] in items(s:gen_keys)
         call add(tmp_l, {'key':['g' . key], 'cmd': ':ColorVList '.gen.'<CR>'})
     endfor

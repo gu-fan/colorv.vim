@@ -20,6 +20,8 @@ let s:win['rect']= [1+s:win.shift,2,7,5]
 let g:_colorv = exists("g:_colorv") ? g:_colorv : {}
 let g:_colorv['scheme'] = {'j':[],'idx':0,'type':'NUL','win':s:win}
 let s:scheme = g:_colorv['scheme']
+" track the text used for fetching online
+let s:fetch = ''
 
 " Fetch {{{1
 fun! s:parse_colors(content) "{{{
@@ -100,8 +102,9 @@ fun! s:fetch_j(type,...) "{{{
 
     let s = a:0 ? a:1 : ''
 
-    call colorv#echo('Search scheme '. s .' from '.a:type.'. Please wait...')
+    call colorv#echo('Search '. s .' scheme from '.a:type.'. Please wait...')
     let j = colorv#scheme#{func}(s)
+    let s:fetch = s is 'Random' ? 'Rnd' : s
 
     if type(j) == type(1) 
         call colorv#error("ERROR FETCHING SCHEME:\nCheck webapi.vim installation and web connection. ")
@@ -114,15 +117,6 @@ fun! s:fetch_j(type,...) "{{{
     return j
 endfun "}}}
 " Win {{{1
-fun! colorv#scheme#exit() "{{{
-    if colorv#win#get(s:win.name)
-        call colorv#clear('scheme')
-        close
-        call colorv#win#get(g:_colorv.name)
-    else
-        return -1
-    endif
-endfun "}}}
 fun! colorv#scheme#win(...) "{{{
     " Create a window for fetched colors
     if a:0 && !empty(a:1) || !exists("s:scheme.j") || empty(s:scheme.j)
@@ -132,11 +126,7 @@ fun! colorv#scheme#win(...) "{{{
         call colorv#echo("Show previous schemes")
     endif
 
-    call colorv#win#get(g:_colorv.name)
-    call colorv#win#new(s:win.name, ['','top',7])
-    call s:set_map()
-    call s:set_var(j)
-    call colorv#scheme#draw(0)
+    call s:new_win(j)
 
 endfun "}}}
 fun! s:cur_color(idx) "{{{
@@ -165,10 +155,7 @@ fun! colorv#scheme#draw(idx) "{{{
 
 
     let lines[0] = j.title
-    let lines[6] = '['.s:scheme.type.']  Top New Rnd'
-    let lines[6] = colorv#line_sub(lines[6],
-                \"< ".(idx+1).'/'.len(s:scheme.j).' >',
-                \(len(j.colors)-1)*7+1 )
+    let lines[6] = '['.s:scheme.type.']   Top New Rnd   ' ."< ".printf('%2s',(idx+1)).'/'.printf('%-2s',len(s:scheme.j)).' >'
 
     call map(lines, 'repeat(" ",s:win.shift).v:val')
     
@@ -189,7 +176,7 @@ fun! s:hi_misc() "{{{
     " execute '2match' "Keyword".' /\%7l\[.\{3}\]/'
     cal colorv#hi('scheme','cv_s_nav','\%7l[<>]',['','','underline'])
     cal colorv#hi('scheme','cv_s_type2','\%7l\s\h\{3}',['SpecialComment'])
-    cal colorv#hi('scheme','cv_s_type','\%7l\[\u\{3}\]',['Keyword'],35)
+    cal colorv#hi('scheme','cv_s_type','\%7l\[.*\]',['Keyword'],35)
 endfun "}}}
 fun! s:set_map() "{{{
     nnor <buffer><silent> q :call colorv#scheme#exit()<CR>
@@ -225,22 +212,52 @@ fun! s:set_var(objs, ...) "{{{
             let s:scheme.type = 'COL'
         endif
     endif
+
+    if !empty(s:fetch)
+        if s:scheme.type =~ 'FAV\|NEW'
+            let s:fetch = ''
+        endif
+        let s:scheme.type = s:scheme.type . " " . s:fetch
+    endif
+
 endfun "}}}
 
+let g:_colorv['sbufinfo'] = []
+fun! s:new_win(list, ...) "{{{
+
+    if !colorv#win#is_same(s:win.name)
+        let g:_colorv['sbufinfo'] = [bufnr('%'),bufname('%'),winnr(),getpos('.')]
+    endif
+    call colorv#win#new(s:win.name ,['', 'top',7])
+
+    call s:set_map()
+    if a:0
+        call s:set_var(a:list,a:1)
+    else
+        call s:set_var(a:list)
+    endif
+    call colorv#scheme#draw(0)
+    
+endfun "}}}
+fun! colorv#scheme#exit() "{{{
+    if colorv#win#get(s:win.name)
+        call colorv#clear('scheme')
+        close
+        " call colorv#win#get(g:_colorv.name)
+    else
+        return -1
+    endif
+    if !empty(g:_colorv['sbufinfo'])
+        call colorv#win#back(g:_colorv['sbufinfo'])
+    endif
+endfun "}}}
 " Fav {{{1
 fun! colorv#scheme#show_fav() "{{{
     call colorv#scheme#load()
     if empty(s:fav_list)
         call colorv#warning("Fav List is Empty.")
     else
-
-        call colorv#win#get(g:_colorv.name)
-        call colorv#win#new(s:win.name ,['', 'top',7])
-
-        call s:set_map()
-        call s:set_var(s:fav_list,'FAV')
-        call colorv#scheme#draw(0)
-        call colorv#echo('Use F to Unfav scheme.')
+        call s:new_win(s:fav_list,'FAV')
     endif
 endfun "}}}
 fun! colorv#scheme#fav() "{{{
@@ -396,14 +413,7 @@ fun! colorv#scheme#new(...) "{{{
     endif
     let new_scheme = {'title':name, 'colors': map(range(1, len),'repeat(string(v:val),6)')}
 
-    call colorv#win#get(g:_colorv.name)
-    call colorv#win#new(s:win.name ,['', 'top',7])
-
-    call s:set_map()
-    call s:set_var(new_scheme, 'NEW')
-    call colorv#scheme#draw(0)
-    call colorv#echo('Use F to Unfav scheme.')
-
+    call s:new_win(new_scheme, 'NEW')
 endfun "}}}
 
 " TODO
