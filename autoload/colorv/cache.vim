@@ -15,7 +15,7 @@ fun! colorv#cache#write(file, variable) "{{{
     try
         call writefile([string(a:variable)], a:file)
     catch /^Vim\%((\a\+)\)\=:E/
-        call colorv#error("Could not write cache.\n ".v:exception)
+        call colorv#error("Could not write cache.\r ".v:exception)
         return 0
     endtry
 endfun "}}}
@@ -27,7 +27,7 @@ fun! colorv#cache#read(file) "{{{
         let var = eval(readfile(a:file)[0])
         return var
     catch /^Vim\%((\a\+)\)\=:E/
-        call colorv#error("Could not read cache.\n ".v:exception)
+        call colorv#debug("Could not read cache.\r ".v:exception)
         return []
     endtry
 endfun "}}}
