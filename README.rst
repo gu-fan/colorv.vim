@@ -201,6 +201,12 @@ TODO
 Done
 ~~~~
 
+* 3.0.1:
+
+  - fix debug message: miss cache file.
+  - fix scheme navigation with key.
+  - update image.
+
 * 3.0: 
 
   - add Scheme (fetch, fav, edit, new)
