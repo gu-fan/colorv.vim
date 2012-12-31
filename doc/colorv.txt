@@ -74,7 +74,7 @@ Get latest and Post issues at https://github.com/Rykka/colorv.vim
 
 ScreenShot:
 
-.. image:: http://i5.minus.com/i9DpLvJkrztHq.png
+.. image:: http://i.minus.com/iF5Cd8D74Rfls.png
 
 ------------------------------------------------------------------------------
  2. INSTALL                                    *colorv-install*
