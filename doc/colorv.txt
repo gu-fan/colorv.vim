@@ -54,7 +54,7 @@ Edit colors Easier~
 Design Colors Easier~
     ``:ColorVName`` (<leader>cn): show color name list window.
 
-    ``:ColorVList Hue`` (<leader>cg1) generate Hue list with color text under cursor.
+    ``:ColorVList Hue`` (<leader>cgh) generate Hue list with color text under cursor.
 
     ``:ColorVTurn2 {hex1} {hex2}`` (<leader>cgg) generate Hue list from hex1 to hex2.
 
@@ -67,12 +67,14 @@ Design Schemes Easier~
 
     ``:ColorVSchemeNew`` (<leader>csn) Create a new scheme
 
+And More~
+    You can even use it under 8/256 color terminal.
 
 Get latest and Post issues at https://github.com/Rykka/colorv.vim
 
 ScreenShot:
 
-.. image:: http://i7.minus.com/iZJ5dh9waOZlu.png
+.. image:: http://i5.minus.com/i9DpLvJkrztHq.png
 
 ------------------------------------------------------------------------------
  2. INSTALL                                    *colorv-install*

@@ -47,15 +47,14 @@ Design Schemes Easier
 
     ``:ColorVSchemeNew`` (<leader>csn) Create a new scheme
 
+And More
+    You can even use it under 8/256 color terminal.
 
 Get latest and Post issues at https://github.com/Rykka/colorv.vim
 
-On Screen
-----------
-
 ScreenShot:
 
-.. image:: http://i7.minus.com/iZJ5dh9waOZlu.png
+.. image:: http://i5.minus.com/i9DpLvJkrztHq.png
 
 Install
 -------
