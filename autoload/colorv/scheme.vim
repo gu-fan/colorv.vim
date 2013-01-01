@@ -18,10 +18,8 @@ call colorv#default("g:colorv_default_api" , 'colour')
 let s:win = {'name':'_ColorV_Schemes_','shift':9}
 let s:win['rect']= [1+s:win.shift,2,7,5]
 let g:_colorv = exists("g:_colorv") ? g:_colorv : {}
-let g:_colorv['scheme'] = {'j':[],'idx':0,'type':'NUL','win':s:win}
+let g:_colorv['scheme'] = {'j':[],'idx':0,'type':'NUL','win':s:win,'fetch':''}
 let s:scheme = g:_colorv['scheme']
-" track the text used for fetching online
-let s:fetch = ''
 
 " Fetch {{{1
 fun! s:parse_colors(content) "{{{
@@ -102,9 +100,9 @@ fun! s:fetch_j(type,...) "{{{
 
     let s = a:0 ? a:1 : ''
 
-    call colorv#echo('Search '. s .' scheme from '.a:type.'. Please wait...')
+    call colorv#echo('Search '. s .' scheme from '.a:type.'. Wait...')
     let j = colorv#scheme#{func}(s)
-    let s:fetch = s is 'Random' ? 'Rnd' : s
+    let s:scheme.fetch = s is 'Random' ? 'Rnd' : s 
 
     if type(j) == type(1) 
         call colorv#error("ERROR FETCHING SCHEME:\nCheck webapi.vim installation and web connection. ")
@@ -113,7 +111,7 @@ fun! s:fetch_j(type,...) "{{{
         call colorv#warning("No scheme found.")
         return []
     endif
-    echon 'Done'
+    call colorv#echo('Done')
     return j
 endfun "}}}
 " Win {{{1
@@ -150,25 +148,31 @@ fun! colorv#scheme#draw(idx) "{{{
     let j = s:scheme.j[idx]
     let s:scheme.idx = idx
     
-    let w_line = repeat(" ",len(j.colors)*7+s:win.shift)
+    let w_line = repeat(" ",len(j.colors)*7)
     let lines = map(range(7),'w_line')
 
 
     let lines[0] = j.title
-    let lines[6] = '['.s:scheme.type.']   Top New Rnd   ' ."< ".printf('%2s',(idx+1)).'/'.printf('%-2s',len(s:scheme.j)).' >'
+    let lines[6] = '['.s:scheme.type . (empty(s:scheme.fetch) ? '' : ' '.s:scheme.fetch)
+                \. ']   Top New Rnd   ' 
+                \."<".printf('%3s',(idx+1)).'/'.printf('%-3s',len(s:scheme.j)).'>'
 
-    call map(lines, 'repeat(" ",s:win.shift).v:val')
+    " let lines[1] = repeat(" ",9).join(map(copy(j.colors),'" ".v:val'),'')
     
-    " let lines[1] = repeat(" ",9).join(map(copy(j.colors),'"#".v:val'),'')
+    let sft= (winwidth(0)-len(j.colors)*7-1)/2
+    let s:win.shift = sft < 0 ? 0 : sft
+    let spc = repeat(" ",s:win.shift)
+    call map(lines, 'spc.v:val')
+    
 
     let sav_cur = getpos('.')
     setl ma
         silent! %delete _
         call setline(1,lines)
     setl noma
-    call colorv#draw_rects(s:win.rect, j.colors, 'scheme')
-    call setpos('.',sav_cur)
+    call colorv#draw_rects([1+s:win.shift,2,7,5], j.colors, 'scheme')
     call s:hi_misc()
+    call setpos('.',sav_cur)
 
 endfun "}}}
 fun! s:hi_misc() "{{{
@@ -213,11 +217,9 @@ fun! s:set_var(objs, ...) "{{{
         endif
     endif
 
-    if !empty(s:fetch)
+    if !empty(s:scheme.fetch)
         if s:scheme.type =~ 'FAV\|NEW'
-            let s:fetch = ''
-        else
-            let s:scheme.type = s:scheme.type . " " . s:fetch
+            let s:scheme.fetch = ''
         endif
     endif
 
@@ -321,7 +323,7 @@ fun! s:get_color_idx(col) "{{{
     if a:col > s:win.shift
         let idx = float2nr(trunc((a:col-s:win.shift-1)/7))
         let max = len(s:scheme.j[s:scheme.idx].colors)
-        return  idx >= max ? -1 : idx
+        return idx >= max ? -1 : idx
     else
         return -1
     endif
@@ -371,7 +373,19 @@ endfun "}}}
 " Edit scheme
 fun! colorv#scheme#edit() "{{{
     let [row,col] = getpos('.')[1:2]
-    if row > 1 && row < 7
+    if row == 1
+        let idx = s:get_color_idx(col)
+        if idx != -1
+            let t = input('Please input a new title:')
+            if !empty(t)
+                let s:scheme.j[s:scheme.idx].title = t
+                call colorv#scheme#draw(s:scheme.idx)
+                if s:scheme.type is 'FAV'
+                    call colorv#scheme#save()
+                endif
+            endif
+        endif
+    elseif row > 1 && row < 7
         let idx = s:get_color_idx(col)
         if idx != -1
             let title = s:scheme.j[s:scheme.idx].title
