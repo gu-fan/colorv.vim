@@ -34,6 +34,7 @@ fun! colorv#win#new(name,...) "{{{
             silent! exe loc." ".size.dir."split +buffer" . exists_buffer
         endif
     endif
+
     call s:win_setl()
 endfun "}}}
 
@@ -48,7 +49,7 @@ function! s:win_setl() "{{{
     " local setting
     setl buftype=nofile bufhidden=hide nobuflisted
     setl noswapfile
-    setl winfixwidth noea
+    setl winfixwidth winfixheight noea
     setl nocursorline nocursorcolumn
     setl nolist nowrap
     setl nofoldenable nonumber foldcolumn=0
