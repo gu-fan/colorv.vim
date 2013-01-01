@@ -216,8 +216,9 @@ fun! s:set_var(objs, ...) "{{{
     if !empty(s:fetch)
         if s:scheme.type =~ 'FAV\|NEW'
             let s:fetch = ''
+        else
+            let s:scheme.type = s:scheme.type . " " . s:fetch
         endif
-        let s:scheme.type = s:scheme.type . " " . s:fetch
     endif
 
 endfun "}}}
@@ -279,7 +280,7 @@ fun! colorv#scheme#fav() "{{{
 endfun "}}}
 fun! colorv#scheme#unfav() "{{{
     " rmv from fav list
-    if s:scheme.type != 'FAV'
+    if s:scheme.type !~ 'FAV'
         let t = s:scheme.j[s:scheme.idx]
 
         for i in range(len(s:fav_list))
