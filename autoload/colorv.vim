@@ -3076,7 +3076,7 @@ function! colorv#init() "{{{
     call colorv#default("g:colorv_preview_name"  , 1                )
     call colorv#default("g:colorv_preview_area"  , 0                )
     call colorv#default("g:colorv_gen_space"     , "hsv"            )
-    call colorv#default("g:colorv_preview_ftype" , 'css,html,javascript' )
+    call colorv#default("g:colorv_preview_ftype" , 'css,html' )
     call colorv#default("g:colorv_max_preview"   , 200              )
     call colorv#default("g:colorv_python_cmd"    , "python2"        )
     if !exists('g:colorv_cache_file') "{{{

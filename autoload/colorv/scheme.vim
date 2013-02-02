@@ -24,6 +24,7 @@ let s:scheme = g:_colorv['scheme']
 " Fetch {{{1
 fun! s:parse_colors(content) "{{{
     if a:content =~ 'Hex:'
+        let g:_scheme_con = a:content
         return split(matchstr(a:content,'Hex:\_s*\zs.*'), ', ')
     else
         return []
