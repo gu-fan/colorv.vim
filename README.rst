@@ -203,7 +203,7 @@ Done
 
 * bug fix:
 
-  - fix #21: #888888 term code should be 102
+  - fix #18: #888888 term code should be 102
 
 * 3.0.2:
 
