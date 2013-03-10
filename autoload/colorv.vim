@@ -1346,10 +1346,10 @@ function! colorv#picker() "{{{
 endfunction "}}}
 
 function! s:list_map() "{{{
-    nmap <silent><buffer> q :call colorv#exit_list_win()<cr>
-    nmap <silent><buffer> Q :call colorv#exit_list_win()<cr>
-    nmap <silent><buffer> H :h colorv-colorname<cr>
-    nmap <silent><buffer> <F1> :h colorv-colorname<cr>
+    nnoremap <silent><buffer> q :call colorv#exit_list_win()<cr>
+    nnoremap <silent><buffer> Q :call colorv#exit_list_win()<cr>
+    nnoremap <silent><buffer> H :h colorv-colorname<cr>
+    nnoremap <silent><buffer> <F1> :h colorv-colorname<cr>
 endfunction "}}}
 function! colorv#list_win(...) "{{{
     " call s:new_win(s:ColorV.listname,"v")
@@ -2945,44 +2945,44 @@ function! s:set_map() "{{{
     let t = ["<C-k>","<CR>","<KEnter>","<Space>"
                 \,"<Space><Space>","<2-Leftmouse>","<3-Leftmouse>"]
 
-    let m_txt = "nmap <silent><buffer> "
+    let m_txt = "nnoremap <silent><buffer> "
     let c_txt = " :call <SID>set_in_pos()<CR>"
 
     for m in t
         exe m_txt.m.c_txt
     endfor
 
-    nmap <silent><buffer> Z :call <SID>size_toggle()<cr>
-    nmap <silent><buffer> zz :call <SID>size_toggle()<cr>
+    nnoremap <silent><buffer> Z :call <SID>size_toggle()<cr>
+    nnoremap <silent><buffer> zz :call <SID>size_toggle()<cr>
 
-    nmap <silent><buffer> M  :call colorv#mark#add()<CR>
-    nmap <silent><buffer> mm :call <SID>set_in_pos("M")<CR>
-    nmap <silent><buffer> dd :call <SID>set_in_pos("D")<cr>
-    nmap <silent><buffer> D :call <SID>set_in_pos("D")<cr>
+    nnoremap <silent><buffer> M  :call colorv#mark#add()<CR>
+    nnoremap <silent><buffer> mm :call <SID>set_in_pos("M")<CR>
+    nnoremap <silent><buffer> dd :call <SID>set_in_pos("D")<cr>
+    nnoremap <silent><buffer> D :call <SID>set_in_pos("D")<cr>
 
-    nmap <silent><buffer> <tab> W
-    nmap <silent><buffer> <S-tab> B
+    nnoremap <silent><buffer> <tab> W
+    nnoremap <silent><buffer> <S-tab> B
 
     "edit
-    nmap <silent><buffer> = :call <SID>edit_at_cursor("+")<cr>
-    nmap <silent><buffer> + :call <SID>edit_at_cursor("+")<cr>
-    nmap <silent><buffer> - :call <SID>edit_at_cursor("-")<cr>
-    nmap <silent><buffer> _ :call <SID>edit_at_cursor("-")<cr>
-    nmap <silent><buffer> <ScrollWheelUp> :call <SID>edit_at_cursor("+")<cr>
-    nmap <silent><buffer> <ScrollWheelDown> :call <SID>edit_at_cursor("-")<cr>
+    nnoremap <silent><buffer> = :call <SID>edit_at_cursor("+")<cr>
+    nnoremap <silent><buffer> + :call <SID>edit_at_cursor("+")<cr>
+    nnoremap <silent><buffer> - :call <SID>edit_at_cursor("-")<cr>
+    nnoremap <silent><buffer> _ :call <SID>edit_at_cursor("-")<cr>
+    nnoremap <silent><buffer> <ScrollWheelUp> :call <SID>edit_at_cursor("+")<cr>
+    nnoremap <silent><buffer> <ScrollWheelDown> :call <SID>edit_at_cursor("-")<cr>
 
     "edit name
-    nmap <silent><buffer> nn :call colorv#list_win()<cr>
-    nmap <silent><buffer> na :call <SID>input_colorname()<cr>
-    nmap <silent><buffer> ne :call <SID>input_colorname()<cr>
-    nmap <silent><buffer> nx :call <SID>input_colorname("X11")<cr>
+    nnoremap <silent><buffer> nn :call colorv#list_win()<cr>
+    nnoremap <silent><buffer> na :call <SID>input_colorname()<cr>
+    nnoremap <silent><buffer> ne :call <SID>input_colorname()<cr>
+    nnoremap <silent><buffer> nx :call <SID>input_colorname("X11")<cr>
 
 
-    nmap <silent><buffer> q :call colorv#exit()<cr>
-    nmap <silent><buffer> Q :call colorv#exit()<cr>
-    nmap <silent><buffer> ? :call colorv#echo_tips()<cr>
-    nmap <silent><buffer> H :h colorv-quickstart<cr>
-    nmap <silent><buffer> <F1> :h colorv-quickstart<cr>
+    nnoremap <silent><buffer> q :call colorv#exit()<cr>
+    nnoremap <silent><buffer> Q :call colorv#exit()<cr>
+    nnoremap <silent><buffer> ? :call colorv#echo_tips()<cr>
+    nnoremap <silent><buffer> H :h colorv-quickstart<cr>
+    nnoremap <silent><buffer> <F1> :h colorv-quickstart<cr>
 
     "Copy color
     map <silent><buffer> C   :call <SID>copy("HEX","+")<cr>
@@ -3004,22 +3004,22 @@ function! s:set_map() "{{{
     "generator with current color
     "
     for [key,gen] in items(s:gen_keys)
-        exe 'nmap <silent><buffer> g'.key.'  :call colorv#list_gen_win(g:colorv.HEX,"'.gen.'")<CR>'
+        exe 'nnoremap <silent><buffer> g'.key.'  :call colorv#list_gen_win(g:colorv.HEX,"'.gen.'")<CR>'
     endfor
 
-    nmap <silent><buffer> gg :call colorv#list_win2()<CR>
+    nnoremap <silent><buffer> gg :call colorv#list_win2()<CR>
 
     "easy moving
     noremap <silent><buffer>j gj
     noremap <silent><buffer>k gk
 
-    nmap <silent><buffer> ss :call colorv#scheme#win(g:colorv.HEX)<CR>
-    nmap <silent><buffer> s1 :call colorv#scheme#win()<CR>
-    nmap <silent><buffer> st :call colorv#scheme#win('top')<CR>
-    nmap <silent><buffer> sn :call colorv#scheme#win('new')<CR>
-    nmap <silent><buffer> sh :call colorv#scheme#win('hot')<CR>
-    nmap <silent><buffer> sf :call colorv#scheme#show_fav()<CR>
-    nmap <silent><buffer> sN :call colorv#scheme#new()<CR>
+    nnoremap <silent><buffer> ss :call colorv#scheme#win(g:colorv.HEX)<CR>
+    nnoremap <silent><buffer> s1 :call colorv#scheme#win()<CR>
+    nnoremap <silent><buffer> st :call colorv#scheme#win('top')<CR>
+    nnoremap <silent><buffer> sn :call colorv#scheme#win('new')<CR>
+    nnoremap <silent><buffer> sh :call colorv#scheme#win('hot')<CR>
+    nnoremap <silent><buffer> sf :call colorv#scheme#show_fav()<CR>
+    nnoremap <silent><buffer> sN :call colorv#scheme#new()<CR>
 
 endfunction "}}}
 function! colorv#define_global() "{{{
@@ -3065,7 +3065,7 @@ function! colorv#define_global() "{{{
     for i in map_dicts
         if !hasmapto(i.cmd, 'n')
         for k in i['key']
-            silent! exe 'nmap <unique> <silent> '.leader_maps.k.' '.i['cmd']
+            silent! exe 'nnoremap <unique> <silent> '.leader_maps.k.' '.i['cmd']
         endfor
         endif
     endfor
