@@ -5,7 +5,7 @@
 "  Author: Rykka G.Forest <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 3.0
-" Last Update: 2012-06-08
+" Last Update: 2013-03-10
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -537,12 +537,13 @@ function! s:hex2term(hex) "{{{
 
     " NOTE: the grayscale colors.
     if abs(r-g) <=16 &&  abs(g-b) <=16 && abs(r-b) <=16
+        " grayscale values in 6x6x6 cube
         if r<=4
             let t_num = 16
         elseif r>= 92 && r<=96
             let t_num = 59
         elseif r>= 132 && r<=136
-            let t_num = 106
+            let t_num = 102
         elseif r>= 172 && r<= 176
             let t_num = 145
         elseif r>= 212 && r<=216
@@ -554,7 +555,7 @@ function! s:hex2term(hex) "{{{
             let t_num = div + 232
         endif
     else
-        " NOTE: get the idx num of hex in term table.
+        " NOTE: get the idx num of hex in 6x6x6 cube
         for i in ["r", "g" ,"b"]
             if {i} <= 48
                 let {i} = 0

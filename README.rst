@@ -3,7 +3,7 @@ ColorV: A Powerful color tool
 #############################
 
 :Author: Rykka G.F
-:Update: 2012-12-30
+:Update: 2013-03-10
 :Version: 3.0.2
 :Github: https://github.com/Rykka/colorv.vim
 :Vim.org: http://www.vim.org/scripts/script.php?script_id=3597
@@ -200,6 +200,10 @@ TODO
 
 Done
 ~~~~
+
+* bug fix:
+
+  - fix #21: #888888 term code should be 102
 
 * 3.0.2:
 
