@@ -18,21 +18,21 @@ It makes handling colors much easier.
 
 With it, you can:
 
-View colors Easier
+View colors
     ``:ColorV`` (<leader>cv): show ColorV window
 
     ``:ColorVView`` (<leader>cw): show ColorV window with color text under cursor.
 
     ``:ColorVPreview`` (<leader>cpp): Preview colors in current buffer
 
-Edit colors Easier
+Edit colors
     ``:ColorVEdit`` (<leader>ce): Edit color text under cursor
 
     ``:ColorVEditAll`` (<leader>cE): Edit color text under cursor and change all in current buffer.
 
     ``:ColorVInsert`` (<leader>cii): Insert color with ColorV window.
 
-Design Colors Easier
+Design Colors
     ``:ColorVName`` (<leader>cn): show color name list window.
 
     ``:ColorVList Hue`` (<leader>cgh) generate Hue list with color text under cursor.
@@ -41,7 +41,7 @@ Design Colors Easier
 
     ``:ColorVPicker`` (<leader>cd): show a GUI color picker.
 
-Design Schemes Easier
+Design Schemes
     ``:ColorVScheme`` (<leader>css) Fetch scheme from Kuler or ColourLover
 
     ``:ColorVSchemeFav`` (<leader>csf) Show Faved schemes
@@ -203,6 +203,7 @@ Done
 
 * bug fix:
 
+  - fix #16 and #17: nnor for maps inside colorv.
   - fix #18: #888888 term code should be 102
 
 * 3.0.2:
