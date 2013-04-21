@@ -1676,22 +1676,22 @@ endfunction "}}}
 "EDIT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:max_pos=[["Hex:",1,s:text_x,10],
+            \["N:",1,45,15],
             \["R:",2,s:text_x,5],["G:",2,(s:text_x+7),5],["B:",2,(s:text_x+14),5],
             \["H:",3,s:text_x,5],["S:",3,(s:text_x+7),5],["V:",3,(s:text_x+14),5],
-            \["N:",1,45,15],
             \["H:",4,s:text_x,5],["L:",4,(s:text_x+7),5],["S:",4,(s:text_x+14),5],
             \["Y ",5,s:text_x,5],["I ",5,(s:text_x+7),5],["Q ",5,(s:text_x+14),5],
             \]
 let s:mid_pos=[["Hex:",1,s:text_x,10],
+            \["N:",1,45,15],
             \["R:",3,s:text_x,5],["G:",3,(s:text_x+7),5],["B:",3,(s:text_x+14),5],
             \["H:",4,s:text_x,5],["S:",4,(s:text_x+7),5],["V:",4,(s:text_x+14),5],
-            \["N:",1,45,15],
             \["H:",5,s:text_x,5],["L:",5,(s:text_x+7),5],["S:",5,(s:text_x+14),5],
             \]
 let s:min_pos=[["Hex:",1,s:text_x,10],
+            \["N:",1,45,15],
             \["R:",2,s:text_x,5],["G:",2,(s:text_x+7),5],["B:",2,(s:text_x+14),5],
             \["H:",3,s:text_x,5],["S:",3,(s:text_x+7),5],["V:",3,(s:text_x+14),5],
-            \["N:",1,45,15]
             \]
 function! s:set_in_pos(...) "{{{
     let [l,c] = getpos('.')[1:2]
@@ -1950,6 +1950,36 @@ function! s:edit_at_cursor(...) "{{{
     endif "}}}
 
 endfunction "}}}
+fun! s:jump_to_input(...)
+    let direction =a:0 && a:1 == "-" ? -1  : 1
+
+    let [l,c] = getpos('.')[1:2]
+    let pos_list = s:size=="max" ? s:max_pos :
+                \ s:size=="min" ? s:min_pos : s:mid_pos
+
+    let position= -1
+    for idx in range(len(pos_list))
+        let [str,line,column,length]=pos_list[idx]
+        if l==line && c>=column && c<column+length
+            let position=idx
+            break
+        endif
+    endfor
+    let position = position + direction
+    if position > len(pos_list) - 1 
+        let position = 0
+    elseif position < 0 
+        let position = len(pos_list) - 1
+    endif
+
+    let next_pos = pos_list[position]
+    let [l,c] = [next_pos[1], next_pos[2]]
+    echom position l c 
+    call setpos('.', [0,l,c,0])
+
+endfun
+
+
 function! s:input_colorname(...) "{{{
 
     let name = substitute(g:colorv.NAME,'\~',"","g")
@@ -2967,8 +2997,8 @@ function! s:set_map() "{{{
     nnor <silent><buffer> dd :call <SID>set_in_pos("D")<cr>
     nnor <silent><buffer> D :call <SID>set_in_pos("D")<cr>
 
-    nnor <silent><buffer> <tab> W
-    nnor <silent><buffer> <S-tab> B
+    nnor <silent><buffer> <tab> :call <SID>jump_to_input()<CR>
+    nnor <silent><buffer> <S-tab> :call <SID>jump_to_input('-')<CR>
 
     "edit
     nnor <silent><buffer> = :call <SID>edit_at_cursor("+")<cr>
