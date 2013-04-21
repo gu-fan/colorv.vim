@@ -3,8 +3,8 @@ ColorV: A Powerful color tool
 #############################
 
 :Author: Rykka G.F
-:Update: 2013-03-10
-:Version: 3.0.2
+:Update: 2013-04-21
+:Version: 3.0.5
 :Github: https://github.com/Rykka/colorv.vim
 :Vim.org: http://www.vim.org/scripts/script.php?script_id=3597
 
@@ -90,8 +90,8 @@ Tutors
   - ``ColorVEditTo {fmt}`` (<leader>c2r...) fmt see  formats_
   - ``ColorVEditAll`` (<leader>cE)
   - ``ColorVInsert {fmt}`` (<leader>cii...)
-  - ``:ColorVList {gen}`` (<leader>cg2...) gen see generates_
-  - ``:ColorVTurn2 {hex1} {hex2}`` (<leader>cgg)
+  - ``ColorVList {gen}`` (<leader>cg2...) gen see generates_
+  - ``ColorVTurn2 {hex1} {hex2}`` (<leader>cgg)
   - ``ColorVPreview`` (<leader>cpp)
   - ``ColorVPreviewLine`` (<leader>cpl)
   - ``ColorVClear`` (<leader>cpc)
@@ -112,6 +112,7 @@ Tutors
     5. Tips: show tips or trigger relevant actions.
     6. Stats: change relevant setting.
 
+  - ``<Tab>/<S-tab>`` will jump to next/prev input
   - ``+=/-_/scroll up/scroll down`` to change RGB/HSV attributes under cursor
   - ``yy/cc/p/yr/...`` to copy/paste colors
   - ``gg/g2/...`` to generate a list
@@ -197,6 +198,8 @@ TODO
  
   - add upload, maybe a site to uplad to is needed.
   - ColorVTurn2 should use cursor color text if hex1 omitted.
+  - DONE 2013-04-21 Add '<Tab>/<S-Tab>' for input jumping
+  - DONE 2013-04-21 Add 0 value support for pallette and input
 
 Done
 ~~~~
