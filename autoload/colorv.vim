@@ -1974,7 +1974,6 @@ fun! s:jump_to_input(...)
 
     let next_pos = pos_list[position]
     let [l,c] = [next_pos[1], next_pos[2]]
-    echom position l c 
     call setpos('.', [0,l,c,0])
 
 endfun
