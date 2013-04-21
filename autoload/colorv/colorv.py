@@ -351,7 +351,7 @@ def draw_palette(H,height,width):
     if name not in lookup: 
         p2=[]
         V_step = 100.0/height
-        S_step = 100.0/width
+        S_step = 100.0/(width-1)
         for row in range(height):
             V = 100 - V_step * row
             if V<=0 : V = 1

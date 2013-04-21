@@ -5,7 +5,7 @@
 "  Author: Rykka G.Forest <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 3.0
-" Last Update: 2013-03-10
+" Last Update: 2013-04-21
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -66,9 +66,11 @@ let s:clrdW3C = extend(copy(s:clrd),s:cW3Cd)
 
 " pos "{{{
 let s:line_width=60
-let [s:pal_W,s:pal_H]=[20,5]
+let [s:pal_W,s:pal_H]=[21,5]
 let [s:OFF_W,s:OFF_H]=[0,1]
 let [s:max_h,s:mid_h,s:min_h]=[8,6,3]
+
+let s:text_x = s:pal_W + 2
 
 
 " the status col pos in colorv window
@@ -672,7 +674,8 @@ function! s:draw_palette(H,h,w) "{{{
     if !has_key(s:lookup , name) "{{{
         let p2 = []
         let V_step = 100.0/height
-        let S_step = 100.0/width
+        " Note: We are using 21 column here, so should - 1 
+        let S_step = 100.0/(width-1)
         for row in range(height)
             let V =  100 - V_step * row
             let V = V<=0 ? 0 : V
@@ -755,7 +758,7 @@ let s:val_S = 100
 function! s:draw_hueline(l) "{{{
     call colorv#clear("hsv")
 
-    let step  = 360/s:pal_W
+    let step  = 360/(s:pal_W - 1)
 
     " NOTE: make hueline dynamic.
     if g:colorv.HSV.S !=0
@@ -770,7 +773,7 @@ function! s:draw_hueline(l) "{{{
         let hi_grp = "cv_hue_".col
         let hex = colorv#hsv2hex([h,s,v])
         let pos = "\\%". a:l ."l\\%".(col+1+s:OFF_W)."c"
-        call s:hi_color(hi_grp,hex,hex," ")
+        call s:hi_color(hi_grp, hex, hex, " ")
         sil! let s:cv_dic['hsv'][hi_grp]=matchadd(hi_grp,pos)
         call add(hue_list,hex)
         let h += step
@@ -782,7 +785,7 @@ function! s:draw_satline(l) "{{{
     let h = s:hue_H
     let v = 100
 
-    let step = 100.0/(s:pal_W)
+    let step = 100.0/(s:pal_W - 1)
     let sat_list=[]
     for col in range(s:pal_W)
         let s =  100 - col * step
@@ -808,7 +811,7 @@ function! s:draw_valline(l) "{{{
     endif
     let s = s:val_S
 
-    let step = 100.0/(s:pal_W)
+    let step = 100.0/(s:pal_W - 1)
     let val_list = []
     for col in range(s:pal_W)
         let v = 100.0 - col*step
@@ -938,7 +941,7 @@ function! s:hi_misc() "{{{
     let fg= s:rlt_clr(bg)
 
     let star_ptn='\%<'.(s:pal_H+1+s:OFF_H).'l\%<'.
-                \(s:pal_W+1+s:OFF_W).'c\*'
+                \((s:pal_W)+1+s:OFF_W).'c\*'
     call colorv#hi('misc','cv_star',star_ptn,[fg,bg,'bold'],40)
 
     if s:size=="min"
@@ -946,7 +949,7 @@ function! s:hi_misc() "{{{
         let bg=  s:satline_list[c-1]
         let fg= s:rlt_clr(bg)
 
-        let bar_ptn='\%2l\%<'. (s:pal_W+1+s:OFF_W).'c+'
+        let bar_ptn='\%2l\%<'. ((s:pal_W)+1+s:OFF_W).'c+'
         call colorv#hi('misc','cv_plus',bar_ptn,[fg,bg,'bold'],20)
     endif
 
@@ -1000,23 +1003,23 @@ function! s:draw_text(...) "{{{
     let stat_s = g:colorv_default_api ==? 'kuler' ? " K" : ' C'
     let stat_txt = stat_g.stat_s.stat_m." q"
     let line[0]=s:line("ColorV ".g:colorv.version,3)
-    let line[0]=colorv#line_sub(line[0],"HEX:".hex,22)
+    let line[0]=colorv#line_sub(line[0],"HEX:".hex,s:text_x)
     if s:size=="max"
-        let line[1]=s:line("R:".r."  G:".g."  B:".b,22)
-        let line[2]=s:line("H:".h."  S:".s."  V:".v,22)
-        let line[3]=s:line("H:".H."  L:".L."  S:".S,22)
-        let line[4]=s:line("Y:".Y."  I:".I."  Q:".Q,22)
-        let line[s:pal_H]=s:line(help_txt,22)
+        let line[1]=s:line("R:".r."  G:".g."  B:".b,s:text_x)
+        let line[2]=s:line("H:".h."  S:".s."  V:".v,s:text_x)
+        let line[3]=s:line("H:".H."  L:".L."  S:".S,s:text_x)
+        let line[4]=s:line("Y:".Y."  I:".I."  Q:".Q,s:text_x)
+        let line[s:pal_H]=s:line(help_txt,s:text_x)
         let line[s:pal_H]=colorv#line_sub(line[s:pal_H],stat_txt,s:stat_pos)
     elseif s:size=="mid"
-        let line[2]=s:line("R:".r."  G:".g."  B:".b,22)
-        let line[3]=s:line("H:".h."  S:".s."  V:".v,22)
-        let line[4]=s:line("H:".H."  L:".L."  S:".S,22)
-        let line[s:pal_H]=s:line(help_txt,22)
+        let line[2]=s:line("R:".r."  G:".g."  B:".b,s:text_x)
+        let line[3]=s:line("H:".h."  S:".s."  V:".v,s:text_x)
+        let line[4]=s:line("H:".H."  L:".L."  S:".S,s:text_x)
+        let line[s:pal_H]=s:line(help_txt,s:text_x)
         let line[s:pal_H]=colorv#line_sub(line[s:pal_H],stat_txt,s:stat_pos)
     elseif s:size=="min"
-        let line[1]=s:line("R:".r."  G:".g."  B:".b,22)
-        let line[2]=s:line("H:".h."  S:".s."  V:".v,22)
+        let line[1]=s:line("R:".r."  G:".g."  B:".b,s:text_x)
+        let line[2]=s:line("H:".h."  S:".s."  V:".v,s:text_x)
         let line[2]=colorv#line_sub(line[2],stat_txt,s:stat_pos)
     endif
 
@@ -1060,8 +1063,8 @@ endfunction "}}}
 function! s:get_bar_pos() "{{{
     if s:size=="min"
         let l = 2
-        let step = 100.0/(s:pal_W)
-        let c = s:pal_W - float2nr(round(g:colorv.HSV.S/step)) + 1 + s:OFF_W
+        let step = 100.0/(s:pal_W-1)
+        let c = s:pal_W-1 - float2nr(round(g:colorv.HSV.S/step)) + 1 + s:OFF_W
         if c>= s:pal_W+s:OFF_W
             let c = s:pal_W+s:OFF_W
         elseif c <= 1 + s:OFF_W
@@ -1073,9 +1076,9 @@ endfunction "}}}
 function! s:get_star_pos() "{{{
     if s:size=="max" || s:size=="mid"
         let h_step=100.0/(s:pal_H)
-        let w_step=100.0/(s:pal_W)
+        let w_step=100.0/(s:pal_W-1)
         let l = s:pal_H - float2nr(round(g:colorv.HSV.V/h_step)) + 1 + s:OFF_H
-        let c = s:pal_W - float2nr(round(g:colorv.HSV.S/w_step)) + 1 + s:OFF_W
+        let c = s:pal_W-1 - float2nr(round(g:colorv.HSV.S/w_step)) + 1 + s:OFF_W
 
         if l >= s:pal_H+s:OFF_H
             let l = s:pal_H+s:OFF_H
@@ -1085,8 +1088,8 @@ function! s:get_star_pos() "{{{
 
     elseif s:size=="min"
         let l = 3
-        let w_step = 100.0/s:pal_W
-        let c = s:pal_W - float2nr(round(g:colorv.HSV.V/w_step)) + 1 + s:OFF_W
+        let w_step = 100.0/(s:pal_W-1)
+        let c = s:pal_W-1 - float2nr(round(g:colorv.HSV.V/w_step)) + 1 + s:OFF_W
     endif
 
     if c >= s:pal_W+s:OFF_W
@@ -1672,22 +1675,22 @@ endfunction "}}}
 
 "EDIT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let s:max_pos=[["Hex:",1,22,10],
-            \["R:",2,22,5],["G:",2,29,5],["B:",2,36,5],
-            \["H:",3,22,5],["S:",3,29,5],["V:",3,36,5],
+let s:max_pos=[["Hex:",1,s:text_x,10],
+            \["R:",2,s:text_x,5],["G:",2,(s:text_x+7),5],["B:",2,(s:text_x+14),5],
+            \["H:",3,s:text_x,5],["S:",3,(s:text_x+7),5],["V:",3,(s:text_x+14),5],
             \["N:",1,45,15],
-            \["H:",4,22,5],["L:",4,29,5],["S:",4,36,5],
-            \["Y ",5,22,5],["I ",5,29,5],["Q ",5,36,5],
+            \["H:",4,s:text_x,5],["L:",4,(s:text_x+7),5],["S:",4,(s:text_x+14),5],
+            \["Y ",5,s:text_x,5],["I ",5,(s:text_x+7),5],["Q ",5,(s:text_x+14),5],
             \]
-let s:mid_pos=[["Hex:",1,22,10],
-            \["R:",3,22,5],["G:",3,29,5],["B:",3,36,5],
-            \["H:",4,22,5],["S:",4,29,5],["V:",4,36,5],
+let s:mid_pos=[["Hex:",1,s:text_x,10],
+            \["R:",3,s:text_x,5],["G:",3,(s:text_x+7),5],["B:",3,(s:text_x+14),5],
+            \["H:",4,s:text_x,5],["S:",4,(s:text_x+7),5],["V:",4,(s:text_x+14),5],
             \["N:",1,45,15],
-            \["H:",5,22,5],["L:",5,29,5],["S:",5,36,5],
+            \["H:",5,s:text_x,5],["L:",5,(s:text_x+7),5],["S:",5,(s:text_x+14),5],
             \]
-let s:min_pos=[["Hex:",1,22,10],
-            \["R:",2,22,5],["G:",2,29,5],["B:",2,36,5],
-            \["H:",3,22,5],["S:",3,29,5],["V:",3,36,5],
+let s:min_pos=[["Hex:",1,s:text_x,10],
+            \["R:",2,s:text_x,5],["G:",2,(s:text_x+7),5],["B:",2,(s:text_x+14),5],
+            \["H:",3,s:text_x,5],["S:",3,(s:text_x+7),5],["V:",3,(s:text_x+14),5],
             \["N:",1,45,15]
             \]
 function! s:set_in_pos(...) "{{{
@@ -1698,10 +1701,10 @@ function! s:set_in_pos(...) "{{{
     let [r,g,b]=clr.rgb
     let [h,s,v]=clr.hsv
     let [H,L,S]=clr.hls
-    let s= s==0 ? 1 : s
-    let v= v==0 ? 1 : v
-    let S= S==0 ? 1 : S
-    let L= L==0 ? 1 : L==100 ? 99 : L
+    let s= s<=0 ? 0 : s
+    let v= v<=0 ? 0 : v
+    let S= S<=0 ? 0 : S
+    let L= L<=0 ? 0 : L>=100 ? 100 : L
     let [rs_x,rs_y,rs_w,rs_h]=s:his_set_rect
     let [rc_x,rc_y,rc_w,rc_h]=s:his_cpd_rect
 
@@ -1742,7 +1745,7 @@ function! s:set_in_pos(...) "{{{
         endif
         let h_txt = s:hlp_d[chr][0]
         " step = 100.0 / s:pal_W
-        let {chr} = 100 - float2nr( ( c - 1 - s:OFF_W )* (100.0 / s:pal_W) )
+        let {chr} = 100 - float2nr( ( c - 1 - s:OFF_W )* (100.0 / (s:pal_W-1)) )
         let {chr} = {chr} <=0 ? 0 : {chr}
         call colorv#echo(h_txt.":".{chr})
 
@@ -1920,6 +1923,10 @@ function! s:edit_at_cursor(...) "{{{
         elseif position =~ '^\(8\|9\|10\)$'
             let c = ["H","L","S"][position-8]
             let e_txt = "let hex = colorv#hls2hex([H,L,S])"
+            if  (L == 100 || L == 0) && c == 'S'
+                call colorv#error("HLS: You can not change the Saturation with 0% or 100% Lightness.")
+                return
+            endif
         elseif position =~ '^\(11\|12\|13\)$'
             let c = ["Y","I","Q"][position-11]
             let e_txt = "let hex = colorv#yiq2hex([Y,I,Q])"
