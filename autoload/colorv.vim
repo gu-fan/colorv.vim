@@ -5,7 +5,7 @@
 "  Author: Rykka G.Forest <Rykka10(at)gmail.com>
 "    Home: https://github.com/Rykka/ColorV
 " Version: 3.0
-" Last Update: 2013-04-21
+" Last Update: 2013-04-27
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:save_cpo = &cpo
 set cpo&vim
@@ -1693,6 +1693,11 @@ let s:min_pos=[["Hex:",1,s:text_x,10],
             \["R:",2,s:text_x,5],["G:",2,(s:text_x+7),5],["B:",2,(s:text_x+14),5],
             \["H:",3,s:text_x,5],["S:",3,(s:text_x+7),5],["V:",3,(s:text_x+14),5],
             \]
+let s:pos_type = ['hex', 'name', 
+                \'rgb0', 'rgb1', 'rgb2', 
+                \'hsv0', 'hsv1', 'hsv2',
+                \'hls0', 'hls1', 'hls2',
+                \'yiq0', 'yiq1', 'yiq2' ]
 function! s:set_in_pos(...) "{{{
     let [l,c] = getpos('.')[1:2]
 
@@ -1899,7 +1904,8 @@ function! s:edit_at_cursor(...) "{{{
             break
         endif
     endfor
-    if position==0 "{{{
+    let type = s:pos_type[position]
+    if type=='hex' "{{{
         if tune==0
             let hex=input("Hex(000000~ffffff,000~fff):")
             if hex =~ '^\x\{6}$'
@@ -1911,24 +1917,24 @@ function! s:edit_at_cursor(...) "{{{
                 call colorv#error("invalid input.")
             endif
         endif
-    elseif position==7
+    elseif type=="name"
         call s:input_colorname()
-    elseif position =~ '^[1-6]$' || (position>=8 && position<=13 )
-        if position =~ '^[1-3]$'
-            let c = ["r","g","b"][position-1]
+    else
+        if type=~"rgb"
+            let c = ["r","g","b"][type[3]]
             let e_txt = "let hex = colorv#rgb2hex([r,g,b])"
-        elseif position =~ '^[4-6]$'
-            let c = ["h","s","v"][position-4]
+        elseif type=~"hsv"
+            let c = ["h","s","v"][type[3]]
             let e_txt = "let hex = colorv#hsv2hex([h,s,v])"
-        elseif position =~ '^\(8\|9\|10\)$'
-            let c = ["H","L","S"][position-8]
+        elseif type=~"hls"
+            let c = ["H","L","S"][type[3]]
             let e_txt = "let hex = colorv#hls2hex([H,L,S])"
             if  (L == 100 || L == 0) && c == 'S'
                 call colorv#error("HLS: You can not change the Saturation with 0% or 100% Lightness.")
                 return
             endif
-        elseif position =~ '^\(11\|12\|13\)$'
-            let c = ["Y","I","Q"][position-11]
+        elseif type=~"yiq"
+            let c = ["Y","I","Q"][type[3]]
             let e_txt = "let hex = colorv#yiq2hex([Y,I,Q])"
         endif
 
