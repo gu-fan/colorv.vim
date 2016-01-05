@@ -542,7 +542,7 @@ provided hex.
     Maps and miscs~
                                                 *g:colorv_global_leader*
                                                 (default='<leader>c')
-    g:colorv_global_leader  The leader for your gloabl mapping.
+    g:colorv_global_leader  The leader for your global mapping.
 
                                                 *g:colorv_no_global_map*
                                                 (default=0)
