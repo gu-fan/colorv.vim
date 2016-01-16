@@ -226,7 +226,7 @@ def nametxt2hex(txt):
     return hex_list 
 def txt2hex(txt): 
     hex_list=[]
-    for fm,reg in fmt.iteritems():
+    for fm,reg in fmt.items():
         for obj in reg.finditer(txt):
             alp = 1
             if fm=="HEX":
