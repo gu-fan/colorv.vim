@@ -1,0 +1,12 @@
+HEX3    #CFF #F11
+HEX     FF00FF #00FFFF 0xFFFF00     
+NAME    red/lime/blue                   (see |colorv-colorname|)
+RGB     rgb(255,255,255)                (css1 standard)
+RGBA    rgba(255,255,255,1.0)           (css2 standard)
+HSL     hsl(300,100%,100%)              (css3 standard)
+HSLA    hsla(300,100%,100%,1.0)         (css3 standard)
+glRGBA  glColor4f(1.00,1.00,1.00,1.00)  (openGL color format)
+RGBP    rgb(100%, 98%, 98%)             
+RGBAP   rgba(100%,100%,100%,1.0) 
+HSV     hsv(360,100,100)
+CMYK    cmyk(25,41, 0,46) 
