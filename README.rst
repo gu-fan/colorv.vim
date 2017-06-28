@@ -1,6 +1,8 @@
-#############################
-ColorV: A Powerful color tool
-#############################
+##########################
+ColorV: Color tool in Vim
+##########################
+
+.. image:: https://github.com/Rykka/github_things/raw/master/image/colorv.png
 
 :Author: Rykka G.F
 :Update: 2013-04-21
