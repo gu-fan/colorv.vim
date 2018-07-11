@@ -5,10 +5,20 @@ ColorV: Color tool in Vim
 .. image:: https://github.com/Rykka/github_things/raw/master/image/colorv.png
 
 :Author: Rykka G.F
-:Update: 2013-04-21
+:Update: 2018-07-12
 :Version: 3.0.5
 :Github: https://github.com/Rykka/colorv.vim
 :Vim.org: http://www.vim.org/scripts/script.php?script_id=3597
+
+
+Change
+======
+
+
+- Remove rebundant info
+- Use tab in colorv window to switch HSL quickly
+- Use +/- to modify it
+
 
 
 Intro
