@@ -49,7 +49,7 @@ let s:t='fghDPijmrYFGtudBevwxklyzEIZOJLMnHsaKbcopqNACQRSTUVWX'
 let s:e='stuQCvwzeLSTghqOrijkxylmRVMBWYZaUfnXopbcdANPDEFGHIJK'
 
 let s:aprx_rate=5
-let s:tune_step=4
+let s:tune_step=1
 "X11 Standard
 call colorv#data#init()
 let s:clrn = g:_colorv['clrn']
@@ -1009,15 +1009,14 @@ function! s:draw_text(...) "{{{
     let line[0]=colorv#line_sub(line[0],"HEX:".hex,s:text_x)
     if s:size=="max"
         let line[1]=s:line("R:".r."  G:".g."  B:".b,s:text_x)
-        let line[2]=s:line("H:".h."  S:".s."  V:".v,s:text_x)
         let line[3]=s:line("H:".H."  L:".L."  S:".S,s:text_x)
         let line[4]=s:line("Y:".Y."  I:".I."  Q:".Q,s:text_x)
         let line[s:pal_H]=s:line(help_txt,s:text_x)
         let line[s:pal_H]=colorv#line_sub(line[s:pal_H],stat_txt,s:stat_pos)
     elseif s:size=="mid"
-        let line[2]=s:line("R:".r."  G:".g."  B:".b,s:text_x)
-        let line[3]=s:line("H:".h."  S:".s."  V:".v,s:text_x)
-        let line[4]=s:line("H:".H."  L:".L."  S:".S,s:text_x)
+        let line[3]=s:line("R:".r."  G:".g."  B:".b,s:text_x)
+        " let line[3]=s:line("H:".h."  S:".s."  V:".v,s:text_x)
+        let line[2]=s:line("H:".H."  L:".L."  S:".S,s:text_x)
         let line[s:pal_H]=s:line(help_txt,s:text_x)
         let line[s:pal_H]=colorv#line_sub(line[s:pal_H],stat_txt,s:stat_pos)
     elseif s:size=="min"
@@ -1683,23 +1682,21 @@ let s:max_pos=[["Hex:",1,s:text_x,10],
             \["R:",2,s:text_x,5],["G:",2,(s:text_x+7),5],["B:",2,(s:text_x+14),5],
             \["H:",3,s:text_x,5],["S:",3,(s:text_x+7),5],["V:",3,(s:text_x+14),5],
             \["H:",4,s:text_x,5],["L:",4,(s:text_x+7),5],["S:",4,(s:text_x+14),5],
-            \["Y ",5,s:text_x,5],["I ",5,(s:text_x+7),5],["Q ",5,(s:text_x+14),5],
             \]
-let s:mid_pos=[["Hex:",1,s:text_x,10],
+let s:mid_pos=[
+            \["H:",3,s:text_x,5],["L:",3,(s:text_x+7),5],["S:",3,(s:text_x+14),5],
+            \["R:",4,s:text_x,5],["G:",4,(s:text_x+7),5],["B:",4,(s:text_x+14),5],
             \["N:",1,45,15],
-            \["R:",3,s:text_x,5],["G:",3,(s:text_x+7),5],["B:",3,(s:text_x+14),5],
-            \["H:",4,s:text_x,5],["S:",4,(s:text_x+7),5],["V:",4,(s:text_x+14),5],
-            \["H:",5,s:text_x,5],["L:",5,(s:text_x+7),5],["S:",5,(s:text_x+14),5],
             \]
 let s:min_pos=[["Hex:",1,s:text_x,10],
             \["N:",1,45,15],
             \["R:",2,s:text_x,5],["G:",2,(s:text_x+7),5],["B:",2,(s:text_x+14),5],
             \["H:",3,s:text_x,5],["S:",3,(s:text_x+7),5],["V:",3,(s:text_x+14),5],
             \]
-let s:pos_type = ['hex', 'name', 
-                \'rgb0', 'rgb1', 'rgb2', 
-                \'hsv0', 'hsv1', 'hsv2',
+let s:pos_type = [
                 \'hls0', 'hls1', 'hls2',
+                \'rgb0', 'rgb1', 'rgb2', 
+                \'hex', 'name', 
                 \'yiq0', 'yiq1', 'yiq2' ]
 function! s:set_in_pos(...) "{{{
     let [l,c] = getpos('.')[1:2]

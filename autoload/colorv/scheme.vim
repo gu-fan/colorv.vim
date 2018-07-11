@@ -197,6 +197,8 @@ fun! s:set_map() "{{{
     nnor <buffer><silent> sn :call colorv#scheme#new()<CR>
     nnor <buffer><silent> K :call colorv#scheme#up('kuler')<CR>
     nnor <buffer><silent> C :call colorv#scheme#up('colour')<CR>
+
+
 endfun "}}}
 
 fun! s:set_var(objs, ...) "{{{
