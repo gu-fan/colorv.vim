@@ -30,8 +30,8 @@ Example
    " you want to change a color
    " #334455
 
-   " move to color and edit it (ColorVEdit)
-   <leader>ce
+   " move to color and edit it
+   <leader>ce           " ColorVEdit
    
    " now the colorv window opened
 
