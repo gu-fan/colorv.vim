@@ -40,8 +40,6 @@
    " move to color and edit it :ColorVEdit
    <leader>ce
    
-   " now the colorv window opened
-
 
    " add its lightness with 2
    <tab><tab>++

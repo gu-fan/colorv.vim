@@ -33,8 +33,6 @@ Example
    " move to color and edit it  :ColorVEdit
    <leader>ce           
    
-   " now the colorv window opened
-
 
    " add its lightness with 2
    <tab><tab>++
@@ -43,7 +41,7 @@ Example
    q
 
 
-   " now the color became
+   " color became
    " #38495C
 
 
