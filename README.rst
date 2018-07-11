@@ -20,6 +20,36 @@ Change
 - Use +/- to modify it
 
 
+Example
+=========
+
+
+.. code:: vim
+
+
+   " you want to change a color
+   " #334455
+
+   " move to color and edit it (ColorVEdit)
+   <leader>ce
+   
+   " now the colorv window opened
+
+
+   " add its lightness with 2
+   <tab><tab>++
+
+   " quit
+   q
+
+
+   " now the color became
+   " #38495C
+
+
+   " done
+
+
 
 Intro
 =====
