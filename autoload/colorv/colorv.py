@@ -124,76 +124,76 @@ def hex2term(h):
     return t_num
     
 
-fmt={} 
+fmt={}
 # NOTE: '\b\s..' as first word in vim should escape twice.
 fmt['RGB']=re.compile(r'''
         \b rgb[ ]?[(]                       # wordbegin
         [ \t]*(?P<R>\d{1,3}),               # group2 R
         [ \t]*(?P<G>\d{1,3}),               # group3 G
         [ \t]*(?P<B>\d{1,3})                # group4 B
-        [)](?ix)                            # [iLmsux] i:igone x:verbose
-                      ''')
+        [)]                            # [iLmsux] i:igone x:verbose
+                      ''',  re.VERBOSE | re.IGNORECASE)
 fmt['RGBA']=re.compile(r'''
         \b rgba[(]
         [ \t]*(?P<R>\d{1,3}),                    # group2 R
         [ \t]*(?P<G>\d{1,3}),                    # group3 G
         [ \t]*(?P<B>\d{1,3}),                    # group4 B
         [ \t]*(?P<A>\d{1,3}(?:\.\d*)?)%?
-        [)] (?ix) ''')
+        [)]''')
 fmt['glRGBA']=re.compile(r'''
         \b glColor\du?[bsifd][(]
         [ \t]*(?P<R>\d(?:\.\d*)?),               # group2 R
         [ \t]*(?P<G>\d(?:\.\d*)?),               # group3 G
         [ \t]*(?P<B>\d(?:\.\d*)?),               # group4 B
         [ \t]*(?P<A>\d(?:\.\d*)?)
-        [)](?ix) ''')
+        [)]''',  re.VERBOSE | re.IGNORECASE)
 fmt['RGBP']=re.compile(r'''
         \b rgb[(]
         [ \t]*(?P<R>\d{1,3})%,                   # group2 R
         [ \t]*(?P<G>\d{1,3})%,                   # group3 G
         [ \t]*(?P<B>\d{1,3})%                    # group4 B
-        [)] (?ix) ''')
+        [)]''')
 fmt['RGBAP']=re.compile(r'''
         \b rgba[(]
         [ \t]*(?P<R>\d{1,3})%,                   # group2 R
         [ \t]*(?P<G>\d{1,3})%,                   # group3 G
         [ \t]*(?P<B>\d{1,3})%,                   # group4 B
         [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
-        [)] (?ix) ''')
+        [)]''',  re.VERBOSE | re.IGNORECASE)
 
 fmt['HSL']=re.compile(r'''
         \b hsl[(]
         [ \t]*(?P<H>\d{1,3}),                    # group2 H
         [ \t]*(?P<S>\d{1,3})%,                   # group3 S
         [ \t]*(?P<L>\d{1,3})%                    # group4 L
-        [)] (?ix) ''')
+        [)]''',  re.VERBOSE | re.IGNORECASE)
 fmt['HSLA']=re.compile(r'''
         \b hsla[(]
         [ \t]*(?P<H>\d{1,3}),                    # group2 H
         [ \t]*(?P<S>\d{1,3})%,                   # group3 S
         [ \t]*(?P<L>\d{1,3})%,                   # group4 L
         [ \t]*(?P<A>\d{1,3} (?:\.\d*)?) %?
-        [)] (?ix) ''')
+        [)]''',  re.VERBOSE | re.IGNORECASE)
 fmt['CMYK']=re.compile(r'''
         \b cmyk[(]
         [ \t]*(?P<C>\d{1,3}),                    # group2 C
         [ \t]*(?P<M>\d{1,3}),                    # group3 M
         [ \t]*(?P<Y>\d{1,3}),                    # group4 Y
         [ \t]*(?P<K>\d{1,3})                     # group4 K
-        [)] (?ix) ''')
+        [)]''',  re.VERBOSE | re.IGNORECASE)
 fmt['HSV']=re.compile(r'''
         \b hsv[(]
         [ \t]*(?P<H>\d{1,3}),                    # group2 H
         [ \t]*(?P<S>\d{1,3}),                    # group3 S
         [ \t]*(?P<V>\d{1,3})                     # group4 V
-        [)] (?ix) ''')
+        [)]''',  re.VERBOSE | re.IGNORECASE)
 fmt['HSVA']=re.compile(r'''
         \b hsva[(]
         [ \t]*(?P<H>\d{1,3}),                    # group2 H
         [ \t]*(?P<S>\d{1,3}),                    # group3 S
         [ \t]*(?P<V>\d{1,3}),                    # group4 V
         [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
-        [)] (?ix) ''')
+        [)]''',  re.VERBOSE | re.IGNORECASE)
 
 # NOTE (?<![0-9a-fA-F]|0[xX]) is wrong!
 #      (?<![0-9a-fA-F])|(?<!0[xX]) is wrong too!
@@ -203,10 +203,9 @@ fmt['HSVA']=re.compile(r'''
 fmt['HEX']=re.compile(r'''
         ([#]|\b0x|\b)                     # ffffff #ffffff 0xffffff
         (?P<HEX>[0-9A-F]{6})            #group HEX in upper 'FFFFFF'
-        (?!\w)(?ix)     ''')
+        (?!\w)''',  re.VERBOSE | re.IGNORECASE)
 fmt['HEX3']=re.compile(r'''
-        [#](?P<HEX3>[0-9a-fA-F]{3})(?!\w)(?ix)''')
-
+        [#](?P<HEX3>[0-9a-fA-F]{3})(?!\w)''',  re.VERBOSE | re.IGNORECASE)
 
 # clr_lst 
 clrnX11 = veval("s:clrnX11")
