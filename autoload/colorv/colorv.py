@@ -126,86 +126,86 @@ def hex2term(h):
 
 fmt={} 
 # NOTE: '\b\s..' as first word in vim should escape twice.
-fmt['RGB']=re.compile(r'''
+fmt['RGB']=re.compile(r'''(?ix)             # [iLmsux] i:igone x:verbose
         \b rgb[ ]?[(]                       # wordbegin
         [ \t]*(?P<R>\d{1,3}),               # group2 R
         [ \t]*(?P<G>\d{1,3}),               # group3 G
         [ \t]*(?P<B>\d{1,3})                # group4 B
-        [)](?ix)                            # [iLmsux] i:igone x:verbose
+        [)]
                       ''')
-fmt['RGBA']=re.compile(r'''
+fmt['RGBA']=re.compile(r'''(?ix)                 # [iLmsux] i:igone x:verbose
         \b rgba[(]
         [ \t]*(?P<R>\d{1,3}),                    # group2 R
         [ \t]*(?P<G>\d{1,3}),                    # group3 G
         [ \t]*(?P<B>\d{1,3}),                    # group4 B
         [ \t]*(?P<A>\d{1,3}(?:\.\d*)?)%?
-        [)] (?ix) ''')
-fmt['glRGBA']=re.compile(r'''
+        [)] ''')
+fmt['glRGBA']=re.compile(r'''(?ix)               # [iLmsux] i:igone x:verbose
         \b glColor\du?[bsifd][(]
         [ \t]*(?P<R>\d(?:\.\d*)?),               # group2 R
         [ \t]*(?P<G>\d(?:\.\d*)?),               # group3 G
         [ \t]*(?P<B>\d(?:\.\d*)?),               # group4 B
         [ \t]*(?P<A>\d(?:\.\d*)?)
-        [)](?ix) ''')
-fmt['RGBP']=re.compile(r'''
+        [)] ''')
+fmt['RGBP']=re.compile(r'''(?ix)                 # [iLmsux] i:igone x:verbose
         \b rgb[(]
         [ \t]*(?P<R>\d{1,3})%,                   # group2 R
         [ \t]*(?P<G>\d{1,3})%,                   # group3 G
         [ \t]*(?P<B>\d{1,3})%                    # group4 B
-        [)] (?ix) ''')
-fmt['RGBAP']=re.compile(r'''
+        [)] ''')
+fmt['RGBAP']=re.compile(r'''(?ix)                # [iLmsux] i:igone x:verbose
         \b rgba[(]
         [ \t]*(?P<R>\d{1,3})%,                   # group2 R
         [ \t]*(?P<G>\d{1,3})%,                   # group3 G
         [ \t]*(?P<B>\d{1,3})%,                   # group4 B
         [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
-        [)] (?ix) ''')
+        [)] ''')
 
-fmt['HSL']=re.compile(r'''
+fmt['HSL']=re.compile(r'''(?ix)                  # [iLmsux] i:igone x:verbose
         \b hsl[(]
         [ \t]*(?P<H>\d{1,3}),                    # group2 H
         [ \t]*(?P<S>\d{1,3})%,                   # group3 S
         [ \t]*(?P<L>\d{1,3})%                    # group4 L
-        [)] (?ix) ''')
-fmt['HSLA']=re.compile(r'''
+        [)] ''')
+fmt['HSLA']=re.compile(r'''(?ix)                 # [iLmsux] i:igone x:verbose
         \b hsla[(]
         [ \t]*(?P<H>\d{1,3}),                    # group2 H
         [ \t]*(?P<S>\d{1,3})%,                   # group3 S
         [ \t]*(?P<L>\d{1,3})%,                   # group4 L
         [ \t]*(?P<A>\d{1,3} (?:\.\d*)?) %?
-        [)] (?ix) ''')
-fmt['CMYK']=re.compile(r'''
+        [)] ''')
+fmt['CMYK']=re.compile(r'''(?ix)                 # [iLmsux] i:igone x:verbose
         \b cmyk[(]
         [ \t]*(?P<C>\d{1,3}),                    # group2 C
         [ \t]*(?P<M>\d{1,3}),                    # group3 M
         [ \t]*(?P<Y>\d{1,3}),                    # group4 Y
         [ \t]*(?P<K>\d{1,3})                     # group4 K
-        [)] (?ix) ''')
-fmt['HSV']=re.compile(r'''
+        [)] ''')
+fmt['HSV']=re.compile(r'''(?ix)                  # [iLmsux] i:igone x:verbose
         \b hsv[(]
         [ \t]*(?P<H>\d{1,3}),                    # group2 H
         [ \t]*(?P<S>\d{1,3}),                    # group3 S
         [ \t]*(?P<V>\d{1,3})                     # group4 V
-        [)] (?ix) ''')
-fmt['HSVA']=re.compile(r'''
+        [)] ''')
+fmt['HSVA']=re.compile(r'''(?ix)                 # [iLmsux] i:igone x:verbose
         \b hsva[(]
         [ \t]*(?P<H>\d{1,3}),                    # group2 H
         [ \t]*(?P<S>\d{1,3}),                    # group3 S
         [ \t]*(?P<V>\d{1,3}),                    # group4 V
         [ \t]* (?P<A>\d{1,3} (?:\.\d*)?) %?
-        [)] (?ix) ''')
+        [)] ''')
 
 # NOTE (?<![0-9a-fA-F]|0[xX]) is wrong!
 #      (?<![0-9a-fA-F])|(?<!0[xX]) is wrong too!
 #      maybe (?<!([09a-fA-F])|(0[xX])) still wrong.
 #      use (?<![\w#]) or (?<![09a-fA-FxX#])
 
-fmt['HEX']=re.compile(r'''
+fmt['HEX']=re.compile(r'''(?ix)
         ([#]|\b0x|\b)                     # ffffff #ffffff 0xffffff
         (?P<HEX>[0-9A-F]{6})            #group HEX in upper 'FFFFFF'
-        (?!\w)(?ix)     ''')
-fmt['HEX3']=re.compile(r'''
-        [#](?P<HEX3>[0-9a-fA-F]{3})(?!\w)(?ix)''')
+        (?!\w)     ''')
+fmt['HEX3']=re.compile(r'''(?ix)
+        [#](?P<HEX3>[0-9a-fA-F]{3})(?!\w)''')
 
 
 # clr_lst 
