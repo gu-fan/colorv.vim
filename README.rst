@@ -45,7 +45,7 @@ Example
 Intro
 =====
 
-**ColorV** is a color view/pick/edit/design/scheme tool in vim.
+**ColorV** is a color view/pick/edit/design tool in vim.
 
 It makes handling colors much easier.  
 
@@ -74,13 +74,6 @@ Design Colors
 
     ``:ColorVPicker`` (<leader>cd): show a GUI color picker.
 
-Design Schemes
-    ``:ColorVScheme`` (<leader>css) Fetch scheme from Kuler or ColourLover
-
-    ``:ColorVSchemeFav`` (<leader>csf) Show Faved schemes
-
-    ``:ColorVSchemeNew`` (<leader>csn) Create a new scheme
-
 And More
     You can even use it under 8/256 color terminal.
 
@@ -100,7 +93,6 @@ Install
 * Using downloaded zip/tar.gz file. 
   Just extract it to your ``.vim`` folder .
 
-:NOTE: webapi.vim_ is needed for fetching schemes online.
 
 
 :NOTE: Make sure ``filetype plugin on`` and ``syntax on`` is in your vimrc
@@ -125,10 +117,6 @@ Tutors
   - ``ColorVPreview`` (<leader>cpp)
   - ``ColorVPreviewLine`` (<leader>cpl)
   - ``ColorVClear`` (<leader>cpc)
-  - ``ColorVScheme`` (<leader>css)
-  - ``ColorVSchemeFav`` (<leader>csf)
-  - ``ColorVSchemeNew`` (<leader>csn)
-  - ``ColorVSchemeNew`` (<leader>csn)
   - ``ColorVPicker`` (<leader>cd)
 
 * In ColorV window:
@@ -146,19 +134,9 @@ Tutors
   - ``+=/-_/scroll up/scroll down`` to change RGB/HSV attributes under cursor
   - ``yy/cc/p/yr/...`` to copy/paste colors
   - ``gg/g2/...`` to generate a list
-  - ``ss/sf/...`` to trigger scheme actions
   - ``q`` to quit
   - ``?`` to show tips
   - Other actions, see ``:h colorv-mapping-buffer``
-* In Color Scheme window:
-
-  - ``n/N/p`` to navigate through multi schemes.
-  - ``f/F`` to fav/Unfav schemes
-  - ``e`` on a color to edit the color
-  - ``K/C`` search item under cursor with Kuler/ColourLover
-  - ``sn`` to create new scheme
-  - ``q`` quit
-
 
 * Detailed instructions: use ``:h colorv``
 * Options: see ``:h colorv-options``
@@ -270,4 +248,3 @@ Anyone willing to help can contact me, for now.
 
 .. _Vundle: https://www.github.com/gmarik/vundle
 .. _Galaxy: https://www.github.com/Rykka/galaxy.vim
-.. _webapi.vim: https://github.com/mattn/webapi-vim 

@@ -61,7 +61,7 @@
 ==============================================================================
  1. INTRO                                      *colorv-intro*
 
-*ColorV* is a color view/pick/edit/design/scheme tool in vim.
+*ColorV* is a color view/pick/edit/design tool in vim.
 
 It makes handling colors much easier.  
 
@@ -89,13 +89,6 @@ Design Colors Easier~
     ':ColorVTurn2 {hex1} {hex2}' (<leader>cgg) generate Hue list from hex1 to hex2.
 
     ':ColorVPicker' (<leader>cd): show a GUI color picker.
-
-Design Schemes Easier~
-    ':ColorVScheme' (<leader>css) Fetch scheme from Kuler or ColourLover
-
-    ':ColorVSchemeFav' (<leader>csf) Show Faved schemes
-
-    ':ColorVSchemeNew' (<leader>csn) Create a new scheme
 
 And More~
     You can even use it under 8/256 color terminal.
@@ -125,9 +118,7 @@ ScreenShot:
     NOTE   Get Latest version
            https://github.com/Rykka/colorv.vim/
 
-    NOTE   webapi.vim_ is needed for fetching schemes online.
 
-.. _webapi.vim: https://github.com/mattn/webapi-vim 
 
 ==============================================================================
  3. QUICKSTART                                 *colorv-quickstart*
@@ -169,17 +160,6 @@ ScreenShot:
 
     Generate a list from color1 to color2.~
         e.g: ':ColorVTurn2 ff0000 334455'
-
-                                                            *colorv--schemes*
-    A set of colors.~
-        e.g: <leader>css or ':ColorVScheme' to show a random scheme.
-             <leader>csf or ':ColorVSchemeFav' to show a Faved schemes.
-             <leader>csn or ':ColorVSchemeNew' to Create new schemes.
-        press 'f' in scheme window to fav a scheme, and 'F' in the Fav window to unfav it.
-
-        if there are multi schemes , press 'n' and 'p' to navigate
-
-    NOTE: webapi.vim is needed to fetch schemes from Kuler or colourlovers
 
                                                             *colorv-preview*
     Preview all color-text in current file~
@@ -288,20 +268,14 @@ will insert the color-text after closing the ColorV window.
                       e.g: rgb(256,256,256) , which exceed range of 0~255
 
 
-                                                    *:ColorVScheme*
-    |:ColorVScheme|      Show a random scheme, or search a scheme of
 provided hex.
     also 'top' ,'new' can be used to get scheme list
                       f to fav one scheme
-                                                    *:ColorVSchemeNew*
-    |:ColorVSchemeNew| {num}   Create a new scheme.
                       e to edit the color
                       {num} is the color numbers
                       when omitted, will create 5 color scheme.
 
                     
-                                                    *:ColorVSchemeFav*
-    |:ColorVSchemeFav|   Show a Scheme Fav Window.
                        F to unfav one scheme
 
                                                     *:ColorVClear*
@@ -370,9 +344,6 @@ provided hex.
     options: |g:colorv_preview_name|  |g:colorv_preview_area|
              |g:colorv_max_preview|
 
-    <leader>css    |:ColorVScheme|
-    <leader>csf    |:ColorVSchemeFav|
-    <leader>csn    |:ColorVSchemeNew|
 ------------------------------------------------------------------------------
                                                *colorv-mapping-buffer*
 
@@ -411,13 +382,6 @@ provided hex.
                     See |colorv-colorname| for details.
 
 
-    ss              seach scheme of current Hex
-    s1              show random scheme
-    st              show top schemes
-    sn              show newest schemes
-    sh              show hotest schemes (Kuler only)
-    sf              show Fav schemes
-    sN              create new scheme
 
 
     ?               Show tips.
@@ -426,17 +390,6 @@ provided hex.
     q/Q             Quit ColorV.
 
     
-    In Scheme Window~
-
-    e               edit color under cursor
-    f               Fav current scheme
-    F               Unfav current scheme
-    n               next scheme
-    N/p             previous scheme
-    sn              create new scheme
-    K               search item under cursor with Kuler
-    C               search item under cursor with colourlover
-    q               quit scheme window
     
 
 ==============================================================================
@@ -647,31 +600,8 @@ provided hex.
                                             (default='$HOME/.vim_colorv_cache')
     g:colorv_cache_file     The copied_history_list's cache file position.
 
-                                                *g:colorv_cache_fav*
                                             (default='$HOME/.vim_colorv_cache_fav')
-    g:colorv_cache_fav     The fav_scheme_list's cache file position.
 
-   Schemes~
-                                                *g:colorv_default_api*
-                                            (default='colour')
-    g:colorv_default_api      default api used when fetching schemes
-
-                                                *g:colorv_url_colourlover*
-                                            (default='http://www.colourlovers.com/api/palettes')
-    g:colorv_url_colourlover     ColourLover's url
-
-                                                *g:colorv_url_kuler_get*
-                                            (default='https://kuler-api.adobe.com/rss/get.cfm')
-    g:colorv_url_kuler_get     Kuler get url
-
-
-                                                *g:colorv_url_kuler_search*
-                                            (default='https://kuler-api.adobe.com/rss/search.cfm')
-    g:colorv_url_kuler_search     Kuler search url
-
-                                                *g:colorv_kuler_key*
-                                            (default='5F0FC8D34554B6556221689C8BA5CFBC')
-    g:colorv_url_kuler_get     Kuler develop key, use yours if possible
 
 
 ==============================================================================

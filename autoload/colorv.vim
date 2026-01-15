@@ -101,7 +101,6 @@ let s:win_tips = [
             \"Yank:yy Hue:gh Names:nn Tips:? ",
             \"Copy:cc Sat:gs Next:Tab Help:H ",
             \"Paste:P Val:gv TurnT:gg Mark:m ",
-            \"Scheme:ss Faved_Schemes:sf",
             \"Edit:Clik/Enter   Change:+/-   ",
             \]
 let s:tips_list=[
@@ -113,7 +112,6 @@ let s:tips_list=[
             \'Mark(shows in max window): mm',
             \'DelMark(color in max window): dd',
             \'Paste:<Ctrl-V>/p (Paste color and show)',
-            \'Schemes:ss Faved Schemes:sf',
             \'ColornameEdit(W3C):na/ne       (X11):nx',
             \'ColornameList:nn (:ColorVName  <leader>cn)',
             \'ColorList: g1/g2/g3/g4/g5/g6/gh/gs/gv...',
@@ -133,7 +131,6 @@ if !exists("s:cv_dic['misc']")|let s:cv_dic['misc']={}|endif
 if !exists("s:cv_dic['rect']")|let s:cv_dic['rect']={}|endif
 if !exists("s:cv_dic['hsv']") |let s:cv_dic['hsv']={} |endif
 if !exists("s:cv_dic['pal']") |let s:cv_dic['pal']={} |endif
-if !exists("s:cv_dic['scheme']") |let s:cv_dic['scheme']={} |endif
 let s:pal_clr_list= []
 let s:hueline_list= []
 let s:satline_list= []
@@ -968,10 +965,10 @@ function! s:hi_misc() "{{{
         " sil! let s:cv_dic['misc']["cv_stip"]=matchadd("cv_stip",tip_ptn,15)
         call colorv#hi('misc','cv_stip','\%'.(s:pal_H+1).'l\%>21c\%<60c\S*:',['SpecialComment'],15)
 
-        " let stat_ptn='\%'.(s:pal_H+1).'l\%>'.(s:stat_pos-1).'c\%<60c[zZYHKC]'
+        " let stat_ptn='\%'.(s:pal_H+1).'l\%>'.(s:stat_pos-1).'c\%<60c[zZYH]'
         " call s:hi_link("cv_stat","Keyword")
         " sil! let s:cv_dic['misc']["cv_stat"]=matchadd("cv_stat",stat_ptn,25)
-        call colorv#hi('misc','cv_stat','\%'.(s:pal_H+1).'l\%>'.(s:stat_pos-1).'c\%<60c[zZYHKC]' ,['Keyword'],25)
+        call colorv#hi('misc','cv_stat','\%'.(s:pal_H+1).'l\%>'.(s:stat_pos-1).'c\%<60c[zZYH]' ,['Keyword'],25)
 
         " let stat_ptn='\%'.(s:pal_H+1).'l\%>'.(s:stat_pos-1).'c\%<60c[x]'
         " call s:hi_link("cv_xstat","Title")
@@ -1003,8 +1000,7 @@ function! s:draw_text(...) "{{{
 
     let stat_g = g:colorv_gen_space==?"hsv" ? "H" : "Y"
     let stat_m = s:size=="max" ? " Z" : s:size=="mid" ? " z" : " -"
-    let stat_s = g:colorv_default_api ==? 'kuler' ? " K" : ' C'
-    let stat_txt = stat_g.stat_s.stat_m." q"
+    let stat_txt = stat_g.stat_m." q"
     let line[0]=s:line("ColorV ".g:colorv.version,3)
     let line[0]=colorv#line_sub(line[0],"HEX:".hex,s:text_x)
     if s:size=="max"
@@ -1807,10 +1803,6 @@ function! s:set_in_pos(...) "{{{
             call colorv#list_gen_win(g:colorv.HEX,"Value",20,5)
         elseif key == "Names"
             call colorv#list_win()
-        elseif key == "Scheme"
-            call colorv#scheme#win()
-        elseif key == "Faved_Schemes"
-            call colorv#scheme#show_fav()
         elseif key == "Copy"
             call s:copy("HEX","+")
         elseif key == "Yank"
@@ -1834,18 +1826,6 @@ function! s:set_in_pos(...) "{{{
             call s:draw_text()
             setl noma
             call colorv#echo("change generating color space to 'yiq'")
-        elseif char =~ 'K'
-            let g:colorv_default_api = "colour"
-            setl ma
-            call s:draw_text()
-            setl noma
-            call colorv#echo("change scheme api to ColourLover ")
-        elseif char =~ 'C'
-            let g:colorv_default_api = "kuler"
-            setl ma
-            call s:draw_text()
-            setl noma
-            call colorv#echo("change scheme api to Kuler")
         elseif char =~ 'q'
             call colorv#exit()
             call colorv#echo("Exit.")
@@ -3055,13 +3035,6 @@ function! s:set_map() "{{{
     nnor <silent><buffer>j gj
     nnor <silent><buffer>k gk
 
-    nnor <silent><buffer> ss :call colorv#scheme#win(g:colorv.HEX)<CR>
-    nnor <silent><buffer> s1 :call colorv#scheme#win()<CR>
-    nnor <silent><buffer> st :call colorv#scheme#win('top')<CR>
-    nnor <silent><buffer> sn :call colorv#scheme#win('new')<CR>
-    nnor <silent><buffer> sh :call colorv#scheme#win('hot')<CR>
-    nnor <silent><buffer> sf :call colorv#scheme#show_fav()<CR>
-    nnor <silent><buffer> sN :call colorv#scheme#new()<CR>
 
 endfunction "}}}
 function! colorv#define_global() "{{{
@@ -3071,9 +3044,6 @@ function! colorv#define_global() "{{{
     let leader_maps=g:colorv_global_leader
     let map_dicts=[
     \{'key': ['v'] ,       'cmd': ':ColorV<CR>'},
-    \{'key': ['ss'] ,      'cmd': ':ColorVScheme<CR>'},
-    \{'key': ['sf'] ,      'cmd': ':ColorVSchemeFav<CR>'},
-    \{'key': ['sn'] ,      'cmd': ':ColorVSchemeNew<CR>'},
     \{'key': ['1','mn'] ,  'cmd': ':ColorVMin<CR>'},
     \{'key': ['md'] ,      'cmd': ':ColorVMid<CR>'},
     \{'key': ['3','mx'] ,  'cmd': ':ColorVMax<CR>'},
@@ -3126,14 +3096,11 @@ function! colorv#init() "{{{
         if has("win32") || has("win64")
             if exists('$HOME')
                 let g:colorv_cache_file = expand('$HOME') . '\.vim_colorv_cache'
-                let g:colorv_cache_fav = expand('$HOME') . '\.vim_colorv_cache_fav'
             else
                 let g:colorv_cache_file = expand('$VIM') . '\.vim_colorv_cache'
-                let g:colorv_cache_fav = expand('$VIM') . '\.vim_colorv_cache_fav'
             endif
         else
             let g:colorv_cache_file = expand('$HOME') . '/.vim_colorv_cache'
-            let g:colorv_cache_fav = expand('$HOME') . '/.vim_colorv_cache_fav'
         endif
     endif "}}}
 
@@ -3151,10 +3118,8 @@ function! colorv#init() "{{{
 
     if g:colorv_load_cache==1 "{{{
         call colorv#mark#load()
-        call colorv#scheme#load()
         aug colorv#cache
             au! VIMLEAVEPre * call colorv#mark#save()
-            au! VIMLEAVEPre * call colorv#scheme#save()
         aug END
     endif "}}}
 

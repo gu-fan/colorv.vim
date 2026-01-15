@@ -44,9 +44,6 @@ command! -nargs=0  ColorVClear       call colorv#clear_all()
 
 command! -nargs=0  ColorVPicker     call colorv#picker()
 
-command! -nargs=?  ColorVScheme     call colorv#scheme#win(<q-args>)
-command! -nargs=0  ColorVSchemeFav  call colorv#scheme#show_fav()
-command! -nargs=?  ColorVSchemeNew  call colorv#scheme#new(<args>)
 
 call colorv#default("g:colorv_no_global_map",0)
 call colorv#default("g:colorv_global_leader",'<leader>c')
