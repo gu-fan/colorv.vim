@@ -1,3 +1,6 @@
+Version: 3.1.0
+Update: 2026-01-15
+
 ColorV
 ######
 Color in Vim
@@ -7,8 +10,9 @@ Color in Vim
 Change
 ======
 
-
-- Remove rebundant info
+- Remove all scheme functionality (online fetch, fav, etc.)
+- Add RGB float line (0.0-1.0) in ColorV window
+- Remove redundant info
 - Use tab in colorv window to switch HSL quickly
 - Use +/- to modify it
 
@@ -87,8 +91,6 @@ Install
   Add this line to your vimrc::
  
     Bundle 'Rykka/colorv.vim'
-    " needed for fetching schemes online.
-    Bundle 'mattn/webapi-vim'
 
 * Using downloaded zip/tar.gz file. 
   Just extract it to your ``.vim`` folder .
@@ -151,6 +153,7 @@ Tutors
       
       KEY  NAME    EXAMPLE                       DESCRIPTION
            HEX     FF00FF 334455
+           rgb(f)  r:.00 g:.32 b:1.0             (float 0.0-1.0)
            HEX3    #CFF #F11
       #/s  HEX#    #FF00FF #00FFFF 
       0/x  HEX0    0xFFFF00   0xEE3399
