@@ -71,7 +71,7 @@ let s:clrdW3C = extend(copy(s:clrd),s:cW3Cd)
 let s:line_width=60
 let [s:pal_W,s:pal_H]=[21,5]
 let [s:OFF_W,s:OFF_H]=[0,1]
-let [s:max_h,s:mid_h,s:min_h]=[8,6,3]
+let [s:max_h,s:mid_h,s:min_h]=[9,7,4]
 
 let s:text_x = s:pal_W + 2
 
@@ -985,6 +985,7 @@ function! s:draw_text(...) "{{{
     let [h,s,v]= map(copy(cv.hsv),'printf("%3d",v:val)')
     let [H,L,S]= map(copy(cv.hls),'printf("%3d",v:val)')
     let [Y,I,Q]= map(copy(cv.yiq),'printf("%3d",float2nr(v:val))')
+    let [fr,fg,fb]= map(copy(cv.rgb),'v:val/255.0 >= 1.0 ? "1.0" : substitute(printf("%.2f",v:val/255.0),"^0","", "")')
 
     let height = s:size=="max" ? s:max_h : s:size=="mid" ? s:mid_h :
                 \ s:min_h
@@ -1005,20 +1006,22 @@ function! s:draw_text(...) "{{{
     let line[0]=colorv#line_sub(line[0],"HEX:".hex,s:text_x)
     if s:size=="max"
         let line[1]=s:line("R:".r."  G:".g."  B:".b,s:text_x)
+        let line[2]=s:line("r:".fr."  g:".fg."  b:".fb,s:text_x)
         let line[3]=s:line("H:".H."  L:".L."  S:".S,s:text_x)
         let line[4]=s:line("Y:".Y."  I:".I."  Q:".Q,s:text_x)
         let line[s:pal_H]=s:line(help_txt,s:text_x)
         let line[s:pal_H]=colorv#line_sub(line[s:pal_H],stat_txt,s:stat_pos)
     elseif s:size=="mid"
         let line[3]=s:line("R:".r."  G:".g."  B:".b,s:text_x)
-        " let line[3]=s:line("H:".h."  S:".s."  V:".v,s:text_x)
+        let line[4]=s:line("r:".fr."  g:".fg."  b:".fb,s:text_x)
         let line[2]=s:line("H:".H."  L:".L."  S:".S,s:text_x)
         let line[s:pal_H]=s:line(help_txt,s:text_x)
         let line[s:pal_H]=colorv#line_sub(line[s:pal_H],stat_txt,s:stat_pos)
     elseif s:size=="min"
         let line[1]=s:line("R:".r."  G:".g."  B:".b,s:text_x)
-        let line[2]=s:line("H:".h."  S:".s."  V:".v,s:text_x)
-        let line[2]=colorv#line_sub(line[2],stat_txt,s:stat_pos)
+        let line[2]=s:line("r:".fr."  g:".fg."  b:".fb,s:text_x)
+        let line[3]=s:line("H:".h."  S:".s."  V:".v,s:text_x)
+        let line[3]=colorv#line_sub(line[3],stat_txt,s:stat_pos)
     endif
 
     " colorname
@@ -1674,21 +1677,21 @@ endfunction "}}}
 "EDIT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:max_pos=[["Hex:",1,s:text_x,10],
-            \["N:",1,45,15],
-            \["R:",2,s:text_x,5],["G:",2,(s:text_x+7),5],["B:",2,(s:text_x+14),5],
-            \["H:",3,s:text_x,5],["S:",3,(s:text_x+7),5],["V:",3,(s:text_x+14),5],
-            \["H:",4,s:text_x,5],["L:",4,(s:text_x+7),5],["S:",4,(s:text_x+14),5],
-            \]
+            \ ["N:",1,45,15],
+            \ ["R:",2,s:text_x,5], ["G:",2,(s:text_x+7),5], ["B:",2,(s:text_x+14),5],
+            \ ["H:",4,s:text_x,5], ["S:",4,(s:text_x+7),5], ["V:",4,(s:text_x+14),5],
+            \ ["H:",5,s:text_x,5], ["L:",5,(s:text_x+7),5], ["S:",5,(s:text_x+14),5],
+            \ ]
 let s:mid_pos=[
-            \["H:",3,s:text_x,5],["L:",3,(s:text_x+7),5],["S:",3,(s:text_x+14),5],
-            \["R:",4,s:text_x,5],["G:",4,(s:text_x+7),5],["B:",4,(s:text_x+14),5],
-            \["N:",1,45,15],
-            \]
+            \ ["H:",3,s:text_x,5], ["L:",3,(s:text_x+7),5], ["S:",3,(s:text_x+14),5],
+            \ ["R:",4,s:text_x,5], ["G:",4,(s:text_x+7),5], ["B:",4,(s:text_x+14),5],
+            \ ["N:",1,45,15],
+            \ ]
 let s:min_pos=[["Hex:",1,s:text_x,10],
-            \["N:",1,45,15],
-            \["R:",2,s:text_x,5],["G:",2,(s:text_x+7),5],["B:",2,(s:text_x+14),5],
-            \["H:",3,s:text_x,5],["S:",3,(s:text_x+7),5],["V:",3,(s:text_x+14),5],
-            \]
+            \ ["N:",1,45,15],
+            \ ["R:",2,s:text_x,5], ["G:",2,(s:text_x+7),5], ["B:",2,(s:text_x+14),5],
+            \ ["H:",4,s:text_x,5], ["S:",4,(s:text_x+7),5], ["V:",4,(s:text_x+14),5],
+            \ ]
 let s:pos_type = [
                 \'hls0', 'hls1', 'hls2',
                 \'rgb0', 'rgb1', 'rgb2', 
