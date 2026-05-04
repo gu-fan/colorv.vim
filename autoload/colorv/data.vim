@@ -223,6 +223,11 @@ let s:fmt.glRGBA='\v\c<glColor\du=[bsifd]\('
             \.'\s*(\d\.=\d*),'
             \.'\s*(\d\.=\d*),'
             \.'\s*(\d\.=\d*)\)'
+let s:fmt.ColorRGBA='\v\c<Color\('
+            \.'\s*(\d\.=\d*),'
+            \.'\s*(\d\.=\d*),'
+            \.'\s*(\d\.=\d*),'
+            \.'\s*(\d\.=\d*)\)'
 
 fun! colorv#data#init() "{{{
     let g:_colorv['clrn'] = s:clrn

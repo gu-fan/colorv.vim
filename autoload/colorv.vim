@@ -2071,7 +2071,7 @@ function! s:txt2hex(txt) "{{{
                     continue
                 endif
                 let hex = colorv#cmyk2hex([c,m,y,k])
-            elseif fmt=="glRGBA"
+            elseif fmt=="glRGBA" || fmt=="ColorRGBA"
                 let p_alp  = str2float(p_lst[4])
                 " let [r,g,b] = p_lst[1:3]
                 let [r,g,b] = [str2float(p_lst[1])*255,str2float(p_lst[2])*255,str2float(p_lst[3])*255]
@@ -2455,6 +2455,8 @@ function! s:prev_list(list) "{{{
             let hi_ptn = '\v\c%(#|<0x|<)'.matchstr(str, '\x\{6,8}').'\w@!'
         elseif fmt == 'HEX3'
             let hi_ptn = '\v\c'.str.'\w@!'
+        elseif fmt == 'ColorRGBA'
+            let hi_ptn = '\V'.escape(str, '\')
         else
             "  XXX: use fmt's ptn to match?
             let hi_ptn = str

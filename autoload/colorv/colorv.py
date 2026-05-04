@@ -147,6 +147,13 @@ fmt['glRGBA']=re.compile(r'''(?ix)               # [iLmsux] i:igone x:verbose
         [ \t]*(?P<B>\d(?:\.\d*)?),               # group4 B
         [ \t]*(?P<A>\d(?:\.\d*)?)
         [)] ''')
+fmt['ColorRGBA']=re.compile(r'''(?ix)
+        \b Color[(]
+        [ \t]*(?P<R>\d(?:\.\d*)?),
+        [ \t]*(?P<G>\d(?:\.\d*)?),
+        [ \t]*(?P<B>\d(?:\.\d*)?),
+        [ \t]*(?P<A>\d(?:\.\d*)?)
+        [)] ''')
 fmt['RGBP']=re.compile(r'''(?ix)                 # [iLmsux] i:igone x:verbose
         \b rgb[(]
         [ \t]*(?P<R>\d{1,3})%,                   # group2 R
@@ -263,7 +270,7 @@ def txt2hex(txt):
                 if r<0 or r>255 or g<0 or g>255 or b<0 or b>255:
                     continue
                 HEX=rgb2hex([r,g,b])
-            elif fm=="glRGBA":
+            elif fm=="glRGBA" or fm=="ColorRGBA":
                 alp = float(obj.group('A'))
                 r,g,b=[float(obj.group('R'))*255,float(obj.group('G'))*255,
                        float(obj.group('B'))*255]
