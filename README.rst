@@ -155,7 +155,7 @@ Tutors
            HEX     FF00FF 334455
            rgb(f)  r:.00 g:.32 b:1.0             (float 0.0-1.0)
            HEX3    #CFF #F11
-      #/s  HEX#    #FF00FF #00FFFF 
+      #/s  HEX#    #FF00FF #00FFFF #FFFFFFAA    (alpha ignored in preview)
       0/x  HEX0    0xFFFF00   0xEE3399
       n    NAME    red/lime/blue                 (|colorv-colorname|)
       r    RGB     rgb(255,55,15)                (css1 standard)
@@ -163,6 +163,7 @@ Tutors
       l    HSL     hsl(50,90%,40%)               (css3 standard)
       al   HSLA    hsla(230,30%,50%,1.0)         (css3 standard)
            glRGBA  glColor4f(1.00,0.5,1.00,1.00) (openGL color format)
+           ColorRGBA Color(0.0,0.0,0.0,1.0)      (float 0.0-1.0)
       pr   RGBP    rgb(30%, 98%, 98%)             
       ap   RGBAP   rgba(100%,40%,100%,1.0) 
       h    HSV     hsv(360,100,100)
