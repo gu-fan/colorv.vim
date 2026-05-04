@@ -2125,6 +2125,9 @@ function! s:hex2txt(hex,fmt,...) "{{{
     elseif a:fmt=="glRGBA"
         let [rf,gf,bf] = map([r/255.0,g/255.0,b/255.0],'printf("%.2f",v:val)')
         let text="glColor4f(".rf.",".gf.",".bf.",".A.")"
+    elseif a:fmt=="ColorRGBA"
+        let [rf,gf,bf] = map([r/255.0,g/255.0,b/255.0],'printf("%.2f",v:val)')
+        let text="Color(".rf.", ".gf.", ".bf.", ".A.")"
     elseif a:fmt=="RGBAP"
         let [rp,gp,bp] = map([r/2.55,g/2.55,b/2.55],
                     \'printf("%3d",float2nr(v:val))')
@@ -2150,6 +2153,11 @@ function! s:hex2txt(hex,fmt,...) "{{{
     endif
 
     return text
+endfunction "}}}
+
+function! s:hex_alpha_suffix(str) "{{{
+    let hexa = matchstr(a:str, '\v\c%(#|<0x|<)\zs\x{8}\w@!')
+    return empty(hexa) ? '' : toupper(hexa[6:7])
 endfunction "}}}
 
 function! s:nam2hex(nam,...) "{{{
@@ -2365,6 +2373,10 @@ function! s:edit_text(action,w_list,...) "{{{
     endif
 
     if to_fmt=='HEX'
+        let alpha_suffix = s:hex_alpha_suffix(str)
+        if !empty(alpha_suffix)
+            let to_str .= alpha_suffix
+        endif
         if str=~'0x'
             let to_str = "0x".to_str
         elseif str=~'#'
