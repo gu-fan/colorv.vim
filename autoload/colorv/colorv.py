@@ -202,7 +202,7 @@ fmt['HSVA']=re.compile(r'''(?ix)                 # [iLmsux] i:igone x:verbose
 
 fmt['HEX']=re.compile(r'''(?ix)
         ([#]|\b0x|\b)                     # ffffff #ffffff 0xffffff
-        (?P<HEX>[0-9A-F]{6})            #group HEX in upper 'FFFFFF'
+        (?P<HEX>[0-9A-F]{6}(?:[0-9A-F]{2})?) # group HEX or HEXA
         (?!\w)     ''')
 fmt['HEX3']=re.compile(r'''(?ix)
         [#](?P<HEX3>[0-9a-fA-F]{3})(?!\w)''')
@@ -230,7 +230,10 @@ def txt2hex(txt):
         for obj in reg.finditer(txt):
             alp = 1
             if fm=="HEX":
-                HEX=obj.group('HEX')
+                HEXA=obj.group('HEX')
+                HEX=HEXA[0:6]
+                if len(HEXA) == 8:
+                    alp = int(HEXA[6:8], 16) / 255.0
             elif fm=="HEX3":
                 HEX3=obj.group('HEX3')
                 HEX=HEX3[0]*2+HEX3[1]*2+HEX3[2]*2

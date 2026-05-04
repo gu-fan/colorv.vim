@@ -2080,7 +2080,10 @@ function! s:txt2hex(txt) "{{{
                 endif
                 let hex = colorv#rgb2hex([r,g,b])
             elseif fmt=="HEX"
-                let hex = toupper(p_lst[1])
+                let hex = toupper(p_lst[1][0:5])
+                if len(p_lst[1]) == 8
+                    let p_alp = str2nr(p_lst[1][6:7], 16) / 255.0
+                endif
             elseif fmt=="HEX3"
                 let hex3 = p_lst[1]
                 let hex = hex3[0].hex3[0].hex3[1].hex3[1].hex3[2].hex3[2]
@@ -2449,7 +2452,7 @@ function! s:prev_list(list) "{{{
         elseif fmt == 'HEX'
             " NOTE: highlight hex in all cases,
             " '#ffc0ff' 'ff00cf' '0xfc00ff' '-ffffff'
-            let hi_ptn = '\v\c%(#|<0x|<)'.hex.'\w@!'
+            let hi_ptn = '\v\c%(#|<0x|<)'.matchstr(str, '\x\{6,8}').'\w@!'
         elseif fmt == 'HEX3'
             let hi_ptn = '\v\c'.str.'\w@!'
         else
@@ -2479,7 +2482,7 @@ function! s:prev_list(list) "{{{
         endif
 
         if fmt =~ 'HEX'
-            let hi_dic_name = fmt.'_'.hex
+            let hi_dic_name = fmt.'_'.toupper(matchstr(str, '\x\{6,8}'))
         elseif fmt == 'NAME'
             let hi_dic_name = fmt.'_'.tolower(str)
         else

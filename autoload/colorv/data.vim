@@ -180,7 +180,7 @@ let s:cW3Cd = {'gray': '808080', 'green': '008000'
 
 
 let s:fmt={}
-let s:fmt.HEX ='\v\c%(#|<0x|<)(\x{6})\w@!'
+let s:fmt.HEX ='\v\c%(#|<0x|<)(\x{6}(\x{2})?)\w@!'
 let s:fmt.HEX3='\v#(\x{3})\w@!'
 let s:fmt.RGB = '\v\c<rgb[ ]=\('
             \.'\s*(\d{1,3}),'
