@@ -1278,7 +1278,7 @@ function! s:cursor_text_hi() "{{{
     let [l,c] = getpos('.')[1:2]
     let pos_list = s:size=="max" ? s:max_pos :
                 \ s:size=="min" ? s:min_pos : s:mid_pos
-    for [str,line,column,length] in pos_list
+    for [str,line,column,length;rest] in pos_list
         if l==line && c>=column && c<column+length
             execute '3match' "Pmenu".' /\%>1l\%'.(line).'l'
                     \.'\%>21c\%<41c/'
@@ -1676,21 +1676,24 @@ endfunction "}}}
 
 "EDIT: "{{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let s:max_pos=[["Hex:",1,s:text_x,10],
-            \ ["N:",1,45,15],
-            \ ["R:",2,s:text_x,5], ["G:",2,(s:text_x+7),5], ["B:",2,(s:text_x+14),5],
-            \ ["H:",4,s:text_x,5], ["S:",4,(s:text_x+7),5], ["V:",4,(s:text_x+14),5],
-            \ ["H:",5,s:text_x,5], ["L:",5,(s:text_x+7),5], ["S:",5,(s:text_x+14),5],
+let s:max_pos=[["Hex:",1,s:text_x,10,"hex"],
+            \ ["N:",1,45,15,"name"],
+            \ ["R:",2,s:text_x,5,"rgb0"], ["G:",2,(s:text_x+7),5,"rgb1"], ["B:",2,(s:text_x+14),5,"rgb2"],
+            \ ["r:",3,s:text_x,5,"frgb0"], ["g:",3,(s:text_x+7),5,"frgb1"], ["b:",3,(s:text_x+14),5,"frgb2"],
+            \ ["H:",4,s:text_x,5,"hls0"], ["L:",4,(s:text_x+7),5,"hls1"], ["S:",4,(s:text_x+14),5,"hls2"],
+            \ ["Y:",5,s:text_x,5,"yiq0"], ["I:",5,(s:text_x+7),5,"yiq1"], ["Q:",5,(s:text_x+14),5,"yiq2"],
             \ ]
 let s:mid_pos=[
-            \ ["H:",3,s:text_x,5], ["L:",3,(s:text_x+7),5], ["S:",3,(s:text_x+14),5],
-            \ ["R:",4,s:text_x,5], ["G:",4,(s:text_x+7),5], ["B:",4,(s:text_x+14),5],
-            \ ["N:",1,45,15],
+            \ ["H:",3,s:text_x,5,"hls0"], ["L:",3,(s:text_x+7),5,"hls1"], ["S:",3,(s:text_x+14),5,"hls2"],
+            \ ["R:",4,s:text_x,5,"rgb0"], ["G:",4,(s:text_x+7),5,"rgb1"], ["B:",4,(s:text_x+14),5,"rgb2"],
+            \ ["r:",5,s:text_x,5,"frgb0"], ["g:",5,(s:text_x+7),5,"frgb1"], ["b:",5,(s:text_x+14),5,"frgb2"],
+            \ ["N:",1,45,15,"name"],
             \ ]
-let s:min_pos=[["Hex:",1,s:text_x,10],
-            \ ["N:",1,45,15],
-            \ ["R:",2,s:text_x,5], ["G:",2,(s:text_x+7),5], ["B:",2,(s:text_x+14),5],
-            \ ["H:",4,s:text_x,5], ["S:",4,(s:text_x+7),5], ["V:",4,(s:text_x+14),5],
+let s:min_pos=[["Hex:",1,s:text_x,10,"hex"],
+            \ ["N:",1,45,15,"name"],
+            \ ["R:",2,s:text_x,5,"rgb0"], ["G:",2,(s:text_x+7),5,"rgb1"], ["B:",2,(s:text_x+14),5,"rgb2"],
+            \ ["r:",3,s:text_x,5,"frgb0"], ["g:",3,(s:text_x+7),5,"frgb1"], ["b:",3,(s:text_x+14),5,"frgb2"],
+            \ ["H:",4,s:text_x,5,"hsv0"], ["S:",4,(s:text_x+7),5,"hsv1"], ["V:",4,(s:text_x+14),5,"hsv2"],
             \ ]
 let s:pos_type = [
                 \'hls0', 'hls1', 'hls2',
@@ -1851,7 +1854,7 @@ function! s:set_in_pos(...) "{{{
     "cur_chk "{{{3
         let pos_list = s:size=="max" ? s:max_pos :
                 \ s:size=="min" ? s:min_pos : s:mid_pos
-        for [name,y,x,width] in pos_list
+        for [name,y,x,width;rest] in pos_list
             if l==y && c>=x && c<=(x+width-1)
                 call s:edit_at_cursor()
                 return
@@ -1881,13 +1884,17 @@ function! s:edit_at_cursor(...) "{{{
                 \ s:size=="min" ? s:min_pos : s:mid_pos
     let position=-1
     for idx in range(len(pos_list))
-        let [str,line,column,length]=pos_list[idx]
+        let [str,line,column,length;rest]=pos_list[idx]
         if l==line && c>=column && c<column+length
             let position=idx
             break
         endif
     endfor
-    let type = s:pos_type[position]
+    if position < 0
+        call colorv#warning("Not Valid Position.")
+        return
+    endif
+    let type = get(pos_list[position], 4, s:pos_type[position])
     if type=='hex' "{{{
         if tune==0
             let hex=input("Hex(000000~ffffff,000~fff):")
@@ -1903,7 +1910,11 @@ function! s:edit_at_cursor(...) "{{{
     elseif type=="name"
         call s:input_colorname()
     else
-        if type=~"rgb"
+        if type=~"frgb"
+            let c = ["r","g","b"][type[4]]
+            let rgb_idx = str2nr(type[4])
+            let e_txt = "let rgb_vals = [r,g,b] | let rgb_vals[rgb_idx] = float2nr(round(".c." * 255.0)) | let [r,g,b] = rgb_vals | let hex = colorv#rgb2hex([r,g,b])"
+        elseif type=~"rgb"
             let c = ["r","g","b"][type[3]]
             let e_txt = "let hex = colorv#rgb2hex([r,g,b])"
         elseif type=~"hsv"
@@ -1921,16 +1932,29 @@ function! s:edit_at_cursor(...) "{{{
             let e_txt = "let hex = colorv#yiq2hex([Y,I,Q])"
         endif
 
-        let h_txt = s:hlp_d[c][0]
-        let r_min = s:hlp_d[c][1]
-        let r_max = s:hlp_d[c][2]
+        if type=~"frgb"
+            let h_txt = "[RGB Float]".toupper(c)
+            let r_min = 0.0
+            let r_max = 1.0
+            let {c} = [r,g,b][rgb_idx] / 255.0
+        else
+            let h_txt = s:hlp_d[c][0]
+            let r_min = s:hlp_d[c][1]
+            let r_max = s:hlp_d[c][2]
+        endif
 
         if tune == 0
             let {c} = input(h_txt."(".r_min."~".r_max."):")
+        elseif type=~"frgb"
+            let {c} += tune * 0.01
         else
             let {c} += tune * s:tune_step
         endif
-        if {c} =~ '^-\=\d\{1,3}$' && {c} <= r_max && {c} >= r_min
+        if type=~"frgb" && {c} =~ '^\%(\d\+\%(\.\d*\)\=\|\.\d\+\)$' && str2float({c}) <= r_max && str2float({c}) >= r_min
+            let {c} = str2float({c})
+            exe e_txt
+            call s:draw_win(hex)
+        elseif {c} =~ '^-\=\d\{1,3}$' && {c} <= r_max && {c} >= r_min
             exe e_txt
             call s:draw_win(hex)
         else
@@ -1948,7 +1972,7 @@ fun! s:jump_to_input(...)
 
     let position= -1
     for idx in range(len(pos_list))
-        let [str,line,column,length]=pos_list[idx]
+        let [str,line,column,length;rest]=pos_list[idx]
         if l==line && c>=column && c<column+length
             let position=idx
             break

@@ -9,3 +9,4 @@
 - Rendered `Color(...)` preview from RGB float channels while preserving alpha as metadata.
 - Escaped `Color(...)` preview matches so decimal dots and parentheses are treated literally.
 - Fixed `ColorVEdit` to preserve 8-digit hex alpha suffixes and `Color(r, g, b, a)` formatting.
+- Enabled Tab navigation and editing for the ColorV window float RGB (`r/g/b`) fields.
